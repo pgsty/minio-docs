@@ -71,7 +71,7 @@ Bucket replication requires specific permissions on the source and destination d
       .. code-block:: shell
          :class: copyable
 
-         wget -O - https://docs.min.io/community/minio-object-store/examples/ReplicationAdminPolicy.json | \
+         wget -O - https://minio.pigsty.io/examples/ReplicationAdminPolicy.json | \
          mc admin policy create TARGET ReplicationAdminPolicy /dev/stdin
          mc admin user add TARGET ReplicationAdmin LongRandomSecretKey
          mc admin policy attach TARGET ReplicationAdminPolicy --user=ReplicationAdmin
@@ -98,7 +98,7 @@ Bucket replication requires specific permissions on the source and destination d
       .. code-block:: shell
          :class: copyable
 
-         wget -O - https://docs.min.io/community/minio-object-store/examples/ReplicationRemoteUserPolicy.json | \
+         wget -O - https://minio.pigsty.io/examples/ReplicationRemoteUserPolicy.json | \
          mc admin policy create TARGET ReplicationRemoteUserPolicy /dev/stdin
          mc admin user add TARGET ReplicationRemoteUser LongRandomSecretKey
          mc admin policy attach TARGET ReplicationRemoteUserPolicy --user=ReplicationRemoteUser

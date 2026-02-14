@@ -1,10 +1,15 @@
 # MinIO Documentation
 
-As of October 10, 2025, the MinIO object store documentation was pulled from web hosting.
-
-Moving forward, community users can build and host the documentation themselves using the instructions below.
-
-No further development of the documentation is planned at this time. The project maintainers will make best efforts to review and merge PRs from the community.
+> [!IMPORTANT]
+> **This is a community-maintained fork of [minio/docs](https://github.com/minio/docs), maintained by [Pigsty](https://pigsty.io).**
+> This project is **not** affiliated with, endorsed by, or sponsored by MinIO, Inc.
+> "MinIO" is a trademark of MinIO, Inc., used here solely to identify the upstream project.
+>
+> Changes from upstream are minimal:
+> - Restored the removed [Console](https://minio.pigsty.io/administration/minio-console.html) documentation
+> - Fixed dead links pointing to the decommissioned `docs.min.io`
+>
+> Hosted at [minio.pigsty.io](https://minio.pigsty.io). Distributed under the original [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) license.
 
 ## Build Instructions
 
@@ -27,7 +32,7 @@ MinIO uses [Sphinx](https://www.sphinx-doc.org/en/master/index.html) to generate
 1. Clone docs repository locally.
 
 ```
-git clone https://github.com/minio/docs && cd docs/
+git clone https://github.com/pgsty/minio-docs && cd minio-docs/
 ```
 
 2. Create a new Python virtual environment.

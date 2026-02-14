@@ -115,7 +115,7 @@ The ``.rpm`` package install the following `systemd <https://www.freedesktop.org
 
    [Unit]
    Description=MinIO
-   Documentation=https://docs.min.io/community/minio-object-store/index.html
+   Documentation=https://minio.pigsty.io/index.html
    Wants=network-online.target
    After=network-online.target
    AssertFileIsExecutable=/usr/local/bin/minio
@@ -379,10 +379,10 @@ On successful startup, the MinIO process emits a summary of the deployment that 
       RootUser: minioadmin 
       RootPass: minioadmin 
 
-   CLI: https://docs.min.io/community/minio-object-store/reference/minio-mc.html#quickstart
+   CLI: https://minio.pigsty.io/reference/minio-mc.html#quickstart
       $ mc alias set 'myminio' 'https://minio-1.example.net:9000' 'minioadmin' 'minioadmin'
 
-   Docs: https://docs.min.io/community/minio-object-store/index.html
+   Docs: https://minio.pigsty.io/index.html
    Status:         16 Online, 0 Offline. 
 
 You may see increased log churn as the cluster starts up and synchronizes. 

@@ -102,10 +102,10 @@ computer.
          RootUser: minioadmin
          RootPass: minioadmin
 
-         Command-line: https://docs.min.io/community/minio-object-store/reference/minio-mc.html
+         Command-line: https://minio.pigsty.io/reference/minio-mc.html
             $ mc alias set myminio http://192.0.2.10:9000 minioadmin minioadmin
 
-         Documentation: https://docs.min.io/community/minio-object-store/index.html
+         Documentation: https://minio.pigsty.io/index.html
 
          WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables.
 
@@ -134,10 +134,10 @@ computer.
          RootUser: minioadmin
          RootPass: minioadmin
 
-         Command-line: https://docs.min.io/community/minio-object-store/reference/minio-mc.html
+         Command-line: https://minio.pigsty.io/reference/minio-mc.html
             $ mc alias set myminio http://192.0.2.10:9000 minioadmin minioadmin
 
-         Documentation: https://docs.min.io/community/minio-object-store/index.html
+         Documentation: https://minio.pigsty.io/index.html
 
          WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables.
 

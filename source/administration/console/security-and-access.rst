@@ -1,6 +1,6 @@
-.. _minio-console-security-access:
 
-:orphan:
+
+.. _minio-console-security-access:
 
 ===================
 Security and Access

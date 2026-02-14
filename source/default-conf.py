@@ -70,7 +70,7 @@ extlinks = {
     'influxdb-docs'   : ('https://docs.influxdata.com/influxdb/v2.4/%s', None),
     'eks-docs'        : ('https://docs.aws.amazon.com/eks/latest/userguide/%s', None),
     'minio-web'       : ('https://min.io/%s?ref=docs', None),
-    'minio-docs'      : ('https://docs.min.io/community/minio-object-store/%s?ref=docs-internal', None),
+    'minio-docs'      : ('https://minio.pigsty.io/%s', None),
     'minio-blog'      : ('https://blog.min.io/%s?ref=docs', None),
     'gke-docs'        : ('https://cloud.google.com/kubernetes-engine/docs/%s', None),
     'gcp-docs'        : ('https://cloud.google.com/compute/docs/%s', None),
@@ -175,7 +175,7 @@ html_js_files = [
 # Add https://www.min.io/robots.txt to html_extra_path list once available.
 html_extra_path = [ 'extra']
 
-html_baseurl = 'https://docs.min.io/community/minio-object-store/'
+html_baseurl = 'https://minio.pigsty.io/'
 
 # -- Project information -----------------------------------------------------
 

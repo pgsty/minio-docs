@@ -21,9 +21,16 @@ MinIO High Performance Object Storage
 MinIO is a Kubernetes-native S3-compatible object storage solution designed to deploy wherever your applications are - on premises, in the private cloud, in the public cloud, and edge infrastructure.
 MinIO is designed to support modern application workload patterns where high performance distributed computing meets petabyte-scale storage requirements.
 
-This site documents Operations, Administration, and Development of MinIO Community Object Storage deployments on supported platforms. 
+This site documents Operations, Administration, and Development of MinIO Community Object Storage deployments on supported platforms.
 
-.. todo: More marketing/SEO below?
+.. important::
+
+   **This is a community-maintained fork of** `minio/docs <https://github.com/minio/docs>`__ **, maintained by** `Pigsty <https://pigsty.io>`__ **at** `pgsty/minio-docs <https://github.com/pgsty/minio-docs>`__ **.**
+   This project is **not** affiliated with, endorsed by, or sponsored by MinIO, Inc.
+   "MinIO" is a trademark of MinIO, Inc., used here solely to identify the upstream project.
+
+   Changes from upstream (`#1203 <https://github.com/minio/docs/commit/571f188>`__) are minimal: restored the removed :ref:`Console <minio-console>` documentation and fixed dead links.
+   Distributed under the original `Creative Commons Attribution 4.0 International License <https://creativecommons.org/licenses/by/4.0/legalcode>`__.
 
 Quickstart
 ----------
