@@ -1,60 +1,60 @@
 .. _minio-bucket-replication-requirements:
 
 =========================================
-Requirements to Set Up Bucket Replication
+设置存储桶复制的要求
 =========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. _minio-bucket-replication-serverside-oneway-permissions:
 
-Bucket replication uses rules to synchronize the contents of a bucket on one MinIO deployment to a bucket on a remote MinIO deployment.
+存储桶复制使用规则将一个 MinIO 部署中的存储桶内容同步到远端 MinIO 部署中的存储桶。
 
-Replication can be done in any of the following ways:
+复制可以通过以下任一方式完成：
 
 - :ref:`Active-Passive <minio-bucket-replication-serverside-oneway>`
-  Eligible objects replicate from the source bucket to the remote bucket.
-  Any changes on the remote bucket do not replicate back.
+  符合条件的对象会从源存储桶复制到远端存储桶。
+  远端存储桶上的任何更改都不会反向复制回来。
 - :ref:`Active-Active <minio-bucket-replication-serverside-twoway>`
-  Changes to eligible objects of either bucket replicate to the other bucket in a two-way direction.
+  任一存储桶中符合条件对象的更改都会以双向方式复制到另一个存储桶。
 - :ref:`Multi-Site Active-Active <minio-bucket-replication-serverside-multi>`
-  Changes to eligible objects on any bucket set up for bucket replication replicate to all of the other buckets.
+  任何已设置存储桶复制的存储桶中符合条件对象的更改，都会复制到所有其他存储桶。
 
-Ensure you meet the following prerequisites before you set up any of these replication configurations.
+在设置这些复制配置之前，请确保满足以下前提条件。
 
-Permissions Required for Setting Up Bucket Replication
+设置存储桶复制所需的权限
 ------------------------------------------------------
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-required-permissions
    :end-before: end-replication-required-permissions
 
-Matching Object Encryption Settings for Bucket Replication
+存储桶复制的对象加密设置需保持一致
 ----------------------------------------------------------
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-encrypted-objects
    :end-before: end-replication-encrypted-objects
 
-Bucket Replication Requires MinIO Deployments
+存储桶复制要求使用 MinIO 部署
 ---------------------------------------------
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-minio-only
    :end-before: end-replication-minio-only
 
-Replication Requires Versioning
+复制要求启用版本控制
 -------------------------------
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-requires-versioning
    :end-before: end-replication-requires-versioning
 
-Matching Object Locking State With Bucket Replication
+对象锁定状态需与存储桶复制保持一致
 -----------------------------------------------------
 
 .. include:: /includes/common-replication.rst

@@ -6,19 +6,19 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc idp ldap policy attach
 
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-policy-attach-desc
 
-The :mc:`mc idp ldap policy attach` command attaches one or more polices to an entity.
+:mc:`mc idp ldap policy attach` 命令将一个或多个策略附加到实体。
 
 .. end-mc-idp-ldap-policy-attach-desc
 
@@ -26,7 +26,7 @@ The :mc:`mc idp ldap policy attach` command attaches one or more polices to an e
 
    .. tab-item:: EXAMPLE
 
-         The following example attaches the policy ``userpolicy`` to the user ``bobfisher`` on the ``myminio`` deployment:
+         以下示例将策略 ``userpolicy`` 附加到 ``myminio`` 部署中的用户 ``bobfisher``：
 
       .. code-block:: shell
          :class: copyable
@@ -37,7 +37,7 @@ The :mc:`mc idp ldap policy attach` command attaches one or more polices to an e
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -50,27 +50,27 @@ The :mc:`mc idp ldap policy attach` command attaches one or more polices to an e
                                           [--group=`GROUP`]
 
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for AD/LDAP integration.
-      - Replace ``POLICYNAME`` with the policy to attach to the entity.
-        You may list multiple policies to attach to the entity.
-      - Use must use one of either the ``--user`` or ``--group`` flag.
-        You may only use the flag once in the command.
-        You cannot use both flags in the same command.
+      - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于配置 AD/LDAP 集成。
+      - 将 ``POLICYNAME`` 替换为要附加到实体的策略。
+        你可以列出多个要附加到实体的策略。
+      - 必须使用 ``--user`` 或 ``--group`` 标志之一。
+        在命令中每个标志只能使用一次。
+        不能在同一命令中同时使用这两个标志。
 
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment with the entity to which to attach a policy.
+   MinIO 部署的 :ref:`alias <alias>`，其中包含要附加策略的实体。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -79,10 +79,10 @@ Parameters
                                    --user='uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io'
 
 
-Example
-~~~~~~~
+示例
+~~~~
 
-The following example attaches two policies, ``policy1`` and ``policy2``, to the ``projectb`` group on the ``myminio`` deployment:
+以下示例将两个策略 ``policy1`` 和 ``policy2`` 附加到 ``myminio`` 部署中的 ``projectb`` 组：
 
 .. code-block:: shell
    :class: copyable
@@ -93,19 +93,19 @@ The following example attaches two policies, ``policy1`` and ``policy2``, to the
                              --group='cn=projectb,ou=groups,ou=swengg,dc=min,dc=io'
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

@@ -135,7 +135,7 @@ MinIO 可以在为用户授权时使用这份策略列表。
         -d "grant_type=password" \
         -d "username=minio-user-1" \
         -d "password=minio-user-1-password" \
-        http://|KEYCLOAK_URL|/realms/REALM/protocol/openid-connect/token
+        http://keycloak-url.example.net:8080/realms/REALM/protocol/openid-connect/token
 
 如果成功，``access_token`` 中会包含调用 MinIO :ref:`minio-sts-assumerolewithwebidentity`
 STS API 并生成 S3 凭证所需的 JWT。
@@ -160,7 +160,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
       :class: copyable
       :substitutions:
 
-      curl -X POST "https://|KEYCLOAK_URL|/realms/REALM/protocol/openid-connect/token" \
+      curl -X POST "https://keycloak-url.example.net:8080/realms/REALM/protocol/openid-connect/token" \
            -H "Content-Type: application/x-www-form-urlencoded" \
            -d "username=USER" \
            -d "password=PASSWORD" \
@@ -181,7 +181,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
       :class: copyable
       :substitutions:
 
-      curl -X POST "https://|MINIO_S3_URL|" \
+      curl -X POST "https://minio-url.example.net:9000" \
            -H "Content-Type: application/x-www-form-urlencoded" \
            -d "Action=AssumeRoleWithWebIdentity" \
            -d "Version=2011-06-15" \
@@ -210,7 +210,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
       from minio import Minio
 
       client = MinIO(
-         "|MINIO_S3_URL|",
+         "minio-url.example.net:9000",
          access_key = "ACCESS_KEY",
          secret_key = "SECRET_KEY",
          session_token = "SESSION_TOKEN"
@@ -239,7 +239,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
      - 为该 Keycloak 实例输入一个唯一名称
 
    * - :guilabel:`Config URL`
-     - 指定 Keycloak OpenID 配置文档的地址（|KEYCLOAK_URL|）
+     - 指定 Keycloak OpenID 配置文档的地址（keycloak-url.example.net:8080）
 
        确保其中的 ``REALM`` 与你希望用于 MinIO 用户认证的 Keycloak realm 一致。
 
@@ -283,7 +283,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
    mc idp openid add ALIAS PRIMARY_IAM \
       client_id=MINIO_CLIENT \
       client_secret=MINIO_CLIENT_SECRET \
-      config_url="https://|KEYCLOAK_URL|/realms/REALM/.well-known/openid-configuration" \
+      config_url="https://keycloak-url.example.net:8080/realms/REALM/.well-known/openid-configuration" \
       display_name="SSO_IDENTIFIER"
       scopes="openid,email,preferred_username" \
       redirect_uri_dynamic="on"
@@ -301,7 +301,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
      - 设置为步骤 1 中配置的 Keycloak client ID 和 secret
 
    * - ``config_url``
-     - 设置为 Keycloak OpenID 配置文档的地址（|KEYCLOAK_URL|）
+     - 设置为 Keycloak OpenID 配置文档的地址（keycloak-url.example.net:8080）
 
    * - ``display_name``
      - 设置为 MinIO Console 在单点登录（SSO）流程中向用户显示的该 Keycloak 服务名称
@@ -331,7 +331,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
    :class: copyable
    :substitutions:
 
-   MINIO_IDENTITY_OPENID_CONFIG_URL_PRIMARY_IAM="https://|KEYCLOAK_URL|/realms/REALM/.well-known/openid-configuration"
+   MINIO_IDENTITY_OPENID_CONFIG_URL_PRIMARY_IAM="https://keycloak-url.example.net:8080/realms/REALM/.well-known/openid-configuration"
    MINIO_IDENTITY_OPENID_CLIENT_ID_PRIMARY_IAM="MINIO_CLIENT"
    MINIO_IDENTITY_OPENID_CLIENT_SECRET_PRIMARY_IAM="MINIO_CLIENT_SECRET"
    MINIO_IDENTITY_OPENID_DISPLAY_NAME_PRIMARY_IAM="SSO_IDENTIFIER"
@@ -350,7 +350,7 @@ MinIO :ref:`minio-sts-assumerolewithwebidentity` API
        如果你只打算为该部署配置单个 OIDC 提供者，也可以省略该后缀。
 
    * - :envvar:`CONFIG_URL <MINIO_IDENTITY_OPENID_CONFIG_URL>`
-     - 指定 Keycloak OpenID 配置文档的地址（|KEYCLOAK_URL|）
+     - 指定 Keycloak OpenID 配置文档的地址（keycloak-url.example.net:8080）
 
        确保其中的 ``REALM`` 与你希望用于 MinIO 用户认证的 Keycloak realm 一致
 

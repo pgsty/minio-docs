@@ -4,29 +4,29 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. mc:: mc admin info
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-info-desc
 
-The :mc-cmd:`mc admin info` command displays information on a MinIO server.
-For distributed MinIO deployments, :mc-cmd:`mc admin info` displays information
-for each MinIO server in the deployment.
+:mc-cmd:`mc admin info` 命令显示 MinIO 服务器的信息。
+对于分布式 MinIO 部署，:mc-cmd:`mc admin info` 会显示部署中每个 MinIO
+服务器的信息。
 
 .. end-mc-admin-info-desc
 
 .. versionadded:: mc RELEASE.2024-05-03T11-21-07Z
 
-   The command output includes information about the :ref:`erasure code <minio-ec-erasure-set>` setting for the cluster.
-   This displays in the output in the format ``EC:#``.
+   命令输出包含集群的 :ref:`erasure code <minio-ec-erasure-set>` 设置信息。
+   该信息在输出中以 ``EC:#`` 格式显示。
 
-The output of the command resembles the following:
+命令输出如下所示：
 
 .. code-block::
 
@@ -44,8 +44,8 @@ The output of the command resembles the following:
    4 drives online, 0 drives offline, EC:1
    
 
-Examples
---------
+示例
+----
 
 .. include:: /includes/play-alias-available.rst
    :start-after: play-alias-only
@@ -56,10 +56,10 @@ Examples
 
    mc admin info play
 
-Syntax
-------
+语法
+----
 
-:mc-cmd:`mc admin info` has the following syntax:
+:mc-cmd:`mc admin info` 语法如下：
 
 .. code-block:: shell
    :class: copyable
@@ -67,17 +67,17 @@ Syntax
    mc admin info TARGET      \
                  [--offline]
 
-Specify the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment as the ``TARGET``.
+将已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>` 指定为 ``TARGET``。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
    
-   The :ref:`alias <alias>` about which you want to display information.
+   要显示信息的部署 :ref:`alias <alias>`。
 
 .. mc-cmd:: --offline
    :optional:
 
-   Show only offline drives or nodes.
+   仅显示离线驱动器或节点。

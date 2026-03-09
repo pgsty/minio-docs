@@ -15,12 +15,12 @@
 
 .. versionadded:: mc RELEASE.2023-12-23T08-47-21Z 
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-accesskey-create-desc
 
-The :mc:`mc idp ldap accesskey create` allows you to add LDAP access key pairs.
+:mc:`mc idp ldap accesskey create` 允许添加 LDAP 访问密钥对。
 
 .. end-mc-idp-ldap-accesskey-create-desc
 
@@ -28,7 +28,7 @@ The :mc:`mc idp ldap accesskey create` allows you to add LDAP access key pairs.
 
    .. tab-item:: EXAMPLE
 
-         The following example creates a new access key pair with the same policy as the authenticated user on the ``minio`` :ref:`alias <alias>`:
+         以下示例在 ``minio`` :ref:`alias <alias>` 上创建一个新的访问密钥对，并使用与已认证用户相同的策略：
 
       .. code-block:: shell
          :class: copyable
@@ -37,7 +37,7 @@ The :mc:`mc idp ldap accesskey create` allows you to add LDAP access key pairs.
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -52,22 +52,22 @@ The :mc:`mc idp ldap accesskey create` allows you to add LDAP access key pairs.
                                           [--expiry <value>]          \         
                                           [--expiry-duration <value>]
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment configured for AD/LDAP integration.
+      - 将 ``ALIAS`` 替换为已配置 AD/LDAP 集成的 MinIO 部署的 :ref:`alias <alias>`。
 
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment configured for AD/LDAP.
+   已配置 AD/LDAP 的 MinIO 部署的 :ref:`alias <alias>`。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -76,143 +76,143 @@ Parameters
 .. mc-cmd:: --access-key
    :optional:
 
-   An access key to use for the account.
-   The access key cannot contain the characters ``=`` (equal sign) or ``,`` (comma).
+   用于该账户的访问密钥。
+   访问密钥不能包含 ``=``（等号）或 ``,``（逗号）字符。
 
-   Requires :mc-cmd:`~mc idp ldap accesskey create --secret-key`
+   需要 :mc-cmd:`~mc idp ldap accesskey create --secret-key`
 
 .. mc-cmd:: --secret-key
    :optional:
 
-   A secret to use for the account.
+   用于该账户的密钥。
 
-   Requires :mc-cmd:`~mc idp ldap accesskey create --access-key`
+   需要 :mc-cmd:`~mc idp ldap accesskey create --access-key`
 
 .. mc-cmd:: --policy
    :optional:
 
-   File path to the JSON-formatted policy to use for the account.
+   账户要使用的 JSON 格式策略文件路径。
 
-   If not specified, the account uses the same policy as the authenticated user.
+   如果未指定，账户将使用与已认证用户相同的策略。
 
 .. mc-cmd:: --name
    :optional:
 
-   A human-readable name to use for the account.
+   用于该账户的人类可读名称。
 
 .. mc-cmd:: --description
    :optional:
 
-   Add a description for the service account.
-   For example, you might specify the reason the access key exists.
+   为服务账户添加描述。
+   例如，你可以说明创建该访问密钥的原因。
 
 .. mc-cmd:: --expiry-duration
    :optional:
 
-   Length of time the access key pair should remain valid for use in ``#d#h#s`` format.
+   访问密钥对保持有效的时长，格式为 ``#d#h#s``。
        
-   For example, ``7d``, ``24h``, ``5d12h30s`` are valid strings.
+   例如，``7d``、``24h``、``5d12h30s`` 都是有效字符串。
 
-   Mutually exclusive with :mc-cmd:`~mc idp ldap accesskey create --expiry`.
+   与 :mc-cmd:`~mc idp ldap accesskey create --expiry` 互斥。
 
 .. mc-cmd:: --expiry
    :optional:
 
-   The date after which the access key expires.
-   Enter the date in YYYY-MM-DD format.
+   访问密钥在该日期之后过期。
+   日期请使用 YYYY-MM-DD 格式输入。
 
-   For example, to expire the credentials after December 31, 2024, enter ``2024-12-31``.
+   例如，要使凭证在 2024 年 12 月 31 日之后过期，请输入 ``2024-12-31``。
 
-   Mutually exclusive with :mc-cmd:`~mc idp ldap accesskey create --expiry-duration`.
+   与 :mc-cmd:`~mc idp ldap accesskey create --expiry-duration` 互斥。
 
 .. mc-cmd:: --login
    :optional:
 
    .. deprecated:: RELEASE.2024-04-18T16-45-29Z
 
-      Use :mc-cmd:`mc idp ldap accesskey create-with-login` to access the functionality previously provided by this parameter.
+      使用 :mc-cmd:`mc idp ldap accesskey create-with-login` 获取此前由该参数提供的功能。
 
-   Prompts the user to log in using the LDAP credentials to use to generate the access key.
-   Specify the URL of the LDAP-configured MinIO Server to use for the login prompt.
+   提示用户使用 LDAP 凭证登录以生成访问密钥。
+   指定用于登录提示的、已配置 LDAP 的 MinIO Server URL。
 
-   Requires an interactive terminal.
+   需要交互式终端。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
 
-Examples
---------
+示例
+----
 
-Create a new access-key pair for the authenticated user
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为已认证用户创建新的访问密钥对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key pair to use with the currently authenticated user on the ``minio`` alias.
-The command outputs a randomly generated access key and secret key.
+以下命令会为 ``minio`` alias 上当前已认证用户创建一个新的访问密钥对。
+该命令会输出随机生成的访问密钥和密钥。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey create minio
 
-Create a new access-key pair with a custom access key and secret key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用自定义访问密钥和密钥创建新的访问密钥对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key pair with both an access key and secret key that you specify for the user currently authenticated on the ``minio`` alias.
+以下命令会为 ``minio`` alias 上当前已认证用户创建一个新的访问密钥对，其中访问密钥和密钥都由你指定。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey create minio/ --access-key my-access-key-change-me --secret-key my-secret-key-change-me
 
-Create a new access-key pair that expires after 24 hours
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+创建 24 小时后过期的新访问密钥对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key pair to use with the currently authenticated user on the ``minio`` alias.
-The credentials expire after 24 hours.
+以下命令会为 ``minio`` alias 上当前已认证用户创建一个新的访问密钥对。
+该凭证会在 24 小时后过期。
 
-The command outputs a randomly generated access key and secret key.
+该命令会输出随机生成的访问密钥和密钥。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey create minio --expiry-duration 24h
 
-Create a new access-key and prompt to login as the user
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+创建新的访问密钥并提示以该用户身份登录
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key pair.
-The MinIO Client will first ask you to log in as the user the access key is for on the MinIO site configured for LDAP at ``minio.example.com``.
+以下命令会创建一个新的访问密钥对。
+MinIO Client 会先要求你在 ``minio.example.com`` 上已配置 LDAP 的 MinIO 站点中，以该访问密钥所属用户身份登录。
 
-The command outputs a randomly generated access key and secret key.
+该命令会输出随机生成的访问密钥和密钥。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey create minio --login minio.example.com
 
-Create a new access-key pair that expires after a date
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+创建在指定日期后过期的新访问密钥对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key pair to use with the currently authenticated user on the ``minio`` alias.
-The credentials expire after February 29, 2024.
+以下命令会为 ``minio`` alias 上当前已认证用户创建一个新的访问密钥对。
+该凭证会在 2024 年 2 月 29 日之后过期。
 
-The command outputs a randomly generated access key and secret key.
+该命令会输出随机生成的访问密钥和密钥。
 
 .. code-block:: shell
    :class: copyable

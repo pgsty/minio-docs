@@ -1,122 +1,122 @@
 .. _minio-batch-framework-expire-job:
 
-=================
-Batch Expiration
-=================
+========
+批量过期
+========
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. versionadded:: MinIO RELEASE.2023-12-02T10-51-33Z
 
-The MinIO Batch Framework allows you to create, manage, monitor, and execute jobs using a YAML-formatted job definition file (a "batch file").
-The batch jobs run directly on the MinIO deployment to take advantage of the server-side processing power without constraints of the local machine where you run the :ref:`MinIO Client <minio-client>`.
+MinIO 批处理框架允许你使用 YAML 格式的作业定义文件（“batch file”）创建、管理、监控和执行作业。
+批处理作业直接在 MinIO 部署上运行，从而利用服务端处理能力，而不受运行 :ref:`MinIO Client <minio-client>` 的本地机器限制。
 
-The ``expire`` batch job applies :ref:`minio-lifecycle-management-create-expiry-rule` behavior to a single bucket.
-The job determines expiration eligibility based on the provided configuration, independent of any configured expiration rules.
+``expire`` 批处理作业会将 :ref:`minio-lifecycle-management-create-expiry-rule` 的行为应用到单个存储桶。
+该作业根据提供的配置判断对象是否符合过期条件，且独立于任何已配置的过期规则。
 
-Behavior
---------
+行为
+----
 
-Immediate Expiration of Objects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+对象立即过期
+~~~~~~~~~~~~
 
-Batch expiration occurs immediately as part of the batch job, as compared to the :ref:`passive scanner-based application of expiration rules <minio-lifecycle-management-scanner>`.
-Specifically, batch expiration does not yield to application I/O and may impact performance of regular read/write operations on the deployment.
+批量过期会作为批处理作业的一部分立即执行，这与 :ref:`passive scanner-based application of expiration rules <minio-lifecycle-management-scanner>` 不同。
+具体来说，批量过期不会让位于应用 I/O，因此可能影响部署上常规读写操作的性能。
 
-Expiration Eligibility Determined at Batch-Run
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+过期资格在批处理运行时确定
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The batch expiration works per-bucket and runs once to completion.
-The job determines expiration eligibility at the time the job runs, and does *not* rescan or recheck for new objects periodically.
+批量过期按存储桶工作，并且每次运行都会一次性执行直至完成。
+该作业在运行时判断对象是否符合过期条件，并且*不会*定期重新扫描或重新检查新对象。
 
-To capture any new objects eligible for expiration, re-run the batch job.
+如果要处理任何新近满足过期条件的对象，请重新运行该批处理作业。
 
-Expiry Rules Check Latest Object Only
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+过期规则仅检查最新对象
+~~~~~~~~~~~~~~~~~~~~~~
 
-The batch expiration job only checks the latest or "current" version of each object against each batch expiration rule.
+批量过期作业只会使用每个对象的最新版本或“current”版本来匹配各条批量过期规则。
 
 
 .. _minio-batch-framework-expire-job-ref:
 
-Expire Batch Job Reference
---------------------------
+``expire`` 批处理作业参考
+-------------------------
 
 .. list-table::
    :widths: 25 75
    :width: 100%
 
-   * - Field
-     - Description
+   * - 字段
+     - 说明
 
    * - ``expire``
-     - *Required* 
+     - *必需* 
        
-       Top-level field for the expiration job type.
+       过期作业类型的顶层字段。
 
    * - ``apiVersion``
-     - *Required*
+     - *必需*
         
-       Set to ``v1``.
+       设为 ``v1``。
 
    * - ``bucket``
-     - *Required*
+     - *必需*
        
-       Specify the name of the bucket in which the job runs.
+       指定该作业运行所在的存储桶名称。
 
    * - ``prefix``
-     - *Optional*
+     - *可选*
       
-       Specify the bucket prefix in which the job runs.
+       指定该作业运行所在的存储桶前缀。
 
    * - ``rules``
-     - *Required*
+     - *必需*
        
-       An array of one or more expiration rules to apply to objects in the specified ``bucket`` and ``prefix`` (if any).
+       一个包含一条或多条过期规则的数组，用于应用到指定 ``bucket`` 和 ``prefix`` （如有）中的对象。
 
    * - ``rules.[n].type``
-     - *Required*
+     - *必需*
 
-       Supports one of the following two values:
+       支持以下两个值之一：
 
-       - ``object`` - Applies only to objects which do **not** have a ``DeleteMarker`` as the current version.
-       - ``deleted`` - Applies only to objects which **do** Have a ``DeleteMarker`` as the current version.
+       - ``object`` - 仅应用于当前版本**不是** ``DeleteMarker`` 的对象。
+       - ``deleted`` - 仅应用于当前版本**是** ``DeleteMarker`` 的对象。
 
-       See :ref:`minio-object-delete` for more complete documentation on ``DeleteMarker`` or delete operations in versioned buckets.
+       有关 ``DeleteMarker`` 或版本控制存储桶中删除操作的更完整文档，请参见 :ref:`minio-object-delete`。
 
    * - ``rules.[n].name``
-     - *Optional*
+     - *可选*
 
-       Specify a match string to use for filtering objects.
+       指定用于过滤对象的匹配字符串。
 
-       Supports glob-style wildcards (``*``, ``?``).
+       支持 glob 风格通配符（``*``、``?``）。
 
    * - ``rules.[n].olderThan``
-     - *Optional*
+     - *可选*
 
-       Specify the age of objects for filtering objects.
-       The rule applies to only those objects older than the specified unit of time.
+       指定对象年龄以过滤对象。
+       该规则仅应用于年龄超过指定时间单位的对象。
 
-       For example, ``72h`` or ``3d`` selects objects older than three days.
+       例如，``72h`` 或 ``3d`` 会选择年龄超过三天的对象。
 
    * - ``rules.[n].createdBefore``
-     - *Optional*
+     - *可选*
 
-       Specify an :rfc:`RFC3339 <3339>` date and time for filtering objects.
+       指定一个 :rfc:`RFC3339 <3339>` 日期时间来过滤对象。
 
-       The rule applies to only those objects created *before* the specified timestamp.
+       该规则仅应用于在指定时间戳*之前*创建的对象。
 
    * - ``rules.[n].tags``
-     - *Optional*
+     - *可选*
 
-       Specify an array of key-value pairs describing object tags to use for filtering objects.
-       The ``value`` entry supports glob-style wildcards (``*``, ``?``).
+       指定一个键值对数组，用于描述对象标签并据此过滤对象。
+       ``value`` 条目支持 glob 风格通配符（``*``、``?``）。
 
-       For example, the following filters the rule to only objects with matching tags:
+       例如，以下配置会将该规则过滤为仅匹配具有相应标签的对象：
 
        .. code-block:: yaml
 
@@ -124,15 +124,15 @@ Expire Batch Job Reference
             - key: archive
               value: True
 
-       This key is incompatible with ``rules.[n].type: deleted``.
+       此键与 ``rules.[n].type: deleted`` 不兼容。
 
    * - ``rules.[n].metadata``
-     - *Optional*
+     - *可选*
 
-       Specify an array of key-value pairs describing object metadata to use for filtering objects.
-       The ``value`` key supports glob-style wildcards (``*``, ``?``).
+       指定一个键值对数组，用于描述对象元数据并据此过滤对象。
+       ``value`` 键支持 glob 风格通配符（``*``、``?``）。
 
-       For example, the following filters the rule to only objects with matching metadata:
+       例如，以下配置会将该规则过滤为仅匹配具有相应元数据的对象：
 
        .. code-block:: yaml
 
@@ -140,47 +140,47 @@ Expire Batch Job Reference
             - key: content-type
               value: image/*
 
-       This key is incompatible with ``rules.[n].type: deleted``.
+       此键与 ``rules.[n].type: deleted`` 不兼容。
 
    * - ``rules.[n].size``
-     - *Optional*
+     - *可选*
 
-       Specify the range of object sizes for filtering objects.
+       指定对象大小范围以过滤对象。
 
-       - ``lessThan`` - matches objects with size less than the specified amount (e.g. ``MiB``, ``GiB``).
-       - ``greaterThan`` - matches objects with size greater than the specified amount (e.g. ``MiB``, ``GiB``).
+       - ``lessThan`` - 匹配大小小于指定数值的对象（例如 ``MiB``、``GiB``）。
+       - ``greaterThan`` - 匹配大小大于指定数值的对象（例如 ``MiB``、``GiB``）。
 
    * - ``rules.[n].purge.retainVersions``
-     - *Optional*
+     - *可选*
 
-       Specify the number of object versions to retain when applying expiration.
+       指定在执行过期时要保留的对象版本数量。
 
-       Defaults to ``0`` for deleting all object versions (fastest).
+       默认为 ``0``，即删除所有对象版本（最快）。
 
    * - ``notify.endpoint``
-     - *Optional*
+     - *可选*
 
-       The predefined endpoint to send events for notifications.
+       用于发送通知事件的预定义端点。
 
    * - ``notify.token``
-     - *Optional*
+     - *可选*
 
-       An optional JSON Web Token (JWT) to access the ``notify.endpoint``.
+       用于访问 ``notify.endpoint`` 的可选 JSON Web Token (JWT)。
 
    * - ``retry.attempts``
-     - *Optional*
+     - *可选*
 
-       The number of tries to complete the batch job before giving up.
+       在放弃之前完成该批处理作业的重试次数。
 
    * - ``retry.delay``
-     - *Optional*
+     - *可选*
 
-       The amount of time to wait between each attempt (``ms``).
+       每次尝试之间的等待时间（``ms``）。
 
-Sample YAML Description for an ``expire`` Job Type
---------------------------------------------------
+``expire`` 作业类型的 YAML 示例
+----------------------------------------
        
-Use :mc:`mc batch generate` to create a basic ``expire`` batch job for further customization.
+使用 :mc:`mc batch generate` 创建基础 ``expire`` 批处理作业，再进行进一步定制。
 
 .. literalinclude:: /includes/code/expire.yaml
    :language: yaml

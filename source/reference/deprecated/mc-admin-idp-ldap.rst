@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,78 +14,78 @@
 
 .. versionchanged:: RELEASE.2023-05-26T23-31-54Z
 
-   ``mc admin idp ldap`` and its subcommands replaced by :mc-cmd:`mc idp ldap`.
+   ``mc admin idp ldap`` 及其子命令已由 :mc-cmd:`mc idp ldap` 替代。
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-idp-ldap-desc
 
-The :mc-cmd:`mc admin idp ldap` commands allow you to add, modify, review, list, remove, enable, and disable server configurations to 3rd party :ref:`Active Directory or LDAP Identity and Access Management (IAM) integrations <minio-external-identity-management-ad-ldap>`.
+:mc-cmd:`mc admin idp ldap` 命令允许你为第三方 :ref:`Active Directory 或 LDAP 身份与访问管理（IAM）集成 <minio-external-identity-management-ad-ldap>` 添加、修改、查看、列出、移除、启用和禁用服务器配置。
 
 .. end-mc-admin-idp-ldap-desc
 
-Define configuration settings as an alternative to using environment variables when :ref:`setting up an AD/LDAP connection <minio-authenticate-using-ad-ldap-generic>`.
+在 :ref:`配置 AD/LDAP 连接 <minio-authenticate-using-ad-ldap-generic>` 时，可将配置设置作为使用环境变量的替代方案。
 
 .. note::
 
-   Configuration settings do **not** override settings configured as environment variables.
+   配置设置**不会**覆盖通过环境变量配置的设置。
 
 
-The :mc-cmd:`mc admin idp ldap` command has the following subcommands:
+:mc-cmd:`mc admin idp ldap` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc-cmd:`mc admin idp ldap add`
-     - Create an AD/LDAP IDP server configuration.
+     - 创建 AD/LDAP IDP 服务器配置。
 
    * - :mc-cmd:`mc admin idp ldap update`
-     - Modify an existing AD/LDAP IDP server configuration.
+     - 修改现有的 AD/LDAP IDP 服务器配置。
 
    * - :mc-cmd:`mc admin idp ldap ls`
-     - Lists AD/LDAP server configurations.
+     - 列出 AD/LDAP 服务器配置。
 
    * - :mc-cmd:`mc admin idp ldap rm`
-     - Remove an AD/LDAP IDP server configuration from a deployment.
+     - 从部署中移除 AD/LDAP IDP 服务器配置。
 
    * - :mc-cmd:`mc admin idp ldap info`
-     - Displays details for a specific AD/LDAP server configuration.
+     - 显示指定 AD/LDAP 服务器配置的详细信息。
 
    * - :mc-cmd:`mc admin idp ldap enable`
-     - Enables an AD/LDAP server configuration.
+     - 启用 AD/LDAP 服务器配置。
 
    * - :mc-cmd:`mc admin idp ldap disable`
-     - Disables an AD/LDAP server configuration.
+     - 禁用 AD/LDAP 服务器配置。
 
    * - :mc-cmd:`mc admin idp ldap policy entities`
-     - List policy association entities
+     - 列出策略关联实体。
 
-Configuration Parameters
-------------------------
+配置参数
+--------
 
-The :mc-cmd:`mc admin idp ldap` subcommands support configuration parameters.
-The parameters define the server's interaction with the Active Directory or LDAP IAM provider.
+:mc-cmd:`mc admin idp ldap` 子命令支持配置参数。
+这些参数定义了服务器与 Active Directory 或 LDAP IAM 提供方的交互方式。
 
-For a more detailed explanation of the configuration parameters, refer to the :ref:`config setting documentation <minio-ldap-config-settings>`.
+有关配置参数的更详细说明，请参阅 :ref:`配置设置文档 <minio-ldap-config-settings>`。
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: add
 
-   Create a new configuration for an AD/LDAP provider.
-   MinIO supports no more than *one* (1) AD/LDAP provider per deployment.
+   为 AD/LDAP 提供方创建新配置。
+   每个部署中，MinIO 最多仅支持 *一个* (1) AD/LDAP 提供方。
 
    .. tab-set::
 
       .. tab-item:: EXAMPLE
 
-         The following example sets the AD/LDAP configuration settings for the ``myminio`` deployment.
+         以下示例为 ``myminio`` 部署设置 AD/LDAP 配置参数。
 
          .. code-block:: shell
             :class: copyable
@@ -102,7 +102,7 @@ Syntax
                                     
       .. tab-item:: SYNTAX
 
-         The command has the following syntax:
+         该命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -112,18 +112,18 @@ Syntax
                                        [CFG_PARAM1]      \
                                        [CFG_PARAM2]...
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to create for AD/LDAP integration.
-         - Replace the ``[CFG_PARAM#]`` with each of the :ref:`configuration setting <minio-ldap-config-settings>` key-value pairs in the format of ``PARAMETER="value"``.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于创建 AD/LDAP 集成配置。
+         - 将 ``[CFG_PARAM#]`` 替换为各个 :ref:`配置设置 <minio-ldap-config-settings>` 键值对，格式为 ``PARAMETER="value"``。
 
 .. mc-cmd:: update
 
-   Modify an existing set of configurations for an AD/LDAP provider.
+   修改 AD/LDAP 提供方现有的一组配置。
 
    .. tab-set::
 
       .. tab-item:: EXAMPLE
 
-         The following example changes two of the AD/LDAP configuration settings for the ``myminio`` deployment.
+         以下示例修改 ``myminio`` 部署中的两个 AD/LDAP 配置参数。
 
          .. code-block:: shell
             :class: copyable
@@ -135,7 +135,7 @@ Syntax
                                     
       .. tab-item:: SYNTAX
 
-         The command has the following syntax:
+         该命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -145,18 +145,18 @@ Syntax
                                             [CFG_PARAM1]     \
                                             [CFG_PARAM2]...
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to update for AD/LDAP integration.
-         - Replace the ``[CFG_PARAM#]`` with each of the :ref:`configuration setting <minio-ldap-config-settings>` key-value pairs to update in the format of ``PARAMETER="value"``.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于更新 AD/LDAP 集成配置。
+         - 将 ``[CFG_PARAM#]`` 替换为要更新的各个 :ref:`配置设置 <minio-ldap-config-settings>` 键值对，格式为 ``PARAMETER="value"``。
 
 .. mc-cmd:: ls, list
 
-   Lists the existing set of configurations for an AD/LDAP provider.
+   列出 AD/LDAP 提供方现有的一组配置。
 
    .. tab-set::
 
       .. tab-item:: EXAMPLE
 
-         The following example lists the AD/LDAP configuration settings for the ``myminio`` deployment.
+         以下示例列出 ``myminio`` 部署中的 AD/LDAP 配置参数。
 
          .. code-block:: shell
             :class: copyable
@@ -165,24 +165,24 @@ Syntax
                                     
       .. tab-item:: SYNTAX
 
-         The command has the following syntax:
+         该命令语法如下：
 
          .. code-block:: shell
             :class: copyable
 
             mc [GLOBALFLAGS] admin idp ldap ls ALIAS
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to list the AD/LDAP integration.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于列出 AD/LDAP 集成配置。
 
 .. mc-cmd:: rm, remove
 
-   Remove the existing configuration for an AD/LDAP provider.
+   移除 AD/LDAP 提供方现有配置。
 
    .. tab-set::
 
       .. tab-item:: EXAMPLE
 
-         The following example removes the AD/LDAP provider settings for the ``myminio`` deployment.
+         以下示例移除 ``myminio`` 部署中的 AD/LDAP 提供方设置。
 
          .. code-block:: shell
             :class: copyable
@@ -191,7 +191,7 @@ Syntax
                                     
       .. tab-item:: SYNTAX
 
-         The command has the following syntax:
+         该命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -199,18 +199,18 @@ Syntax
             mc [GLOBALFLAGS] admin idp ldap rm     \
                                             ALIAS
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to remove the AD/LDAP integration.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于移除 AD/LDAP 集成配置。
 
 
 .. mc-cmd:: info
 
-   Outputs the current configuration for an AD/LDAP provider on a specified MinIO deployment.
+   输出指定 MinIO 部署上 AD/LDAP 提供方的当前配置。
 
    .. tab-set::
 
       .. tab-item:: EXAMPLE
 
-         The following example outputs the AD/LDAP configuration settings on the ``myminio`` deployment.
+         以下示例输出 ``myminio`` 部署上的 AD/LDAP 配置参数。
 
          .. code-block:: shell
             :class: copyable
@@ -219,7 +219,7 @@ Syntax
                                     
       .. tab-item:: SYNTAX
 
-         The command has the following syntax:
+         该命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -227,17 +227,17 @@ Syntax
             mc [GLOBALFLAGS] admin idp ldap info     \
                                             ALIAS
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to retrieve info on the AD/LDAP integration.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于获取 AD/LDAP 集成信息。
 
 .. mc-cmd:: enable
 
-   Enables the currently configured AD/LDAP provider.
+   启用当前已配置的 AD/LDAP 提供方。
 
    .. tab-set::
 
       .. tab-item:: EXAMPLE
 
-         The following example enables the AD/LDAP configuration on the ``myminio`` deployment.
+         以下示例在 ``myminio`` 部署上启用 AD/LDAP 配置。
 
          .. code-block:: shell
             :class: copyable
@@ -247,7 +247,7 @@ Syntax
 
       .. tab-item:: SYNTAX
 
-         The command has the following syntax:
+         该命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -255,17 +255,17 @@ Syntax
             mc [GLOBALFLAGS] admin idp ldap enable     \
                                             ALIAS
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to enable the AD/LDAP integration.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于启用 AD/LDAP 集成配置。
 
 .. mc-cmd:: disable
 
-   Disables the currently configured AD/LDAP provider.
+   禁用当前已配置的 AD/LDAP 提供方。
 
    .. tab-set::
 
       .. tab-item:: EXAMPLE
 
-         The following example disables the AD/LDAP configurations on the ``myminio`` deployment.
+         以下示例在 ``myminio`` 部署上禁用 AD/LDAP 配置。
 
          .. code-block:: shell
             :class: copyable
@@ -275,7 +275,7 @@ Syntax
 
       .. tab-item:: SYNTAX
 
-         The command has the following syntax:
+         该命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -283,12 +283,11 @@ Syntax
             mc [GLOBALFLAGS] admin idp ldap disable       \
                                             ALIAS
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to disable the AD/LDAP integration.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于禁用 AD/LDAP 集成配置。
 
-Global Flags
-------------
+全局标志
+--------
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
-

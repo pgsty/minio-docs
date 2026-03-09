@@ -1,123 +1,123 @@
 .. _minio-bucket-replication-resynchronize:
 
 
-========================================
-Resynchronize Bucket from Remote Replica
-========================================
+====================================
+从远程副本重新同步存储桶
+====================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-The procedure on this page resynchronizes the contents of a MinIO bucket using a healthy replication remote. Resynchronization supports recovery after partial or total loss of data on a MinIO deployment in a replica configuration.
+本页中的步骤使用健康的复制远端来重新同步 MinIO 存储桶中的内容。重新同步可用于在副本配置下的 MinIO 部署发生部分或全部数据丢失后进行恢复。
 
-For example, consider a MinIO active-active replication configuration similar to the following:
+例如，考虑如下所示的 MinIO 主动-主动复制配置：
 
 .. image:: /images/replication/active-active-twoway-replication.svg
    :width: 600px
-   :alt: Active-Active Replication synchronizes data between two remote deployments.
+   :alt: 主动-主动复制在两个远程部署之间同步数据。
    :align: center
 
-Resynchronization allows using the healthy data on one of the participating MinIO deployments as the source for rebuilding the other deployment.
+重新同步允许使用其中一个参与复制的 MinIO 部署上的健康数据，作为重建另一个部署的源。
 
-Resynchronization is a per-bucket process. You must repeat resynchronization for each bucket on the remote which suffered partial or total data loss.
+重新同步是按存储桶执行的过程。对于远端中每个遭受部分或全部数据丢失的存储桶，都必须重复执行重新同步。
 
-.. admonition:: Professional Support during BC/DR Operations
+.. admonition:: BC/DR 操作期间的专业支持
    :class: important
 
-   `MinIO SUBNET <https://min.io/pricing?jmp=docs>`__ users can `log in <https://subnet.min.io/>`__ and create a new issue related to resynchronization. Coordination with MinIO Engineering via SUBNET can ensure successful resynchronization and restoration of normal operations, including performance testing and health diagnostics.
+   `MinIO SUBNET <https://min.io/pricing?jmp=docs>`__ 用户可以 `登录 <https://subnet.min.io/>`__ 并创建与重新同步相关的新 issue。通过 SUBNET 与 MinIO Engineering 协调，可以确保重新同步成功并恢复正常运行，包括性能测试和健康诊断。
 
-   Community users can seek support on the `MinIO Community Slack <https://slack.min.io>`__. Community Support is best-effort only and has no SLAs around responsiveness.
+   社区用户可以通过 `MinIO Community Slack <https://slack.min.io>`__ 寻求支持。社区支持仅按尽力而为原则提供，不对响应速度提供 SLA。
 
 .. _minio-bucket-replication-serverside-resynchronize-requirements:
 
-Requirements
-------------
+要求
+----
 
-MinIO Deployments Must Be Online
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MinIO 部署必须在线
+~~~~~~~~~~~~~~~~~~
 
-Resynchronization requires both the source and target deployments be online and able to accept read and write operations. The source *must* have complete network connectivity to the remote.
+重新同步要求源部署和目标部署都在线，并且能够接受读写操作。源端 *必须* 具备到远端的完整网络连通性。
 
-The remote deployment may be "unhealthy" in that it has suffered partial or total data loss. Resynchronization addresses the data loss as long as both source and destination maintain connectivity.
+远端部署可以处于“不健康”状态，即发生了部分或全部数据丢失。只要源端和目标端保持连通，重新同步就可以修复这些数据丢失问题。
 
-Resynchronization Requires Existing Replication Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+重新同步要求现有复制配置
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Resynchronization requires the healthy source deployment have an existing replication configuration for the unhealthy target bucket. Additionally, resynchronization only applies to those replication rules created with the :ref:`existing object replication <minio-replication-behavior-existing-objects>` option. 
+重新同步要求健康的源部署已经为不健康的目标存储桶配置好了复制配置。此外，重新同步仅适用于使用 :ref:`existing object replication <minio-replication-behavior-existing-objects>` 选项创建的那些复制规则。
 
-Use :mc:`mc replicate ls` to review the configured replication rules and targets for the healthy source bucket.
+使用 :mc:`mc replicate ls` 查看健康源存储桶已配置的复制规则和目标。
 
-Replication Requires Matching Object Encryption Settings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+复制要求对象加密设置匹配
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-encrypted-objects
    :end-before: end-replication-encrypted-objects
 
-Replication Requires MinIO Deployments
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+复制要求使用 MinIO 部署
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-minio-only
    :end-before: end-replication-minio-only
 
-Replication Requires Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+复制要求启用版本控制
+~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-requires-versioning
    :end-before: end-replication-requires-versioning
 
-Replication Requires Matching Object Locking State
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+复制要求对象锁定状态匹配
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-requires-object-locking
    :end-before: end-replication-requires-object-locking
 
-Considerations
---------------
+注意事项
+--------
 
-Resynchronization Requires Time
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+重新同步需要时间
+~~~~~~~~~~~~~~~~
 
-Resynchronization is a background processes that continually checks objects in the source MinIO bucket and copies them to the remote as-needed. The time required for replication to complete may vary depending on the number and size of objects, the throughput to the remote MinIO deployment, and the load on the source MinIO deployment. Total time for completion is generally not predictable due to these variables.
+重新同步是一个后台过程，会持续检查源 MinIO 存储桶中的对象，并在需要时将其复制到远端。完成复制所需的时间会因对象数量和大小、到远端 MinIO 部署的吞吐量以及源 MinIO 部署上的负载而异。由于这些变量的存在，总完成时间通常无法预测。
 
-MinIO recommends configuring load balancers or proxies to direct traffic only to the healthy cluster until synchronization completes. The following commands can provide insight into the resynchronization status:
+MinIO 建议在同步完成之前，通过配置负载均衡器或代理，仅将流量导向健康集群。以下命令可帮助了解重新同步状态：
 
-- :mc-cmd:`mc replicate resync status` on the source to track the resynchronization progress.
+- 在源端执行 :mc-cmd:`mc replicate resync status` 以跟踪重新同步进度。
 
-- :mc:`mc replicate status` on the source and remote to track normal replication data.
+- 在源端和远端执行 :mc:`mc replicate status` 以跟踪正常复制数据。
 
-- Run ``mc ls -r --versions ALIAS/BUCKET | wc -l`` against both source and remote to validate the total number of objects and object versions on each.
+- 在源端和远端都运行 ``mc ls -r --versions ALIAS/BUCKET | wc -l``，以验证两端的对象总数和对象版本总数。
 
-Resynchronize Objects after Data Loss
--------------------------------------
+在数据丢失后重新同步对象
+------------------------
 
-This procedure uses an existing :ref:`MinIO replication configuration <minio-bucket-replication-serverside>` to restore missing data to one of the MinIO deployments participating in that configuration. Specifically, a  healthy MinIO deployment (the ``SOURCE``) synchronizes it's existing data to the unhealthy MinIO deployment (the ``TARGET``).
+此过程使用现有的 :ref:`MinIO replication configuration <minio-bucket-replication-serverside>`，将缺失数据恢复到参与该配置的某个 MinIO 部署。具体来说，一个健康的 MinIO 部署（即 ``SOURCE``）会将其现有数据同步到不健康的 MinIO 部署（即 ``TARGET``）。
 
-This procedure assumes an existing :ref:`alias <alias>` for the ``SOURCE`` that has the :ref:`necessary permissions <minio-bucket-replication-serverside-twoway-permissions>` for configuring replication.
+此过程假定 ``SOURCE`` 已存在一个 :ref:`alias <alias>`，并且该别名具有配置复制所需的 :ref:`necessary permissions <minio-bucket-replication-serverside-twoway-permissions>`。
 
-You can repeat this procedure for each bucket that requires resynchronization. You can have no more than one replication job running per bucket.
+你可以对每个需要重新同步的存储桶重复执行此过程。每个存储桶同时最多只能运行一个复制作业。
 
-1) List the Configured Replication Targets on the Healthy Source
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 列出健康源端上已配置的复制目标
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run the :mc:`mc replicate ls` command to list the configured remote targets on the healthy ``SOURCE`` deployment for the ``BUCKET`` that requires resynchronization.
+运行 :mc:`mc replicate ls` 命令，列出健康 ``SOURCE`` 部署上针对需要重新同步的 ``BUCKET`` 已配置的远程目标。
 
 .. code-block:: shell
    :class: copyable
 
    mc replicate ls SOURCE/BUCKET --json
 
-- Replace ``SOURCE`` with the :ref:`alias <alias>` of the source MinIO deployment.
+- 将 ``SOURCE`` 替换为源 MinIO 部署的 :ref:`alias <alias>`。
 
-- Replace ``BUCKET`` with the name of the bucket to use as the source for resynchronization.
+- 将 ``BUCKET`` 替换为要作为重新同步源的存储桶名称。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
    :emphasize-lines: 16
@@ -154,40 +154,40 @@ The output resembles the following:
       }
    }
 
-Each document in the output represents one configured replication rule.
-The ``Destination.Bucket`` field specifies the ARN for a given rule on the bucket.
-Identify the correct ARN for the Bucket from which you want to resynchronize objects.
+输出中的每个文档都表示一条已配置的复制规则。
+``Destination.Bucket`` 字段指定该存储桶上某条规则对应的 ARN。
+找出你希望从中重新同步对象的存储桶对应的正确 ARN。
 
-2) Start the Resynchronization Procedure
+2) 启动重新同步过程
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run the :mc-cmd:`mc replicate resync start` command to begin the resynchronization process:
+运行 :mc-cmd:`mc replicate resync start` 命令以开始重新同步过程：
 
 .. code-block:: shell
    :class: copyable
 
    mc replicate resync start --remote-bucket "arn:minio:replication::UUID:BUCKET" SOURCE/BUCKET
 
-- Replace the ``--remote-bucket`` value with the ARN of the unhealthy ``BUCKET`` on the ``TARGET`` MinIO deployment. 
+- 将 ``--remote-bucket`` 的值替换为 ``TARGET`` MinIO 部署上不健康 ``BUCKET`` 的 ARN。
 
-- Replaced ``SOURCE`` with the :ref:`alias <alias>` of the source MinIO deployment.
+- 将 ``SOURCE`` 替换为源 MinIO 部署的 :ref:`alias <alias>`。
 
-- Replace the ``BUCKET`` with the name of the bucket on the healthy ``SOURCE`` MinIO
-  deployment.
+- 将 ``BUCKET`` 替换为健康 ``SOURCE`` MinIO
+  部署上的存储桶名称。
 
-The command returns a resynchronization job ID indicating that the process has begun.
+该命令会返回一个重新同步作业 ID，表示该过程已经开始。
 
-3) Monitor Resynchronization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 监控重新同步
+~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc replicate resync status` command on the source deployment to track the received replication data:
+在源部署上使用 :mc-cmd:`mc replicate resync status` 命令跟踪已接收的复制数据：
 
 .. code-block:: shell
    :class: copyable
 
    mc replicate resync status ALIAS/BUCKET
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -199,14 +199,13 @@ The output resembles the following:
       Replicated         | 2.3 GiB         | 18             
       Failed             | 0 B             | 0 
 
-The :guilabel:`Status` updates to ``Completed`` once the resynchronization
-process completes.
+重新同步过程完成后，:guilabel:`Status` 会更新为 ``Completed``。
 
-4) Next Steps
-~~~~~~~~~~~~~
+4) 后续步骤
+~~~~~~~~~~~
 
-- If the ``TARGET`` bucket damage extends to replication rules, you must recreate those rules to match the previous replication configuration. See :ref:`minio-bucket-replication-serverside-twoway` for additional guidance.
+- 如果 ``TARGET`` 存储桶的损坏已波及复制规则，则必须重新创建这些规则，使其与之前的复制配置一致。更多指导请参见 :ref:`minio-bucket-replication-serverside-twoway`。
 
-- Perform basic validation that all buckets in the replication configuration show similar results for commands such as :mc:`mc ls` and :mc:`mc stat`. 
+- 执行基础验证，确认复制配置中的所有存储桶在 :mc:`mc ls` 和 :mc:`mc stat` 等命令下显示出相近的结果。
 
-- After restoring any replication rules and verifying replication between sites, you can configure the reverse proxy, load balancer, or other network control plane managing connections to resume sending traffic to the resynchronized deployment.
+- 在恢复所有复制规则并验证站点间复制之后，你可以配置负责管理连接的反向代理、负载均衡器或其他网络控制平面，使其恢复向已重新同步的部署发送流量。

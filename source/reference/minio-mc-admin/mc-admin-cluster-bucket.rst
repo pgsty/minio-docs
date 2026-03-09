@@ -6,37 +6,37 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin cluster bucket
 
-Description
------------
+说明
+----
 
 .. versionadded:: RELEASE.2022-06-17T02-52-50Z
 
 .. start-mc-admin-cluster-bucket-desc
 
-The :mc:`mc admin cluster bucket` command and its subcommands provide tools for manually importing and exporting MinIO bucket metadata.
+:mc:`mc admin cluster bucket` 命令及其子命令提供了用于手动导入和导出 MinIO 存储桶元数据的工具。
 
 .. end-mc-admin-cluster-bucket-desc
 
-This metadata includes configurations related to features like :ref:`lifecycle management rules <minio-lifecycle-management>`.
-You can use this metadata as a snapshot of the bucket configuration for restoration later, such as part of :abbr:`BC/DR (Business Continuity / Disaster Recovery)` or backup/restore operations.
+这些元数据包含与 :ref:`生命周期管理规则 <minio-lifecycle-management>` 等功能相关的配置。
+你可以将这些元数据作为存储桶配置的快照，用于后续恢复，例如作为 :abbr:`BC/DR (Business Continuity / Disaster Recovery)` 或备份/恢复操作的一部分。
 
-You can use this command on individual buckets *or* on all buckets in a MinIO deployment.
-For automatic synchronization of all buckets in a deployment to a remote site, use :ref:`site replication <minio-site-replication-overview>`.
+你可以将此命令用于单个存储桶，*或* 用于 MinIO 部署中的所有存储桶。
+如需将部署中的所有存储桶自动同步到远端站点，请使用 :ref:`站点复制 <minio-site-replication-overview>`。
 
-The :mc:`mc admin cluster bucket` command has the following subcommands:
+:mc:`mc admin cluster bucket` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc admin cluster bucket import`
      - .. include:: /reference/minio-mc-admin/mc-admin-cluster-bucket-import.rst
@@ -56,5 +56,4 @@ The :mc:`mc admin cluster bucket` command has the following subcommands:
 
    /reference/minio-mc-admin/mc-admin-cluster-bucket-import
    /reference/minio-mc-admin/mc-admin-cluster-bucket-export
-
 

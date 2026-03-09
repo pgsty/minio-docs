@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
@@ -14,33 +14,33 @@
    
 .. mc:: mc support callhome
 
-Description
------------
+描述
+----
 
 .. start-mc-support-callhome-desc
 
-The :mc-cmd:`mc support callhome` command allows the enabling or disabling of diagnostic information from a deployment to |SUBNET|.
+:mc-cmd:`mc support callhome` 命令用于启用或禁用将部署诊断信息发送到 |SUBNET|。
 
 .. end-mc-support-callhome-desc
 
-All ``mc support`` commands require an active SUBNET subscription.
+所有 ``mc support`` 命令都需要有效的 SUBNET 订阅。
 
-When enabled, MinIO sends diagnostic information to SUBNET.
+启用后，MinIO 会将诊断信息发送到 SUBNET。
 
-MinIO disables this functionality by default, regardless of registration status.
-You must explicitly enable the ``callhome`` function to begin information upload.
+无论注册状态如何，MinIO 默认禁用此功能。
+你必须显式启用 ``callhome`` 功能，信息上传才会开始。
 
 .. include:: /includes/common-mc-support.rst
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: enable
    :fullpath:
 
-   Begin sending a deployment's diagnostics, logs, or both to SUBNET.
+   开始将部署的诊断信息、日志或两者同时发送到 SUBNET。
 
    .. code-block:: shell
                
@@ -51,12 +51,12 @@ Syntax
 
    .. note::
 
-      The ``--logs`` and ``--diag`` flags are no longer supported in SUBNET and will be removed in a future release.
+      SUBNET 不再支持 ``--logs`` 和 ``--diag`` 标志，并将在未来版本中移除。
 
 .. mc-cmd:: disable
    :fullpath:
 
-   Stop sending a deployment's diagnostics, logs, or both to SUBNET.
+   停止将部署的诊断信息、日志或两者同时发送到 SUBNET。
 
    .. code-block:: shell
                
@@ -67,12 +67,12 @@ Syntax
 
    .. note::
 
-      The ``--logs`` and ``--diag`` flags are no longer supported in SUBNET and will be removed in a future release.
+      SUBNET 不再支持 ``--logs`` 和 ``--diag`` 标志，并将在未来版本中移除。
 
 .. mc-cmd:: status
    :fullpath:
 
-   Output whether a deployment currently sends diagnostics, logs, or both to SUBNET.
+   输出某个部署当前是否将诊断信息、日志或两者同时发送到 SUBNET。
 
    .. code-block:: shell
                
@@ -82,42 +82,42 @@ Syntax
 
    .. note::
 
-      The ``--diag`` flag is no longer supported in SUBNET and will be removed in a future release.
+      SUBNET 不再支持 ``--diag`` 标志，并将在未来版本中移除。
             
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment.
+   MinIO 部署的 :ref:`alias <alias>`。
 
 .. mc-cmd:: --diag
    :optional:
 
    .. note::
 
-      This option is no longer supported in SUBNET and will be removed in a future release.
+      SUBNET 不再支持此选项，并将在未来版本中移除。
 
-   Send or stop sending deployment diagnostic information to SUBNET every 24 hours.
+   每 24 小时向 SUBNET 发送部署诊断信息，或停止发送。
 
-Examples
---------
+示例
+----
 
-Enable ``callhome`` reporting
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+启用 ``callhome`` 上报
+~~~~~~~~~~~~~~~~~~~~~~
 
-Enable sending diagnostic information to SUBNET for a deployment registered to SUBNET with an :ref:`alias <alias>` of ``minio1``.
+为已注册到 SUBNET 且 :ref:`alias <alias>` 为 ``minio1`` 的部署启用向 SUBNET 发送诊断信息。
 
 .. code-block:: shell
    :class: copyable
  
    mc support callhome enable minio1
 
-Disable ``callhome`` reporting
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+禁用 ``callhome`` 上报
+~~~~~~~~~~~~~~~~~~~~~~
 
-Disable sending diagnostic information to SUBNET for a deployment registered to SUBNET with an :ref:`alias <alias>` of ``minio1``.
+为已注册到 SUBNET 且 :ref:`alias <alias>` 为 ``minio1`` 的部署禁用向 SUBNET 发送诊断信息。
 
 .. code-block:: shell
    :class: copyable
@@ -125,20 +125,19 @@ Disable sending diagnostic information to SUBNET for a deployment registered to 
    mc support callhome disable minio1
 
 
-Display Current ``callhome`` settings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示当前 ``callhome`` 设置
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Display whether a deployment with the alias ``minio1`` sends information to SUBNET.
+显示别名为 ``minio1`` 的部署是否向 SUBNET 发送信息。
 
 .. code-block:: shell
    :class: copyable
  
    mc support callhome status minio1
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
-

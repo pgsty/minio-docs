@@ -1,75 +1,68 @@
 .. _minio-bucket-notifications-publish-mqtt:
 
 ======================
-Publish Events to MQTT
+将事件发布到 MQTT
 ======================
 
 .. default-domain:: minio
 
 .. |ARN| replace:: ``arn:minio:sqs::primary:mqtt``
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports publishing :ref:`bucket notification
-<minio-bucket-notifications>` events to `MQTT <https://www.mqtt.org/>`__ 
-server/broker endpoint.
+MinIO 支持将 :ref:`存储桶通知
+<minio-bucket-notifications>` 事件发布到 `MQTT <https://www.mqtt.org/>`__
+server/broker 端点。
 
-Add an MQTT Endpoint to a MinIO Deployment
+向 MinIO 部署添加 MQTT 端点
 ------------------------------------------
 
-The following procedure adds a new MQTT service endpoint for supporting
-:ref:`bucket notifications <minio-bucket-notifications>` in a MinIO
-deployment.
+以下过程会添加一个新的 MQTT 服务端点，以在 MinIO
+部署中支持 :ref:`存储桶通知 <minio-bucket-notifications>`。
 
-Prerequisites
+前提条件
 ~~~~~~~~~~~~~~
 
-MQTT 3.1 or 3.1.1 Server/Broker
+MQTT 3.1 或 3.1.1 服务器/代理
 +++++++++++++++++++++++++++++++
 
-This procedure assumes an existing MQTT 3.1 or 3.1.1 server/broker to which the
-MinIO deployment has connectivity. See the 
-`mqtt.org software listing <https://mqtt.org/software/>`__ for a list of
-MQTT-compatible server/brokers.
+此过程假定已存在一个 MQTT 3.1 或 3.1.1 server/broker，且 MinIO
+部署能够连接到它。有关兼容 MQTT 的 server/broker 列表，请参见
+`mqtt.org software listing <https://mqtt.org/software/>`__。
 
-If the MQTT service requires authentication, you *must* provide an appropriate
-username and password during the configuration process to grant MinIO access
-to the service.
+如果 MQTT 服务需要身份验证，则在配置过程中*必须*提供适当的用户名和密码，
+以授予 MinIO 访问该服务的权限。
 
-MinIO ``mc`` Command Line Tool
+MinIO ``mc`` 命令行工具
 ++++++++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+此过程中的某些操作需要使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`快速入门 <mc-install>`。
 
-1) Add the MQTT Endpoint to MinIO
+1) 将 MQTT 端点添加到 MinIO
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can configure a new MQTT service endpoint using either environment variables
-*or* by setting runtime configuration settings.
+你可以通过环境变量*或*运行时配置设置来配置新的 MQTT 服务端点。
 
 .. tab-set::
 
    .. tab-item:: Environment Variables
 
-      MinIO supports specifying the MQTT service endpoint and associated
-      configuration settings using 
-      :ref:`environment variables 
-      <minio-server-envvar-bucket-notification-mqtt>`. The 
-      :mc:`minio server` process applies the specified settings on its 
-      next startup.
+      MinIO 支持使用
+      :ref:`环境变量
+      <minio-server-envvar-bucket-notification-mqtt>` 指定 MQTT 服务端点及其相关
+      配置设置。:mc:`minio server` 进程会在下次启动时应用这些设置。
       
-      The following example code sets *all*  environment variables
-      related to configuring an MQTT service endpoint. The minimum *required*
-      variables are:
+      以下示例代码设置了与配置 MQTT 服务端点相关的 *全部* 环境变量。
+      *最少* 需要以下变量：
 
       - :envvar:`MINIO_NOTIFY_MQTT_ENABLE`
       - :envvar:`MINIO_NOTIFY_MQTT_BROKER`
       - :envvar:`MINIO_NOTIFY_MQTT_TOPIC`
-      - :envvar:`MINIO_NOTIFY_MQTT_USERNAME` *Required if the MQTT server/broker enforces authentication/authorization*
-      - :envvar:`MINIO_NOTIFY_MQTT_PASSWORD` *Required if the MQTT server/broker enforces authentication/authorization*
+      - :envvar:`MINIO_NOTIFY_MQTT_USERNAME` *如果 MQTT server/broker 强制要求身份验证/授权，则必需*
+      - :envvar:`MINIO_NOTIFY_MQTT_PASSWORD` *如果 MQTT server/broker 强制要求身份验证/授权，则必需*
 
       .. cond:: windows
       
@@ -105,45 +98,39 @@ You can configure a new MQTT service endpoint using either environment variables
                export MINIO_NOTIFY_MQTT_QUEUE_LIMIT_<IDENTIFIER>="<string>"
                export MINIO_NOTIFY_MQTT_COMMENT_<IDENTIFIER>="<string>"
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the
-        MQTT service endpoint. Use the same ``<IDENTIFIER>`` value for all 
-        environment variables related to the new MQTT service endpoint.
-        The following examples assume an identifier of ``PRIMARY``.
+      - 将 ``<IDENTIFIER>`` 替换为 MQTT 服务端点的唯一描述性字符串。
+        对所有与新 MQTT 服务端点相关的环境变量都使用相同的 ``<IDENTIFIER>``
+        值。以下示例假定标识符为 ``PRIMARY``。
 
-        If the specified ``<IDENTIFIER>`` matches an existing MQTT service
-        endpoint on the MinIO deployment, the new settings *override* 
-        any existing settings for that endpoint. Use 
-        :mc-cmd:`mc admin config get notify_mqtt <mc admin config get>` to
-        review the currently configured MQTT endpoints on the MinIO deployment.
+        如果指定的 ``<IDENTIFIER>`` 与 MinIO 部署中现有的 MQTT 服务端点匹配，
+        新设置将*覆盖*该端点的任何现有设置。使用
+        :mc-cmd:`mc admin config get notify_mqtt <mc admin config get>`
+        查看 MinIO 部署上当前配置的 MQTT 端点。
 
-      - Replace ``<ENDPOINT>`` with the URL of the MQTT service endpoint.
-        For example:
+      - 将 ``<ENDPOINT>`` 替换为 MQTT 服务端点的 URL。例如：
 
         ``tcp://hostname:port``
 
-      - Replace ``TOPIC`` with the MQTT topic to which MinIO associates 
-        events published to the server/broker.
+      - 将 ``TOPIC`` 替换为 MQTT topic，MinIO 会将发布到 server/broker 的
+        事件关联到该 topic。
 
-      See :ref:`MQTT Service for Bucket Notifications
-      <minio-server-envvar-bucket-notification-mqtt>` for complete documentation
-      on each environment variable.
+      有关每个环境变量的完整文档，请参见 :ref:`用于存储桶通知的 MQTT 服务
+      <minio-server-envvar-bucket-notification-mqtt>`。
 
    .. tab-item:: Configuration Settings
 
-      MinIO supports adding or updating MQTT endpoints on a running 
-      :mc:`minio server` process using the :mc-cmd:`mc admin config set` command 
-      and the :mc-conf:`notify_mqtt` configuration key. You must restart the 
-      :mc:`minio server` process to apply any new or updated configuration
-      settings.
+      MinIO 支持在运行中的 :mc:`minio server` 进程上使用
+      :mc-cmd:`mc admin config set` 命令和 :mc-conf:`notify_mqtt`
+      配置键添加或更新 MQTT 端点。你必须重启 :mc:`minio server`
+      进程，才能应用任何新增或更新的配置设置。
 
-      The following example code sets *all*  settings related to configuring an
-      MQTT service endpoint. The following configuration settings are the
-      *minimum* required for an MQTT server/broker endpoint:
+      以下示例代码设置了与配置 MQTT 服务端点相关的*全部*设置。
+      对于 MQTT server/broker 端点，以下配置设置是*最少*必需项：
 
       - :mc-conf:`~notify_mqtt.broker`
       - :mc-conf:`~notify_mqtt.topic`
-      - :mc-conf:`~notify_mqtt.username` *Required if the MQTT server/broker enforces authentication/authorization*
-      - :mc-conf:`~notify_mqtt.password` *Required if the MQTT server/broker enforces authentication/authorization*
+      - :mc-conf:`~notify_mqtt.username` *如果 MQTT server/broker 强制要求身份验证/授权，则必需*
+      - :mc-conf:`~notify_mqtt.password` *如果 MQTT server/broker 强制要求身份验证/授权，则必需*
 
       .. code-block:: shell
          :class: copyable
@@ -160,61 +147,55 @@ You can configure a new MQTT service endpoint using either environment variables
             queue_limit="<string>" \
             comment="<string>"
 
-      - Replace ``IDENTIFIER`` with a unique descriptive string for the
-        MQTT service endpoint. The following examples in this procedure
-        assume an identifier of ``PRIMARY``.
+      - 将 ``IDENTIFIER`` 替换为 MQTT 服务端点的唯一描述性字符串。
+        本过程后续示例假定标识符为 ``PRIMARY``。
 
-        If the specified ``IDENTIFIER`` matches an existing MQTT service
-        endpoint on the MinIO deployment, the new settings *override* 
-        any existing settings for that endpoint. Use 
-        :mc-cmd:`mc admin config get notify_mqtt <mc admin config get>` to
-        review the currently configured MQTT endpoints on the MinIO deployment.
+        如果指定的 ``IDENTIFIER`` 与 MinIO 部署中现有的 MQTT 服务端点匹配，
+        新设置将*覆盖*该端点的任何现有设置。使用
+        :mc-cmd:`mc admin config get notify_mqtt <mc admin config get>`
+        查看 MinIO 部署上当前配置的 MQTT 端点。
 
-      - Replace ``ENDPOINT`` with the URL of the MQTT service endpoint.
-        For example:
+      - 将 ``ENDPOINT`` 替换为 MQTT 服务端点的 URL。例如：
 
         ``tcp://hostname:port``
 
-      - Replace ``TOPIC`` with the MQTT topic to which MinIO associates 
-        events published to the server/broker.
+      - 将 ``TOPIC`` 替换为 MQTT topic，MinIO 会将发布到 server/broker 的
+        事件关联到该 topic。
 
-      See :ref:`MQTT Bucket Notification Configuration Settings
-      <minio-server-config-bucket-notification-mqtt>` for complete 
-      documentation on each setting.
+      有关每个设置的完整文档，请参见 :ref:`MQTT 存储桶通知配置设置
+      <minio-server-config-bucket-notification-mqtt>`。
 
-1) Restart the MinIO Deployment
+1) 重启 MinIO 部署
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署以应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启该部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`别名 <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured MQTT
-target similar to the following:
+:mc:`minio server` 进程在启动时会为每个已配置的 MQTT
+目标打印一行类似如下的内容：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:mqtt
 
-You must specify the ARN resource when configuring bucket notifications with
-the associated MQTT deployment as a target.
+将关联的 MQTT 部署配置为目标时，你必须在配置存储桶通知时指定 ARN 资源。
 
 .. include:: /includes/common-bucket-notifications.rst
    :start-after: start-bucket-notification-find-arn
    :end-before: end-bucket-notification-find-arn
 
-1) Configure Bucket Notifications using the MQTT Endpoint as a Target
+1) 将 MQTT 端点配置为存储桶通知目标
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc event add` command to add a new bucket notification 
-event with the configured MQTT service as a target:
+使用 :mc:`mc event add` 命令添加新的存储桶通知事件，并将已配置的
+MQTT 服务作为目标：
 
 .. code-block:: shell
    :class: copyable
@@ -222,101 +203,91 @@ event with the configured MQTT service as a target:
    mc event add ALIAS/BUCKET arn:minio:sqs::primary:mqtt \
      --event EVENTS
 
-- Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment.
-- Replace ``BUCKET`` with the name of the bucket in which to configure the 
-  event.
-- Replace ``EVENTS`` with a comma-separated list of :ref:`events 
-  <mc-event-supported-events>` for which MinIO triggers notifications.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`别名 <alias>`。
+- 将 ``BUCKET`` 替换为要配置该事件的存储桶名称。
+- 将 ``EVENTS`` 替换为以逗号分隔的 :ref:`事件
+  <mc-event-supported-events>` 列表，MinIO 会为这些事件触发通知。
 
-Use :mc:`mc event ls` to view all configured bucket events for 
-a given notification target:
+使用 :mc:`mc event ls` 查看给定通知目标已配置的所有存储桶事件：
 
 .. code-block:: shell
    :class: copyable
 
    mc event ls ALIAS/BUCKET arn:minio:sqs::primary:MQTT
 
-4) Validate the Configured Events
+4) 验证已配置的事件
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Perform an action on the bucket for which you configured the new event and 
-check the MQTT service for the notification data. The action required
-depends on which :mc-cmd:`events <mc event add --event>` were specified
-when configuring the bucket notification.
+对已配置新事件的存储桶执行某个操作，并检查 MQTT 服务中的通知数据。
+所需操作取决于配置存储桶通知时指定了哪些
+:mc-cmd:`事件 <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the 
-``s3:ObjectCreated:Put`` event, you can use the 
-:mc:`mc cp` command to create a new object in the bucket and trigger 
-a notification.
+例如，如果存储桶通知配置包含 ``s3:ObjectCreated:Put`` 事件，
+则可以使用 :mc:`mc cp` 命令在存储桶中创建新对象并触发通知。
 
 .. code-block:: shell
    :class: copyable
 
    mc cp ~/data/new-object.txt ALIAS/BUCKET
 
-Update an MQTT Endpoint in a MinIO Deployment
+更新 MinIO 部署中的 MQTT 端点
 ---------------------------------------------
 
-The following procedure updates an existing MQTT service endpoint for supporting
-:ref:`bucket notifications <minio-bucket-notifications>` in a MinIO
-deployment.
+以下过程会更新现有 MQTT 服务端点，以在 MinIO
+部署中支持 :ref:`存储桶通知 <minio-bucket-notifications>`。
 
-Prerequisites
+前提条件
 ~~~~~~~~~~~~~~
 
-MQTT 3.1 or 3.1.1 Server/Broker Endpoint
+MQTT 3.1 或 3.1.1 服务器/代理端点
 ++++++++++++++++++++++++++++++++++++++++
 
-This procedure assumes an existing MQTT 3.1 or 3.1.1 server/broker to which the
-MinIO deployment has connectivity. See the 
-`mqtt.org software listing <https://mqtt.org/software/>`__ for a list of
-MQTT-compatible server/brokers.
+此过程假定已存在一个 MQTT 3.1 或 3.1.1 server/broker，且 MinIO
+部署能够连接到它。有关兼容 MQTT 的 server/broker 列表，请参见
+`mqtt.org software listing <https://mqtt.org/software/>`__。
 
-If the MQTT service requires authentication, you *must* provide an appropriate
-username and password during the configuration process to grant MinIO access
-to the service.
+如果 MQTT 服务需要身份验证，则在配置过程中*必须*提供适当的用户名和密码，
+以授予 MinIO 访问该服务的权限。
 
-MinIO ``mc`` Command Line Tool
+MinIO ``mc`` 命令行工具
 ++++++++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+此过程中的某些操作需要使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`快速入门 <mc-install>`。
 
 
-1) List Configured MQTT Endpoints In The Deployment
+1) 列出部署中已配置的 MQTT 端点
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config get` command to list the currently
-configured MQTT service endpoints in the deployment:
+使用 :mc-cmd:`mc admin config get` 命令列出该部署中当前已配置的 MQTT
+服务端点：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config get ALIAS/ notify_mqtt
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO deployment.
+将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`别名 <alias>`。
 
-The command output resembles the following:
+命令输出类似如下：
 
 .. code-block:: shell
 
    notify_mqtt:primary  broker="tcp://mqtt-primary.example.net:port" password="" queue_dir="" queue_limit="0" reconnect_interval="0s"  keep_alive_interval="0s" qos="0" topic="" username=""
    notify_mqtt:secondary  broker="tcp://mqtt-primary.example.net:port" password="" queue_dir="" queue_limit="0" reconnect_interval="0s"  keep_alive_interval="0s" qos="0" topic="" username=""
 
-The :mc-conf:`notify_mqtt` key is the top-level configuration key for an
-:ref:`minio-server-config-bucket-notification-mqtt`. The 
-:mc-conf:`broker <notify_mqtt.broker>` key specifies the MQTT server/broker endpoint 
-for the given `notify_mqtt` key. The ``notify_mqtt:<IDENTIFIER>`` suffix 
-describes the unique identifier for that MQTT service endpoint.
+:mc-conf:`notify_mqtt` 键是
+:ref:`minio-server-config-bucket-notification-mqtt` 的顶层配置键。
+:mc-conf:`broker <notify_mqtt.broker>` 键为给定的 `notify_mqtt`
+键指定 MQTT server/broker 端点。``notify_mqtt:<IDENTIFIER>``
+后缀描述该 MQTT 服务端点的唯一标识符。
 
-Note the identifier for the MQTT service endpoint you want to update for
-the next step. 
+记下要更新的 MQTT 服务端点标识符，供下一步使用。
 
-2) Update the MQTT Endpoint
+2) 更新 MQTT 端点
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config set` command to set the new configuration
-for the MQTT service endpoint:
+使用 :mc-cmd:`mc admin config set` 命令为 MQTT 服务端点设置新配置：
 
 .. code-block:: shell
    :class: copyable
@@ -336,51 +307,45 @@ for the MQTT service endpoint:
       queue_limit="<string>" \
       comment="<string>"
 
-The following configuration settings are the *minimum* required for an 
-MQTT server/broker endpoint:
+以下配置设置是 MQTT server/broker 端点的*最少*必需项：
 
 - :mc-conf:`~notify_mqtt.broker`
 - :mc-conf:`~notify_mqtt.topic`
-- :mc-conf:`~notify_mqtt.username` *Required if the MQTT server/broker enforces authentication/authorization*
-- :mc-conf:`~notify_mqtt.password` *Required if the MQTT server/broker enforces authentication/authorization*
+- :mc-conf:`~notify_mqtt.username` *如果 MQTT server/broker 强制要求身份验证/授权，则必需*
+- :mc-conf:`~notify_mqtt.password` *如果 MQTT server/broker 强制要求身份验证/授权，则必需*
 
-All other configuration settings are *optional*. See
-:ref:`minio-server-config-bucket-notification-mqtt` for a complete list of MQTT
-configuration settings.
+所有其他配置设置均为*可选*。有关 MQTT 配置设置的完整列表，请参见
+:ref:`minio-server-config-bucket-notification-mqtt`。
 
-3) Restart the MinIO Deployment
+3) 重启 MinIO 部署
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署以应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启该部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`别名 <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured MQTT
-target similar to the following:
+:mc:`minio server` 进程在启动时会为每个已配置的 MQTT
+目标打印一行类似如下的内容：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:mqtt
 
-3) Validate the Changes
+3) 验证更改
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Perform an action on a bucket which has an event configuration using the updated
-MQTT service endpoint and check the MQTT service for the notification data. The
-action required depends on which :mc-cmd:`events <mc event add --event>` were
-specified when configuring the bucket notification.
+对某个使用已更新 MQTT 服务端点进行事件配置的存储桶执行某个操作，
+并检查 MQTT 服务中的通知数据。所需操作取决于配置存储桶通知时指定了哪些
+:mc-cmd:`事件 <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the 
-``s3:ObjectCreated:Put`` event, you can use the 
-:mc:`mc cp` command to create a new object in the bucket and trigger 
-a notification.
+例如，如果存储桶通知配置包含 ``s3:ObjectCreated:Put`` 事件，
+则可以使用 :mc:`mc cp` 命令在存储桶中创建新对象并触发通知。
 
 .. code-block:: shell
    :class: copyable

@@ -1,19 +1,19 @@
 .. _minio-server-envvar-deprecated:
 
 ===================
-Deprecated Settings
+已弃用设置
 ===================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page covers deprecated settings that control core behavior of the MinIO process. 
+本页介绍用于控制 MinIO 进程核心行为的已弃用设置。
 
-Settings on this page may be removed at any time.
-Users should migrate to the recommended replacement at the earliest opportunity.
+本页中的设置可能随时被移除。
+用户应尽早迁移到推荐的替代项。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -23,77 +23,77 @@ Users should migrate to the recommended replacement at the earliest opportunity.
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Environment Variables
+环境变量
 ---------------------
 
-The following *environment variables* are deprecated.
-They are listed here for historical reference only.
+以下*环境变量*已弃用。
+此处仅为历史参考而列出。
 
 .. envvar:: MINIO_SECRET_KEY
 
    .. deprecated:: RELEASE.2021-04-22T15-44-28Z
 
-   The secret key for the :ref:`root <minio-users-root>` user.
+   :ref:`root <minio-users-root>` 用户的 secret key。
 
-   This environment variable is *deprecated* in favor of the :envvar:`MINIO_ROOT_PASSWORD` environment variable.
+   该环境变量已*弃用*，请改用 :envvar:`MINIO_ROOT_PASSWORD` 环境变量。
 
    .. warning::
 
-      If :envvar:`MINIO_SECRET_KEY` is unset, :mc:`minio` defaults to ``minioadmin``.
+      如果未设置 :envvar:`MINIO_SECRET_KEY`，:mc:`minio` 默认使用 ``minioadmin``。
 
-      **NEVER** use the default credentials in production environments.
-      MinIO strongly recommends specifying a unique, long, and random :envvar:`MINIO_ACCESS_KEY` value for all environments.
+      在生产环境中**绝不要**使用默认凭证。
+      MinIO 强烈建议在所有环境中为 :envvar:`MINIO_ACCESS_KEY` 指定唯一、足够长且随机的值。
 
 .. envvar:: MINIO_ACCESS_KEY
 
    .. deprecated:: RELEASE.2021-04-22T15-44-28Z
 
-   The access key for the :ref:`root <minio-users-root>` user.
+   :ref:`root <minio-users-root>` 用户的 access key。
 
-         This environment variable is *deprecated* in favor of the :envvar:`MINIO_ROOT_USER` environment variable.
+         该环境变量已*弃用*，请改用 :envvar:`MINIO_ROOT_USER` 环境变量。
 
    .. warning::
 
-      If :envvar:`MINIO_ACCESS_KEY` is unset, :mc:`minio` defaults to ``minioadmin``.
+      如果未设置 :envvar:`MINIO_ACCESS_KEY`，:mc:`minio` 默认使用 ``minioadmin``。
 
-      **NEVER** use the default credentials in production environments.
-      MinIO strongly recommends specifying a unique, long, and random :envvar:`MINIO_ACCESS_KEY` value for all environments.
+      在生产环境中**绝不要**使用默认凭证。
+      MinIO 强烈建议在所有环境中为 :envvar:`MINIO_ACCESS_KEY` 指定唯一、足够长且随机的值。
 
 .. envvar:: MINIO_ACCESS_KEY_OLD
 
    .. deprecated:: RELEASE.2021-04-22T15-44-28Z
 
-   To perform root credential rotation, modify the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` environment variables.
+   要轮换 root 凭证，请修改 :envvar:`MINIO_ROOT_USER` 和 :envvar:`MINIO_ROOT_PASSWORD` 环境变量。
 
 .. envvar:: MINIO_OPERATOR_DEPLOYMENT_NAME
 
    .. deprecated:: Operator 6.0.4
 
-   Specifies the namespace to create and use for Operator.
+   指定为 Operator 创建并使用的命名空间。
 
-   When not specified, the default value is ``minio-operator``.
+   未指定时，默认值为 ``minio-operator``。
 
 .. envvar:: MINIO_SECRET_KEY_OLD
 
    .. deprecated:: RELEASE.2021-04-22T15-44-28Z
 
-   To perform root credential rotation, modify the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` environment variables.
+   要轮换 root 凭证，请修改 :envvar:`MINIO_ROOT_USER` 和 :envvar:`MINIO_ROOT_PASSWORD` 环境变量。
 
 .. envvar:: MINIO_SERVER_URL
 
    .. deprecated:: RELEASE.2024-05-10T01-41-38Z
 
-   The `fully qualified domain name <https://en.wikipedia.org/wiki/Fully_qualified_domain_name>`__ (FQDN) the MinIO Console uses for connecting to the MinIO Server.
+   MinIO Console 用于连接 MinIO Server 的 `fully qualified domain name <https://en.wikipedia.org/wiki/Fully_qualified_domain_name>`__ (FQDN)。
 
-   For the Console to function correctly, the MinIO server URL *must* be the FQDN of the host, resolveable, and reachable.
+   为确保 Console 正常工作，MinIO server URL *必须*是主机的 FQDN，且可解析并可达。
 
-   If the specified value does not resolve to the MinIO server, logins via the MinIO Console fail and return a network error after a wait period.
-   Older versions of the Console may return a generic 'Invalid Login' error instead.
-   Unset the value *or* address the FQDN resolution issue to allow Console logins to proceed.
-   This setting may be required if:
+   如果指定值无法解析到 MinIO server，通过 MinIO Console 登录将失败，并在等待一段时间后返回网络错误。
+   较旧版本的 Console 可能会返回通用的“Invalid Login”错误。
+   可通过取消设置该值*或*解决 FQDN 解析问题来恢复 Console 登录。
+   在以下情况下可能需要该设置：
 
-   - The MinIO Server uses a TLS certificate that does not include the host local IP(s) in the certificate Subject Alternative Name (SAN).
+   - MinIO Server 使用的 TLS 证书在 Subject Alternative Name (SAN) 中未包含主机本地 IP。
 
-   or
+   或
 
-   - The Console must use a specific hostname to connect or reference the MinIO Server, such as due to a reverse proxy or similar configuration.
+   - 由于反向代理或类似配置，Console 必须使用特定主机名来连接或引用 MinIO Server。

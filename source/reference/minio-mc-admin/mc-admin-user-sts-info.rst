@@ -6,38 +6,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin user sts info
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-sts-info-desc
 
-The :mc-cmd:`mc admin user sts info` command retrieves information on the specified STS credential, such as the parent :ref:`MinIO user <minio-internal-idp>` who generated the credentials, associated policies, and expiration.
+:mc-cmd:`mc admin user sts info` 命令用于检索指定 STS 凭证的信息，例如生成该凭证的父 :ref:`MinIO user <minio-internal-idp>`、关联策略和过期时间。
 
 .. end-mc-admin-sts-info-desc
 
-:abbr:`STS (Security Token Service)` credentials provide temporary access to the MinIO deployment.
+:abbr:`STS (Security Token Service)` 凭证为 MinIO 部署提供临时访问权限。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command retrieves information on the STS credentials with specified access key:
+      以下命令检索具有指定访问密钥的 STS 凭证信息：
 
       .. code-block:: shell  
          :class: copyable 
   
          mc admin user sts info myminio/ "J123C4ZXEQN8RK6ND35I"
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      该命令的语法如下：
   
       .. code-block:: shell  
          :class: copyable 
@@ -52,38 +52,38 @@ The :mc-cmd:`mc admin user sts info` command retrieves information on the specif
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: STSACCESSKEY
    :required:
 
-   The access key for the STS credentials.
+   STS 凭证的访问密钥。
 
 .. mc-cmd:: --policy
    :optional:
 
-   Prints the policy attached to the specified STS credentials in JSON format.
+   以 JSON 格式打印附加到指定 STS 凭证的策略。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

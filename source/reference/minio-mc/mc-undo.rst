@@ -6,35 +6,35 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc undo
 
-Syntax
-------
+语法
+----
 
 .. start-mc-undo-desc
 
-The :mc:`mc undo` command reverses changes due to either a ``PUT`` or ``DELETE`` operation at a specified path.
+:mc:`mc undo` 命令用于撤销指定路径上由 ``PUT`` 或 ``DELETE`` 操作引起的更改。
 
 .. end-mc-undo-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command reverts the last three uploads and/or deletions of the ``file.zip`` object on the ``myminio`` deployment in the ``data`` bucket:
+      以下命令会回滚 ``myminio`` 部署中 ``data`` 存储桶内 ``file.zip`` 对象最近三次上传和/或删除操作：
 
       .. code-block:: shell
          :class: copyable
 
          mc undo myminio/data/file.zip --last 3
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -52,101 +52,101 @@ The :mc:`mc undo` command reverses changes due to either a ``PUT`` or ``DELETE``
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the object or prefix where the command should run.
-   The path must include the :ref:`ALIAS <minio-mc-alias>`, bucket, and prefix or object name.
+   命令应执行的对象或前缀的完整路径。
+   路径必须包含 :ref:`ALIAS <minio-mc-alias>`、存储桶以及前缀或对象名称。
 
 .. mc-cmd:: --action
    :optional:
 
-   Undo the most recent change of the specified type.
-   Accepted values are ``DELETE`` or ``PUT``.
+   撤销指定类型的最近一次更改。
+   可接受的值为 ``DELETE`` 或 ``PUT``。
 
-   By default, :mc:`mc undo` reverses both ``DELETE`` and ``PUT`` operations.
-   Use :mc-cmd:`~mc undo --action` to choose one or the other, but only for the most recent operation of the specified type.
+   默认情况下，:mc:`mc undo` 会同时回滚 ``DELETE`` 和 ``PUT`` 操作。
+   使用 :mc-cmd:`~mc undo --action` 可在两者中选择其一，但仅针对该类型最近的一次操作。
 
-   The following command reverts the most recent ``PUT`` for the object ``today.zip`` in bucket ``data``, reverting to the previous object version:
+   以下命令会回滚 ``data`` 存储桶中对象 ``today.zip`` 最近一次 ``PUT``，恢复到该对象的上一版本：
 
    .. code-block:: shell
       :class: copyable
 
       mc undo myminio/data/today.zip --action "PUT"
 
-   This example reverts the most recent ``DELETE`` for the prefix ``archive``, recursively restoring it and any child objects:
+   以下示例会回滚前缀 ``archive`` 最近一次 ``DELETE``，并递归恢复该前缀及其所有子对象：
 
    .. code-block:: shell
       :class: copyable
 
       mc undo myminio/data/archive --recursive --action "DELETE"
 
-   Mutually exclusive with :mc-cmd:`~mc undo --last`.
+   与 :mc-cmd:`~mc undo --last` 互斥。
 
 .. mc-cmd:: --dry-run
    :optional:
 
-   Output the results of the command without actually performing the operations.
-   Use this flag to test the outcome of running the command in a particular way.
+   输出命令结果，但不实际执行操作。
+   使用此标志可测试按特定方式运行命令时的结果。
 
 .. mc-cmd:: --force
    :optional:
 
-   Force a recursive operation.
+   强制执行递归操作。
 
 .. mc-cmd:: --last
    :optional:
 
-   Accepts an integer value specifying the number of ``PUT`` and/or ``DELETE`` changes to undo.
-   
-   If not specified, the command reverses one (``1``) operation.
-   Mutually exclusive with :mc-cmd:`~mc undo --action`.
+   接受一个整数值，用于指定要撤销的 ``PUT`` 和/或 ``DELETE`` 更改次数。
+
+   若未指定，命令默认回滚一次（``1``）操作。
+   与 :mc-cmd:`~mc undo --action` 互斥。
 
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Performs the command in a recursive fashion.
-   Use this flag to undo changes on a prefix, for example.
+   以递归方式执行命令。
+   例如，可使用此标志撤销某个前缀上的更改。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Undo the Last Three Uploads or Deletions on an Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+撤销对象最近三次上传或删除
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command reverts the last three uploads and/or deletions of the ``file.zip`` object on the ``myminio`` deployment in the ``data`` bucket:
+以下命令会回滚 ``myminio`` 部署中 ``data`` 存储桶内 ``file.zip`` 对象最近三次上传和/或删除操作：
 
 .. code-block:: shell
    :class: copyable
 
    mc undo myminio/data/file.zip --last 3
 
-Undo the Last Upload or Deletion of any Object at a Prefix
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+撤销某个前缀下任意对象最近一次上传或删除
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc undo` to reverse the most recent ``PUT`` or ``DELETE`` operation performed on the ``myminio`` alias in the ``data`` bucket under the ``presentations/recordings/`` :term:`prefix`:
+使用 :mc:`mc undo` 回滚在 ``myminio`` 别名下、``data`` 存储桶中 ``presentations/recordings/`` :term:`prefix` 内最近一次 ``PUT`` 或 ``DELETE`` 操作：
 
 .. code-block:: shell
    :class: copyable
 
    mc undo myminio/data/presentations/recordings/ --recursive --force
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

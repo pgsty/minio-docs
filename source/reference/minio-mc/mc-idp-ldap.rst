@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -16,31 +16,31 @@
 
    :mc-cmd:`mc idp ldap` and its subcommands replace ``mc admin idp ldap``.
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-desc
 
-The :mc-cmd:`mc idp ldap` commands allow you to manage configurations to 3rd party :ref:`Active Directory or LDAP Identity and Access Management (IAM) integrations <minio-external-identity-management-ad-ldap>`.
+:mc-cmd:`mc idp ldap` 命令用于管理第三方 :ref:`Active Directory 或 LDAP 身份与访问管理（IAM）集成 <minio-external-identity-management-ad-ldap>` 的配置。
 
 .. end-mc-idp-ldap-desc
 
-The :mc-cmd:`mc idp ldap` commands are an alternative to using environment variables when :ref:`setting up an AD/LDAP connection <minio-authenticate-using-ad-ldap-generic>`. They are only supported against MinIO deployments.
+:mc-cmd:`mc idp ldap` 命令可作为在 :ref:`设置 AD/LDAP 连接 <minio-authenticate-using-ad-ldap-generic>` 时使用环境变量的替代方案。它们仅支持 MinIO 部署。
 
-See :ref:`minio-external-identity-management-ad-ldap` for a tutorial on using these commands.
+有关如何使用这些命令的教程，请参阅 :ref:`minio-external-identity-management-ad-ldap`。
 
 .. note::
 
-   MinIO :ref:`AD/LDAP environment variables <minio-server-envvar-external-identity-management-ad-ldap>` override their corresponding configuration settings as modified or set by this command.
+   MinIO :ref:`AD/LDAP 环境变量 <minio-server-envvar-external-identity-management-ad-ldap>` 会覆盖通过此命令修改或设置的对应配置项。
 
-The :mc-cmd:`mc idp ldap` command has the following subcommands:
+:mc-cmd:`mc idp ldap` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc-cmd:`mc idp ldap add`
      - .. include:: /reference/minio-mc/mc-idp-ldap-add.rst
@@ -67,7 +67,7 @@ The :mc-cmd:`mc idp ldap` command has the following subcommands:
           :start-after: start-mc-idp-ldap-ls-desc
           :end-before: end-mc-idp-ldap-ls-desc
 
-   * - :mc-cmd:`mc idp ldap policy` subcommands
+   * - :mc-cmd:`mc idp ldap policy` 子命令
      - .. include:: /reference/minio-mc/mc-idp-ldap-policy.rst
           :start-after: start-mc-idp-ldap-policy-desc
           :end-before: end-mc-idp-ldap-policy-desc
@@ -94,4 +94,3 @@ The :mc-cmd:`mc idp ldap` command has the following subcommands:
    /reference/minio-mc/mc-idp-ldap-ls
    /reference/minio-mc/mc-idp-ldap-rm
    /reference/minio-mc/mc-idp-ldap-update
-

@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,12 +14,12 @@
 .. mc:: mc idp ldap accesskey info
 
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-accesskey-info-desc
 
-The :mc:`mc idp ldap accesskey info` outputs information about the specified access key(s).
+:mc:`mc idp ldap accesskey info` 输出指定访问密钥（一个或多个）的信息。
 
 .. end-mc-idp-ldap-accesskey-info-desc
 
@@ -29,18 +29,18 @@ The :mc:`mc idp ldap accesskey info` outputs information about the specified acc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-         The following example outputs details for the access key ``mykey`` from the ``minio`` deployment:
+         以下示例输出 ``minio`` 部署中访问密钥 ``mykey`` 的详细信息：
 
       .. code-block:: shell
          :class: copyable
 
          mc idp ldap accesskey info minio/ mykey
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -51,24 +51,24 @@ The :mc:`mc idp ldap accesskey info` outputs information about the specified acc
                                              [KEY2] ...
 
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment configured for AD/LDAP integration.
-      - Replace ``KEY`` with the access key to delete.
-        You can list more than one access key by separating each key with a space.
+      - 将 ``ALIAS`` 替换为已配置 AD/LDAP 集成的 MinIO 部署的 :ref:`alias <alias>`。
+      - 将 ``KEY`` 替换为要删除的访问密钥。
+        你可以使用空格分隔多个访问密钥，以列出多个密钥。
         
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment configured for AD/LDAP.
+   已配置 AD/LDAP 的 MinIO 部署的 :ref:`alias <alias>`。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -77,34 +77,34 @@ Parameters
 .. mc-cmd:: KEY
    :required:
 
-   The configured access key to output information about.
+   要输出其信息的已配置访问密钥。
 
-   You can list more than one access key by separating each key with a space.
+   你可以使用空格分隔多个访问密钥，以列出多个密钥。
 
 
-Example
-~~~~~~~
+示例
+~~~~
 
-Output information about the access keys ``mykey`` and ``mykey2`` from the ``minio`` deployment.
+输出 ``minio`` 部署中访问密钥 ``mykey`` 和 ``mykey2`` 的信息。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey info minio/ mykey mykey2
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

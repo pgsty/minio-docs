@@ -4,37 +4,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin service
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-service-desc
 
-The :mc-cmd:`mc admin service` command can restart or unfreeze MinIO servers.
+:mc-cmd:`mc admin service` 命令可用于重启或解除冻结 MinIO 服务器。
 
 .. end-mc-admin-service-desc
 
-:mc-cmd:`mc admin service` affects *all* MinIO servers in the target deployment
-at the same time. The command interrupts in-progress API operations on
-the MinIO deployment. Use caution when issuing this command to a deployment.
+:mc-cmd:`mc admin service` 会同时影响目标部署中的 *所有* MinIO 服务器。
+该命令会中断 MinIO 部署上正在进行的 API 操作。对某个部署执行此命令时请谨慎。
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: ``mc admin`` 仅用于 MinIO 部署
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
       :start-after: start-minio-only
       :end-before: end-minio-only
 
-Examples
---------
+示例
+----
 
-Restart MinIO Servers in Target Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+重启目标部署中的 MinIO 服务器
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/play-alias-available.rst
    :start-after: myminio-alias
@@ -45,8 +44,8 @@ Restart MinIO Servers in Target Deployment
 
    mc admin service restart myminio
 
-Resume S3 Calls on a Target Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+恢复目标部署上的 S3 调用
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/play-alias-available.rst
    :start-after: myminio-alias
@@ -57,44 +56,42 @@ Resume S3 Calls on a Target Deployment
 
    mc admin service unfreeze myminio
 
-Syntax
-------
+语法
+----
 
-:mc-cmd:`mc admin service` has the following syntax:
+:mc-cmd:`mc admin service` 的语法如下：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service COMMAND [ARGUMENTS]
 
-:mc-cmd:`mc admin service` supports the following commands:
+:mc-cmd:`mc admin service` 支持以下命令：
 
 .. mc-cmd:: restart
 
-   Restarts MinIO servers.
-   If needed, the command may suggest restarting the node based on the status.
+   重启 MinIO 服务器。
+   如有需要，命令可能会根据状态建议重启节点。
 
-   :mc-cmd:`mc admin service restart` has the following syntax:
+   :mc-cmd:`mc admin service restart` 的语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin service restart ALIAS
 
-   Specify the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment.
-   :mc-cmd:`~mc admin service restart` restarts *all* MinIO servers in the
-   deployment.
+   指定已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+   :mc-cmd:`~mc admin service restart` 会重启该部署中的 *所有* MinIO 服务器。
 
 .. mc-cmd:: unfreeze
 
-   Restart S3 API calls on a MinIO cluster.
+   恢复 MinIO 集群上的 S3 API 调用。
 
-   :mc-cmd:`mc admin service unfreeze` has the following syntax:
+   :mc-cmd:`mc admin service unfreeze` 的语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin service unfreeze ALIAS
 
-   Specify the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment.
-
+   指定已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。

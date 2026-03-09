@@ -6,41 +6,39 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc anonymous links
 
-Syntax
-------
+语法
+----
 
 .. start-mc-anonymous-links-desc
 
-The :mc:`mc anonymous links` retrieves the HTTP URL for anonymous (i.e.
-unauthenticated or public) access to a bucket. 
+:mc:`mc anonymous links` 获取用于匿名（即未认证或公开）访问存储桶的 HTTP URL。
 
 .. end-mc-anonymous-links-desc
 
-Buckets with anonymous policies allow clients to access the bucket contents
-and perform actions consistent with the specified policy without 
-:ref:`authentication <minio-authentication-and-identity-management>`.
+配置了匿名策略的存储桶允许客户端在无需
+:ref:`认证 <minio-authentication-and-identity-management>` 的情况下访问存储桶内容，
+并执行与指定策略一致的操作。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command retrieves HTTP URLs for the ``mydata`` bucket
-      on the ``myminio`` MinIO deployment:
+      以下命令获取 ``myminio`` MinIO 部署上 ``mydata`` 存储桶的 HTTP URL：
 
       .. code-block:: shell
          :class: copyable
 
          mc anonymous links --recursive myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -53,17 +51,15 @@ and perform actions consistent with the specified policy without
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* The full path to the bucket or bucket prefix for which the
-   command retrieves the anonymous bucket policies.
+   *必需* 需要获取匿名存储桶策略的存储桶或存储桶前缀的完整路径。
    
-   Specify the :ref:`alias <alias>` of the MinIO or other
-   S3-compatible service *and* the full path to the bucket or bucket
-   prefix. For example:
+   指定 MinIO 或其他 S3 兼容服务的 :ref:`alias <alias>`，*以及* 存储桶或
+   存储桶前缀的完整路径。例如：
 
    .. code-block:: shell
             
@@ -72,39 +68,38 @@ Parameters
 .. mc-cmd:: --recursive
    
 
-   *Optional* Retrieve the HTTP links recursively.
+   *可选* 递归获取 HTTP 链接。
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-List Anonymous Policies for Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出存储桶的匿名策略
+~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc anonymous links` to links the anonymous policies for a 
-bucket:
+使用 :mc:`mc anonymous links` 列出存储桶的匿名策略：
 
 .. code-block:: shell
    :class: copyable
 
    mc anonymous links ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc anonymous get ALIAS>` with the 
-  :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc anonymous get ALIAS>` 替换为已配置 S3 兼容主机的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc anonymous get ALIAS>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc anonymous get ALIAS>` 替换为目标存储桶。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

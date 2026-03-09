@@ -1,7 +1,8 @@
 .. start-common-deploy-pull-latest-minio-image
 
-Select the tab for either Podman or Docker to see instructions for pulling the MinIO container image.
-The instructions include examples for both quay.io and DockerHub:
+选择 Podman 或 Docker 对应的选项卡，
+查看如何拉取 MinIO 容器镜像。
+说明中包含 quay.io 和 DockerHub 的示例：
 
 .. tab-set::
 
@@ -41,27 +42,27 @@ The instructions include examples for both quay.io and DockerHub:
 
    .. tab-item:: Podman
 
-      Run the following command to retrieve logs from the container.
-      Replace the container name with the value specified to ``--name`` in the previous step.
+      运行以下命令获取容器日志。
+      将容器名称替换为上一步 ``--name`` 指定的值。
 
       .. code-block:: shell
          :class: copyable
 
          podman logs minio
 
-      The command should return output similar to the following:
+      该命令应返回类似如下的输出：
 
    .. tab-item:: Docker
 
-      Run the following command to retrieve logs from the container.
-      Replace the container name with the value specified to ``--name`` in the previous step.
+      运行以下命令获取容器日志。
+      将容器名称替换为上一步 ``--name`` 指定的值。
 
       .. code-block:: shell
          :class: copyable
 
          docker logs minio
 
-      The command should return output similar to the following:
+      该命令应返回类似如下的输出：
 
 .. end-common-deploy-validate-container-status
 
@@ -71,50 +72,58 @@ The instructions include examples for both quay.io and DockerHub:
 
    .. tab-item:: MinIO Web Console
 
-      You can access the MinIO Web Console by entering http://localhost:9001 in your preferred browser.
-      Any traffic to the MinIO Console port on the local host redirects to the container.
+      可在浏览器中输入 http://localhost:9001 访问 MinIO Web Console。
+      发往本地主机 MinIO Console 端口的任何流量都会被转发到该容器。
 
-      Log in with the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` configured in the environment file specified to the container.
+      使用容器指定环境文件中的 :envvar:`MINIO_ROOT_USER`
+      和 :envvar:`MINIO_ROOT_PASSWORD` 登录。
 
       .. image:: /images/minio-console/console-bucket-none.png
          :width: 600px
          :alt: MinIO Console displaying Buckets view in a fresh installation.
          :align: center
 
-      Each MinIO server includes its own embedded MinIO Console.
+      每个 MinIO 服务器都内置自己的 MinIO Console。
 
-      If your local host firewall permits external access to the Console port, other hosts on the same network can access the Console using the IP or hostname for your local host.
+      如果本地主机防火墙允许外部访问 Console 端口，
+      同一网络中的其他主机也可以通过本地主机的 IP 或主机名访问 Console。
 
    .. tab-item:: MinIO CLI (mc)
 
-      You can access the MinIO deployment over a Terminal or Shell using the :ref:`MinIO Client <minio-client>` (:mc:`mc`).
-      See :ref:`MinIO Client Installation Quickstart <mc-install>` for instructions on installing :mc:`mc`.
+      可在 Terminal 或 Shell 中使用 :ref:`MinIO Client <minio-client>` (:mc:`mc`)
+      访问 MinIO 部署。
+      关于如何安装 :mc:`mc`，请参阅 :ref:`MinIO Client Installation Quickstart <mc-install>`。
 
-      Create a new :mc:`alias <mc alias set>` corresponding to the MinIO deployment. 
-      Use a hostname or IP address for your local machine along with the S3 API port ``9000`` to access the MinIO deployment.
-      Any traffic to that port on the local host redirects to the container.
+      为该 MinIO 部署创建新的 :mc:`alias <mc alias set>`。
+      使用本地主机的主机名或 IP 地址以及 S3 API 端口 ``9000``
+      来访问该 MinIO 部署。
+      发往本地主机该端口的任何流量都会被转发到该容器。
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set minio-alias http://localhost:9000 myminioadmin minio-secret-key-change-me
 
-      - Replace ``minio-alias`` with the alias name to create for this deployment.
+      - 将 ``minio-alias`` 替换为要为该部署创建的别名名称。
 
-      - Replace ``myminioadmin`` and ``minio-secret-key-change-me`` with the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` values in the environment file specified to the container.
+      - 将 ``myminioadmin`` 和 ``minio-secret-key-change-me`` 替换为容器指定环境文件中的
+        :envvar:`MINIO_ROOT_USER` 和 :envvar:`MINIO_ROOT_PASSWORD` 值。
 
-      The command should return success if the container is running and accessible at the specified port.
+      如果容器已运行且可通过指定端口访问，该命令应返回成功。
 
-      You can then interact with the container using any :mc:`mc` command.
-      If your local host firewall permits external access to the MinIO S3 API port, other hosts on the same network can access the MinIO deployment using the IP or hostname for your local host.
+      之后即可使用任意 :mc:`mc` 命令与该容器交互。
+      如果本地主机防火墙允许外部访问 MinIO S3 API 端口，
+      同一网络中的其他主机也可以通过本地主机的 IP 或主机名访问该 MinIO 部署。
 
 .. end-common-deploy-connect-to-minio-service
 
 .. start-common-prereq-container-management-interface
 
-This procedure assumes you have a working `Podman <https://podman.io/getting-started/installation.html>`_ installation configured to run in "Rootfull" mode.
+本流程假定你已经安装了可正常工作的
+`Podman <https://podman.io/getting-started/installation.html>`_，
+并将其配置为以 “Rootfull” 模式运行。
 
-"Rootless" modes may not provide sufficient permissions to run KES with the necessary security settings.
-See the relevant :podman-git:`"rootless" documentation <blob/main/docs/tutorials/rootless_tutorial.md>` for more information.
+“Rootless” 模式可能无法提供运行 KES 所需安全设置的足够权限。
+更多信息请参阅相关 :podman-git:`“rootless” 文档 <blob/main/docs/tutorials/rootless_tutorial.md>`。
 
 .. end-common-prereq-container-management-interface

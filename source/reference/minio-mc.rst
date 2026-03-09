@@ -1,78 +1,74 @@
 .. _minio-client:
 
-============
-MinIO Client
-============
+===========
+MinIO 客户端
+===========
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. container:: extlinks-video
 
-   - `Introduction to the MinIO Client (MC) Commands <https://www.youtube.com/watch?v=pukQgDdXfqA>`__
-   - `Installing and Running MinIO on Linux <https://www.youtube.com/watch?v=74usXkZpNt8&list=PLFOIsHSSYIK1BnzVY66pCL-iJ30Ht9t1o>`__
+   - `MinIO Client (MC) 命令简介 <https://www.youtube.com/watch?v=pukQgDdXfqA>`__
+   - `在 Linux 上安装和运行 MinIO <https://www.youtube.com/watch?v=74usXkZpNt8&list=PLFOIsHSSYIK1BnzVY66pCL-iJ30Ht9t1o>`__
 
 .. mc:: mc
 
-The MinIO Client :mc-cmd:`mc` command line tool provides a modern alternative
-to UNIX commands like ``ls``, ``cat``, ``cp``, ``mirror``, and ``diff`` with
-support for both filesystems and Amazon S3-compatible cloud storage services.
+MinIO Client :mc-cmd:`mc` 命令行工具为 ``ls``、``cat``、``cp``、``mirror`` 和 ``diff``
+等 UNIX 命令提供了现代替代方案，同时支持文件系统和兼容 Amazon S3 的云存储服务。
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: minio-mc-s3-compatibility
 
-:mc-cmd:`mc` has the following syntax:
+:mc-cmd:`mc` 的语法如下：
 
 .. code-block:: shell
 
    mc [GLOBALFLAGS] COMMAND --help
 
-See :ref:`minio-mc-commands` for a list of supported commands.
+支持的命令列表参见 :ref:`minio-mc-commands`。
 
 .. _mc-client-versioning:
 
-Version Alignment with MinIO Server
------------------------------------
+与 MinIO Server 的版本对齐
+--------------------------
 
-The MinIO Client releases separately from the MinIO Server.
+MinIO Client 与 MinIO Server 独立发布。
 
-For best functionality and compatibility, use a MinIO Client version released closely to your MinIO Server version. 
-For example, a MinIO Client released the same day or later than your MinIO Server version.
+为获得最佳功能与兼容性，建议使用与 MinIO Server 版本发布时间接近的 MinIO Client 版本。
+例如，使用与 MinIO Server 同一天发布或晚于 MinIO Server 版本发布的 MinIO Client。
 
-You can install a version of the MinIO Client that is more recent than the MinIO Server version. 
-However, if the MinIO Client version skews too far from the MinIO Server version, you may see increased warnings or errors as a result of the differences.
-For example, while core S3 APIs around copying (:mc:`mc cp`) may remain unchanged, some features or flags may only be available or stable if the client and server versions are aligned.
+可以安装比 MinIO Server 更新的 MinIO Client 版本。
+但如果 MinIO Client 与 MinIO Server 的版本偏差过大，可能因差异导致更多告警或错误。
+例如，虽然复制相关的核心 S3 API（:mc:`mc cp`）可能保持不变，但某些功能或 flag 仅在客户端与服务端版本对齐时才可用或稳定。
 
 .. _mc-install:
 
-Quickstart
-----------
+快速开始
+--------
 
-1) Install ``mc``
-~~~~~~~~~~~~~~~~~
+1) 安装 ``mc``
+~~~~~~~~~~~~~~
 
-Install the :program:`mc` command line tool onto the host machine. Click
-the tab that corresponds to the host machine operating system or environment:
+在主机上安装 :program:`mc` 命令行工具。点击与主机操作系统或环境对应的标签页：
 
 .. include:: /includes/minio-mc-installation.rst
 
-2) Create an Alias for the S3-Compatible Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 为兼容 S3 的服务创建别名
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. important::
 
-   The following example temporarily disables the bash history to mitigate the
-   risk of authentication credentials leaking in plain text. This is a basic
-   security measure and does not mitigate all possible attack vectors. Defer to
-   security best practices for your operating system for inputting sensitive
-   information on the command line.
+   以下示例会临时禁用 bash history，以降低身份认证凭据明文泄露的风险。
+   这是一项基础安全措施，无法覆盖所有可能的攻击向量。
+   对于在命令行输入敏感信息，请遵循你所用操作系统的安全最佳实践。
 
-Use the :mc:`mc alias set` command to add an Amazon S3-compatible service
-to the :mc-cmd:`mc` :ref:`configuration <mc-configuration>`.
+使用 :mc:`mc alias set` 命令将 Amazon S3 兼容服务添加到
+:mc-cmd:`mc` :ref:`配置 <mc-configuration>` 中。
 
 .. code-block:: shell
    :class: copyable
@@ -81,19 +77,19 @@ to the :mc-cmd:`mc` :ref:`configuration <mc-configuration>`.
    mc alias set ALIAS HOSTNAME ACCESS_KEY SECRET_KEY
    bash -o history
 
-- Replace ``ALIAS`` with a name to associate to the S3 service. 
-  :mc-cmd:`mc` commands typically require ``ALIAS`` as an argument for
-  identifying which S3 service to execute against.
+- 将 ``ALIAS`` 替换为与 S3 服务关联的名称。
+  :mc-cmd:`mc` 命令通常要求提供 ``ALIAS`` 作为参数，
+  以标识要执行操作的 S3 服务。
 
-- Replace ``HOSTNAME`` with the URL endpoint or IP address of the S3 service.
+- 将 ``HOSTNAME`` 替换为 S3 服务的 URL endpoint 或 IP 地址。
 
-- Replace ``ACCESS_KEY`` and ``SECRET_KEY`` with the access and secret 
-  keys for a user on the S3 service. 
+- 将 ``ACCESS_KEY`` 和 ``SECRET_KEY`` 替换为该 S3 服务上某个用户的
+  access key 和 secret key。
 
-Replace each argument with the required values.
-If you omit the ``ACCESS_KEY`` and ``SECRET_KEY``, the command prompts you to enter those values in the CLI.
+将各参数替换为所需值。
+如果省略 ``ACCESS_KEY`` 和 ``SECRET_KEY``，命令会在 CLI 中提示输入这两个值。
 
-Each of the following tabs contains a provider-specific example:
+以下每个标签页都包含一个特定提供商示例：
 
 .. tab-set::
 
@@ -118,52 +114,51 @@ Each of the following tabs contains a provider-specific example:
 
          mc alias set myGCS https://storage.googleapis.com/endpoint ACCESS_KEY SECRET_KEY
 
-3) Test the Connection
-~~~~~~~~~~~~~~~~~~~~~~
+3) 测试连接
+~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin info` command to test the connection to
-the newly added MinIO deployment:
+使用 :mc-cmd:`mc admin info` 命令测试与
+新添加 MinIO 部署的连接：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin info myminio
 
-The command returns information on the S3 service if successful. If
-unsuccessful, check each of the following:
+如果命令执行成功，会返回该 S3 服务的信息。
+如果失败，请检查以下各项：
 
-- The host machine has connectivity to the S3 service URL (i.e. using ``ping``
-  or ``traceroute``).
+- 主机可连通 S3 服务 URL（例如使用 ``ping``
+  或 ``traceroute``）。
 
-- The specified ``ACCESSKEY`` and ``SECRETKEY`` correspond to a user on the
-  S3 service. The user must have permission to perform actions on the
-  service. 
-  
-  For MinIO deployments, see :ref:`minio-access-management`
-  for more information on user access permissions. For other S3-compatible
-  services, defer to the documentation for that service.
+- 指定的 ``ACCESSKEY`` 和 ``SECRETKEY`` 对应 S3 服务上的有效用户。
+  该用户必须有权限在该服务上执行操作。
+
+  对于 MinIO 部署，参见 :ref:`minio-access-management`
+  获取更多用户访问权限信息。对于其他兼容 S3 的
+  服务，请参考该服务文档。
 
 .. _minio-mc-commands:
 
-Command Quick Reference
------------------------
+命令速查
+--------
 
-The following table lists :mc-cmd:`mc` commands:
+下表列出了 :mc-cmd:`mc` 命令：
 
-.. note:: 
+.. note::
 
-   The MinIO Client also includes an administration extension for managing MinIO deployments. 
-   See :mc:`mc admin` for more complete documentation.
+   MinIO Client 还包含用于管理 MinIO 部署的管理扩展。
+   更完整文档参见 :mc:`mc admin`。
 
-   The below table does not include those commands.
+   下表不包含这些命令。
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Command
-     - Description
+   * - 命令
+     - 说明
 
    * - | :mc:`mc alias list`
        | :mc:`mc alias remove`
@@ -173,7 +168,7 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-alias.rst
           :start-after: start-mc-alias-desc
           :end-before: end-mc-alias-desc
-     
+
    * - | :mc:`mc anonymous get`
        | :mc:`mc anonymous get-json`
        | :mc:`mc anonymous links`
@@ -183,7 +178,7 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-anonymous.rst
           :start-after: start-mc-anonymous-desc
           :end-before: end-mc-anonymous-desc
-     
+
    * - | :mc:`mc batch describe`
        | :mc:`mc batch generate`
        | :mc:`mc batch list`
@@ -197,12 +192,12 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-cat.rst
           :start-after: start-mc-cat-desc
           :end-before: end-mc-cat-desc
-     
+
    * - :mc:`mc cp`
      - .. include:: /reference/minio-mc/mc-cp.rst
           :start-after: start-mc-cp-desc
           :end-before: end-mc-cp-desc
-     
+
    * - :mc:`mc diff`
      - .. include:: /reference/minio-mc/mc-diff.rst
           :start-after: start-mc-diff-desc
@@ -212,21 +207,21 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-du.rst
           :start-after: start-mc-du-desc
           :end-before: end-mc-du-desc
-     
+
    * - | :mc:`mc encrypt clear`
        | :mc:`mc encrypt info`
        | :mc:`mc encrypt set`
      - .. include:: /reference/minio-mc/mc-encrypt.rst
           :start-after: start-mc-encrypt-desc
           :end-before: end-mc-encrypt-desc
-     
+
    * - | :mc:`mc event add`
        | :mc:`mc event ls`
        | :mc:`mc event rm`
      - .. include:: /reference/minio-mc/mc-event.rst
           :start-after: start-mc-event-desc
           :end-before: end-mc-event-desc
-     
+
    * - :mc:`mc find`
      - .. include:: /reference/minio-mc/mc-find.rst
           :start-after: start-mc-find-desc
@@ -235,13 +230,13 @@ The following table lists :mc-cmd:`mc` commands:
    * - :mc:`mc get`
      - .. include:: /reference/minio-mc/mc-get.rst
           :start-after: start-mc-get-desc
-          :end-before: end-mc-get-desc  
+          :end-before: end-mc-get-desc
 
    * - :mc:`mc head`
      - .. include:: /reference/minio-mc/mc-head.rst
           :start-after: start-mc-head-desc
           :end-before: end-mc-head-desc
-     
+
    * - | :mc:`mc idp ldap accesskey`
        | :mc:`mc idp ldap accesskey create-with-login`
        | :mc:`mc idp ldap add`
@@ -290,7 +285,7 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-ilm.rst
           :start-after: start-mc-ilm-desc
           :end-before: end-mc-ilm-desc
-     
+
    * - | :mc:`mc legalhold clear`
        | :mc:`mc legalhold info`
        | :mc:`mc legalhold set`
@@ -309,17 +304,17 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-ls.rst
           :start-after: start-mc-ls-desc
           :end-before: end-mc-ls-desc
-     
+
    * - :mc:`mc mb`
      - .. include:: /reference/minio-mc/mc-mb.rst
           :start-after: start-mc-mb-desc
           :end-before: end-mc-mb-desc
-     
+
    * - :mc:`mc mirror`
      - .. include:: /reference/minio-mc/mc-mirror.rst
           :start-after: start-mc-mirror-desc
           :end-before: end-mc-mirror-desc
-     
+
    * - :mc:`mc mv`
      - .. include:: /reference/minio-mc/mc-mv.rst
           :start-after: start-mc-mv-desc
@@ -333,23 +328,23 @@ The following table lists :mc-cmd:`mc` commands:
    * - :mc:`mc ping`
      - .. include:: /reference/minio-mc/mc-ping.rst
           :start-after: start-mc-ping-desc
-          :end-before: end-mc-ping-desc  
+          :end-before: end-mc-ping-desc
 
    * - :mc:`mc pipe`
      - .. include:: /reference/minio-mc/mc-pipe.rst
           :start-after: start-mc-pipe-desc
-          :end-before: end-mc-pipe-desc  
+          :end-before: end-mc-pipe-desc
 
    * - :mc:`mc put`
      - .. include:: /reference/minio-mc/mc-put.rst
           :start-after: start-mc-put-desc
-          :end-before: end-mc-put-desc  
+          :end-before: end-mc-put-desc
 
    * - :mc:`mc rb`
      - .. include:: /reference/minio-mc/mc-rb.rst
           :start-after: start-mc-rb-desc
           :end-before: end-mc-rb-desc
-     
+
    * - :mc:`mc ready`
      - .. include:: /reference/minio-mc/mc-ready.rst
           :start-after: start-mc-ready-desc
@@ -367,7 +362,7 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-replicate.rst
           :start-after: start-mc-replicate-desc
           :end-before: end-mc-replicate-desc
-     
+
    * - | :mc:`mc retention clear`
        | :mc:`mc retention info`
        | :mc:`mc retention set`
@@ -379,19 +374,19 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-rm.rst
           :start-after: start-mc-rm-desc
           :end-before: end-mc-rm-desc
-     
+
    * - | :mc:`mc share download`
        | :mc:`mc share ls`
        | :mc:`mc share upload`
      - .. include:: /reference/minio-mc/mc-share.rst
           :start-after: start-mc-share-desc
           :end-before: end-mc-share-desc
-     
+
    * - :mc:`mc sql`
      - .. include:: /reference/minio-mc/mc-sql.rst
           :start-after: start-mc-sql-desc
           :end-before: end-mc-sql-desc
-     
+
    * - :mc:`mc stat`
      - .. include:: /reference/minio-mc/mc-stat.rst
           :start-after: start-mc-stat-desc
@@ -417,12 +412,12 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-tag.rst
           :start-after: start-mc-tag-desc
           :end-before: end-mc-tag-desc
-     
+
    * - :mc:`mc tree`
      - .. include:: /reference/minio-mc/mc-tree.rst
           :start-after: start-mc-tree-desc
           :end-before: end-mc-tree-desc
-     
+
    * - :mc:`mc undo`
      - .. include:: /reference/minio-mc/mc-undo.rst
           :start-after: start-mc-undo-desc
@@ -432,14 +427,14 @@ The following table lists :mc-cmd:`mc` commands:
      - .. include:: /reference/minio-mc/mc-update.rst
           :start-after: start-mc-update-desc
           :end-before: end-mc-update-desc
-     
+
    * - | :mc:`mc version enable`
        | :mc:`mc version info`
        | :mc:`mc version suspend`
      - .. include:: /reference/minio-mc/mc-version.rst
           :start-after: start-mc-version-desc
           :end-before: end-mc-version-desc
-     
+
    * - :mc:`mc watch`
      - .. include:: /reference/minio-mc/mc-watch.rst
           :start-after: start-mc-watch-desc
@@ -447,219 +442,218 @@ The following table lists :mc-cmd:`mc` commands:
 
 .. _mc-configuration:
 
-Configuration File
-------------------
+配置文件
+--------
 
-:mc-cmd:`mc` uses a ``JSON`` formatted configuration file used for storing
-certain kinds of information, such as the :mc-cmd:`aliases <mc alias>` for 
-each configured S3-compatible service.
+:mc-cmd:`mc` 使用 ``JSON`` 格式的配置文件来存储
+某些类型的信息，例如每个已配置兼容 S3 服务的
+:mc-cmd:`aliases <mc alias>`。
 
-For Linux and macOS, the default configuration file location is 
-``~/.mc/config.json``.
+在 Linux 和 macOS 上，默认配置文件位置为
+``~/.mc/config.json``。
 
-For Windows, :mc-cmd:`mc` attempts to construct a default file path by trying
-specific environment variables. If a variable is unset, :mc-cmd:`mc` moves 
-to the next variable. If all attempts fail, :mc-cmd:`mc` returns an error.
-The following list describes each possible file path location in the order
-:mc-cmd:`mc` checks them:
+在 Windows 上，:mc-cmd:`mc` 会尝试通过特定环境变量
+构造默认文件路径。如果某个变量未设置，:mc-cmd:`mc` 会继续
+尝试下一个变量。如果所有尝试都失败，:mc-cmd:`mc` 会返回错误。
+下列列表按 :mc-cmd:`mc` 检查顺序说明了可能的文件路径位置：
 
 #. ``HOME\.mc\config.json``
 #. ``USERPROFILE\.mc\config.json``
 #. ``HOMEDRIVE+HOMEPATH\.mc\config.json``
 
-You can use the ``--config-dir``
+可使用 ``--config-dir``
 
 .. _minio-mc-certificates:
 
-Certificates
-------------
+证书
+----
 
-The MinIO Client stores certificates and CAs for deployments to the following paths:
+MinIO Client 将部署使用的证书和 CA 存储在以下路径：
 
-Linux, macOS, and other Unix-like systems:
+Linux、macOS 和其他类 Unix 系统：
 
 .. code-block:: shell
 
    ~/.mc/certs/ # certificates
    ~/.mc/certs/CAs/ # Certificate Authorities
 
-Windows systems:
+Windows 系统：
 
 .. code-block:: shell
 
    C:\Users\[username]\mc\certs\ # certificates
    C:\Users\[username]\mc\certs\CAs\ # Certificate Authorities
 
-When creating a new :ref:`alias <minio-mc-alias>`, the MinIO Client fetches the peer certificate, computes the public key fingerprint, and asks the user whether to accept the deployment's certificate.
-If you decide to trust the certificate, the MinIO Client adds the certificate to the certificate authority path listed above.
+创建新的 :ref:`alias <minio-mc-alias>` 时，MinIO Client 会拉取对端证书、计算公钥指纹，并询问用户是否接受该部署的证书。
+如果你决定信任该证书，MinIO Client 会将其添加到上述证书颁发机构路径。
 
 .. note::
 
-   In testing environments, you can bypass the certificate check for selected MinIO Client commands by passing the ``--insecure`` flag.
+   在测试环境中，你可以通过传入 ``--insecure`` flag，跳过部分 MinIO Client 命令的证书检查。
 
 .. _minio-wildcard-matching:
 
-Pattern Matching
-----------------
+模式匹配
+--------
 
-Some commands and flags allow for pattern matching.
-When enabled, a pattern can include either of these wildcards for character replacement:
-   
-- ``*`` to represent a string of characters to match, either in the middle or end.
-- ``?`` to represent a single character.
+某些命令和 flag 支持模式匹配。
+启用后，模式可包含以下任一通配符用于字符替换：
 
-For example, refer to the following examples for wildcard uses and their results.
+- ``*`` 表示要匹配的一串字符，可位于中间或末尾。
+- ``?`` 表示单个字符。
+
+例如，可参考以下通配符使用示例及其结果。
 
 .. list-table::
    :header-rows: 1
    :widths: 40 30 30
    :width: 100%
 
-   * - Pattern
-     - Text
-     - Match Result
+   * - 模式
+     - 文本
+     - 匹配结果
 
    * - ``abc*``
      - ab
-     - Match
+     - 匹配
 
    * - ``abc*``
      - abd
-     - Not a match
-  
+     - 不匹配
+
    * - ``abc*c``
      - abcd
-     - Match
+     - 匹配
 
    * - ``ab*??d``
      - abxxc
-     - Match
+     - 匹配
 
    * - ``ab*??d``
      - abxc
-     - Match
+     - 匹配
 
    * - ``ab??d``
      - abxc
-     - Match
+     - 匹配
 
    * - ``ab??d``
      - abc
-     - Match
+     - 匹配
 
    * - ``ab??d``
      - abcxdd
-     - Not a match
+     - 不匹配
 
 .. _minio-mc-global-options:
 
-Global Options
---------------
+全局选项
+--------
 
 .. program:: mc
 
-All :ref:`commands <minio-mc-commands>` support the following global options.
-You can also define some of these options using :ref:`Environment Variables <minio-server-envvar-mc>`.
+所有 :ref:`commands <minio-mc-commands>` 都支持以下全局选项。
+你也可以使用 :ref:`Environment Variables <minio-server-envvar-mc>` 来定义其中部分选项。
 
 .. option:: --config-dir
 
-   The path to a ``JSON`` formatted configuration file that
-   :program:`mc` uses for storing data. See :ref:`mc-configuration` for
-   more information on how :program:`mc` uses the configuration file.
+   指向 ``JSON`` 格式配置文件的路径，
+   :program:`mc` 使用该文件存储数据。有关
+   :program:`mc` 如何使用配置文件的更多信息，请参见 :ref:`mc-configuration`。
 
-   Alternatively, set the environment variable :envvar:`MC_CONFIG_DIR`.
+   或者，设置环境变量 :envvar:`MC_CONFIG_DIR`。
 
 .. option:: --debug
 
-   Enables verbose output to the console.
+   启用控制台详细输出。
 
-   For example, the following operation adds verbose output to the 
-   :mc:`mc ls` command:
+   例如，以下操作会为
+   :mc:`mc ls` 命令增加详细输出：
 
    .. code-block:: shell
       :class: copyable
 
       mc --debug ls play
 
-   Alternatively, set the environment variable :envvar:`MC_DEBUG`.
+   或者，设置环境变量 :envvar:`MC_DEBUG`。
 
 .. option:: --disable-pager, --dp
 
    .. versionadded:: mc RELEASE.2024-04-29T09-56-05Z
 
-   Disable the pager functionality of the MinIO Client in the CLI.
-   When used, output prints to raw ``STDOUT`` instead.
+   在 CLI 中禁用 MinIO Client 的分页功能。
+   使用后，输出会直接打印到原始 ``STDOUT``。
 
 .. option:: --insecure
 
-   Disables TLS/SSL certificate verification. Allows TLS connectivity to 
-   servers with invalid certificates. Exercise caution when using this
-   option against untrusted S3 hosts.
+   禁用 TLS/SSL 证书校验。允许与证书无效的
+   服务器建立 TLS 连接。对不受信任的 S3 主机使用该
+   选项时请谨慎。
 
-   Alternatively, set the environment variable :envvar:`MC_INSECURE`.
+   或者，设置环境变量 :envvar:`MC_INSECURE`。
 
 .. option:: --json
 
-   Enables `JSON lines <http://jsonlines.org/>`_ formatted output to the
-   console.
+   启用 `JSON lines <http://jsonlines.org/>`_ 格式输出到
+   控制台。
 
-   For example, the following operation adds JSON Lines output to the 
-   :mc:`mc ls` command:
+   例如，以下操作会为
+   :mc:`mc ls` 命令增加 JSON Lines 输出：
 
    .. code-block:: shell
       :class: copyable
 
-      mc --json ls play 
+      mc --json ls play
 
-   Alternatively, set the environment variable :envvar:`MC_JSON`.
+   或者，设置环境变量 :envvar:`MC_JSON`。
 
 .. option:: --no-color
 
-   Disables the built-in color theme for console output. Useful for dumb
-   terminals.
+   禁用控制台输出的内置配色主题。适用于 dumb
+   终端。
 
-   Alternatively, set the environment variable :envvar:`MC_NO_COLOR`.
+   或者，设置环境变量 :envvar:`MC_NO_COLOR`。
 
 .. option:: --quiet
 
-   Suppresses console output. 
+   抑制控制台输出。
 
-   Alternatively, set the environment variable :envvar:`MC_QUIET`.
+   或者，设置环境变量 :envvar:`MC_QUIET`。
 
 .. option:: --resolve
 
    .. versionadded:: mc RELEASE.2024-08-13T05-33-17Z
 
-   Creates a custom DNS mapping to resolve a HOST to a specified IP address.
+   创建自定义 DNS 映射，将 HOST 解析到指定 IP 地址。
 
-   Use the following syntax:
+   使用以下语法：
 
    .. code-block:: text
 
-      --resolve HOST[:PORT]=IP 
+      --resolve HOST[:PORT]=IP
 
-   For example:
+   例如：
 
    .. code-block:: shell
       :class: copyable
 
       mc alias set --resolve myminio.example.com:9000=192.168.188.118 'myminio' 'https://myminio.example.com:9000' 'miniouser' 'miniosecret'
 
-   Repeat the flag multiple times to add additional custom DNS mappings.
+   可重复该 flag 多次以添加更多自定义 DNS 映射。
 
 .. option:: --version
 
-   Displays the current version of :mc-cmd:`mc`. 
+   显示 :mc-cmd:`mc` 的当前版本。
 
 .. mc-cmd:: --help
    :optional:
 
-   Displays a summary of command usage on the terminal.
+   在终端显示命令用法摘要。
 
 .. toctree::
    :titlesonly:
    :hidden:
-   
+
    /reference/minio-mc/minio-client-settings
    /reference/minio-mc/mc-alias
    /reference/minio-mc/mc-anonymous

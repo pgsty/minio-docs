@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,36 +14,36 @@
 
 .. important::
 
-   This command has been replaced and will be deprecated in a future MinIO Client release.
+   此命令已被替代，并将在未来的 MinIO Client 发布版本中弃用。
 
-   As of MinIO Client RELEASE.2024-10-08T09-37-26Z, use the :mc:`mc admin accesskey enable` command to enable an access key for a built-in MinIO IDP user.
+   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，使用 :mc:`mc admin accesskey enable` 命令为内置 MinIO IDP 用户启用访问密钥。
 
-   To enable access keys for AD/LDAP users, use the :mc:`mc idp ldap accesskey enable` command.
+   如需为 AD/LDAP 用户启用访问密钥，请使用 :mc:`mc idp ldap accesskey enable` 命令。
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-svcacct-enable-desc
 
-The :mc-cmd:`mc admin user svcacct enable` command enables an existing access key.
+:mc-cmd:`mc admin user svcacct enable` 命令用于启用现有访问密钥。
 
 .. end-mc-admin-svcacct-enable-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command enables the specified access key:
+      以下命令启用指定的访问密钥：
   
       .. code-block:: shell  
          :class: copyable 
   
          mc admin user svcacct enable myminio myuserserviceaccount  
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      该命令的语法如下： 
   
       .. code-block:: shell  
          :class: copyable 
@@ -57,33 +57,33 @@ The :mc-cmd:`mc admin user svcacct enable` command enables an existing access ke
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: SERVICEACCOUNT
    :required:
 
-   The service account access key to enable.
+   要启用的服务账户访问密钥。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

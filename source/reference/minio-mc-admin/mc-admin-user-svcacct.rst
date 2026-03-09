@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,39 +14,39 @@
 
 .. important::
 
-   These commands have been replaced and will be deprecated in a future MinIO Client release.
+   这些命令已被替代，并将在未来的 MinIO Client 版本中弃用。
 
-   As of MinIO Client RELEASE.2024-10-08T09-37-26Z, use the :mc:`mc admin accesskey` command and its subcommands for functions related to built-in MinIO IDP users and their access keys or STS tokens.
+   自 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，与内置 MinIO IDP 用户及其访问密钥或 STS 令牌相关的功能，请使用 :mc:`mc admin accesskey` 命令及其子命令。
 
-   For access keys for AD/LDAP users, use the :mc:`mc idp ldap accesskey` command and its subcommands.
+   对于 AD/LDAP 用户的访问密钥，请使用 :mc:`mc idp ldap accesskey` 命令及其子命令。
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-user-svcacct-desc
 
-The :mc:`mc admin user svcacct` command and its subcommands create and manage :ref:`Access Keys <minio-idp-service-account>` on a MinIO deployment.
+:mc:`mc admin user svcacct` 命令及其子命令用于在 MinIO 部署上创建和管理 :ref:`访问密钥 <minio-idp-service-account>`。
 
-As of MinIO Client RELEASE.2024-10-08T09-37-26Z, these commands have been replaced by :mc:`mc admin accesskey` and :mc:`mc idp ldap accesskey`.
-This command and its subcommands will be deprecated in a future MinIO Client release.
+自 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，这些命令已由 :mc:`mc admin accesskey` 和 :mc:`mc idp ldap accesskey` 取代。
+该命令及其子命令将在未来的 MinIO Client 版本中弃用。
 
 .. end-mc-admin-user-svcacct-desc
 
-Each access key is linked to a :ref:`user identity <minio-authentication-and-identity-management>` and inherits the :ref:`policies <minio-policy>` attached to its parent user *or* those groups in which the parent user has membership.
-Each access key also supports an optional inline policy which further restricts access to a subset of actions and resources available to the parent user.
+每个访问密钥都关联到一个 :ref:`用户身份 <minio-authentication-and-identity-management>`，并继承其父用户所附加的 :ref:`策略 <minio-policy>` *或* 父用户所属组的策略。
+每个访问密钥还支持可选的内联策略，用于进一步将访问限制在父用户可用操作和资源的子集范围内。
 
-:mc:`mc admin user svcacct` only supports creating access keys for :ref:`MinIO-managed <minio-users>` and :ref:`Active Directory/LDAP-managed <minio-external-identity-management-ad-ldap>` accounts. 
+:mc:`mc admin user svcacct` 仅支持为 :ref:`MinIO 托管 <minio-users>` 和 :ref:`Active Directory/LDAP 托管 <minio-external-identity-management-ad-ldap>` 账户创建访问密钥。 
 
-To create access keys for :ref:`OpenID Connect-managed users <minio-external-identity-management-openid>`, log into the :ref:`MinIO Console <minio-console>` and generate the access keys through the UI.
+如需为 :ref:`OpenID Connect 托管用户 <minio-external-identity-management-openid>` 创建访问密钥，请登录 :ref:`MinIO Console <minio-console>` 并通过 UI 生成访问密钥。
 
-The :mc:`mc admin user svcacct` command has the following subcommands:
+:mc:`mc admin user svcacct` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc admin user svcacct add`
      - .. include:: /reference/minio-mc-admin/mc-admin-user-svcacct-add.rst
@@ -95,4 +95,3 @@ The :mc:`mc admin user svcacct` command has the following subcommands:
    /reference/minio-mc-admin/mc-admin-user-svcacct-info
    /reference/minio-mc-admin/mc-admin-user-svcacct-list
    /reference/minio-mc-admin/mc-admin-user-svcacct-remove
-

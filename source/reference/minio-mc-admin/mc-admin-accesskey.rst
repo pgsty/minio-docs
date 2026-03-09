@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,33 +14,33 @@
 
 .. versionadded:: MinIO Client RELEASE.2024-10-08T09-37-26Z
 
-These commands replace the MinIO IDP functionality of the :mc:`mc admin user svcacct` command and its subcommands.
+这些命令用于替代 :mc:`mc admin user svcacct` 命令及其子命令中的 MinIO IDP 功能。
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-accesskey-desc
 
-The :mc:`mc admin accesskey` command and its subcommands create and manage :ref:`Access Keys <minio-idp-service-account>` for internally managed users on a MinIO deployment.
+:mc:`mc admin accesskey` 命令及其子命令用于为 MinIO 部署中内部管理的用户创建和管理 :ref:`Access Keys <minio-idp-service-account>`。
 
 .. end-mc-admin-accesskey-desc
 
-Each access key is linked to a :ref:`user identity <minio-authentication-and-identity-management>` and inherits the :ref:`policies <minio-policy>` attached to its parent user *or* those groups in which the parent user has membership.
-Each access key also supports an optional inline policy which further restricts access to a subset of actions and resources available to the parent user.
+每个访问密钥都关联到一个 :ref:`用户身份 <minio-authentication-and-identity-management>`，并继承其父用户直接附加的 :ref:`策略 <minio-policy>` *或* 父用户所属组的策略。
+每个访问密钥还支持可选的内联策略，可进一步将访问限制为父用户可用操作和资源的一个子集。
 
-:mc:`mc admin user svcacct` only supports creating access keys for :ref:`MinIO-managed <minio-users>` accounts.
+:mc:`mc admin user svcacct` 仅支持为 :ref:`MinIO-managed <minio-users>` 账户创建访问密钥。
 
-To create access keys for :ref:`Active Directory/LDAP-managed <minio-external-identity-management-ad-ldap>` accounts, use :mc:`mc idp ldap accesskey` and its subcommands.
-To manage access keys for :ref:`OpenID Connect-managed users <minio-external-identity-management-openid>`, log into the :ref:`MinIO Console <minio-console>` and generate the access keys through the UI.
+要为 :ref:`Active Directory/LDAP-managed <minio-external-identity-management-ad-ldap>` 账户创建访问密钥，请使用 :mc:`mc idp ldap accesskey` 及其子命令。
+要管理 :ref:`OpenID Connect-managed users <minio-external-identity-management-openid>` 的访问密钥，请登录 :ref:`MinIO Console <minio-console>` 并通过 UI 生成访问密钥。
 
-:mc:`mc admin accesskey` command has the following subcommands:
+:mc:`mc admin accesskey` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc admin accesskey create`
      - .. include:: /reference/minio-mc-admin/mc-admin-accesskey-create.rst
@@ -89,4 +89,3 @@ To manage access keys for :ref:`OpenID Connect-managed users <minio-external-ide
    /reference/minio-mc-admin/mc-admin-accesskey-info
    /reference/minio-mc-admin/mc-admin-accesskey-list
    /reference/minio-mc-admin/mc-admin-accesskey-remove
-

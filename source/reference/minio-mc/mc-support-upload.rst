@@ -16,7 +16,7 @@ Description
 
 .. start-mc-support-upload-desc
 
-:mc:`mc support upload` copies a file from the local file system to a SUBNET ticket.
+:mc:`mc support upload` 将文件从本地文件系统复制到 SUBNET 工单。
 
 .. end-mc-support-upload-desc
 
@@ -27,7 +27,7 @@ Description
 Syntax
 ------
       
-The :mc:`mc support profile` command has the following syntax:
+:mc:`mc support profile` 命令具有以下语法：
 
 .. code-block:: shell
 
@@ -44,29 +44,29 @@ Parameters
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment.
+   MinIO 部署的 :ref:`alias <alias>`。
 
 .. mc-cmd:: FILE
    :required:
 
-   The path to the file to upload to SUBNET.
+   要上传到 SUBNET 的文件路径。
 
 .. mc-cmd:: --comment
    :optional:
 
-   Include a message to the issue when uploading the file.
+   上传文件时，向 issue 附加一条消息。
 
 .. mc-cmd:: --enc 
    :optional:
 
-   Encrypt contents of the upload.
-   The key used for the encryption is only accessible to MinIO.
+   对上传内容进行加密。
+   用于加密的密钥仅 MinIO 可访问。
 
 .. mc-cmd:: --issue
    :optional:
 
-   Specify the issue number to which to add the file.
-   If not specified, the file uploads to the generic issue number ``0``.
+   指定要添加该文件的 issue 编号。
+   如果未指定，则文件会上传到通用 issue 编号 ``0``。
 
 Global Flags
 ~~~~~~~~~~~~
@@ -81,7 +81,7 @@ Examples
 Upload a file to an issue
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This command uploads the file ``./trace.log`` from the local file system to the SUBNET issue number 10001 for the deployment with alias ``minio1``.
+此命令将本地文件系统中的文件 ``./trace.log`` 上传到别名为 ``minio1`` 的部署对应的 SUBNET issue ``10001``。
 
 .. code-block:: shell
    :class: copyable
@@ -92,8 +92,8 @@ This command uploads the file ``./trace.log`` from the local file system to the 
 Upload a file to an issue with a comment for MinIO Engineers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This command uploads the file ``./trace.log`` from the local file system to the SUBNET issue number 10001 for the deployment with alias ``minio1``.
-The command also includes a comment available to MinIO Engineers about the file.
+此命令将本地文件系统中的文件 ``./trace.log`` 上传到别名为 ``minio1`` 的部署对应的 SUBNET issue ``10001``。
+该命令还会附加一条关于该文件的注释，供 MinIO Engineers 查看。
 
 .. code-block:: shell
    :class: copyable

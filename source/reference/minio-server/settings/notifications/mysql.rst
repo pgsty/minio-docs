@@ -1,18 +1,18 @@
 .. _minio-server-envvar-bucket-notification-mysql:
 .. _minio-server-config-bucket-notification-mysql:
 
-===========================
-MySQL Notification Settings
-===========================
+======================
+MySQL 通知设置
+======================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for configuring a MYSQL service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
-See :ref:`minio-bucket-notifications-publish-mysql` for a tutorial on using these settings.
+本页记录了将 MySQL 服务配置为 :ref:`Bucket Notifications <minio-bucket-notifications>` 目标的相关设置。
+有关如何使用这些设置的教程，请参阅 :ref:`minio-bucket-notifications-publish-mysql`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -22,19 +22,19 @@ See :ref:`minio-bucket-notifications-publish-mysql` for a tutorial on using thes
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Multiple MYSQL Targets
-----------------------
+多个 MySQL 目标
+----------------
 
-You can specify multiple MySQL service endpoints by appending a unique identifier ``_ID`` for each set of related MySQL settings on to the top level key. 
+你可以在顶层键后追加唯一标识符 ``_ID``，为每组相关的 MySQL 设置指定多个 MySQL 服务端点。
 
-Examples
-~~~~~~~~
+示例
+~~~~
 
-The following commands set two distinct MySQL service endpoints as ``PRIMARY`` and ``SECONDARY`` respectively:
+以下命令分别将两个不同的 MySQL 服务端点设置为 ``PRIMARY`` 和 ``SECONDARY``：
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -50,9 +50,9 @@ The following commands set two distinct MySQL service endpoints as ``PRIMARY`` a
          export MINIO_NOTIFY_MYSQL_TABLE_SECONDARY="minioevents"
          export MINIO_NOTIFY_MYSQL_FORMAT_SECONDARY="namespace"
 
-      With these settings, :envvar:`MINIO_NOTIFY_MYSQL_ENABLE_PRIMARY <MINIO_NOTIFY_MYSQL_ENABLE>` indicates the environment variable is associated to a MySQL service endpoint with ID of ``PRIMARY``.
+      在这些设置中，:envvar:`MINIO_NOTIFY_MYSQL_ENABLE_PRIMARY <MINIO_NOTIFY_MYSQL_ENABLE>` 表示该环境变量关联到 ID 为 ``PRIMARY`` 的 MySQL 服务端点。
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
       :sync: config
 
       .. code-block:: shell
@@ -69,46 +69,46 @@ The following commands set two distinct MySQL service endpoints as ``PRIMARY`` a
             format="namespace" \
             [ARGUMENT=VALUE ...]
 
-Settings
---------
+设置
+----
 
-Enable
-~~~~~~
+启用
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_MYSQL_ENABLE
 
-      Specify ``on`` to enable publishing bucket notifications to a MySQL service endpoint.
+      指定 ``on`` 以启用将存储桶通知发布到 MySQL 服务端点。
 
-      Defaults to ``off``.
+      默认为 ``off``。
    
-      Requires specifying the following additional environment variables if set to ``on``:
+      若设置为 ``on``，则还必须指定以下环境变量：
    
       - :envvar:`MINIO_NOTIFY_MYSQL_DSN_STRING`
       - :envvar:`MINIO_NOTIFY_MYSQL_TABLE`
       - :envvar:`MINIO_NOTIFY_MYSQL_FORMAT`
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql
    
-      The top-level configuration key for defining an MySQL service endpoint for use with :ref:`MinIO bucket notifications <minio-bucket-notifications>`.
+      用于定义 MySQL 服务端点以配合 :ref:`MinIO bucket notifications <minio-bucket-notifications>` 使用的顶层配置键。
    
-      Use :mc-cmd:`mc admin config set` to set or update an MySQL service endpoint. 
-      The following arguments are *required* for each target: 
+      使用 :mc-cmd:`mc admin config set` 设置或更新 MySQL 服务端点。
+      每个目标都*必需*以下参数：
       
       - :mc-conf:`~notify_mysql.dsn_string`
       - :mc-conf:`~notify_mysql.table`
       - :mc-conf:`~notify_mysql.format`
    
-      Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+      其他可选参数请以空白字符（``" "``）分隔列表形式指定。
 
       .. code-block:: shell
          :class: copyable
@@ -120,29 +120,29 @@ Enable
            [ARGUMENT="VALUE"] ... \
 
 
-Data Source Name (DSN) String
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+数据源名称（DSN）字符串
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
       
       .. envvar:: MINIO_NOTIFY_MYSQL_DSN_STRING
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql dsn_string
          :delimiter: " "
 
-Specify the data source name (DSN) of the MySQL service endpoint. MinIO expects the following format:
+指定 MySQL 服务端点的数据源名称（DSN）。MinIO 期望使用以下格式：
 
 ``<user>:<password>@tcp(<host>:<port>)/<database>``
  
-For example:
+例如：
  
 ``"username:password@tcp(mysql.example.com:3306)/miniodb"``
       
@@ -150,137 +150,137 @@ For example:
    :start-after: start-notify-target-online-desc
    :end-before: end-notify-target-online-desc
 
-Table
-~~~~~
+表
+~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_MYSQL_TABLE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql table
          :delimiter: " "
 
-Specify the name of the MySQL table to which MinIO publishes event notifications.
+指定 MinIO 发布事件通知到的 MySQL 表名。
       
-Format
-~~~~~~
+格式
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_MYSQL_FORMAT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql format
          :delimiter: " "
       
-Specify the format of event data written to the MySQL service endpoint.
-MinIO supports the following values:
+指定写入 MySQL 服务端点的事件数据格式。
+MinIO 支持以下取值：
 
 ``namespace``
-   For each bucket event, MinIO creates a JSON document with the bucket and object name from the event as the document ID and the actual event as part of the document body. 
-   Additional updates to that object modify the existing table entry for that object. 
-   Similarly, deleting the object also deletes the corresponding table entry.
+   对于每个存储桶事件，MinIO 会创建一个 JSON 文档，将事件中的存储桶和对象名称作为文档 ID，并将实际事件作为文档体的一部分。
+   对该对象的后续更新会修改该对象在表中的现有条目。
+   同样，删除该对象也会删除对应的表条目。
    
 ``access``
-   For each bucket event, MinIO creates a JSON document with the event details and appends it to the table with a MySQL-generated random ID. 
-   Additional updates to an object result in new index entries,    and existing entries remain unmodified.
+   对于每个存储桶事件，MinIO 会创建一个包含事件详情的 JSON 文档，并以 MySQL 生成的随机 ID 追加到表中。
+   对对象的后续更新会产生新的索引条目，且现有条目保持不变。
       
-Max Open Connections
-~~~~~~~~~~~~~~~~~~~~
+最大打开连接数
+~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_MYSQL_MAX_OPEN_CONNECTIONS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql max_open_connections
          :delimiter: " "
 
-Specify the maximum number of open connections to the MySQL database.
+指定与 MySQL 数据库建立的最大打开连接数。
 
-Defaults to ``2``.
+默认为 ``2``。
       
-Queue Directory
-~~~~~~~~~~~~~~~
+队列目录
+~~~~~~~~
 
-*Optional*
+*可选*
 
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_MYSQL_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql queue_dir
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径，以启用 MinIO 对未投递消息的持久化事件存储，例如 ``/opt/minio/events``。
 
-MinIO stores undelivered events in the specified store while the MySQL server/broker is offline and replays the stored events when connectivity resumes.
+当 MySQL 服务器/代理离线时，MinIO 会将未投递事件存储在指定位置；连接恢复后会重放这些已存储事件。
 
-Queue Limit
-~~~~~~~~~~~
+队列上限
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_MYSQL_QUEUE_LIMIT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql queue_limit
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. Defaults to ``100000``.
+指定未投递消息的最大上限。默认为 ``100000``。
 
-Comment
-~~~~~~~
+注释
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_MYSQL_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_mysql comment
          :delimiter: " "
 
-Specify a comment to associate with the MySQL configuration.
+指定与 MySQL 配置关联的注释。

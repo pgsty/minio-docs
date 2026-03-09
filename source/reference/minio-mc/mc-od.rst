@@ -4,37 +4,37 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc od
 
-Syntax
-------
+语法
+----
 
 .. start-mc-od-desc
 
-The :mc:`mc od` command copies a local file to a remote location in a specified number of parts and part sizes.
-The command outputs the time it took to upload the file. 
+:mc:`mc od` 命令将本地文件按指定的分片数量与分片大小复制到远程位置。
+该命令会输出上传该文件所耗费的时间。
 
 .. end-mc-od-desc
 
-Use the :mc:`mc od` to mimic the functionality of the Linux ``dd`` command.
+使用 :mc:`mc od` 可模拟 Linux ``dd`` 命令的功能。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command Upload 200MiB of a file to a bucket in 5 parts of size 40MiB.
-      The output shows the results of the upload, including the length of time it took for the upload to complete.
+      以下命令将文件的 200MiB 上传到存储桶中，分为 5 个 40MiB 的分片。
+      输出会显示上传结果，包括完成上传所用的时长。
 
       .. code-block:: shell
          :class: copyable
 
          mc od if=file.zip of=myminio/mybucket/file.zip size=40MiB parts=5
 
-      If passing the ``--json`` :ref:`global flag <minio-mc-global-options>`, the output of the command resembles the following:
+      如果传入 ``--json`` :ref:`全局参数 <minio-mc-global-options>`，命令输出类似如下：
 
       .. code-block:: json
 
@@ -47,9 +47,9 @@ Use the :mc:`mc od` to mimic the functionality of the Linux ``dd`` command.
            "elapsed": "314ms"
          }
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -66,14 +66,14 @@ Use the :mc:`mc od` to mimic the functionality of the Linux ``dd`` command.
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: if
    :required:
 
-   The path of the source object to use for the upload.
-   Use the full path relative to your current location.
+   用于上传的源对象路径。
+   使用相对于当前位置的完整路径。
 
    .. code-block:: none
 
@@ -82,89 +82,89 @@ Parameters
 .. mc-cmd:: of
    :required:
 
-   The full target path to upload the object to.
+   上传对象的完整目标路径。
 
 .. mc-cmd:: size
    :optional:
 
-   The size for each part of the file to upload.
-   If not specified, MinIO determines the size for parts from the source stream.
+   文件上传时每个分片的大小。
+   如未指定，MinIO 会根据源流确定分片大小。
 
 .. mc-cmd:: parts
    :optional:
 
-   The number of parts to divide the object into for uploading.
-   If not specified, MinIO determines the number of parts based on the size of the source stream.
+   上传时将对象拆分成的分片数量。
+   如未指定，MinIO 会根据源流大小确定分片数量。
 
 .. mc-cmd:: skip
    :optional:
 
-   The number of parts of the file to skip during the upload.
-   For example, use this option to test the upload speed for a large file of many parts on only a portion of the object's parts.
+   上传过程中要跳过的文件分片数量。
+   例如，可使用该选项仅上传对象的一部分分片，以测试一个大文件（分片较多）的上传速度。
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Upload a Full File with 40MiB Parts
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+以 40MiB 分片上传完整文件
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc od` to upload a file to MinIO in a set of parts of specified size. 
-The :mc-cmd:`~mc od size` option allows you to specify the desired part size.
+使用 :mc:`mc od` 可按指定大小的一组分片将文件上传到 MinIO。
+:mc-cmd:`~mc od size` 选项用于指定期望的分片大小。
 
 .. code-block:: shell
    :class: copyable
 
    mc od if=file.zip of=myminio/mybucket/file.zip size=40MiB
 
-- Replace ``myminio/mybucket/file.zip`` with the path of the object or file stream to upload.
+- 将 ``myminio/mybucket/file.zip`` 替换为要上传的对象或文件流路径。
 
-- Replace :mc-cmd:`size <mc od size>` with the desired size of the object parts.
+- 将 :mc-cmd:`size <mc od size>` 替换为期望的对象分片大小。
 
-MinIO examines the source file and divides it into the necessary number of parts so that no part is larger than the specified 40MiB part size.
+MinIO 会检查源文件并将其拆分为所需数量的分片，确保没有任何分片超过指定的 40MiB 分片大小。
 
-Upload a First Five 40 MiB Parts of a File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+上传文件的前五个 40 MiB 分片
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc od` to upload parts of a file to MinIO of specified part size. 
-The :mc-cmd:`~mc od size` option allows you to specify the desired part size.
-The :mc-cmd:`~mc od parts` option allows you to specify the total number of parts to use for the object.
+使用 :mc:`mc od` 可按指定分片大小，将文件的部分分片上传到 MinIO。
+:mc-cmd:`~mc od size` 选项用于指定期望的分片大小。
+:mc-cmd:`~mc od parts` 选项用于指定该对象要使用的总分片数。
 
 .. code-block:: shell
    :class: copyable
 
    mc od if=file.zip of=myminio/mybucket/file.zip size=40MiB parts=5
 
-- Replace ``myminio/mybucket/file.zip`` with the path of the object or file stream to upload.
-- Replace :mc-cmd:`size <mc od size>` with the desired size of the object parts.
-- Replace :mc-cmd:`parts <mc od parts>` with the number of desired parts to use for the object.
+- 将 ``myminio/mybucket/file.zip`` 替换为要上传的对象或文件流路径。
+- 将 :mc-cmd:`size <mc od size>` 替换为期望的对象分片大小。
+- 将 :mc-cmd:`parts <mc od parts>` 替换为该对象期望使用的分片数。
 
-In this command example, if the source object stream is larger than 200MiB (40MiB × 5 parts), only the first 200MiB of the file upload.
+在该命令示例中，如果源对象流大于 200MiB（40MiB × 5 个分片），则仅上传文件的前 200MiB。
 
 .. important:: 
 
-   Using the command this way may not upload the entirety of an object.
+   以这种方式使用该命令可能无法上传对象的全部内容。
 
-Upload a Full File in 5 Parts
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将完整文件分 5 个分片上传
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Take a source file, divide the file into a specified number of parts, then upload all parts of the file to a MinIO target.
+将源文件拆分为指定数量的分片，然后把文件的所有分片上传到 MinIO 目标位置。
 
 .. code-block:: shell
    :class: copyable
 
    mc od if=file.zip of=myminio/mybucket/file.zip parts=5
 
-The above command divides the source file into five equal parts, then uploads those parts.
+上述命令会将源文件均分为五个分片，然后上传这些分片。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

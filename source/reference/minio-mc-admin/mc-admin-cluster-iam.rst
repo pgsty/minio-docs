@@ -6,33 +6,33 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin cluster iam
 
-Description
------------
+描述
+----
 
 .. versionadded:: RELEASE.2022-06-26T18-51-48Z
 
 .. start-mc-admin-cluster-iam-desc
 
-The :mc:`mc admin cluster iam` command and its subcommands provide tools for manually importing and exporting MinIO :ref:`identity and access management (IAM) <minio-authentication-and-identity-management>` metadata.
+:mc:`mc admin cluster iam` 命令及其子命令提供了用于手动导入和导出 MinIO :ref:`身份与访问管理（IAM） <minio-authentication-and-identity-management>` 元数据的工具。
 
 .. end-mc-admin-cluster-iam-desc
 
-For automatic synchronization of all IAM configurations in a deployment to a remote site, use :ref:`site replication <minio-site-replication-overview>`.
+如需将部署中的所有 IAM 配置自动同步到远程站点，请使用 :ref:`站点复制 <minio-site-replication-overview>`。
 
-The :mc:`mc admin cluster iam` command has the following subcommands:
+:mc:`mc admin cluster iam` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc admin cluster iam import`
      - .. include:: /reference/minio-mc-admin/mc-admin-cluster-iam-import.rst
@@ -52,5 +52,4 @@ The :mc:`mc admin cluster iam` command has the following subcommands:
 
    /reference/minio-mc-admin/mc-admin-cluster-iam-import
    /reference/minio-mc-admin/mc-admin-cluster-iam-export
-
 

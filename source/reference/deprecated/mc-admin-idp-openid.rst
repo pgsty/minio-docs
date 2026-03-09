@@ -14,75 +14,75 @@
 
 .. versionchanged:: RELEASE.2023-05-26T23-31-54Z
 
-   ``mc admin idp openid`` and its subcommands replaced by :mc-cmd:`mc idp openid`.
+   ``mc admin idp openid`` 及其子命令已由 :mc-cmd:`mc idp openid` 替代。
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-idp-openid-desc
 
-The :mc-cmd:`mc admin idp openid` commands allow you to add, modify, review, list, remove, enable, and disable server configurations to 3rd party :ref:`OpenID Identity and Access Management (IAM) integrations <minio-external-identity-management-openid>`.
+:mc-cmd:`mc admin idp openid` 命令允许你为第三方 :ref:`OpenID 身份与访问管理（IAM）集成 <minio-external-identity-management-openid>` 添加、修改、查看、列出、移除、启用和禁用服务器配置。
 
 .. end-mc-admin-idp-openid-desc
 
-Define configuration settings as an alternative to using environment variables when :ref:`setting up an OpenID connection <minio-external-identity-management-openid-configure>`.
+在 :ref:`设置 OpenID 连接 <minio-external-identity-management-openid-configure>` 时，可通过定义配置设置来替代使用环境变量。
 
 
-The :mc-cmd:`mc admin idp openid` command has the following subcommands:
+:mc-cmd:`mc admin idp openid` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc-cmd:`mc admin idp openid add`
-     - Create an OpenID IDP server configuration.
+     - 创建 OpenID IDP 服务器配置。
 
    * - :mc-cmd:`mc admin idp openid update`
-     - Modify an existing OpenID IDP server configuration.
+     - 修改现有的 OpenID IDP 服务器配置。
 
    * - :mc-cmd:`mc admin idp openid rm`
-     - Remove an OpenID IDP server configuration from a deployment.
+     - 从部署中移除 OpenID IDP 服务器配置。
 
    * - :mc-cmd:`mc admin idp openid ls`
-     - Outputs a list of the existing OpenID server configurations for a deployment.
+     - 输出部署中现有 OpenID 服务器配置列表。
 
    * - :mc-cmd:`mc admin idp openid info`
-     - Displays details for a specific OpenID server configuration.
+     - 显示特定 OpenID 服务器配置的详细信息。
 
    * - :mc-cmd:`mc admin idp openid enable`
-     - Enables an OpenID server configuration.
+     - 启用 OpenID 服务器配置。
 
    * - :mc-cmd:`mc admin idp openid disable`
-     - Disables an OpenID server configuration.
+     - 禁用 OpenID 服务器配置。
 
-Configuration Parameters
-------------------------
+配置参数
+--------
 
-The :mc-cmd:`mc admin idp openid` subcommands support configuration parameters.
-The parameters define the server's interaction with the IAM provider.
+:mc-cmd:`mc admin idp openid` 子命令支持配置参数。
+这些参数定义了服务器与 IAM 提供方的交互方式。
 
-For a more detailed explanation of the configuration parameters, refer to the :ref:`config setting documentation <minio-open-id-config-settings>`.
+有关配置参数的更详细说明，请参阅 :ref:`配置设置文档 <minio-open-id-config-settings>`。
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: add
 
-   Create a new set of configurations for an OpenID provider.
+   为 OpenID 提供方创建一组新的配置。
 
-   You can run the command multiple times to set up multiple OpenID providers.
+   你可以多次运行该命令来设置多个 OpenID 提供方。
 
-   When adding multiple OpenID providers, only one can be a JWT Claim-based provider.
-   All others must be role-based providers.
+   添加多个 OpenID 提供方时，只能有一个是基于 JWT Claim 的提供方。
+   其余都必须是基于角色的提供方。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
-         The following example creates the configuration settings for the ``myminio`` deployment as defined in a new ``test-config`` setup for Dex integration.
+         以下示例为 ``myminio`` 部署创建配置设置，在新的 ``test-config`` 配置中定义 Dex 集成。
 
          .. code-block:: shell
             :class: copyable
@@ -95,9 +95,9 @@ Syntax
                 redirect_uri="http://127.0.0.1:10000/oauth_callback"                      \
                 role_policy="consoleAdmin"                                                           
                                     
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -108,20 +108,20 @@ Syntax
                                        [CFG_PARAM1]      \
                                        [CFG_PARAM2]...
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for OpenID integration.
-         - Replace ``CFG_NAME`` with a unique string for this configuration.
-           If not specified, the command creates default configuration values.
-         - Replace the ``[CFG_PARAM#]`` with each of the :ref:`configuration setting <minio-open-id-config-settings>` key-value pairs in the format of ``PARAMETER="value"``.
+         - 将 ``ALIAS`` 替换为用于配置 OpenID 集成的 MinIO 部署的 :ref:`alias <alias>`。
+         - 将 ``CFG_NAME`` 替换为该配置的唯一字符串。
+           如果未指定，命令会创建默认配置值。
+         - 将 ``[CFG_PARAM#]`` 替换为各个 :ref:`配置设置 <minio-open-id-config-settings>` 键值对，格式为 ``PARAMETER="value"``。
 
 .. mc-cmd:: update
 
-   Modify an existing set of configurations for an OpenID provider.
+   修改 OpenID 提供方的现有配置集合。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
-         The following example changes two of the configuration settings for the ``myminio`` deployment as defined in the ``test-config`` setup for Dex integration.
+         以下示例修改了 ``myminio`` 部署中 ``test-config``（用于 Dex 集成）的两个配置项。
 
          .. code-block:: shell
             :class: copyable
@@ -132,9 +132,9 @@ Syntax
                                 scopes="openid,groups"      \
                                 role_policy="consoleAdmin"                                                              
                                     
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -145,29 +145,29 @@ Syntax
                                               [CFG_PARAM1]     \
                                               [CFG_PARAM2]...
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for OpenID integration.
-         - Replace ``CFG_NAME`` with a unique string for this configuration.
-           If not specified, the command updates the default configuration.
-         - Replace the ``[CFG_PARAM#]`` with each of the :ref:`configuration setting <minio-open-id-config-settings>` key-value pairs to update in the format of ``PARAMETER="value"``.
+         - 将 ``ALIAS`` 替换为用于配置 OpenID 集成的 MinIO 部署的 :ref:`alias <alias>`。
+         - 将 ``CFG_NAME`` 替换为该配置的唯一字符串。
+           如果未指定，命令会更新默认配置。
+         - 将 ``[CFG_PARAM#]`` 替换为要更新的各个 :ref:`配置设置 <minio-open-id-config-settings>` 键值对，格式为 ``PARAMETER="value"``。
 
 .. mc-cmd:: rm, remove
 
-   Remove an existing set of configurations for an OpenID provider.
+   删除 OpenID 提供方的现有配置集合。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
-         The following example removes the ``test-config`` settings for the ``myminio`` deployment.
+         以下示例删除 ``myminio`` 部署中的 ``test-config`` 配置。
 
          .. code-block:: shell
             :class: copyable
 
             mc admin idp openid rm myminio test_config                                                              
                                     
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -176,55 +176,55 @@ Syntax
                                               ALIAS      \
                                               [CFG_NAME]
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for OpenID integration.
-         - Replace ``CFG_NAME`` with a unique string for this configuration.
-           If not specified, the command removes the default configurations. 
+         - 将 ``ALIAS`` 替换为用于配置 OpenID 集成的 MinIO 部署的 :ref:`alias <alias>`。
+         - 将 ``CFG_NAME`` 替换为该配置的唯一字符串。
+           如果未指定，命令会删除默认配置。
 
 .. mc-cmd:: ls, list
 
-   Outputs a list of existing configuration sets for OpenID providers.
+   输出 OpenID 提供方现有配置集合列表。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
-         The following example outputs a list of all OpenID configuration sets defined for the ``myminio`` deployment.
+         以下示例输出 ``myminio`` 部署定义的所有 OpenID 配置集合列表。
 
          .. code-block:: shell
             :class: copyable
 
             mc admin idp openid ls myminio                                                            
                                     
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
 
             mc [GLOBALFLAGS] admin idp openid ls ALIAS
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to list OpenID integrations for.
+         - 将 ``ALIAS`` 替换为要列出 OpenID 集成的 MinIO 部署的 :ref:`alias <alias>`。
 
 
 .. mc-cmd:: info
 
-   Outputs the set of values defined for an existing set of server configurations for an OpenID provider.
+   输出 OpenID 提供方现有服务器配置集合中定义的参数值。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
-         The following example outputs the configuration settings defined for the ``test_config`` set of OpenID settings on the ``myminio`` deployment.
+         以下示例输出 ``myminio`` 部署中 ``test_config`` 这组 OpenID 设置所定义的配置项。
 
          .. code-block:: shell
             :class: copyable
 
             mc admin idp openid info myminio test_config
                                     
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -233,19 +233,19 @@ Syntax
                                               ALIAS      \
                                               [CFG_NAME]
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for OpenID integration.
-         - Replace ``CFG_NAME`` with a unique string for this configuration.
-           If not specified, the information displays for the default server configuration.
+         - 将 ``ALIAS`` 替换为用于配置 OpenID 集成的 MinIO 部署的 :ref:`alias <alias>`。
+         - 将 ``CFG_NAME`` 替换为该配置的唯一字符串。
+           如果未指定，则显示默认服务器配置的信息。
 
 .. mc-cmd:: enable
 
-   Begin using an existing set of configurations for an OpenID provider.
+   开始使用 OpenID 提供方的现有配置集合。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
-         The following example enables the server configurations defined as ``test_config`` on the ``myminio`` deployment.
+         以下示例启用 ``myminio`` 部署上定义为 ``test_config`` 的服务器配置。
 
          .. code-block:: shell
             :class: copyable
@@ -254,9 +254,9 @@ Syntax
                                 myminio      \
                                 test_config
 
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -265,19 +265,19 @@ Syntax
                                               ALIAS      \
                                               [CFG_NAME]
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for OpenID integration.
-         - Replace ``CFG_NAME`` with a unique string for this configuration.
-           If not specified, the command enables the default configuration values.
+         - 将 ``ALIAS`` 替换为用于配置 OpenID 集成的 MinIO 部署的 :ref:`alias <alias>`。
+         - 将 ``CFG_NAME`` 替换为该配置的唯一字符串。
+           如果未指定，命令会启用默认配置值。
 
 .. mc-cmd:: disable
 
-   Stop using a set of configurations for an OpenID provider.
+   停止使用 OpenID 提供方的一组配置。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
-         The following example disables the server configurations defined as ``test_config`` on the ``myminio`` deployment.
+         以下示例禁用 ``myminio`` 部署上定义为 ``test_config`` 的服务器配置。
 
          .. code-block:: shell
             :class: copyable
@@ -286,9 +286,9 @@ Syntax
                                 myminio      \
                                 test_config
 
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -297,14 +297,14 @@ Syntax
                                               ALIAS         \
                                               [CFG_NAME]
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for OpenID integration.
-         - Replace ``CFG_NAME`` with a unique string for this configuration.
-           If not specified, the command disables the default configuration values.
+         - 将 ``ALIAS`` 替换为用于配置 OpenID 集成的 MinIO 部署的 :ref:`alias <alias>`。
+         - 将 ``CFG_NAME`` 替换为该配置的唯一字符串。
+           如果未指定，命令会禁用默认配置值。
 
 
 
-Global Flags
-------------
+全局标志
+--------
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

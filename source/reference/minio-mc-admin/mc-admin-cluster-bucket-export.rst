@@ -8,36 +8,36 @@
 
 .. mc:: mc admin cluster bucket export
 
-Description
------------
+描述
+----
 
 .. versionadded:: RELEASE.2022-06-17T02-52-50Z
 
 .. start-mc-admin-cluster-bucket-export-desc
 
-The :mc:`mc admin cluster bucket export` command exports bucket metadata for use with the :mc:`mc admin cluster bucket import` command.
+:mc:`mc admin cluster bucket export` 命令会导出存储桶元数据，以供 :mc:`mc admin cluster bucket import` 命令使用。
 
 .. end-mc-admin-cluster-bucket-export-desc
 
-You can use this command to manually back up the metadata for the specified MinIO bucket.
-The command always saves the output as ``cluster-metadata.zip``.
+你可以使用此命令手动备份指定 MinIO 存储桶的元数据。
+该命令始终将输出保存为 ``cluster-metadata.zip``。
 
-If you specify only the deployment as the target, this command backs up all bucket metadata on the target deployment.
+如果你仅将部署指定为目标，此命令会备份目标部署上所有存储桶的元数据。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command exports all bucket metadata for the ``myminio`` deployment.
+      以下命令会导出 ``myminio`` 部署的所有存储桶元数据。
   
       .. code-block:: shell  
          :class: copyable 
   
          mc admin cluster bucket export myminio
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      该命令使用以下语法：
   
       .. code-block:: shell  
          :class: copyable 
@@ -50,22 +50,22 @@ If you specify only the deployment as the target, this command backs up all buck
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: BUCKET
    :optional:
 
-   The bucket to export metadata for.
+   要导出元数据的存储桶。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

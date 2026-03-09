@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -20,43 +20,39 @@
 .. |alias| replace:: :mc-cmd:`~mc retention set ALIAS`
 .. |versions| replace:: :mc-cmd:`~mc retention set --versions`
 
-Syntax
+语法
 ------
 
 .. start-mc-retention-set-desc
 
-The :mc:`mc retention set` command configures the
-:ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` settings for
-an object or object(s) in a bucket. You can also set the default object lock
-settings for a bucket, where all objects without explicit object lock settings
-inherit the bucket default.
+:mc:`mc retention set` 命令用于为存储桶中的一个或多个对象配置
+:ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` 设置。
+你还可以为存储桶设置默认对象锁设置，使未显式配置对象锁的所有对象继承该存储桶默认值。
 
 .. end-mc-retention-set-desc
 
-To lock an object under :ref:`legal hold <minio-object-locking-legalhold>`, 
-use :mc:`mc legalhold set`.
+要在 :ref:`legal hold <minio-object-locking-legalhold>` 下锁定对象，
+请使用 :mc:`mc legalhold set`。
 
-:mc:`mc retention set` *requires* that the specified bucket has object locking
-enabled. You can **only** enable object locking at bucket creation. See
-:mc-cmd:`mc mb --with-lock` for documentation on creating buckets with
-object locking enabled. 
+:mc:`mc retention set` *要求* 指定存储桶已启用对象锁。
+你**只能**在创建存储桶时启用对象锁。有关启用对象锁创建存储桶的文档，请参见
+:mc-cmd:`mc mb --with-lock`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command sets a default 30 day 
-      :ref:`GOVERNANCE <minio-object-locking-governance>` object lock on the 
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会在 ``myminio`` MinIO 部署中的 ``mydata`` 存储桶上，
+      设置默认 30 天的 :ref:`GOVERNANCE <minio-object-locking-governance>` 对象锁：
 
       .. code-block:: shell
          :class: copyable
 
          mc retention set --default GOVERNANCE "30d" myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -76,89 +72,85 @@ object locking enabled.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-      :mc-cmd:`mc retention set --version-id` is mutually exclusive with
-      multiple other parameters. See the reference documentation for more
-      information.
+      :mc-cmd:`mc retention set --version-id` 与多个其他参数互斥。
+      更多信息请参见参考文档。
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: MODE
    :required:
 
-   Sets the locking mode for the :mc-cmd:`~mc retention set ALIAS`. 
-   Specify one of the following supported values:
+   设置 :mc-cmd:`~mc retention set ALIAS` 的锁定模式。
+   指定以下支持值之一：
 
    - ``governance``
    - ``compliance``
 
-   See the AWS S3 documentation on :s3-docs:`Object Lock Overview
-   <object-lock-overview.html>` for more information on the supported
-   modes.
+   有关支持模式的更多信息，请参见 AWS S3 文档
+   :s3-docs:`Object Lock Overview
+   <object-lock-overview.html>`。
 
-   Requires specifying :mc-cmd:`~mc retention set VALIDITY`.
+   需要指定 :mc-cmd:`~mc retention set VALIDITY`。
 
 .. mc-cmd:: VALIDITY
    :required:
 
-   The duration which objects remain in the specified
-   :mc-cmd:`~mc retention set MODE` after creation.
+   指定对象在创建后保持在
+   :mc-cmd:`~mc retention set MODE` 中的持续时间。
 
-   - For days, specify a string formatted as ``Nd``. For example,
-      ``30d`` for 30 days after object creation.
+   - 按天计时，指定格式为 ``Nd`` 的字符串。例如，
+      ``30d`` 表示对象创建后 30 天。
 
-   - For years, specify a string formatted as ``Ny``. For example, 
-      ``1y`` for 1 year after object creation.
+   - 按年计时，指定格式为 ``Ny`` 的字符串。例如，
+      ``1y`` 表示对象创建后 1 年。
 
 .. mc-cmd:: ALIAS
    :required:
-   
-   The full path to the object or objects for which to set object lock
-   configuration. Specify the :ref:`alias <alias>` for the MinIO or
-   S3-compatible service and the full path to bucket. For
-   example:
+
+   需要设置对象锁配置的对象或对象集合的完整路径。
+   指定 MinIO 或兼容 S3 服务的 :ref:`alias <alias>` 以及存储桶完整路径。
+   例如：
 
    .. code-block:: shell
 
       mc retention set play/mybucket/object.txt MODE VALIDITY
 
-   - If the ``ALIAS`` specifies a bucket or bucket prefix, include
-     :mc-cmd:`~mc retention set --recursive` to apply the object lock
-     settings to the bucket contents.
+   - 如果 ``ALIAS`` 指定的是存储桶或存储桶前缀，请包含
+     :mc-cmd:`~mc retention set --recursive` 以将对象锁设置应用到
+     存储桶内容。
 
-   - :mc:`mc retention set` by default applies to only the latest object
-     version. Use :mc-cmd:`~mc retention set --version-id` or
-     :mc-cmd:`~mc retention set --versions` to apply the object lock
-     settings to a specific version or to all versions of the object
-     respectively.
+   - :mc:`mc retention set` 默认仅应用到对象的最新版本。
+     使用 :mc-cmd:`~mc retention set --version-id` 或
+     :mc-cmd:`~mc retention set --versions` 可分别将对象锁设置
+     应用于指定版本或对象的所有版本。
 
 .. mc-cmd:: --bypass
    :optional:
 
-   Allows a user with the ``s3:BypassGovernanceRetention`` permission
-   to modify the object. Requires the ``governance`` retention 
+   允许具有 ``s3:BypassGovernanceRetention`` 权限的用户
+   修改对象。需要 ``governance`` 保留
    :mc-cmd:`~mc retention set MODE`
 
 .. mc-cmd:: --default
    :optional:
 
-   Sets the default object lock settings for the bucket specified to
-   :mc-cmd:`~mc retention set ALIAS` using the
-   :mc-cmd:`~mc retention set MODE` and :mc-cmd:`~mc retention set VALIDITY`. 
-   Any objects created in the bucket inherit the default object lock settings
-   unless explicitly overriden using :mc:`mc retention set`.
-   
-   If specifying :mc-cmd:`~mc retention set --default`, 
-   :mc:`mc retention set` ignores all other flags.
+   使用 :mc-cmd:`~mc retention set MODE` 和 :mc-cmd:`~mc retention set VALIDITY`，
+   为 :mc-cmd:`~mc retention set ALIAS` 指定的存储桶设置默认对象锁设置。
+   在该存储桶中创建的任何对象都会继承默认对象锁设置，
+   除非使用 :mc:`mc retention set` 显式覆盖。
+
+   如果指定 :mc-cmd:`~mc retention set --default`，
+   :mc:`mc retention set` 会忽略所有其他标志。
 
 .. mc-cmd:: --recursive
    :optional:
    :alias: --r
 
-   Recursively applies the object lock settings to all objects in the
-   specified :mc-cmd:`~mc retention set ALIAS` path.
+   递归将对象锁设置应用到
+   :mc-cmd:`~mc retention set ALIAS` 路径下的所有对象。
 
-   Mutually exclusive with :mc-cmd:`~mc retention set --version-id`.
+   与 :mc-cmd:`~mc retention set --version-id` 互斥。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -170,182 +162,169 @@ Parameters
 .. mc-cmd:: --version-id
    :optional:
    :alias: --vid
-   
+
 
    .. include:: /includes/facts-versioning.rst
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-   Mutually exclusive with any of the following flags:
-   
+   与以下任一标志互斥：
+
    - :mc-cmd:`~mc retention set --versions`
    - :mc-cmd:`~mc retention set --rewind`
    - :mc-cmd:`~mc retention set --recursive`
 
 .. mc-cmd:: --versions
-   :optional:   
+   :optional:
 
    .. include:: /includes/facts-versioning.rst
       :start-after: start-versions-desc
       :end-before: end-versions-desc
 
-   Use :mc-cmd:`~mc retention set --versions` and
-   :mc-cmd:`~mc retention set --rewind` together to apply the
-   retention settings to all object versions that existed at a
-   specific point-in-time.
+   将 :mc-cmd:`~mc retention set --versions` 与
+   :mc-cmd:`~mc retention set --rewind` 结合使用，
+   可将保留设置应用到特定时间点存在的所有对象版本。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Set Default Bucket Retention Settings
+设置存储桶默认保留设置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc retention set` with the
-:mc-cmd:`~mc retention set --recursive` and
-:mc-cmd:`~mc retention set --default` to set the default bucket
-retention settings.
+将 :mc:`mc retention set` 与
+:mc-cmd:`~mc retention set --recursive` 和
+:mc-cmd:`~mc retention set --default` 结合使用，
+以设置存储桶默认保留设置。
 
 .. code-block:: shell
    :class: copyable
 
    mc retention set  --recursive --default MODE DURATION ALIAS/PATH
 
-- Replace :mc-cmd:`MODE <mc retention set MODE>` with the retention mode to
-  enable. MinIO supports the AWS S3 retention modes ``governance`` and
-  ``compliance``.
+- 将 :mc-cmd:`MODE <mc retention set MODE>` 替换为要启用的保留模式。
+  MinIO 支持 AWS S3 保留模式 ``governance`` 和 ``compliance``。
 
-- Replace :mc-cmd:`DURATION <mc retention set VALIDITY>` with the duration which
-  the object lock should remain in effect. For example, to set a retention
-  period of 30 days, specify ``30d``.
+- 将 :mc-cmd:`DURATION <mc retention set VALIDITY>` 替换为对象锁应保持生效的时长。
+  例如，要将保留期设置为 30 天，请指定 ``30d``。
 
-- Replace :mc-cmd:`ALIAS <mc retention set ALIAS>` with the
-  :mc:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc retention set ALIAS>` 替换为已配置的兼容 S3 主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc retention set ALIAS>` with the path to the bucket.
+- 将 :mc-cmd:`PATH <mc retention set ALIAS>` 替换为存储桶路径。
 
 .. include:: /includes/facts-locking.rst
    :start-after: start-command-requires-locking-desc
    :end-before: end-command-requires-locking-desc
 
-Set Object Lock Configuration for Versioned Object
+为已版本化对象设置对象锁配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Specific Version
+   .. tab-item:: 特定版本
 
-      Use :mc:`mc retention set` with
-      :mc-cmd:`~mc retention set --version-id` to apply the retention
-      settings to a specific object version:
+      将 :mc:`mc retention set` 与
+      :mc-cmd:`~mc retention set --version-id` 结合使用，
+      可将保留设置应用到特定对象版本：
 
       .. code-block:: shell
          :class: copyable
 
          mc retention set --version-id VERSION MODE DURATION ALIAS/PATH
 
-      - Replace :mc-cmd:`VERSION <mc retention set --version-id>` with the version
-        of the object.
+      - 将 :mc-cmd:`VERSION <mc retention set --version-id>` 替换为对象版本。
 
-      - Replace :mc-cmd:`MODE <mc retention set MODE>` with the retention mode
-        to enable. MinIO supports the AWS S3 retention modes ``governance`` and
-        ``compliance``.
+      - 将 :mc-cmd:`MODE <mc retention set MODE>` 替换为要启用的保留模式。
+        MinIO 支持 AWS S3 保留模式 ``governance`` 和 ``compliance``。
 
-      - Replace :mc-cmd:`DURATION <mc retention set VALIDITY>` with the duration
-        which the object lock should remain in effect. For example, to set a
-        retention period of 30 days, specify ``30d``.
+      - 将 :mc-cmd:`DURATION <mc retention set VALIDITY>` 替换为对象锁应保持生效的时长。
+        例如，要将保留期设置为 30 天，请指定 ``30d``。
 
-      - Replace :mc-cmd:`ALIAS <mc retention set ALIAS>` with the
-        :mc:`alias <mc alias>` of a configured S3-compatible host.
+      - 将 :mc-cmd:`ALIAS <mc retention set ALIAS>` 替换为已配置的兼容 S3 主机的
+        :mc:`alias <mc alias>`。
 
-      - Replace :mc-cmd:`PATH <mc retention set ALIAS>` with the path to the
-        object.
+      - 将 :mc-cmd:`PATH <mc retention set ALIAS>` 替换为对象路径。
 
-   .. tab-item:: All Versions
+   .. tab-item:: 所有版本
 
-      Use :mc:`mc retention set` with
-      :mc-cmd:`~mc retention set --versions` to apply the retention
-      settings to a specific object version:
+      将 :mc:`mc retention set` 与
+      :mc-cmd:`~mc retention set --versions` 结合使用，
+      可将保留设置应用到特定对象版本：
 
       .. code-block:: shell
          :class: copyable
 
          mc retention set --versions  MODE DURATION ALIAS/PATH
 
-      - Replace :mc-cmd:`MODE <mc retention set MODE>` with the retention mode
-        to enable. MinIO supports the AWS S3 retention modes ``governance`` and
-        ``compliance``.
+      - 将 :mc-cmd:`MODE <mc retention set MODE>` 替换为要启用的保留模式。
+        MinIO 支持 AWS S3 保留模式 ``governance`` 和 ``compliance``。
 
-      - Replace :mc-cmd:`DURATION <mc retention set VALIDITY>` with the duration
-        which the object lock should remain in effect. For example, to set a
-        retention period of 30 days, specify ``30d``.
+      - 将 :mc-cmd:`DURATION <mc retention set VALIDITY>` 替换为对象锁应保持生效的时长。
+        例如，要将保留期设置为 30 天，请指定 ``30d``。
 
 
-      - Replace :mc-cmd:`ALIAS <mc retention set ALIAS>` with the
-        :mc:`alias <mc alias>` of a configured S3-compatible host.
+      - 将 :mc-cmd:`ALIAS <mc retention set ALIAS>` 替换为已配置的兼容 S3 主机的
+        :mc:`alias <mc alias>`。
 
-      - Replace :mc-cmd:`PATH <mc retention set ALIAS>` with the path to the
-        object.
+      - 将 :mc-cmd:`PATH <mc retention set ALIAS>` 替换为对象路径。
 
 
 .. include:: /includes/facts-locking.rst
    :start-after: start-command-requires-locking-desc
    :end-before: end-command-requires-locking-desc
 
-Behavior
+行为
 --------
 
-Retention of Object Versions
+对象版本的保留
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For buckets with :mc:`versioning enabled <mc version>`, :mc:`mc retention set`
-by default operates on the *latest* version of the target object or object(s).
-:mc:`mc retention set` includes specific options that when *explicitly*
-specified direct the command to operate on either a specific object version *or*
-all versions of an object:
+对于启用了 :mc:`versioning <mc version>` 的存储桶，:mc:`mc retention set`
+默认对目标对象（一个或多个）的*最新*版本执行操作。
+:mc:`mc retention set` 包含若干特定选项，在*显式*指定时，
+可指示命令对特定对象版本*或*对象的所有版本执行操作：
 
 .. tab-set::
 
-   .. tab-item:: Specific Object Version
+   .. tab-item:: 特定对象版本
 
-      To direct :mc:`mc retention set` to operate on a specific version of an
-      object, include the ``--version-id`` argument:
-      
+      要让 :mc:`mc retention set` 对对象的特定版本执行操作，
+      请包含 ``--version-id`` 参数：
+
       - :mc-cmd:`mc retention set --version-id`
       - :mc-cmd:`mc retention set --version-id`
       - :mc-cmd:`mc retention set --version-id`
 
-   .. tab-item:: All Object Versions
+   .. tab-item:: 所有对象版本
 
-      To direct :mc:`mc retention set` to operate on *all* versions of an object, 
-      include the ``--versions`` argument:
+      要让 :mc:`mc retention set` 对对象的*所有*版本执行操作，
+      请包含 ``--versions`` 参数：
 
       - :mc-cmd:`mc retention set --versions`
       - :mc-cmd:`mc retention set --versions`
       - :mc-cmd:`mc retention set --versions`
 
-Interaction with Legal Holds
+与 legal hold 的交互
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Locking an object prevents any modification or deletion of that
-object, similar to the :mc-cmd:`COMPLIANCE <mc retention set MODE>` object
-locking mode. Objects can have simultaneous retention-based locks *and*
-legal hold locks. 
+锁定对象会阻止对该对象进行任何修改或删除，
+与 :mc-cmd:`COMPLIANCE <mc retention set MODE>` 对象锁模式类似。
+对象可以同时具有基于保留的锁和 legal hold 锁。
 
-The legal hold lock *overrides* any retention locking, such that an object under
-legal hold remains locked *even if* the retention period expires. Setting,
-modifying, or clearing retention settings for an object under legal hold has no
-effect until the legal hold either expires or is explicitly disabled.
+legal hold 锁会*覆盖*任何保留锁定，这意味着处于 legal hold 下的对象
+即使保留期到期也会保持锁定。对处于 legal hold 下对象的保留设置进行设置、
+修改或清除，在 legal hold 到期或被显式禁用之前均不会生效。
 
-For more information on object legal holds, see :mc:`mc legalhold`.
+有关对象 legal hold 的更多信息，请参见 :mc:`mc legalhold`。
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

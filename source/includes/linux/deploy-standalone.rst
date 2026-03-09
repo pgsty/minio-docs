@@ -1,18 +1,17 @@
-1) Download the MinIO Server
-----------------------------
+1) 下载 MinIO Server
+--------------------
 
-The following tabs provide examples of installing MinIO onto 64-bit Linux operating systems using RPM, DEB, or binary.
-The RPM and DEB packages automatically install MinIO to the necessary system paths and create a ``minio`` service for ``systemctl``.
-MinIO strongly recommends using the RPM or DEB installation routes.
-To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-systemctl`.
+以下选项卡给出了在 64 位 Linux 操作系统上通过 RPM、DEB 或二进制方式安装 MinIO 的示例。
+RPM 和 DEB 软件包会自动将 MinIO 安装到所需系统路径，并为 ``systemctl`` 创建 ``minio`` 服务。
+MinIO 强烈建议优先使用 RPM 或 DEB 安装方式。
+如需更新由 ``systemctl`` 管理的部署，请参阅 :ref:`minio-upgrade-systemctl`。
 
 .. tab-set::
 
    .. tab-item:: RPM (RHEL)
       :sync: rpm
 
-      Use the following commands to download the latest stable MinIO RPM and
-      install it.
+      使用以下命令下载最新稳定版 MinIO RPM 并完成安装。
 
       .. code-block:: shell
          :class: copyable
@@ -24,8 +23,7 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
    .. tab-item:: DEB (Debian/Ubuntu)
       :sync: deb
 
-      Use the following commands to download the latest stable MinIO DEB and
-      install it:
+      使用以下命令下载最新稳定版 MinIO DEB 并完成安装：
 
       .. code-block:: shell
          :class: copyable
@@ -37,8 +35,7 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
    .. tab-item:: Binary
       :sync: binary
 
-      Use the following commands to download the latest stable MinIO binary and
-      install it to the system ``$PATH``:
+      使用以下命令下载最新稳定版 MinIO 二进制文件，并将其安装到系统 ``$PATH`` 中：
 
       .. code-block:: shell
          :class: copyable
@@ -47,14 +44,14 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
          chmod +x minio
          sudo mv minio /usr/local/bin/
 
-2) Run the MinIO Server
------------------------
+2) 运行 MinIO Server
+--------------------
 
-Run the :mc-cmd:`minio server` command to start the MinIO server.
-Specify the path to the volume or folder to use as the storage directory.
-The :mc-cmd:`minio` process must have full access (``rwx``) to the specified path and all subfolders:
+运行 :mc-cmd:`minio server` 命令以启动 MinIO server。
+指定用作存储目录的卷或文件夹路径。
+:mc-cmd:`minio` 进程必须对该路径及其所有子文件夹拥有完整访问权限（``rwx``）：
 
-The following example uses the ``~/minio-data`` folder:
+以下示例使用 ``~/minio-data`` 文件夹：
 
 .. code-block:: shell
    :class: copyable
@@ -63,8 +60,8 @@ The following example uses the ``~/minio-data`` folder:
    minio server ~/minio-data --console-address ":9001"
 
 
-The :mc:`minio server` process prints its output to the system console, similar
-to the following:
+:mc:`minio server` 进程会将输出打印到系统控制台，
+其内容类似如下：
 
 .. code-block:: shell
 
@@ -83,12 +80,10 @@ to the following:
 
    WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables
 
-Open your browser to any of the listed :guilabel:`Console` addresses to open the
-:ref:`MinIO Console <minio-console>` and log in with the :guilabel:`RootUser`
-and :guilabel:`RootPass`.
+在浏览器中打开列出的任意 :guilabel:`Console` 地址，
+即可进入 :ref:`MinIO Console <minio-console>`，
+并使用 :guilabel:`RootUser` 和 :guilabel:`RootPass` 登录。
 
-For applications, use the :guilabel:`API` addresses to access the MinIO
-server and perform S3 operations.
+对于应用程序，请使用 :guilabel:`API` 地址访问 MinIO server 并执行 S3 操作。
 
-The following steps are optional but recommended for further securing the
-MinIO deployment.
+以下步骤属于可选项，但建议执行以进一步增强 MinIO 部署的安全性。

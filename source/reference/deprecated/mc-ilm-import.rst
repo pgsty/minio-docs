@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,39 +14,37 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   ``mc ilm import`` replaced by :mc-cmd:`mc ilm rule import`.
+   ``mc ilm import`` 已被 :mc-cmd:`mc ilm rule import` 替代。
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-ilm-import-desc
 
-The :mc:`mc ilm import` command imports an object lifecycle management
-configuration and applies it to a MinIO bucket.
+:mc:`mc ilm import` 命令会导入对象生命周期管理配置，并将其应用到 MinIO
+存储桶。
 
 .. end-mc-ilm-import-desc
 
-The :mc:`mc ilm import` command imports from ``STDIN`` by default. You can
-input the contents from a ``.json`` file, such as one produced by
-:mc:`mc ilm export`.
+:mc:`mc ilm import` 命令默认从 ``STDIN`` 导入。你可以从 ``.json`` 文件输入内容，
+例如由 :mc:`mc ilm export` 生成的文件。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command imports the lifecycle management configuration from
-      ``mydata-lifecycle-config.json`` and applies it to the ``mydata`` bucket
-      on the ``myminio`` deployment:
+      以下命令从 ``mydata-lifecycle-config.json`` 导入生命周期管理配置，并将其
+      应用到 ``myminio`` 部署上的 ``mydata`` 存储桶：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm import myminio/mydata < mydata-lifecycle-config.json
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -57,14 +55,13 @@ input the contents from a ``.json`` file, such as one produced by
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    
-   *Required* The :ref:`alias <alias>` and full path to the bucket on the MinIO
-   deployment into which to import object lifecycle management rules. For
-   example:
+   *必需* 用于导入对象生命周期管理规则的 MinIO 部署 :ref:`alias <alias>`
+   和存储桶完整路径。例如：
 
    .. code-block:: none
 
@@ -72,59 +69,56 @@ Parameters
 
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Import the Bucket Lifecycle Management Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+导入存储桶生命周期管理配置
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following command imports the bucket lifecycle management
-      configuration from the ``bucket-lifecycle.json`` file:
+      以下命令从 ``bucket-lifecycle.json`` 文件导入存储桶生命周期管理配置：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm import myminio/mybucket < bucket-lifecycle.json
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm import ALIAS < file.json
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO 
-        deployment and the bucket into which to import object lifecycle
-        management rules:
+      - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>` 和要导入对象
+        生命周期管理规则的存储桶：
 
         ``myminio/mydata``
 
-      - Replace ``file.json`` with the name of the file from which to import the
-        lifecycle management rules.
+      - 将 ``file.json`` 替换为要从中导入生命周期管理规则的文件名。
 
 
-Behavior
---------
+行为
+----
 
-Importing Configuration Overrides Existing Rules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+导入配置会覆盖现有规则
+~~~~~~~~~~~~~~~~~~~~~~
 
-:mc:`mc ilm import` replaces the current bucket lifecycle management
-rules with those defined in the imported JSON configuration.
+:mc:`mc ilm import` 会将当前存储桶生命周期管理规则替换为导入的 JSON 配置中定义
+的规则。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

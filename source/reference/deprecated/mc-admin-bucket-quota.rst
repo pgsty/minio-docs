@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,23 +12,22 @@
 
 .. versionchanged:: RELEASE.2022-12-13T00-23-28Z
 
-   ``mc admin bucket quota`` replaced by:
+   ``mc admin bucket quota`` 已被以下命令替代：
 
    - :mc-cmd:`mc quota set`
    - :mc-cmd:`mc quota info`
    - :mc-cmd:`mc quota clear`
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-bucket-quota-desc
 
-The :mc-cmd:`mc admin bucket quota` command manages per-bucket
-storage quotas.
+:mc-cmd:`mc admin bucket quota` 命令用于管理按存储桶设置的存储配额。
 
 .. end-mc-admin-bucket-quota-desc
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -37,144 +36,134 @@ storage quotas.
 
 .. _mc-admin-bucket-quota-units:
 
-Units of Measurement
-~~~~~~~~~~~~~~~~~~~~
+计量单位
+~~~~~~~~
 
-The :mc-cmd:`mc admin bucket quota --hard` flag
-accepts the following case-insensitive suffixes to represent the unit of the
-specified size value:
+:mc-cmd:`mc admin bucket quota --hard` 标志
+接受以下不区分大小写的后缀，用于表示所指定大小值的单位：
 
 .. list-table::
    :header-rows: 1
    :widths: 20 80
    :width: 100%
 
-   * - Suffix
-     - Unit Size
+   * - 后缀
+     - 单位大小
 
    * - ``k``
-     - KB (Kilobyte, 1000 Bytes)
+     - KB（千字节，1000 字节）
 
    * - ``m``
-     - MB (Megabyte, 1000 Kilobytes)
+     - MB（兆字节，1000 千字节）
 
    * - ``g``
-     - GB (Gigabyte, 1000 Megabytes)
+     - GB（吉字节，1000 兆字节）
 
    * - ``t``
-     - TB (Terrabyte, 1000 Gigabytes)
+     - TB（太字节，1000 吉字节）
 
    * - ``ki``
-     - KiB (Kibibyte, 1024 Bites)
+     - KiB（二进制千字节，1024 字节）
 
    * - ``mi``
-     - MiB (Mebibyte, 1024 Kibibytes)
+     - MiB（二进制兆字节，1024 KiB）
 
    * - ``gi``
-     - GiB (Gibibyte, 1024 Mebibytes)
+     - GiB（二进制吉字节，1024 MiB）
 
    * - ``ti``
-     - TiB (Tebibyte, 1024 Gibibytes)
+     - TiB（二进制太字节，1024 GiB）
 
-Omitting the suffix defaults to ``bytes``.
+省略后缀时，默认单位为 ``bytes``。
 
-Examples
---------
+示例
+----
 
-Configure a Hard Quota on a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为存储桶配置硬配额
+~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin bucket quota` with the
-:mc-cmd:`~mc admin bucket quota --hard` flag to specify a hard quota 
-on a bucket. Hard quotas prevent the bucket size from growing past the specified
-limit.
+使用 :mc-cmd:`mc admin bucket quota` 搭配
+:mc-cmd:`~mc admin bucket quota --hard` 标志，为存储桶指定硬配额。
+硬配额可防止存储桶大小增长超过指定限制。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin bucket quota TARGET/BUCKET --hard LIMIT
 
-- Replace ``TARGET`` with the :mc-cmd:`alias <mc alias>` of a configured 
-  MinIO deployment. Replace ``BUCKET`` with the name of the bucket on which to
-  set the hard quota.
+- 将 ``TARGET`` 替换为已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+  将 ``BUCKET`` 替换为要设置硬配额的存储桶名称。
 
-- Replace ``LIMIT`` with the maximum size to which the bucket can grow. 
-  For example, to set a hard limit of 10 Terrabytes, specify ``10t``.
-  See :ref:`mc-admin-bucket-quota-units` for supported units.
+- 将 ``LIMIT`` 替换为存储桶可增长到的最大大小。
+  例如，要将硬限制设置为 10 TB，请指定 ``10t``。
+  支持的单位请参见 :ref:`mc-admin-bucket-quota-units`。
 
-Retrieve Bucket Quota Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+获取存储桶配额配置
+~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin bucket quota` to retrieve the current quota configuration
-for a bucket:
+使用 :mc-cmd:`mc admin bucket quota` 获取存储桶当前的配额配置：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin bucket quota TARGET/BUCKET
 
-Replace ``TARGET`` with the :mc-cmd:`alias <mc alias>` of a configured 
-MinIO deployment. Replace ``BUCKET`` with the name of the bucket on which to
-retrieve the quota.
+将 ``TARGET`` 替换为已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+将 ``BUCKET`` 替换为要获取配额的存储桶名称。
 
-Clear Configured Bucket Quota
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+清除已配置的存储桶配额
+~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin bucket quota` with the
-:mc-cmd:`~mc admin bucket quota --clear` flag to clear all quotas from
-a bucket.
+使用 :mc-cmd:`mc admin bucket quota` 搭配
+:mc-cmd:`~mc admin bucket quota --clear` 标志，清除存储桶上的所有配额。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin bucket quota TARGET/BUCKET --clear
 
-- Replace ``TARGET`` with the :mc-cmd:`alias <mc alias>` of a configured 
-  MinIO deployment. Replace ``BUCKET`` with the name of the bucket on which to
-  clear the quota.
+- 将 ``TARGET`` 替换为已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+  将 ``BUCKET`` 替换为要清除配额的存储桶名称。
 
-Syntax
-------
+语法
+----
 
-:mc-cmd:`mc admin bucket quota` has the following syntax:
+:mc-cmd:`mc admin bucket quota` 使用以下语法：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin bucket quota TARGET [ARGUMENTS]
 
-:mc-cmd:`mc admin bucket quota` supports the following arguments:
+:mc-cmd:`mc admin bucket quota` 支持以下参数：
 
 .. mc-cmd:: TARGET
 
-   The full path to the bucket for which the command creates the quota. 
-   Specify the :mc-cmd:`alias <mc alias>` of the MinIO deployment as a 
-   prefix to the path. For example:
+   命令为其创建配额的存储桶的完整路径。
+   指定 MinIO 部署的 :mc-cmd:`alias <mc alias>` 作为路径前缀。
+   例如：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin bucket quota play/mybucket
 
-   Omit all other arguments to return the current quota settings for the
-   specified bucket.
+   省略其他所有参数可返回指定存储桶的当前配额设置。
 
 .. mc-cmd:: --hard
    
 
-   Sets a maximum limit to the bucket storage size. The MinIO server rejects any
-   incoming ``PUT`` request whose contents would exceed the bucket's configured
-   quota.
+   设置存储桶存储大小的最大限制。对于内容会超过存储桶已配置配额的传入
+   ``PUT`` 请求，MinIO 服务器会予以拒绝。
 
-   For example, a hard limit of ``10GB`` would prevent adding any additional
-   objects if the bucket reaches ``10GB`` of size.
+   例如，若硬限制为 ``10GB``，当存储桶大小达到 ``10GB`` 时，将无法再添加
+   任何对象。
 
-   See :ref:`mc-admin-bucket-quota-units` for supported unit sizes.
+   支持的单位大小请参见 :ref:`mc-admin-bucket-quota-units`。
 
 .. mc-cmd:: --clear
    
 
-   Clears all quotas configured for the bucket. 
+   清除为该存储桶配置的所有配额。
 
    
-

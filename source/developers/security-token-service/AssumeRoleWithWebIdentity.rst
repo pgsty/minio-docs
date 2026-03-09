@@ -6,39 +6,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The MinIO Security Token Service (STS) ``AssumeRoleWithWebIdentity`` API 
-endpoint generates temporary access credentials using a 
-JSON Web Token (JWT) returned from a 
-:ref:`configured OpenID IDentity Provider (IDP)
-<minio-external-identity-management-openid-configure>`. This page documents the MinIO 
-server ``AssumeRoleWithWebIdentity`` endpoint. For instructions on 
-implementing STS using an S3-compatible SDK, defer to the documentation
-for that SDK.
+MinIO Security Token Service (STS) ``AssumeRoleWithWebIdentity`` API
+端点使用由
+:ref:`已配置的 OpenID Identity Provider (IDP)
+<minio-external-identity-management-openid-configure>`
+返回的 JSON Web Token (JWT) 生成临时访问凭证。本文档说明 MinIO
+服务器的 ``AssumeRoleWithWebIdentity`` 端点。关于如何使用 S3 兼容 SDK
+实现 STS，请参阅对应 SDK 的文档。
 
-The MinIO STS ``AssumeRoleWithWebIdentity`` API endpoint is modeled
-after the
-AWS :aws-docs:`AssumeRoleWithWebIdentity 
-<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html>` 
-endpoint and shares certain request/response elements. This page
-documents the MinIO-specific syntax and links out to the AWS reference for
-all shared elements.
+MinIO STS ``AssumeRoleWithWebIdentity`` API 端点参考了
+AWS :aws-docs:`AssumeRoleWithWebIdentity
+<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html>`
+端点，并共享部分请求/响应元素。本文档说明 MinIO 特有语法，并链接到 AWS 参考文档以获取
+所有共享元素的说明。
 
-Request Endpoint
-----------------
+请求端点
+--------
 
-The ``AssumeRoleWithWebIdentity`` endpoint has the following form:
+``AssumeRoleWithWebIdentity`` 端点格式如下：
 
 .. code-block:: shell
 
    POST https://minio.example.net?Action=AssumeRoleWithWebIdentity[&ARGS]
 
-The following example uses all supported arguments. Replace the
-``minio.example.net`` hostname with the appropriate URL for your MinIO 
-cluster:
+以下示例使用了所有受支持参数。请将
+``minio.example.net`` 主机名替换为你的 MinIO
+集群对应 URL：
 
 .. code-block:: shell
 
@@ -50,105 +47,103 @@ cluster:
 
 .. _minio-assumerolewithwebidentity-query-parameters:
 
-Request Query Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~
+请求查询参数
+~~~~~~~~~~~~
 
-This endpoint supports the following query parameters:
+该端点支持以下查询参数：
 
 .. list-table::
    :header-rows: 1
    :widths: 20 20 60
    :width: 100%
 
-   * - Parameter
-     - Type
-     - Description
+   * - 参数
+     - 类型
+     - 说明
 
    * - ``WebIdentityToken``
      - string
-     - *Required*
+     - *必填*
 
-       Specify the JSON Web Token (JWT) returned by the 
-       :ref:`configured OpenID IDentity Provider 
-       <minio-external-identity-management-openid-configure>`. 
+       指定由
+       :ref:`已配置的 OpenID Identity Provider
+       <minio-external-identity-management-openid-configure>`
+       返回的 JSON Web Token (JWT)。
 
    * - ``Version``
      - string
-     - *Required*
+     - *必填*
 
-       Specify ``2011-06-15``.
+       指定 ``2011-06-15``。
 
    * - ``DurationSeconds``
      - integer
-     - *Optional*
-     
-       Specify the number of seconds after which the temporary credentials
-       expire. Defaults to ``3600``.
-       
-       - The minimum value is ``900`` or 15 minutes.
-       - The maximum value is ``604800`` or 7 days.
+     - *可选*
 
-       If ``DurationSeconds`` is omitted, MinIO checks the JWT token for an
-       ``exp`` claim before using the default duration. See
-       `RFC 7519 4.1.4: Expiration Time Claim 
-       <https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.4>`__ 
-       for more information on JSON web token expiration.
+       指定临时凭证过期前的秒数。
+       默认为 ``3600``。
+
+       - 最小值为 ``900``，即 15 分钟。
+       - 最大值为 ``604800``，即 7 天。
+
+       如果省略 ``DurationSeconds``，MinIO 在使用默认时长前会先检查 JWT token 中的
+       ``exp`` claim。有关 JSON Web Token 过期时间的更多信息，请参见
+       `RFC 7519 4.1.4: Expiration Time Claim
+       <https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.4>`__。
 
    * - ``Policy``
      - string
-     - *Optional*
+     - *可选*
 
-       Specify the URL-encoded JSON-formatted :ref:`policy <minio-policy>` to
-       use as an inline session policy.
+       指定 URL 编码、JSON 格式的 :ref:`policy <minio-policy>`，
+       作为内联会话策略使用。
 
-       - The minimum string length is ``1``.
-       - The maximum string length is ``2048``.
-        
-       The resulting permissions for the temporary credentials are the
-       intersection between the policy specified as part of the :ref:`JWT claim
-       <minio-external-identity-management-openid-access-control>` and the specified inline
-       policy. Applications can only perform those operations for which they
-       are explicitly authorized.
+       - 最小字符串长度为 ``1``。
+       - 最大字符串长度为 ``2048``。
 
-       The inline policy can specify a subset of permissions allowed by the
-       policy specified in the JWT claim. Applications can never assume
-       more privileges than those specified in the JWT claim policy.
+       临时凭证的最终权限是 :ref:`JWT claim
+       <minio-external-identity-management-openid-access-control>`
+       中指定策略与所给内联策略的交集。应用只能执行那些已被显式授权的操作。
 
-       Omit to use only the JWT claim policy. 
+       内联策略可以指定 JWT claim 策略所允许权限的子集。
+       应用绝不会获得超出 JWT claim 策略所指定范围的权限。
 
-       See :ref:`minio-access-management` for more information on MinIO
-       authentication and authorization.
+       省略该参数则仅使用 JWT claim 策略。
+
+       有关 MinIO 认证与授权的更多信息，请参见 :ref:`minio-access-management`。
 
    * - ``RoleArn``
      - string
-     - *Optional*   
+     - *可选*
 
-       The role Amazon Resource Number (ARN) to use for all user authentication requests.
-       If used, there must be a matching OIDC RolePolicy defined for the RoleArn's provider by the ``role_policy`` configuration parameter or the ``MINIO_IDENTITY_OPENID_ROLE_POLICY`` environment variable.
-       
-       When used, all valid authorization requests assume the same set of permissions provided by the RolePolicy.
-       You can use  :ref:`OpenID Policy Variables <minio-policy-variables-oidc>` to create policies that programmatically manage what each individual user has access to.
+       用于所有用户认证请求的角色 Amazon Resource Number (ARN)。
+       如果使用该参数，必须通过 ``role_policy`` 配置参数或 ``MINIO_IDENTITY_OPENID_ROLE_POLICY`` 环境变量，
+       为 RoleArn 对应的 provider 定义匹配的 OIDC RolePolicy。
 
-       If you do not supply a RoleArn, MinIO attempts to authorize through a JWT-based claim.
+       使用时，所有有效的授权请求都会假定同一组由 RolePolicy 提供的权限。
+       你可以使用 :ref:`OpenID Policy Variables <minio-policy-variables-oidc>` 创建策略，
+       以编程方式管理每个用户可访问的内容。
 
-Response Elements
------------------
+       如果未提供 RoleArn，MinIO 会尝试通过基于 JWT 的 claim 进行授权。
 
-The XML response for this API endpoint is similar to the AWS
+响应元素
+--------
+
+该 API 端点的 XML 响应与 AWS
 :aws-docs:`AssumeRoleWithWebIdentity response
-<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html#API_AssumeRoleWithWebIdentity_ResponseElements>`.
-Specifically, MinIO returns an ``AssumeRoleWithWebIdentityResult`` object,
-where the ``AssumedRoleUser.Credentials`` object contains the temporary
-credentials generated by MinIO:
+<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html#API_AssumeRoleWithWebIdentity_ResponseElements>`
+类似。具体而言，MinIO 返回 ``AssumeRoleWithWebIdentityResult`` 对象，
+其中 ``AssumedRoleUser.Credentials`` 对象包含 MinIO 生成的临时
+凭证：
 
-- ``AccessKeyId`` - The access key applications use for authentication.
-- ``SecretKeyId`` - The secret key applications use for authentication.
-- ``Expiration`` - The :rfc:`RFC3339 <3339>`  date and time after which the credentials expire.
-- ``SessionToken`` - The session token applications use for authentication. Some
-  SDKs may require this field when using temporary credentials.
+- ``AccessKeyId`` - 应用用于认证的访问密钥。
+- ``SecretKeyId`` - 应用用于认证的秘密密钥。
+- ``Expiration`` - 凭证过期的 :rfc:`RFC3339 <3339>` 日期和时间。
+- ``SessionToken`` - 应用用于认证的会话 token。某些
+  SDK 在使用临时凭证时可能需要此字段。
 
-The following example is similar to the response returned by the MinIO STS
-``AssumeRoleWithWebIdentity`` endpoint:
+以下示例与 MinIO STS
+``AssumeRoleWithWebIdentity`` 端点返回的响应类似：
 
 .. code-block:: xml
 
@@ -169,11 +164,10 @@ The following example is similar to the response returned by the MinIO STS
    <ResponseMetadata/>
    </AssumeRoleWithWebIdentityResponse>
 
-Error Elements
---------------
+错误元素
+--------
 
-The XML error response for this API endpoint is similar to the AWS
+该 API 端点的 XML 错误响应与 AWS
 :aws-docs:`AssumeRoleWithWebIdentity response
-<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html#API_AssumeRoleWithWebIdentity_Errors>`.
-
-
+<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html#API_AssumeRoleWithWebIdentity_Errors>`
+类似。

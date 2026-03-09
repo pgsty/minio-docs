@@ -6,28 +6,28 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin user info
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-user-info-desc
 
-The :mc:`mc admin user info` command returns detailed information of a :ref:`MinIO user <minio-internal-idp>` on the target MinIO deployment.
+:mc:`mc admin user info` 命令返回目标 MinIO 部署中某个 :ref:`MinIO 用户 <minio-internal-idp>`的详细信息。
 
 .. end-mc-admin-user-info-desc
 
-To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :mc:`AD/LDAP <mc idp ldap>`.
+如需管理外部身份提供商用户，请参见 :mc:`OIDC <mc idp openid>` 或 :mc:`AD/LDAP <mc idp ldap>`。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command returns details of user ``myuser`` on the ``myminio`` MinIO deployment:
+      以下命令返回 ``myminio`` MinIO 部署中用户 ``myuser`` 的详细信息：
 
       .. code-block:: shell
          :class: copyable
@@ -36,7 +36,7 @@ To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :m
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -50,21 +50,21 @@ To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :m
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment to retrieve user information from.
+   用于获取用户信息的已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: USERNAME
 
-   The username to retrieve information for.
+   要查询信息的用户名。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
@@ -72,26 +72,26 @@ Global Flags
 
 .. versionchanged:: RELEASE.2023-05-26T23-31-54Z
 
-   ``mc admin user info --json`` output includes policies inherited from a user's group memberships in ``memberOf``.
+   ``mc admin user info --json`` 输出包含用户通过组成员关系继承的策略，位于 ``memberOf`` 中。
 
-Examples
---------
+示例
+----
 
-View User Details
-~~~~~~~~~~~~~~~~~
+查看用户详细信息
+~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin user info` to view detailed user information for a user on a MinIO deployment:
+使用 :mc-cmd:`mc admin user info` 查看 MinIO 部署中某个用户的详细信息：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user info ALIAS USERNAME
 
-- Replace :mc-cmd:`ALIAS <mc admin user info ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user info ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`USERNAME <mc admin user info USERNAME>` with the username of the user to display information for.
+- 将 :mc-cmd:`USERNAME <mc admin user info USERNAME>` 替换为要显示信息的用户名。
 
-For the :ref:`MinIO internal IDentity Provider (IDP) <minio-internal-idp>`, the output resembles the following:
+对于 :ref:`MinIO 内部身份提供商 (IDP) <minio-internal-idp>`，输出类似如下：
 
 .. code-block:: shell
 
@@ -101,7 +101,7 @@ For the :ref:`MinIO internal IDentity Provider (IDP) <minio-internal-idp>`, the 
    MemberOf: []
    Authentication: builtin (miniouser)
 
-For a :ref:`third-party <minio-external-identity-management>` identity service such as LDAP, the output resembles the following:
+对于 LDAP 等 :ref:`第三方 <minio-external-identity-management>`身份服务，输出类似如下：
 
 .. code-block:: shell
 
@@ -111,22 +111,22 @@ For a :ref:`third-party <minio-external-identity-management>` identity service s
    MemberOf: []
    Authentication: ldap/localhost:1389 (uid=dillon,ou=people,ou=swengg,dc=min,dc=io)
 
-View Policies from Group Membership
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+查看来自组成员关系的策略
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin user info` with :option::`--json <mc.--json>` to view the policies inherited from a user's :ref:`group memberships <minio-groups>`:
+将 :mc-cmd:`mc admin user info` 与 :option::`--json <mc.--json>` 配合使用，可查看用户从其 :ref:`组成员关系 <minio-groups>`继承的策略：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user info ALIAS USERNAME --json
 
-- Replace :mc-cmd:`ALIAS <mc admin user info ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user info ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`USERNAME <mc admin user info USERNAME>` with the username of the user to display information for.
+- 将 :mc-cmd:`USERNAME <mc admin user info USERNAME>` 替换为要显示信息的用户名。
 
-The ``memberOf`` property in the output contains a list of groups the user is a member of, with the policies attached to each group.
-The output resembles the following:
+输出中的 ``memberOf`` 属性包含该用户所属组的列表，以及附加到各组的策略。
+输出类似如下：
 
 .. code-block:: shell
 
@@ -146,11 +146,11 @@ The output resembles the following:
    }
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

@@ -1,10 +1,10 @@
 .. start-common-deploy-create-environment-file-single-drive
 
-Create an environment variable file at ``/etc/default/minio``.
-For Windows hosts, specify a Windows-style path similar to ``C:\minio\config``.
-The MinIO Server container can use this file as the source of all :ref:`environment variables <minio-server-environment-variables>`.
+在 ``/etc/default/minio`` 创建环境变量文件。
+对于 Windows 主机，请指定类似 ``C:\minio\config`` 的 Windows 风格路径。
+MinIO Server 容器可以将此文件用作所有 :ref:`环境变量 <minio-server-environment-variables>` 的来源。
 
-The following example provides a starting environment file:
+以下示例给出了可作为起点的环境文件：
 
 .. code-block:: shell
    :class: copyable
@@ -25,7 +25,7 @@ The following example provides a starting environment file:
    # For example, `--console-address :9001` sets the MinIO Console listen port
    MINIO_OPTS="--console-address :9001"
 
-Include any other environment variables as required for your deployment.
+根据你的部署要求，补充其他所需环境变量。
 
 .. end-common-deploy-create-environment-file-single-drive
 
@@ -33,36 +33,41 @@ Include any other environment variables as required for your deployment.
 
 .. versionadded:: Server RELEASE.2024-03-03T17-50-39Z
 
-   MinIO automatically generates unique root credentials if all of the following conditions are true:
+   如果同时满足以下所有条件，MinIO 会自动生成唯一的 root 凭证：
 
    - :kes-docs:`KES <tutorials/getting-started/>` Release 2024-03-01T18-06-46Z or later running
   
-   - **Have not** defined:
+   - **未** 定义：
   
-     - ``MINIO_ROOT_USER`` variable 
-     - ``MINIO_ROOT_PASSWORD`` variable 
+     - ``MINIO_ROOT_USER`` 变量
+     - ``MINIO_ROOT_PASSWORD`` 变量
   
-   - **Have**:
+   - **已**：
   
-     - set up KES with a :kes-docs:`supported KMS target <#supported-kms-targets>`
-     - disabled root access with the :ref:`MinIO environment variable <minio-disable-root-access>`
+     - 使用 :kes-docs:`受支持的 KMS 目标 <#supported-kms-targets>` 完成 KES 配置
+     - 通过 :ref:`MinIO 环境变量 <minio-disable-root-access>` 禁用 root 访问
 
-   When those conditions are met at startup, MinIO uses the KMS to generate unique root credentials for the deployment using a `hash-based message authentication code (HMAC) <https://en.wikipedia.org/wiki/HMAC>`__.
+   当这些条件在启动时满足后，
+   MinIO 会使用 KMS 和 `hash-based message authentication code (HMAC) <https://en.wikipedia.org/wiki/HMAC>`__
+   为该部署生成唯一的 root 凭证。
 
-   If MinIO generates such credentials, the key used to generate the credentials **must** remain the same *and* continue to exist.
-   All data on the deployment is encrypted with this key!
+   如果 MinIO 生成了此类凭证，
+   则用于生成这些凭证的密钥 **必须** 保持不变，并且必须持续存在。
+   该部署中的所有数据都使用此密钥加密！
 
-   To rotate the generated root credentials, generate a new key in the KMS, then update the value of the :envvar:`MINIO_KMS_KES_KEY_NAME` with the new key.
+   如果要轮换已生成的 root 凭证，
+   请先在 KMS 中生成新密钥，然后将 :envvar:`MINIO_KMS_KES_KEY_NAME`
+   的值更新为该新密钥。
 
 .. end-common-deploy-create-unique-root-credentials
 
 .. start-common-deploy-create-environment-file-multi-drive
 
-Create an environment variable file at ``/etc/default/minio``.
-For Windows hosts, specify a Windows-style path similar to ``C:\minio\config``.
-The MinIO Server container can use this file as the source of all :ref:`environment variables <minio-server-environment-variables>`.
+在 ``/etc/default/minio`` 创建环境变量文件。
+对于 Windows 主机，请指定类似 ``C:\minio\config`` 的 Windows 风格路径。
+MinIO Server 容器可以将此文件用作所有 :ref:`环境变量 <minio-server-environment-variables>` 的来源。
 
-The following example provides a starting environment file:
+以下示例给出了可作为起点的环境文件：
 
 .. code-block:: shell
    :class: copyable
@@ -85,7 +90,7 @@ The following example provides a starting environment file:
    # For example, `--console-address :9001` sets the MinIO Console listen port
    MINIO_OPTS="--console-address :9001"
 
-Include any other environment variables as required for your local deployment.
+根据你的本地部署要求，补充其他所需环境变量。
 .. end-common-deploy-create-environment-file-multi-drive
 
 .. start-common-deploy-connect-to-minio-deployment
@@ -94,34 +99,40 @@ Include any other environment variables as required for your local deployment.
 
    .. tab-item:: MinIO Console
 
-      You can access the MinIO Console by entering any of the hostnames or IP addresses from the MinIO server ``Console`` block in your preferred browser, such as http://localhost:9001.
+      你可以在浏览器中输入 MinIO server ``Console`` 区块中的任意主机名或 IP 地址来访问 MinIO Console，
+      例如 http://localhost:9001。
 
-      Log in with the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` configured in the environment file specified to the container.
+      使用容器所指定环境文件中的 :envvar:`MINIO_ROOT_USER`
+      和 :envvar:`MINIO_ROOT_PASSWORD` 登录。
 
-      Each MinIO server includes its own embedded MinIO Console.
+      每个 MinIO server 都内置自己的 MinIO Console。
 
-      If your local host firewall permits external access to the Console port, other hosts on the same network can access the Console using the IP or hostname for your local host.
+      如果本地主机防火墙允许外部访问 Console 端口，
+      同一网络中的其他主机也可以通过本地主机的 IP 或主机名访问 Console。
 
    .. tab-item:: MinIO CLI (mc)
 
-      You can access the MinIO deployment over a Terminal or Shell using the :ref:`MinIO Client <minio-client>` (:mc:`mc`).
-      See :ref:`MinIO Client Installation Quickstart <mc-install>` for instructions on installing :mc:`mc`.
+      你可以在 Terminal 或 Shell 中使用 :ref:`MinIO Client <minio-client>` (:mc:`mc`)
+      访问 MinIO 部署。
+      关于如何安装 :mc:`mc`，请参阅 :ref:`MinIO Client Installation Quickstart <mc-install>`。
 
-      Create a new :mc:`alias <mc alias set>` corresponding to the MinIO deployment. 
-      Specify any of the hostnames or IP addresses from the MinIO Server ``API`` block, such as http://localhost:9000.
+      为该 MinIO 部署创建新的 :mc:`alias <mc alias set>`。
+      指定 MinIO Server ``API`` 区块中的任意主机名或 IP 地址，
+      例如 http://localhost:9000。
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set myminio http://localhost:9000 myminioadmin minio-secret-key-change-me
 
-      - Replace ``myminio`` with the desired name to use for the alias.
+      - 将 ``myminio`` 替换为你希望使用的别名名称。
 
-      - Replace ``myminioadmin`` with the :envvar:`MINIO_ROOT_USER` value in the environment file specified to the container.
+      - 将 ``myminioadmin`` 替换为容器所指定环境文件中的 :envvar:`MINIO_ROOT_USER` 值。
 
-      - Replace ``minio-secret-key-change-me`` with the :envvar:`MINIO_ROOT_PASSWORD` value in the environment file specified to the container.
+      - 将 ``minio-secret-key-change-me`` 替换为容器所指定环境文件中的 :envvar:`MINIO_ROOT_PASSWORD` 值。
 
-      You can then interact with the container using any :mc:`mc` command.
-      If your local host firewall permits external access to the MinIO S3 API port, other hosts on the same network can access the MinIO deployment using the IP or hostname for your local host.
+      之后，你就可以使用任意 :mc:`mc` 命令与该容器交互。
+      如果本地主机防火墙允许外部访问 MinIO S3 API 端口，
+      同一网络中的其他主机也可以通过本地主机的 IP 或主机名访问该 MinIO 部署。
 
 .. end-common-deploy-connect-to-minio-deployment

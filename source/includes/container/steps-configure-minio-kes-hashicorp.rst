@@ -1,7 +1,7 @@
-Deploy MinIO and KES with Server-Side Encryption
-------------------------------------------------
+部署启用服务器端加密的 MinIO 和 KES
+---------------------------------
 
-Prior to starting these steps, create the following folders:
+开始以下步骤前，请先创建这些目录：
 
 .. code-block:: shell
    :class: copyable
@@ -11,22 +11,23 @@ Prior to starting these steps, create the following folders:
    mkdir -p |kesconfigpath|
    mkdir -p |miniodatapath|
 
-For Windows hosts, substitute the paths with Windows-style paths, e.g. ``C:\minio-kes-vault\``.
+对于 Windows 主机，请将路径替换为 Windows 风格路径，例如 ``C:\minio-kes-vault\``。
 
 
-Prerequisite
-~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-Depending on your chosen :kes-docs:`supported KMS target <#supported-kms-targets>` configuration, you may need to pass the ``kes-server.cert`` as a trusted Certificate Authority (CA).
-Defer to the client documentation for instructions on trusting a third-party CA.
+根据你选择的 :kes-docs:`受支持 KMS 目标 <#supported-kms-targets>` 配置，
+你可能需要将 ``kes-server.cert`` 作为受信任的 Certificate Authority (CA) 传递。
+关于如何信任第三方 CA，请参阅客户端文档。
 
-1) Create the KES and MinIO Configurations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 创建 KES 和 MinIO 配置
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-a. Create the KES Configuration File
+a. 创建 KES 配置文件
 
-   Create the configuration file using your preferred text editor.
-   The following example uses ``nano``:
+   使用你偏好的文本编辑器创建配置文件。
+   以下示例使用 ``nano``：
 
    .. code-block:: shell
       :substitutions:
@@ -37,9 +38,9 @@ a. Create the KES Configuration File
       :start-after: start-kes-configuration-hashicorp-vault-desc
       :end-before: end-kes-configuration-hashicorp-vault-desc
 
-   - Set ``MINIO_IDENTITY_HASH`` to the identity hash of the MinIO mTLS certificate.
+   - 将 ``MINIO_IDENTITY_HASH`` 设置为 MinIO mTLS 证书的 identity hash。
 
-      The following command computes the necessary hash:
+      以下命令会计算所需的 hash：
 
       .. code-block:: shell
          :class: copyable
@@ -49,12 +50,13 @@ a. Create the KES Configuration File
             -v |kescertpath|/certs:/certs                                \
             kes:|kes-stable| tool identity of /certs/minio-kes.cert
 
-   - Refer to the instructions for setting up KES for your :kes-docs:`supported KMS solution <#kes-supported-targets>` for additional variables to define specific to your chosen KMS target.
+   - 请参阅你所选 :kes-docs:`受支持 KMS 方案 <#kes-supported-targets>` 的 KES 配置说明，
+     了解还需为目标 KMS 定义哪些额外变量。
 
-b. Create the MinIO Environment File
+b. 创建 MinIO 环境文件
 
-   Create the environment file using your preferred text editor.
-   The following example uses ``nano``:
+   使用你偏好的文本编辑器创建环境文件。
+   以下示例使用 ``nano``：
 
    .. code-block:: shell
       :substitutions:
@@ -65,31 +67,31 @@ b. Create the MinIO Environment File
       :start-after: start-kes-configuration-minio-desc
       :end-before: end-kes-configuration-minio-desc
 
-2) Create Pod and Containers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 创建 Pod 和容器
+~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/container/common-minio-kes.rst
    :start-after: start-common-deploy-create-pod-and-containers
    :end-before: end-common-deploy-create-pod-and-containers
 
-3) Generate a New Encryption Key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 生成新的加密密钥
+~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/container/common-minio-kes.rst
    :start-after: start-kes-generate-key-desc
    :end-before: end-kes-generate-key-desc
 
-4) Enable SSE-KMS for a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 为存储桶启用 SSE-KMS
+~~~~~~~~~~~~~~~~~~~~~~
 
-Use the MinIO :mc:`mc` CLI to enable bucket-default SSE-KMS with the generated key:
+使用 MinIO :mc:`mc` CLI，通过刚生成的密钥启用存储桶默认 SSE-KMS：
 
 
-The following commands:
+以下命令会：
 
-- Create a new :ref:`alias <alias>` for the MinIO deployment
-- Create a new bucket for storing encrypted data
-- Enable SSE-KMS encryption on that bucket
+- 为该 MinIO 部署创建新的 :ref:`alias <alias>`
+- 创建一个用于存储加密数据的新存储桶
+- 在该存储桶上启用 SSE-KMS 加密
 
 .. code-block:: shell
    :class: copyable
@@ -99,5 +101,5 @@ The following commands:
    mc mb local/encryptedbucket
    mc encrypt set SSE-KMS encrypted-bucket-key ALIAS/encryptedbucket
 
-Write a file to the bucket using :mc:`mc cp` or any S3-compatible SDK with a ``PutObject`` function. 
-You can then run :mc:`mc stat` on the file to confirm the associated encryption metadata.
+使用 :mc:`mc cp` 或任意带有 ``PutObject`` 函数的 S3 兼容 SDK 向该存储桶写入文件。
+然后，你可以对该文件运行 :mc:`mc stat`，以确认关联的加密元数据。

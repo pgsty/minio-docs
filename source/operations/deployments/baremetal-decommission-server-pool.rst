@@ -1,66 +1,64 @@
 .. _minio-decommissioning:
 
-=========================
-Decommission Server Pools
-=========================
+=====================
+退役 Server Pool
+=====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports decommissioning and removing :ref:`server pools <minio-intro-server-pool>` from a deployment with two or more pools.
-To decommission, there must be at least one remaining pool with sufficient available space to receive the objects from the decommissioned pools.
+MinIO 支持从包含两个或更多 pool 的部署中退役并移除 :ref:`server pools <minio-intro-server-pool>`。
+执行退役前，至少必须保留一个具有足够可用空间的 pool，以接收被退役 pool 中的对象。
 
-Starting with ``RELEASE.2023-01-18T04-36-38Z``, MinIO supports queueing  :ref:`multiple pools <minio-decommission-multiple-pools>` in a single decommission command.
-Each listed pool immediately enters a read-only status, but draining occurs one pool at a time.
+从 ``RELEASE.2023-01-18T04-36-38Z`` 起，MinIO 支持在一条退役命令中排队 :ref:`多个 pool <minio-decommission-multiple-pools>`。
+每个被列出的 pool 会立即进入只读状态，但实际排空过程一次只处理一个 pool。
 
-Decommissioning is designed for removing an older server pool whose hardware is no longer sufficient or performant compared to the pools in the deployment. 
-MinIO automatically migrates data from the decommissioned pools to the remaining pools in the deployment based on the ratio of free space available in each pool.
+退役功能适用于移除那些相较于当前部署中其他 pool 而言，硬件能力或性能已经不足的旧 server pool。
+MinIO 会根据各 pool 的空闲空间占比，自动将被退役 pool 中的数据迁移到部署中其余 pool。
 
-During the decommissioning process, MinIO routes read operations (e.g. ``GET``, ``LIST``, ``HEAD``) normally. 
-MinIO routes write operations (e.g. ``PUT``, versioned ``DELETE``) to the remaining "active" pools in the deployment.
-Versioned objects maintain their ordering throughout the migration process.
+在退役过程中，MinIO 会像平常一样路由读取操作（例如 ``GET``、``LIST``、``HEAD``）。
+写入操作（例如 ``PUT``、带版本的 ``DELETE``）会被路由到部署中其余仍处于“active”状态的 pool。
+带版本对象在迁移过程中会保持其顺序。
 
-The procedures on this page decommission and remove one or more server pools from a :ref:`distributed <deploy-minio-distributed>` MinIO deployment with *at least* two server pools.
+本页步骤用于从至少包含两个 server pool 的 :ref:`分布式 <deploy-minio-distributed>` MinIO 部署中退役并移除一个或多个 server pool。
 
-.. admonition:: Decommissioning is Permanent
+.. admonition:: 退役是永久性的
    :class: important
 
-   Once MinIO begins decommissioning a pool, it marks that pool as *permanently* inactive ("draining"). 
-   Cancelling or otherwise interrupting the  decommissioning procedure does **not** restore the pool to an active state. 
-   Use extra caution when decommissioning multiple pools.
+   一旦 MinIO 开始退役某个 pool，就会将其标记为 *永久* 非活跃（“draining”）状态。
+   取消或以其他方式中断退役流程，**不会** 将该 pool 恢复为 active 状态。
+   退役多个 pool 时必须格外谨慎。
 
-   Decommissioning is a major administrative operation that requires care in planning and execution, and is not a trivial or 'daily' task. 
+   退役是一项重大的管理操作，规划与执行都需要谨慎对待，并不是轻量或“日常型”的任务。
 
-   `MinIO SUBNET <https://min.io/pricing?jmp=docs>`__ users can `log in <https://subnet.min.io/>`__ and create a new issue related to decommissioning. 
-   Coordination with MinIO Engineering via SUBNET can ensure successful decommissioning, including performance testing and health diagnostics.
+   `MinIO SUBNET <https://min.io/pricing?jmp=docs>`__ 用户可以 `登录 <https://subnet.min.io/>`__ 并创建与退役相关的新工单。
+   通过 SUBNET 与 MinIO Engineering 协作，可提高退役成功率，包括性能测试和健康诊断。
 
-   Community users can seek support on the `MinIO Community Slack <https://slack.min.io>`__. 
-   Community Support is best-effort only and has no SLAs around responsiveness.
+   社区用户可以在 `MinIO Community Slack <https://slack.min.io>`__ 寻求支持。
+   社区支持仅为 best-effort，不对响应速度提供任何 SLA。
 
 
 .. _minio-decommissioning-prereqs:
 
-Prerequisites
--------------
+前提条件
+--------
 
-Back Up Cluster Settings First
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+先备份集群设置
+~~~~~~~~~~~~~~
 
-Use the :mc:`mc admin cluster bucket export` and :mc:`mc admin cluster iam export` commands to take a snapshot of the bucket metadata and IAM configurations respectively prior to starting decommissioning.
-You can use these snapshots to restore bucket/IAM settings to recover from user or process errors as necessary.
+在开始退役前，使用 :mc:`mc admin cluster bucket export` 和 :mc:`mc admin cluster iam export` 命令分别为存储桶元数据和 IAM 配置创建快照。
+必要时，你可以使用这些快照恢复存储桶/IAM 设置，以从用户错误或流程错误中恢复。
 
-Networking and Firewalls
-~~~~~~~~~~~~~~~~~~~~~~~~
+网络与防火墙
+~~~~~~~~~~~~
 
-Each node should have full bidirectional network access to every other node in
-the deployment. For containerized or orchestrated infrastructures, this may
-require specific configuration of networking and routing components such as
-ingress or load balancers. Certain operating systems may also require setting
-firewall rules. For example, the following command explicitly opens the default
-MinIO server API port ``9000`` on servers using ``firewalld``:
+部署中的每个节点都应当与其他所有节点具备完整的双向网络访问能力。
+对于容器化或编排式基础设施，这可能需要针对 Ingress、负载均衡器等网络和路由组件进行专门配置。
+某些操作系统还可能需要设置防火墙规则。
+例如，以下命令会在使用 ``firewalld`` 的服务器上显式开放 MinIO server 默认 API 端口 ``9000``：
 
 .. code-block:: shell
    :class: copyable
@@ -68,33 +66,29 @@ MinIO server API port ``9000`` on servers using ``firewalld``:
    firewall-cmd --permanent --zone=public --add-port=9000/tcp
    firewall-cmd --reload
 
-If you set a static :ref:`MinIO Console <minio-console>` port (e.g. ``:9001``)
-you must *also* grant access to that port to ensure connectivity from external
-clients.
+如果你为 :ref:`MinIO Console <minio-console>` 设置了静态端口（例如 ``:9001``），
+则还必须允许外部客户端访问该端口，以确保连接可用。
 
-MinIO **strongly recomends** using a load balancer to manage connectivity to the
-cluster. The Load Balancer should use a "Least Connections" algorithm for
-routing requests to the MinIO deployment, since any MinIO node in the deployment
-can receive, route, or process client requests. 
+MinIO **强烈建议** 使用负载均衡器管理到集群的连接。
+由于部署中的任意 MinIO 节点都可以接收、转发或处理客户端请求，因此负载均衡器应采用 "Least Connections" 算法将请求路由到 MinIO 部署。
 
-The following load balancers are known to work well with MinIO:
+以下负载均衡器已知可与 MinIO 良好配合：
 
 - `NGINX <https://www.nginx.com/products/nginx/load-balancing/>`__
 - `HAProxy <https://cbonte.github.io/haproxy-dconv/2.3/intro.html#3.3.5>`__
 
-Configuring firewalls or load balancers to support MinIO is out of scope for
-this procedure.
+如何配置防火墙或负载均衡器以支持 MinIO 不在本步骤范围内。
 
-Deployment Must Have Sufficient Storage
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+部署必须具备足够的存储空间
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The decommissioning process migrates objects from the target pool to other pools in the deployment. 
-The total available storage on the deployment *must* exceed the total storage of the decommissioned pool.
+退役过程会将目标 pool 中的对象迁移到部署中的其他 pool。
+该部署的总可用存储空间 *必须* 大于被退役 pool 的总存储量。
 
-Use the `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ to determine the usable storage capacity.
-Then reduce that by the size of the objects already on the deployment.
+使用 `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ 确认可用存储容量。
+然后再减去部署中现有对象已占用的空间。
 
-For example, consider a deployment with the following distribution of used and free storage:
+例如，假设某个部署的已用和空闲存储分布如下：
 
 .. list-table::
    :stub-columns: 1
@@ -102,113 +96,107 @@ For example, consider a deployment with the following distribution of used and f
    :width: 100%
 
    * - Pool 1
-     - 100TB Used
-     - 200TB Total
+     - 100TB 已用
+     - 200TB 总计
 
    * - Pool 2
-     - 100TB Used
-     - 200TB Total
+     - 100TB 已用
+     - 200TB 总计
 
    * - Pool 3
-     - 100TB Used
-     - 200TB Total
+     - 100TB 已用
+     - 200TB 总计
 
-Decommissioning Pool 1 requires distributing the 100TB of used storage across the remaining pools. 
-Pool 2 and Pool 3 each have 100TB of unused storage space and can safely absorb the data stored on Pool 1. 
+退役 Pool 1 需要将这 100TB 已用存储分散到其余 pool 上。
+Pool 2 和 Pool 3 各自都有 100TB 未使用存储空间，因此可以安全接收 Pool 1 上的数据。
 
-However, if Pool 1 were full (e.g. 200TB of used space), decommissioning would
-completely fill the remaining pools and potentially prevent any further write
-operations.
+但如果 Pool 1 已满（例如已使用 200TB），退役会将剩余 pool 完全填满，并可能阻止任何后续写入操作。
 
-Considerations
---------------
+注意事项
+--------
 
-Replacing a Server Pool
-~~~~~~~~~~~~~~~~~~~~~~~
+替换 Server Pool
+~~~~~~~~~~~~~~~~
 
-For hardware upgrade cycles where you replace old pool hardware with a new pool, you should :ref:`add the new pool through expansion <expand-minio-distributed>` before starting the decommissioning of the old pool.
-Adding the new pool first allows the decommission process to transfer objects in a balanced way across all available pools, both existing and new.
+对于通过新 pool 硬件替换旧 pool 硬件的升级周期，你应先通过 :ref:`扩容 <expand-minio-distributed>` 添加新 pool，再开始退役旧 pool。
+先添加新 pool，有助于退役过程在所有可用 pool（包括现有 pool 和新 pool）之间更均衡地迁移对象。
 
-Complete any planned :ref:`hardware expansion <expand-minio-distributed>` prior to decommissioning older hardware pools.
+在退役旧硬件 pool 之前，请先完成所有计划中的 :ref:`硬件扩容 <expand-minio-distributed>`。
 
-Decommissioning requires that a cluster's topology remain stable throughout the pool draining process.
-Do **not** attempt to perform expansion and decommission changes in a single step.
+退役要求集群拓扑在整个 pool 排空过程中保持稳定。
+**不要** 试图在同一步骤中同时执行扩容和退役变更。
 
-Decommissioning is Resumable
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+退役可恢复继续执行
+~~~~~~~~~~~~~~~~~~
 
-MinIO resumes decommissioning if interrupted by transient issues such as
-deployment restarts or network failures.
+如果退役因部署重启、网络故障等瞬时问题而中断，MinIO 会自动继续该过程。
 
-For manually cancelled or failed decommissioning attempts, MinIO 
-resumes only after you manually re-initiate the decommissioning operation.
+对于人工取消或失败的退役尝试，只有在你手动重新发起退役操作后，MinIO 才会恢复执行。
 
-The pool remains in the decommissioning state *regardless* of the interruption.
-A pool can *never* return to active status after decommissioning begins.
+无论中断原因为何，该 pool 都会持续保持在退役状态。
+退役一旦开始，该 pool *永远* 无法恢复为 active 状态。
 
-Decommissioning is Non-Disruptive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+退役是无中断的
+~~~~~~~~~~~~~~
 
-Removing a decommissioned server pool requires restarting *all* MinIO
-nodes in the deployment at around the same time.
+移除已退役的 server pool 需要在大致同一时间重启部署中的 *所有* MinIO 节点。
 
 .. include:: /includes/common-installation.rst
    :start-after: start-nondisruptive-upgrade-desc
    :end-before: end-nondisruptive-upgrade-desc
 
-Decommissioning Ignores Expired Objects and Trailing ``DeleteMarker``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+退役会忽略已过期对象和尾部 ``DeleteMarker``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting with :minio-release:`RELEASE.2023-05-27T05-56-19Z`, decommissioning ignores objects where the only remaining version is a ``DeleteMarker``.
-This avoids creating empty metadata on the remaining server pool(s) for objects that are effectively fully deleted.
+从 :minio-release:`RELEASE.2023-05-27T05-56-19Z` 起，退役过程会忽略那些仅剩 ``DeleteMarker`` 版本的对象。
+这样可以避免为实际上已被完全删除的对象，在剩余 server pool 上生成空元数据。
 
-Starting with :minio-release:`RELEASE.2023-06-23T20-26-00Z`, decommissioning also ignores object versions which have expired based on the configured :ref:`lifecycle rules <minio-lifecycle-management-expiration>` for the parent bucket.
-Starting with :minio-release:`RELEASE.2023-06-29T05-12-28Z`, you can monitor ignored delete markers and expired objects during the decommission process with :mc-cmd:`mc admin trace --call decommission <mc admin trace --call>`.
+从 :minio-release:`RELEASE.2023-06-23T20-26-00Z` 起，退役还会忽略那些已根据父存储桶配置的 :ref:`生命周期规则 <minio-lifecycle-management-expiration>` 过期的对象版本。
+从 :minio-release:`RELEASE.2023-06-29T05-12-28Z` 起，你可以使用 :mc-cmd:`mc admin trace --call decommission <mc admin trace --call>` 在退役过程中监控被忽略的 delete marker 和已过期对象。
 
-Once the decommissioning process completes, you can safely shut down that pool.
-Since the only remaining data was scheduled for deletion *or* was only a ``DeleteMarker``, you can safely clear or destroy those drives as per your internal procedures.
+退役过程完成后，你就可以安全关闭该 pool。
+由于剩余数据要么已计划删除，要么仅为 ``DeleteMarker``，因此你可以按照内部流程安全清空或销毁这些驱动器。
 
-Behavior
+行为说明
 --------
 
-Final Listing Check
-~~~~~~~~~~~~~~~~~~~
+最终列表检查
+~~~~~~~~~~~~
 
-At the end of the decommission process, MinIO checks for a list of items on the pool.
-If the list returns empty, MinIO marks the decommission as successfully completed.
-If any objects return, MinIO returns an error that the decommission process failed.
+在退役过程结束时，MinIO 会检查该 pool 上是否还有对象列表。
+如果列表为空，MinIO 会将退役标记为成功完成。
+如果仍返回任何对象，MinIO 会报错，指出退役过程失败。
 
-If the decommission fails, customers should open a |SUBNET| issue for further assistance before retrying the decommission. 
-Community users without a SUBNET subscription can retry the decommission process or seek additional support through the `MinIO Community Slack <https://slack.min.io/>`__.
-MinIO provides Community Support at best-effort only and provides no :abbr:`SLA (Service Level Agreement)` around responsiveness.
+如果退役失败，客户应在重新尝试退役前先提交 |SUBNET| 工单以获取进一步协助。
+没有 SUBNET 订阅的社区用户可以重试退役流程，或通过 `MinIO Community Slack <https://slack.min.io/>`__ 寻求额外支持。
+MinIO 的社区支持仅为 best-effort，不提供任何响应速度方面的 :abbr:`SLA (Service Level Agreement)`。
 
-Decommissioning a Server with Tiering Enabled
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+对已启用 Tiering 的 Server 执行退役
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionchanged:: RELEASE.2023-03-20T20-16-18Z
 
-For deployments with tiering enabled and active, decommissioning moves the object references to a new active pool.
-Applications can continue issuing GET requests against those objects where MinIO handles transparently retrieving them from the remote tier.
+对于已启用并处于活动状态的 tiering 部署，退役会将对象引用迁移到新的 active pool。
+应用程序仍可继续对这些对象发出 GET 请求，MinIO 会透明地从远端 tier 中检索对象。
 
-In older MinIO versions, tiering configurations prevent decommissioning. 
+在旧版本 MinIO 中，tiering 配置会阻止退役操作。
 
 .. _minio-decommissioning-server-pool:
 
-Decommission a Server Pool
---------------------------
+退役单个 Server Pool
+--------------------
 
-1) Review the MinIO Deployment Topology
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 查看 MinIO 部署拓扑
+~~~~~~~~~~~~~~~~~~~~~~~
 
-The :mc:`mc admin decommission` command returns a list of all
-pools in the MinIO deployment:
+:mc:`mc admin decommission` 命令会返回 MinIO 部署中所有 pool 的列表：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission status myminio
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
@@ -219,66 +207,53 @@ The command returns output similar to the following:
    │ 3rd │ https://minio-{09...12}.example.com:9000/mnt/disk{1...4}/minio │  40 TiB (used) / 100 TiB (total) │ Active │
    └─────┴────────────────────────────────────────────────────────────────┴──────────────────────────────────┴────────┘
 
-The example deployment above has three pools. Each pool has four servers
-with four drives each.
+上例部署共有三个 pool。
+每个 pool 都有四台服务器，每台服务器有四块驱动器。
 
-Identify the target pool for decommissioning and review the current capacity.
-The remaining pools in the deployment *must* have sufficient total
-capacity to migrate all object stored in the decommissioned pool.
+确定要退役的目标 pool，并检查当前容量。
+部署中其余 pool 的总容量 *必须* 足以迁移被退役 pool 中存储的所有对象。
 
-In the example above, the deployment has 210TiB total storage with 110TiB used.
-The first pool (``minio-{01...04}``) is the decommissioning target, as it was
-provisioned when the MinIO deployment was created and is completely full. The
-remaining newer pools can absorb all objects stored on the first pool without
-significantly impacting total available storage.
+在上述示例中，该部署总存储为 210TiB，其中已使用 110TiB。
+第一个 pool（``minio-{01...04}``）是退役目标，因为它是在 MinIO 部署创建时配置的，并且已经完全写满。
+其余较新的 pool 可以吸收该 pool 中的所有对象，而不会显著影响总可用存储。
 
-2) Start the Decommissioning Process
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 启动退役过程
+~~~~~~~~~~~~~~~~
 
-.. admonition:: Decommissioning is Permanent
+.. admonition:: 退役是永久性的
    :class: warning
 
-   Once MinIO begins decommissioning a pool, it marks that pool as *permanently*
-   inactive ("draining"). Cancelling or otherwise interrupting the 
-   decommissioning procedure does **not** restore the pool to an active
-   state. 
+   一旦 MinIO 开始退役某个 pool，就会将其标记为 *永久* 非活跃（“draining”）状态。
+   取消或以其他方式中断退役流程，**不会** 将该 pool 恢复为 active 状态。
 
-   Review and validate that you are decommissioning the correct pool
-   *before* running the following command.
+   在运行以下命令前，请先确认并验证你要退役的是正确的 pool。
 
-Use the :mc-cmd:`mc admin decommission start` command to begin decommissioning
-the target pool. Specify the :ref:`alias <alias>` of the deployment and the
-full description of the pool to decommission, including all hosts, disks, and file paths.
+使用 :mc-cmd:`mc admin decommission start` 命令开始退役目标 pool。
+指定部署的 :ref:`alias <alias>`，以及待退役 pool 的完整描述，包括所有主机、磁盘和文件路径。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission start myminio/ https://minio-{01...04}.example.net:9000/mnt/disk{1...4}/minio
 
-The example command begins decommissioning the matching server pool on the
-``myminio`` deployment.
+该示例命令会在 ``myminio`` 部署上启动对匹配 server pool 的退役。
 
-During the decommissioning process, MinIO continues routing read operations
-(``GET``, ``LIST``, ``HEAD``) to the pool for those objects not
-yet migrated. MinIO routes all new write operations (``PUT``) to the
-remaining pools in the deployment.
+在退役过程中，对于尚未迁移的对象，MinIO 会继续将读取操作（``GET``、``LIST``、``HEAD``）路由到该 pool。
+所有新的写入操作（``PUT``）都会被路由到部署中其余 pool。
 
-Load balancers, reverse proxy, or other network control components which
-manage connections to the deployment do not need to modify their configurations
-at this time.
+此时，负责管理部署连接的负载均衡器、反向代理或其他网络控制组件无需修改其配置。
 
-3) Monitor the Decommissioning Process
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 监控退役过程
+~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin decommission status` command to monitor the 
-decommissioning process. 
+使用 :mc-cmd:`mc admin decommission status` 命令监控退役过程。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission status myminio
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
@@ -289,78 +264,62 @@ The command returns output similar to the following:
    │ 3rd │ https://minio-{09...12}.example.com:9000/mnt/disk{1...4}/minio │  40 TiB (used) / 100 TiB (total) │ Active   │
    └─────┴────────────────────────────────────────────────────────────────┴──────────────────────────────────┴──────────┘
 
-You can retrieve more detailed information by specifying the description of
-the server pool to the command:
+你可以在命令中指定 server pool 的描述，以获取更详细的信息：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission status myminio https://minio-{01...04}.example.com:9000/mnt/disk{1...4}/minio
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
    Decommissioning rate at 100MiB/sec [1TiB/10TiB]
    Started: 30 minutes ago
 
-:mc-cmd:`mc admin decommission status` marks the :guilabel:`Status` as
-:guilabel:`Complete` once decommissioning is completed. You can move on to
-the next step once decommissioning is completed.
+:mc-cmd:`mc admin decommission status` 会在退役完成后将 :guilabel:`Status` 标记为 :guilabel:`Complete`。
+一旦退役完成，你就可以继续下一步。
 
-If :guilabel:`Status` reads as failed, you can re-run the
-:mc-cmd:`mc admin decommission start` command to resume the process. 
-For persistent failures, use :mc:`mc admin logs` or review
-the ``systemd`` logs (e.g. ``journalctl -u minio``) to identify more specific
-errors.
+如果 :guilabel:`Status` 显示为 failed，你可以重新运行 :mc-cmd:`mc admin decommission start` 命令以恢复该过程。
+如果失败持续存在，请使用 :mc:`mc admin logs` 或查看 ``systemd`` 日志（例如 ``journalctl -u minio``），以定位更具体的错误。
 
-4) Remove the Decommissioned Pool from the Deployment Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 从部署配置中移除已退役的 Pool
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As each pool completes decommissioning, you can safely remove it from the
-deployment configuration. Modify the startup command for each remaining MinIO
-server in the deployment and remove the decommissioned pool.
+每当一个 pool 完成退役后，你都可以安全地将其从部署配置中移除。
+请修改部署中每个剩余 MinIO server 的启动命令，并移除已退役 pool。
 
-The ``.deb`` or ``.rpm`` packages install a 
-`systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ service file to 
-``/lib/systemd/system/minio.service``. For binary installations, this
-procedure assumes the file was created manually as per the 
-:ref:`deploy-minio-distributed` procedure.
+``.deb`` 或 ``.rpm`` 软件包会将 `systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ 服务文件安装到 ``/lib/systemd/system/minio.service``。
+对于二进制安装，本步骤默认该文件已按照 :ref:`deploy-minio-distributed` 流程手动创建。
 
-The ``minio.service`` file uses an environment file located at 
-``/etc/default/minio`` for sourcing configuration settings, including the
-startup. Specifically, the ``MINIO_VOLUMES`` variable sets the startup
-command:
+``minio.service`` 文件使用位于 ``/etc/default/minio`` 的环境文件读取配置设置，其中也包括启动配置。
+具体来说，``MINIO_VOLUMES`` 变量定义了启动命令：
 
 .. code-block:: shell
    :class: copyable
 
    cat /etc/default/minio | grep "MINIO_VOLUMES"
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
    MINIO_VOLUMES="https://minio-{1...4}.example.net:9000/mnt/disk{1...4}/minio https://minio-{5...8}.example.net:9000/mnt/disk{1...4}/minio https://minio-{9...12}.example.net:9000/mnt/disk{1...4}/minio"
 
-Edit the environment file and remove the decommissioned pool from the 
-``MINIO_VOLUMES`` value.
+编辑该环境文件，并从 ``MINIO_VOLUMES`` 的值中移除已退役 pool。
 
-5) Update Network Control Plane
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5) 更新网络控制平面
+~~~~~~~~~~~~~~~~~~~~~~
 
-Update any load balancers, reverse proxies, or other network control planes
-to remove the decommissioned server pool from the connection configuration for
-the MinIO deployment.
+更新所有负载均衡器、反向代理或其他网络控制平面，从 MinIO 部署的连接配置中移除已退役的 server pool。
 
-Specific instructions for configuring network control plane components is
-out of scope for this procedure.
+网络控制平面组件的具体配置说明不在本步骤范围内。
 
-6) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+6) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-Issue the following commands on each node **simultaneously** in the deployment
-to restart the MinIO service:
+在部署中的每个节点上**同时**执行以下命令，以重启 MinIO 服务：
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-restart-service-desc
@@ -370,43 +329,42 @@ to restart the MinIO service:
    :start-after: start-nondisruptive-upgrade-desc
    :end-before: end-nondisruptive-upgrade-desc
 
-Once the deployment is online, use :mc:`mc admin info` to confirm the
-uptime of all remaining servers in the deployment.
+部署重新上线后，使用 :mc:`mc admin info` 确认部署中所有剩余 server 的运行状态。
 
 .. _minio-decommission-multiple-pools:
 
-Decommission Multiple Server Pools
-----------------------------------
+退役多个 Server Pool
+--------------------
 
 .. versionchanged:: RELEASE.2023-01-18T04-36-38Z
 
-You can start the decommission process for multiple server pools when issuing a decommission command.
+在执行退役命令时，你可以一次性启动多个 server pool 的退役过程。
 
-After entering the command:
+输入该命令后：
 
-- MinIO immediately stops write access to all pools to be decommissioned.
-- Decommissioning happens one pool at a time.
-- Each pool completes the decommission draining process before MinIO begins draining the next pool.
+- MinIO 会立即停止对所有待退役 pool 的写访问。
+- 退役一次只处理一个 pool。
+- 每个 pool 完成排空后，MinIO 才会开始排空下一个 pool。
 
-To decommission multiple server pools from one command, add the full description of each server pool to decommission as a comma-separated list.
+若要通过一条命令退役多个 server pool，请将每个待退役 server pool 的完整描述以逗号分隔列表的形式追加到命令中。
 
-All other considerations about decommissioning apply when performing the process on multiple servers.
+执行多 server 退役时，其他所有关于退役的注意事项同样适用。
 
-- Decommissioning is permanent.
-- Once you mark the pools as decommissioned, you **cannot** restore them.
-- Confirm you select the intended pools.
+- 退役是永久性的。
+- 一旦将这些 pool 标记为退役，你就**无法**恢复它们。
+- 请确认你选择的是预期的 pool。
 
-1) Review the MinIO Deployment Topology
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 查看 MinIO 部署拓扑
+~~~~~~~~~~~~~~~~~~~~~~~
 
-The :mc:`mc admin decommission` command returns a list of all pools in the MinIO deployment:
+:mc:`mc admin decommission` 命令会返回 MinIO 部署中所有 pool 的列表：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission status myminio
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
@@ -418,64 +376,64 @@ The command returns output similar to the following:
    │ 4th │ https://minio-{13...16}.example.com:9000/mnt/disk{1...4}/minio │  0  TiB (used) / 500 TiB (total) │ Active │
    └─────┴────────────────────────────────────────────────────────────────┴──────────────────────────────────┴────────┘
 
-The example deployment above has three pools. 
-Each pool has four servers with four drives each.
+上例部署共有三个 pool。
+每个 pool 都有四台服务器，每台服务器有四块驱动器。
 
-Identify the target pool for decommissioning and review the current capacity.
-The remaining pools in the deployment *must* have sufficient total capacity to migrate all object stored in the decommissioned pool.
+确定要退役的目标 pool，并检查当前容量。
+部署中其余 pool 的总容量 *必须* 足以迁移被退役 pool 中存储的所有对象。
 
-In the example above, the deployment has 1110TiB total storage with 145TiB used.
+在上述示例中，该部署总存储为 1110TiB，其中已使用 145TiB。
 
-- The first pool (``minio-{01...04}``) is the first decommissioning target, as it was provisioned when the MinIO deployment was created and is completely full.
-- The second pool (``minio-{05...08}``) is the second decommissioning target, as it was also provisioned when the MinIO deployment was created and is nearly full.
-- The fourth pool (``minio-{13...16}``) is a newly added pool with new hardware from a completed server expansion.
+- 第一个 pool（``minio-{01...04}``）是第一个退役目标，因为它是在 MinIO 部署创建时配置的，并且已经完全写满。
+- 第二个 pool（``minio-{05...08}``）是第二个退役目标，因为它同样是在部署创建时配置的，并且已接近写满。
+- 第四个 pool（``minio-{13...16}``）是一个刚通过 server 扩容加入的新硬件 pool。
 
-The third and fourth pools can absorb all objects stored on the first pool without significantly impacting total available storage.
+第三个和第四个 pool 可以吸收第一个 pool 上的全部对象，而不会显著影响总可用存储。
 
 .. important:: 
 
-   Complete any server expansion to add new storage resources _before_ beginning a decommission process.
+   在开始退役前，请先完成所有新增存储资源所需的 server 扩容。
 
-2) Start the Decommissioning Process
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 启动退役过程
+~~~~~~~~~~~~~~~~
 
-.. admonition:: Decommissioning is Permanent
+.. admonition:: 退役是永久性的
    :class: warning
 
-   Once MinIO begins decommissioning the pools, it marks those pools as *permanently* inactive ("draining"). 
-   Cancelling or otherwise interrupting the decommissioning procedure does **not** restore the pools to an active state. 
+   一旦 MinIO 开始退役这些 pool，就会将它们标记为 *永久* 非活跃（“draining”）状态。
+   取消或以其他方式中断退役流程，**不会** 将这些 pool 恢复为 active 状态。
 
-   Review and validate that you are decommissioning the correct pools *before* running the following command.
+   在运行以下命令前，请先确认并验证你要退役的是正确的 pool。
 
-Use the :mc-cmd:`mc admin decommission start` command to begin decommissioning the target pool. 
-Specify the :ref:`alias <alias>` of the deployment and a comma-separated list of the full description of each pool to decommission, including all hosts, disks, and file paths.
+使用 :mc-cmd:`mc admin decommission start` 命令开始退役目标 pool。
+指定部署的 :ref:`alias <alias>`，以及以逗号分隔的每个待退役 pool 的完整描述，包括所有主机、磁盘和文件路径。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission start myminio/ https://minio-{01...04}.example.net:9000/mnt/disk{1...4}/minio,https://minio-{05...08}.example.net:9000/mnt/disk{1...4}/minio
 
-The example command begins decommissioning the two listed matching server pools on the ``myminio`` deployment.
+该示例命令会在 ``myminio`` 部署上启动对所列两个匹配 server pool 的退役。
 
-During the decommissioning process, MinIO continues routing read operations (``GET``, ``LIST``, ``HEAD``) operations to the pools for those objects not yet migrated. 
-MinIO routes all new write operations (``PUT``) to the remaining pools in the deployment not scheduled for decommissioning.
+在退役过程中，对于尚未迁移的对象，MinIO 会继续将读取操作（``GET``、``LIST``、``HEAD``）路由到这些 pool。
+所有新的写入操作（``PUT``）都会被路由到部署中那些未计划退役的其余 pool。
 
-Draining of decommissioned pools happens one pool at a time, completing the decommission of each pool in sequence.
-Draining does _not_ happen concurrently for all decommissioning pools.
+已退役 pool 的排空一次只处理一个 pool，并按顺序依次完成每个 pool 的退役。
+排空过程 _不会_ 对所有待退役 pool 并发执行。
 
-Load balancers, reverse proxy, or other network control components which manage connections to the deployment do not need to modify their configurations at this time.
+此时，负责管理部署连接的负载均衡器、反向代理或其他网络控制组件无需修改其配置。
 
-3) Monitor the Decommissioning Process
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 监控退役过程
+~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin decommission status` command to monitor the decommissioning process. 
+使用 :mc-cmd:`mc admin decommission status` 命令监控退役过程。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission status myminio
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
@@ -487,62 +445,62 @@ The command returns output similar to the following:
    │ 4th │ https://minio-{13...16}.example.com:9000/mnt/disk{1...4}/minio │  0  TiB (used) / 500 TiB (total) │ Active   │
    └─────┴────────────────────────────────────────────────────────────────┴──────────────────────────────────┴──────────┘
 
-You can retrieve more detailed information by specifying the description of the server pool to the command:
+你可以在命令中指定 server pool 的描述，以获取更详细的信息：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin decommission status myminio https://minio-{01...04}.example.com:9000/mnt/disk{1...4}/minio
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
    Decommissioning rate at 100MiB/sec [1TiB/10TiB]
    Started: 30 minutes ago
 
-:mc-cmd:`mc admin decommission status` marks the :guilabel:`Status` as :guilabel:`Complete` once decommissioning is completed. 
-You can move on to the next step once MinIO completes decommissioning for all pools.
+:mc-cmd:`mc admin decommission status` 会在退役完成后将 :guilabel:`Status` 标记为 :guilabel:`Complete`。
+当 MinIO 完成所有 pool 的退役后，你就可以继续下一步。
 
-If :guilabel:`Status` reads as failed, you can re-run the :mc-cmd:`mc admin decommission start` command to resume the process. 
-For persistent failures, use :mc:`mc admin logs` or review the ``systemd`` logs (e.g. ``journalctl -u minio``) to identify more specific errors.
+如果 :guilabel:`Status` 显示为 failed，你可以重新运行 :mc-cmd:`mc admin decommission start` 命令以恢复该过程。
+如果失败持续存在，请使用 :mc:`mc admin logs` 或查看 ``systemd`` 日志（例如 ``journalctl -u minio``），以定位更具体的错误。
 
-4) Remove the Decommissioned Pools from the Deployment Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 从部署配置中移除已退役的 Pool
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once decommissioning completes, you can safely remove the pools from the deployment configuration. 
-Modify the startup command for each remaining MinIO server in the deployment and remove the decommissioned pool.
+退役完成后，你就可以安全地将这些 pool 从部署配置中移除。
+请修改部署中每个剩余 MinIO server 的启动命令，并移除已退役 pool。
 
-The ``.deb`` or ``.rpm`` packages install a `systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ service file to ``/lib/systemd/system/minio.service``. 
-For binary installations, this procedure assumes the file was created manually as per the :ref:`deploy-minio-distributed` procedure.
+``.deb`` 或 ``.rpm`` 软件包会将 `systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ 服务文件安装到 ``/lib/systemd/system/minio.service``。
+对于二进制安装，本步骤默认该文件已按照 :ref:`deploy-minio-distributed` 流程手动创建。
 
-The ``minio.service`` file uses an environment file located at ``/etc/default/minio`` for sourcing configuration settings, including the startup. 
-Specifically, the ``MINIO_VOLUMES`` variable sets the startup command:
+``minio.service`` 文件使用位于 ``/etc/default/minio`` 的环境文件读取配置设置，其中也包括启动配置。
+具体来说，``MINIO_VOLUMES`` 变量定义了启动命令：
 
 .. code-block:: shell
    :class: copyable
 
    cat /etc/default/minio | grep "MINIO_VOLUMES"
 
-The command returns output similar to the following:
+命令返回的输出类似如下：
 
 .. code-block:: shell
 
    MINIO_VOLUMES="https://minio-{1...4}.example.net:9000/mnt/disk{1...4}/minio https://minio-{5...8}.example.net:9000/mnt/disk{1...4}/minio https://minio-{9...12}.example.net:9000/mnt/disk{1...4}/minio"
 
-Edit the environment file and remove the decommissioned pools from the ``MINIO_VOLUMES`` value.
+编辑该环境文件，并从 ``MINIO_VOLUMES`` 的值中移除已退役 pool。
 
-5) Update Network Control Plane
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5) 更新网络控制平面
+~~~~~~~~~~~~~~~~~~~~~~
 
-Update any load balancers, reverse proxies, or other network control planes to remove the decommissioned server pools from the connection configuration for the MinIO deployment.
+更新所有负载均衡器、反向代理或其他网络控制平面，从 MinIO 部署的连接配置中移除已退役的 server pool。
 
-Specific instructions for configuring network control plane components is out of scope for this procedure.
+网络控制平面组件的具体配置说明不在本步骤范围内。
 
-6) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+6) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-Issue the following commands on each node **simultaneously** in the deployment to restart the MinIO service:
+在部署中的每个节点上**同时**执行以下命令，以重启 MinIO 服务：
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-restart-service-desc
@@ -552,4 +510,4 @@ Issue the following commands on each node **simultaneously** in the deployment t
    :start-after: start-nondisruptive-upgrade-desc
    :end-before: end-nondisruptive-upgrade-desc
 
-Once the deployment is online, use :mc:`mc admin info` to confirm the uptime of all remaining servers in the deployment.
+部署重新上线后，使用 :mc:`mc admin info` 确认部署中所有剩余 server 的运行状态。

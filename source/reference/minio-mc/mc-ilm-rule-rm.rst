@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,31 +14,31 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   ``mc ilm rule rm`` replaces ``mc ilm rm``.
+   ``mc ilm rule rm`` 替代 ``mc ilm rm``。
 
-Syntax
+语法
 ------
 
 .. start-mc-ilm-rule-rm-desc
 
-The :mc:`mc ilm rule rm` command removes an object lifecycle management rule from a MinIO Bucket.
+:mc:`mc ilm rule rm` 命令用于从 MinIO 存储桶中删除一条对象生命周期管理规则。
 
 .. end-mc-ilm-rule-rm-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes a single lifecycle management rule from the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令从 ``myminio`` MinIO 部署的 ``mydata`` 存储桶中删除一条生命周期管理规则：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm rule rm --id "bgrt1ghju" myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -51,14 +51,14 @@ The :mc:`mc ilm rule rm` command removes an object lifecycle management rule fro
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
    
-   The :ref:`alias <alias>` and full path to the bucket on the MinIO deployment to which to remove the object lifecycle management rule. 
-   For example:
+   要删除对象生命周期管理规则的 MinIO 部署上存储桶的 :ref:`alias <alias>` 和完整路径。
+   例如：
 
    .. code-block:: none
 
@@ -67,61 +67,61 @@ Parameters
 .. mc-cmd:: --all
    :optional:
 
-   Removes all rules in the bucket. 
-   Requires including :mc-cmd:`~mc ilm rule rm --force`.
+   删除存储桶中的所有规则。
+   需要同时包含 :mc-cmd:`~mc ilm rule rm --force`。
 
-   Mutually exclusive with :mc:`~mc ilm rule rm --id`.
+   与 :mc:`~mc ilm rule rm --id` 互斥。
 
 .. mc-cmd:: --force
    :optional:
 
-   Required if specifying :mc-cmd:`~mc ilm rule rm --all`.
+   指定 :mc-cmd:`~mc ilm rule rm --all` 时必需。
 
 .. mc-cmd:: --id
    :optional:
 
-   The unique ID of the rule. 
-   Use :mc:`mc ilm rule ls` to list bucket rules and retrieve the ``id`` for the rule you want to remove.
+   规则的唯一 ID。
+   使用 :mc:`mc ilm rule ls` 列出存储桶规则，并获取要删除规则的 ``id``。
 
-   Mutually exclusive with :mc:`mc ilm rule rm --all`
+   与 :mc:`mc ilm rule rm --all` 互斥。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Remove a Bucket Lifecycle Management Rule
+删除存储桶生命周期管理规则
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc ilm rule rm` to remove a bucket lifecycle management rule:
+使用 :mc:`mc ilm rule rm` 删除存储桶生命周期管理规则：
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm rule rm --id "RULE" ALIAS/PATH
 
-- Replace ``RULE`` with the unique identifier of the lifecycle  management rule.
-  Use :mc-cmd:`mc ilm rule ls` to find the ID to use.
+- 将 ``RULE`` 替换为生命周期管理规则的唯一标识符。
+  使用 :mc-cmd:`mc ilm rule ls` 查找要使用的 ID。
 
-- Replace :mc-cmd:`ALIAS <mc ilm rule rm ALIAS>` with the :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc ilm rule rm ALIAS>` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace ``PATH`` with the path to the bucket on the S3-compatible host.
+- 将 ``PATH`` 替换为 S3 兼容主机上存储桶的路径。
 
-Required Permissions
+所需权限
 --------------------
 
-For permissions required to remove a rule, refer to the :ref:`required permissions <minio-mc-ilm-rule-permissions>` on the parent command.
+有关删除规则所需的权限，请参阅父命令中的 :ref:`required permissions <minio-mc-ilm-rule-permissions>`。
 
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

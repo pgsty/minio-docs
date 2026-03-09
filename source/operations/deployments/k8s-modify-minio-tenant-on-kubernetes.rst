@@ -2,76 +2,76 @@
 .. _minio-k8s-modify-minio-tenant-security:
 
 =====================
-Modify a MinIO Tenant
+修改 MinIO Tenant
 =====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-You can modify tenants after deployment to change mutable configuration settings.
-See :ref:`minio-operator-crd` for a complete description of available settings in the MinIO Custom Resource Definition.
+部署完成后，你可以修改租户以调整可变配置项。
+有关 MinIO Custom Resource Definition 中可用设置的完整说明，请参阅 :ref:`minio-operator-crd`。
 
-The method for modifying the Tenant depends on how you deployed the tenant:
+修改租户的方法取决于你最初如何部署该租户：
 
 .. tab-set::
 
    .. tab-item:: Kustomize
       :sync: kustomize
 
-      For Kustomize-deployed Tenants, you can modify the base Kustomization resources and apply them using ``kubectl apply -k`` against the directory containing the ``kustomization.yaml`` object.
+      对于使用 Kustomize 部署的租户，你可以修改基础 Kustomization 资源，并在包含 ``kustomization.yaml`` 的目录上运行 ``kubectl apply -k`` 进行应用。
 
       .. code-block:: shell
 
          kubectl apply -k ~/kustomization/TENANT-NAME/
 
-      Modify the path to the Kustomization directory to match your local configuration.
+      请根据本地配置修改 Kustomization 目录路径。
 
    .. tab-item:: Helm
       :sync: helm
 
-      For Helm-deployed Tenants, you can modify the base ``values.yaml`` and upgrade the Tenant using the chart:
+      对于使用 Helm 部署的租户，你可以修改基础 ``values.yaml``，并通过 chart 升级租户：
 
       .. code-block:: shell
 
          helm upgrade TENANT-NAME minio-operator/tenant -f values.yaml -n TENANT-NAMESPACE
 
-      The command above assumes use of the MinIO Operator Chart repository.
-      If you installed the Chart manually or by using a different repository name, specify that chart or name in the command.
+      上述命令默认使用的是 MinIO Operator Chart 仓库。
+      如果你是手动安装 Chart，或使用了不同的仓库名称，请在命令中指定相应的 chart 或名称。
 
-      Replace ``TENANT-NAME`` and ``TENANT-NAMESPACE`` with the name and namespace of the Tenant, respectively.
-      You can use ``helm list -n TENANT-NAMESPACE`` to validate the Tenant name.
+      分别将 ``TENANT-NAME`` 和 ``TENANT-NAMESPACE`` 替换为租户的名称和命名空间。
+      你可以使用 ``helm list -n TENANT-NAMESPACE`` 验证租户名称。
 
-Add Trusted Certificate Authorities
-   The MinIO Tenant validates the TLS certificate presented by each connecting client against the host system's trusted root certificate store.
-   The MinIO Operator can attach additional third-party Certificate Authorities (CA) to the Tenant to allow validation of client TLS certificates signed by those CAs.
+添加受信任的证书颁发机构
+   MinIO 租户会使用主机系统的受信任根证书存储，校验每个连接客户端提供的 TLS 证书。
+   MinIO Operator 可以为租户挂载额外的第三方 Certificate Authorities (CA)，以便校验由这些 CA 签发的客户端 TLS 证书。
 
-   To customize the trusted CAs mounted to each Tenant MinIO pod, enable the :guilabel:`Custom Certificates` switch.
-   Select the :guilabel:`Add CA Certificate +` button to add third party CA certificates.
+   若要自定义挂载到每个租户 MinIO pod 的受信任 CA，请启用 :guilabel:`Custom Certificates` 开关。
+   点击 :guilabel:`Add CA Certificate +` 按钮即可添加第三方 CA 证书。
 
-   If the MinIO Tenant cannot match an incoming client's TLS certificate issuer against either the container OS's trust store *or* an explicitly attached CA, MinIO rejects the connection as invalid.
+   如果 MinIO 租户无法在容器操作系统的信任库 *或* 显式挂载的 CA 中匹配到传入客户端 TLS 证书的签发者，MinIO 会将该连接视为无效并拒绝。
 
 
-Manage Tenant Pools
--------------------
+管理租户 Pool
+----------------
 
-Specify Runtime Class
-~~~~~~~~~~~~~~~~~~~~~
+指定 Runtime Class
+~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: Console 0.23.1
 
-When adding a new pool or modifying an existing pool for a tenant, you can specify the :kube-docs:`Runtime Class Name <concepts/containers/runtime-class/>` for pools to use.
+在为租户添加新 pool 或修改现有 pool 时，你可以为这些 pool 指定 :kube-docs:`Runtime Class Name <concepts/containers/runtime-class/>`。
 
 .. Following link is intended for K8s only
 
-Decommission a Tenant Server Pool
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+退役租户 Server Pool
+~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO Operator 4.4.13 and later support decommissioning a server pool in a Tenant.
-Specifically, you can follow the :minio-docs:`Decommission a Server pool <minio/linux/operations/install-deploy-manage/decommission-server-pool.html>` procedure to remove the pool from the tenant, then edit the tenant YAML to drop the pool from the StatefulSet.
-When removing the Tenant pool, ensure the ``spec.pools.[n].name`` fields have values for all remaining pools.
+MinIO Operator 4.4.13 及更高版本支持退役租户中的 server pool。
+具体而言，你可以遵循 :minio-docs:`Decommission a Server pool <minio/linux/operations/install-deploy-manage/decommission-server-pool.html>` 步骤先从租户中移除该 pool，然后编辑租户 YAML，将该 pool 从 StatefulSet 中移除。
+移除租户 pool 时，请确保所有剩余 pool 的 ``spec.pools.[n].name`` 字段都具有明确取值。
 
 .. include:: /includes/common-installation.rst
    :start-after: start-pool-order-must-not-change

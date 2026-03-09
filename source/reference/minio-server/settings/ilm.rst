@@ -1,16 +1,16 @@
 .. _minio-server-envvar-ilm:
 
-============
-ILM Settings
-============
+================
+ILM 设置
+================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page covers settings that control Information Lifecycle Management (ILM) for the MinIO process. 
+本页面介绍用于控制 MinIO 进程 ILM（信息生命周期管理）的设置。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -20,17 +20,17 @@ This page covers settings that control Information Lifecycle Management (ILM) fo
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Expiration Workers
-------------------
+过期 Worker
+------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_ILM_EXPIRATION_WORKERS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
   
       .. mc-conf:: ilm expiration_workers
@@ -38,7 +38,7 @@ Expiration Workers
 
 .. versionadded:: MinIO Server RELEASE.2024-03-03T17-50-39Z
 
-Set the number of workers to use for :ref:`expiring objects <minio-lifecycle-management-expiration>`.
-Valid values are ``1`` to ``500``.
+设置用于 :ref:`对象过期 <minio-lifecycle-management-expiration>` 的 worker 数量。
+有效值范围为 ``1`` 到 ``500``。
 
-The default value is ``100``.
+默认值为 ``100``。

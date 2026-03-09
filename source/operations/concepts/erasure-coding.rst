@@ -1,16 +1,16 @@
 .. _minio-erasure-coding:
 
 ==============
-Erasure Coding
+纠删码
 ==============
 
 .. default-domain:: minio
 
 .. container:: extlinks-video
 
-   - `Overview of MinIO Erasure Coding <https://www.youtube.com/watch?v=QniHMNNmbfI>`__   
+   - `MinIO 纠删码概览 <https://www.youtube.com/watch?v=QniHMNNmbfI>`__
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -18,38 +18,38 @@ Erasure Coding
    :keywords: erasure coding, healing, availability, resiliency
    :description: Information on MinIO Erasure Coding
 
-MinIO implements Erasure Coding as a core component in providing data redundancy and availability.
-This page provides an introduction to MinIO Erasure Coding.
+MinIO 将纠删码作为提供数据冗余和可用性的核心组件。
+本页介绍 MinIO 的纠删码机制。
 
-See :ref:`minio-availability-resiliency` and :ref:`minio-architecture` for more information on how MinIO uses erasure coding in production deployments.
+有关 MinIO 如何在生产部署中使用纠删码的更多信息，请参阅 :ref:`minio-availability-resiliency` 和 :ref:`minio-architecture`。
 
 
 .. _minio-ec-basics:
 .. _minio-ec-erasure-set:
 .. _minio-read-quorum:
 
-Erasure Coding Basics
+纠删码基础
 ---------------------
 
 .. note::
-   
-   The diagrams and content in this section present a simplified view of MinIO erasure coding operations and are not intended to represent the complexities of MinIO's full erasure coding implementation.
 
-MinIO groups drives in each :term:`server pool` into one or more **Erasure Sets** of the same size.
+   本节中的图示和内容仅用于说明 MinIO 纠删码操作的简化视图，并不完整呈现 MinIO 纠删码实现的全部复杂性。
+
+MinIO 会将每个 :term:`server pool` 中的驱动器分组为一个或多个相同大小的 **纠删码集合**。
    .. figure:: /images/erasure/erasure-coding-erasure-set.svg
       :figwidth: 100%
       :align: center
       :alt: Diagram of erasure set covering 4 nodes and 16 drives
 
-      The above example deployment consists of 4 nodes with 4 drives each.
-      MinIO initializes with a single erasure set consisting of all 16 drives across all four nodes.
+      上述示例部署由 4 个节点组成，每个节点有 4 块驱动器。
+      MinIO 初始化后会生成一个纠删码集合，覆盖这 4 个节点上的全部 16 块驱动器。
 
-   MinIO determines the optimal number and size of erasure sets when initializing a :term:`server pool`.
-   You cannot modify these settings after this initial setup.
+   MinIO 会在初始化 :term:`server pool` 时确定纠删码集合的最佳数量和大小。
+   初次设置完成后，便无法再修改这些参数。
 
-For each write operation, MinIO partitions the object into **data** and **parity** shards.
-   Erasure set stripe size dictates the maximum possible :ref:`parity <minio-ec-parity>` of the deployment.
-   The formula for determining the number of data and parity shards to generate is:
+对于每次写操作，MinIO 都会将对象切分为 **数据** 和 **校验** 分片。
+   纠删码集合的条带大小决定了部署可用的最大 :ref:`校验 <minio-ec-parity>` 值。
+   生成数据分片和校验分片数量的公式如下：
 
    .. code-block:: shell
 
@@ -60,74 +60,74 @@ For each write operation, MinIO partitions the object into **data** and **parity
       :align: center
       :alt: Diagram of possible erasure set parity settings
 
-      The above example deployment has an erasure set of 16 drives. 
-      This can support parity between ``EC:0`` and 1/2 the erasure set drives, or ``EC:8``.
+      上述示例部署的纠删码集合包含 16 块驱动器。
+      这意味着它支持从 ``EC:0`` 到纠删码集合驱动器数量 1/2 的校验值，也就是最高 ``EC:8``。
 
-You can set the parity value between 0 and 1/2 the Erasure Set size.
+你可以将校验值设置在 0 到纠删码集合大小的 1/2 之间。
    .. figure:: /images/erasure/erasure-coding-erasure-set-shard-distribution.svg
       :figwidth: 100%
       :align: center
       :alt: Diagram of an object being sharded using MinIO's Reed-Solomon Erasure Coding algorithm.
 
-      MinIO uses a Reed-Solomon erasure coding implementation and partitions the object for distribution across an erasure set.
-      The example deployment above has an erasure set size of 16 and a parity of ``EC:4``
+      MinIO 使用 Reed-Solomon 纠删码实现来切分对象，并将其分布到纠删码集合中。
+      上述示例部署的纠删码集合大小为 16，校验值为 ``EC:4``。
 
-   Objects written with a given parity settings do not automatically update if you change the parity values later.
+   对象一旦按某个校验设置写入，即使之后修改校验值，也不会自动更新。
 
-MinIO requires a minimum of ``K`` shards of any type to **read** an object.
-   The value ``K`` here constitutes the **read quorum** for the deployment.
-   The erasure set must therefore have at least ``K`` healthy drives in the erasure set to support read operations.
+MinIO 至少需要 ``K`` 个任意类型的分片才能读取对象。
+   这里的 ``K`` 构成部署的读仲裁。
+   因此，纠删码集合中至少要有 ``K`` 块健康驱动器，才能支持读操作。
 
    .. figure:: /images/erasure/erasure-coding-shard-read-quorum.svg
       :figwidth: 100%
       :align: center
       :alt: Diagram of a 4-node 16-drive deployment with one node offline.
 
-      This deployment has one offline node, resulting in only 12 remaining healthy drives.
-      The object was written with ``EC:4`` with a read quorum of ``K=12``.
-      This object therefore maintains read quorum and MinIO can reconstruct it for read operations.
+      该部署中有一个节点离线，因此只剩下 12 块健康驱动器。
+      该对象按 ``EC:4`` 写入，其读仲裁为 ``K=12``。
+      因此该对象仍满足读仲裁，MinIO 可以重建对象并响应读操作。
 
-   MinIO cannot reconstruct an object that has lost read quorum.
-   Such objects may be recovered through other means such as :ref:`replication resynchronization <minio-bucket-replication-resynchronize>`.
+   对于已经失去读仲裁的对象，MinIO 无法进行重建。
+   这类对象可能需要通过其他方式恢复，例如 :ref:`复制重同步 <minio-bucket-replication-resynchronize>`。
 
-MinIO requires a minimum of ``K`` erasure set drives to **write** an object.
-   The value ``K`` here constitutes the **write quorum** for the deployment.
-   The erasure set must therefore have at least ``K`` available drives online to support write operations.
+MinIO 至少需要 ``K`` 块纠删码集合驱动器才能写入对象。
+   这里的 ``K`` 构成部署的写仲裁。
+   因此，纠删码集合中至少要有 ``K`` 块可用驱动器在线，才能支持写操作。
 
    .. figure:: /images/erasure/erasure-coding-shard-write-quorum.svg
       :figwidth: 100%
       :align: center
       :alt: Diagram of a 4-node 16-drive deployment where one node is offline.
 
-      This deployment has one offline node, resulting in only 12 remaining healthy drives.
-      A client writes an object with ``EC:4`` parity settings where the erasure set has a write quorum of ``K=12``.
-      This erasure set maintains write quorum and MinIO can use it for write operations.
+      该部署中有一个节点离线，因此只剩下 12 块健康驱动器。
+      客户端按 ``EC:4`` 校验设置写入对象，此时该纠删码集合的写仲裁为 ``K=12``。
+      该纠删码集合仍满足写仲裁，因此 MinIO 可以用它执行写操作。
 
-If Parity ``EC:M`` is exactly 1/2 the erasure set size, **write quorum** is ``K+1``
-   This prevents a split-brain type scenario, such as one where a network issue isolates exactly half the erasure set drives from the other.
+当校验 ``EC:M`` 恰好等于纠删码集合大小的 1/2 时，写仲裁为 ``K+1``。
+   这样可以防止 split-brain 场景，例如网络故障导致纠删码集合中的一半驱动器与另一半完全隔离。
    
    .. figure:: /images/erasure/erasure-coding-shard-split-brain.svg
       :figwidth: 100%
       :align: center
       :alt: Diagram of an erasure set with where Parity ``EC:M`` is 1/2 the set size
 
-      This deployment has two nodes offline due to a transient network failure.
-      A client writes an object with ``EC:8`` parity settings where the erasure set has a write quorum of ``K=9``.
-      This erasure set has lost write quorum and MinIO cannot use it for write operations.
+      该部署中有两个节点因临时网络故障而离线。
+      客户端按 ``EC:8`` 校验设置写入对象，此时该纠删码集合的写仲裁为 ``K=9``。
+      该纠删码集合已经失去写仲裁，因此 MinIO 无法将其用于写操作。
 
-   The ``K+1`` logic ensures that a client could not potentially write the same object twice - once to each "half" of the erasure set.
+   ``K+1`` 逻辑可确保客户端不会把同一个对象分别写入纠删码集合的两个“半边”，从而避免潜在的不一致。
 
-For an object maintaining **read quorum**, MinIO can use any data or parity shard to :ref:`heal <minio-concepts-healing>` damaged shards.
+对于仍满足读仲裁的对象，MinIO 可以使用任意数据分片或校验分片来 :ref:`自愈 <minio-concepts-healing>` 受损分片。
    .. figure:: /images/erasure/erasure-coding-shard-healing.svg
       :figwidth: 100%
       :align: center
       :alt: Diagram of MinIO using parity shards to heal lost data shards on a node.
 
-      An object with ``EC:4`` lost four data shards out of 12 due to drive failures.
-      Since the object has maintained **read quorum**, MinIO can heal those lost data shards using the available parity shards.
+      一个按 ``EC:4`` 写入的对象由于驱动器故障，在 12 个数据分片中丢失了 4 个。
+      由于该对象仍满足读仲裁，MinIO 可以使用现有的校验分片对丢失的数据分片执行自愈。
 
-Use the MinIO `Erasure Coding Calculator <https://min.io/product/erasure-code-calculator>`__ to explore the possible erasure set size and distributions for your planned topology.
-Where possible, use an even number of nodes and drives per node to simplify topology planning and conceptualization of drive/erasure-set distribution.
+你可以使用 MinIO `Erasure Coding Calculator <https://min.io/product/erasure-code-calculator>`__，为计划中的拓扑探索可能的纠删码集合大小和分布方式。
+如无特殊原因，建议使用偶数个节点和每节点偶数块驱动器，以简化拓扑规划以及驱动器和纠删码集合分布的理解。
 
 .. include:: /includes/common-admonitions.rst
    :start-after: start-exclusive-drive-access
@@ -135,27 +135,27 @@ Where possible, use an even number of nodes and drives per node to simplify topo
 
 .. _minio-ec-parity:
 
-Erasure Parity and Storage Efficiency
+纠删码校验与存储效率
 -------------------------------------
 
-Setting the parity for a deployment is a balance between availability and total usable storage. 
-Higher parity values increase resiliency to drive or node failure at the cost of usable storage, while lower parity provides maximum storage with reduced tolerance for drive/node failures. 
-Use the MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator?ref=docs>`__ to explore the effect of parity on your planned cluster deployment.
+为部署设置校验值，本质上是在可用性与总可用存储之间做平衡。
+更高的校验值会提高对驱动器或节点故障的容忍度，但会减少可用存储；更低的校验值则提供更高的可用存储，但对驱动器或节点故障的容忍度也更低。
+你可以使用 MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator?ref=docs>`__，查看不同校验值对计划中集群部署的影响。
 
-The following table lists the outcome of varying erasure code parity levels on a MinIO deployment consisting of 1 node and 16 1TB drives:
+下表列出了由 1 个节点和 16 块 1TB 驱动器组成的 MinIO 部署在不同纠删码校验级别下的结果：
 
-.. list-table:: Outcome of Parity Settings on a 16 Drive MinIO Cluster
+.. list-table:: 16 驱动器 MinIO 集群中的校验设置结果
    :header-rows: 1
    :widths: 20 20 20 20 20
    :width: 100%
 
-   * - Parity
-     - Total Storage
-     - Storage Ratio
-     - Minimum Drives for Read Operations
-     - Minimum Drives for Write Operations
+   * - 校验
+     - 总存储
+     - 存储比例
+     - 读操作所需最少驱动器
+     - 写操作所需最少驱动器
 
-   * - ``EC: 4`` (Default)
+   * - ``EC: 4`` (默认)
      - 12 Tebibytes
      - 0.750
      - 12
@@ -175,14 +175,14 @@ The following table lists the outcome of varying erasure code parity levels on a
 
 .. _minio-ec-bitrot:
 
-Bit Rot Protection
+位腐化防护
 ------------------
 
-`Bit rot <https://en.wikipedia.org/wiki/Data_degradation>`__ is silent data corruption from random changes at the storage media level.
-For data drives, it is typically the result of decay of the electrical charge or magnetic orientation that represents the data.
-These sources can range from the small current spike during a power outage to a random cosmic ray resulting in flipped bits.
-The resulting "bit rot" can cause subtle errors or corruption on the data medium without triggering monitoring tools or hardware.
+`Bit rot <https://en.wikipedia.org/wiki/Data_degradation>`__ 是一种静默数据损坏，由存储介质层面的随机变化引起。
+对于数据驱动器而言，它通常来自表示数据的电荷衰减或磁取向变化。
+成因可以从停电时的微小电流尖峰，到导致比特翻转的随机宇宙射线。
+这种“bit rot”会在不触发监控工具或硬件告警的情况下，对数据介质造成细微错误或损坏。
 
-MinIO’s optimized implementation of the :minio-git:`HighwayHash algorithm <highwayhash/blob/master/README.md>` ensures that it captures and heals corrupted objects on the fly. 
-Integrity is ensured from end to end by computing a hash on READ and verifying it on WRITE from the application, across the network, and to the memory or drive. 
-The implementation is designed for speed and can achieve hashing speeds over 10 GB/sec on a single core on Intel CPUs.
+MinIO 对 :minio-git:`HighwayHash algorithm <highwayhash/blob/master/README.md>` 的优化实现，确保其能够在运行时捕获并自愈受损对象。
+它通过在 READ 时计算哈希并在 WRITE 时进行校验，确保从应用、网络到内存或驱动器的端到端完整性。
+该实现专为速度设计，在 Intel CPU 上单核即可达到超过 10 GB/sec 的哈希速度。

@@ -6,35 +6,35 @@ MinIO Console
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 
-The MinIO Console is a rich graphical user interface that provides similar functionality to the :mc:`mc` command line tool.
+MinIO Console 是一个功能丰富的图形用户界面，提供与 :mc:`mc` 命令行工具类似的功能。
 
 .. image:: /images/minio-console/minio-console.png
    :width: 600px
-   :alt: MinIO Console Landing Page provides a view of the Object Browser for the authenticated user
+   :alt: MinIO Console 登录页为已认证用户提供 Object Browser 视图
    :align: center
 
-This page provides an overview of the MinIO Console and describes configuration options and instructions for logging in.
+本页面概述了 MinIO Console，并说明其配置选项和登录方法。
 
-Overview
---------
+概述
+----
 
-You can use the MinIO Console for administration tasks like Identity and Access Management, Metrics and Log Monitoring, or Server Configuration.
+您可以使用 MinIO Console 执行多种管理任务，例如身份与访问管理、指标与日志监控或服务器配置。
 
-The MinIO Console is embedded as part of the MinIO Server. 
-You can also deploy a standalone MinIO Console using the instructions in the :minio-git:`github repository <console>`.
+MinIO Console 作为 MinIO Server 的一部分内嵌提供。
+您也可以按照 :minio-git:`github repository <console>` 中的说明部署独立的 MinIO Console。
 
-Supported Browsers
-~~~~~~~~~~~~~~~~~~
+支持的浏览器
+~~~~~~~~~~~~
 
-MinIO Console runs on a variety of current, stable release browsers.
+MinIO Console 可运行于多种当前稳定版本的浏览器。
 
-For the best experience in the MinIO Console, use the latest stable release of your preferred browser.
-Some browsers that are supported include:
+为获得最佳使用体验，请使用您所选浏览器的最新稳定版本。
+支持的浏览器包括：
 
 - Chrome
 - Edge
@@ -42,68 +42,60 @@ Some browsers that are supported include:
 - Firefox
 - Opera
 
-This list is *not* exhaustive and is subject to change.
+此列表 *并不完整*，后续可能发生变化。
 
-For a full list of browsers and versions for running MinIO Console, see the `Browserslist <https://browsersl.ist/#q=%3E0.2%25%2Cnot+dead+and+not+op_mini+all>`__ website.
+如需查看运行 MinIO Console 所支持的完整浏览器及版本列表，请参见 `Browserslist <https://browsersl.ist/#q=%3E0.2%25%2Cnot+dead+and+not+op_mini+all>`__ 网站。
 
 .. tip:: 
    
-   MinIO Console does *not* support Opera Mini.
+   MinIO Console *不支持* Opera Mini。
 
-Configuration
--------------
+配置
+----
 
-The MinIO Console inherits the majority of its configuration settings from the
-MinIO Server. The following environment variables enable specific behavior in
-the MinIO Console:
+MinIO Console 的大部分配置设置继承自 MinIO Server。以下环境变量用于启用
+MinIO Console 中的特定行为：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Environment Variable
-     - Description
+   * - 环境变量
+     - 说明
 
    * - :envvar:`MINIO_PROMETHEUS_URL`
-     - The URL for a Prometheus server configured to scrape metrics from the 
-       MinIO deployment. The MinIO Console uses this server for populating the
-       metrics dashboard.
+     - 配置为从 MinIO 部署抓取指标的 Prometheus 服务器 URL。
+       MinIO Console 使用该服务器填充指标仪表板。
 
-       See :ref:`minio-metrics-collect-using-prometheus` for a tutorial on 
-       configuring Prometheus to collect metrics from MinIO.
+       有关如何配置 Prometheus 以从 MinIO 收集指标的教程，请参见
+       :ref:`minio-metrics-collect-using-prometheus`。
 
    * - :envvar:`MINIO_BROWSER_REDIRECT_URL`
-     - The externally resolvable hostname for the MinIO Console used by the 
-       configured :ref:`external identity manager 
-       <minio-authentication-and-identity-management>` for returning the
-       authentication response.
+     - MinIO Console 对外可解析的主机名，供已配置的
+       :ref:`external identity manager
+       <minio-authentication-and-identity-management>` 返回认证响应时使用。
 
-       This variable is typically necessary when using a reverse proxy, 
-       load balancer, or similar system to expose the MinIO Console to the 
-       public internet. Specify an externally reachable hostname that resolves
-       to the MinIO Console.
+       使用反向代理、负载均衡器或类似系统将 MinIO Console 暴露到公网时，
+       通常需要设置该变量。请指定一个可从外部访问并解析到 MinIO Console
+       的主机名。
 
 .. _minio-console-port-assignment:
 
-Static vs Dynamic Port Assignment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+静态端口分配与动态端口分配
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO by default selects a random port for the MinIO Console on each server
-startup. Browser clients accessing the MinIO Server are automatically 
-redirected to the MinIO Console on its dynamically selected port. 
-This behavior emulates the legacy web browser behavior while reducing the
-the risk of a port collision on systems which were running MinIO *before* the 
-embedded Console update.
+默认情况下，MinIO 会在每次服务器启动时为 MinIO Console 随机选择一个端口。
+访问 MinIO Server 的浏览器客户端会被自动重定向到动态选定端口上的
+MinIO Console。此行为模拟了旧版 Web 浏览器访问方式，同时降低了在
+嵌入式 Console 更新前已运行 MinIO 的系统上发生端口冲突的风险。
 
-You can select an explicit static port by passing the 
-:mc-cmd:`minio server --console-address` commandline option when starting 
-each MinIO Server in the deployment. 
+您可以在启动部署中的每个 MinIO Server 时，通过传递
+:mc-cmd:`minio server --console-address` 命令行选项来显式指定静态端口。
 
-For example, the following command starts a distributed MinIO deployment using
-a static port assignment of ``9001`` for the MinIO Console. This deployment
-would respond to S3 API operations on the default MinIO server port ``:9000``
-and browser access on the MinIO Console port ``:9001``.
+例如，以下命令启动一个分布式 MinIO 部署，并为 MinIO Console 静态分配
+``9001`` 端口。该部署将在默认 MinIO 服务器端口 ``:9000`` 上响应
+S3 API 操作，并在 MinIO Console 端口 ``:9001`` 上响应浏览器访问。
 
 .. code-block:: shell
    :class: copyable
@@ -111,52 +103,52 @@ and browser access on the MinIO Console port ``:9001``.
    minio server https://minio-{1...4}.example.net/mnt/drive-{1...4} \
          --console-address ":9001"
 
-Deployments behind network routing components which require static ports for 
-routing rules may require setting a static MinIO Console port. For example,
-load balancers, reverse proxies, or Kubernetes ingress may by default block
-or exhibit unexpected behavior with the the dynamic redirection behavior.
+位于网络路由组件之后且其路由规则要求使用静态端口的部署，可能需要为
+MinIO Console 设置静态端口。例如，负载均衡器、反向代理或 Kubernetes
+ingress 可能会默认阻止动态重定向行为，或在该行为下表现异常。
 
-You must also ensure that the host system firewall grants access to the configured Console port.
+您还必须确保主机系统防火墙允许访问已配置的 Console 端口。
 
 .. _minio-console-play-login:
 
-Logging In
-----------
+登录
+----
 
 .. versionchanged:: RELEASE.2023-03-09T23-16-13Z
 
-The MinIO Console displays a login screen for unauthenticated users.
-The Console defaults to providing a username and password prompt for a :ref:`MinIO-managed user <minio-internal-idp>`.
+MinIO Console 会向未认证用户显示登录页面。
+默认情况下，Console 为 :ref:`MinIO-managed user <minio-internal-idp>` 提供用户名和密码登录提示。
 
-For deployments configured with multiple :ref:`identity managers <minio-authentication-and-identity-management>`, select the :guilabel:`Other Authentication Methods` dropdown to select one of the other configured identity providers.
-You can also log in using credentials generated using a :ref:`Security Token Service (STS) <minio-security-token-service>` API.
+对于配置了多个 :ref:`identity managers <minio-authentication-and-identity-management>` 的部署，
+请选择 :guilabel:`Other Authentication Methods` 下拉菜单，以选择其他已配置的身份提供商之一。
+您也可以使用通过 :ref:`Security Token Service (STS) <minio-security-token-service>` API 生成的凭证登录。
 
-.. admonition:: Try out the Console using MinIO's Play testing environment
+.. admonition:: 使用 MinIO 的 Play 测试环境体验 Console
    :class: note
 
-   You can explore the Console using https://play.min.io:9443. 
-   Log in with the following credentials:
+   您可以通过 https://play.min.io:9443 体验 Console。
+   请使用以下凭证登录：
 
-   - Username: ``Q3AM3UQ867SPQQA43P2F``
-   - Password: ``zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG``
+   - 用户名：``Q3AM3UQ867SPQQA43P2F``
+   - 密码：``zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG``
 
-   The Play Console connects to the MinIO Play deployment at https://play.min.io.
-   You can also access this deployment using :mc:`mc` and using the ``play`` alias.
+   Play Console 连接到位于 https://play.min.io 的 MinIO Play 部署。
+   您也可以通过 :mc:`mc` 使用 ``play`` 别名访问该部署。
 
-Documentation
--------------
+文档
+----
 
-The :guilabel:`Documentation` tab opens this documentation site in a separate browser window or tab.
+:guilabel:`Documentation` 选项卡会在单独的浏览器窗口或标签页中打开此文档站点。
 
-Available Tasks
----------------
+可用任务
+--------
 
-Once logged in to the MinIO Console, users can perform many kinds of tasks.
+登录 MinIO Console 后，用户可以执行多种任务。
 
-- :ref:`Manage objects <minio-console-managing-objects>` by browsing or uploading objects, managing bucket settings, or creating tiers.
-- :ref:`Review or modify identity and security <minio-console-security-access>` with access keys, policies, and Identity Provider settings.
-- :ref:`Monitor the health and activities <minio-console-managing-deployment>` with metrics, notifications, or site replication
-- :ref:`Manage your deployment's license <minio-console-subscription>`
+- :ref:`管理对象 <minio-console-managing-objects>`，包括浏览或上传对象、管理存储桶设置或创建层。
+- :ref:`查看或修改身份与安全配置 <minio-console-security-access>`，包括访问密钥、策略和身份提供商设置。
+- :ref:`监控健康状态与活动 <minio-console-managing-deployment>`，包括指标、通知或站点复制
+- :ref:`管理部署许可证 <minio-console-subscription>`
 
 .. toctree::
    :titlesonly:

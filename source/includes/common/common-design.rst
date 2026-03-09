@@ -1,18 +1,18 @@
-Included Header
----------------
+包含的标题
+----------
 
 
-This is content inside of the above header.
-The header decoration *must* match that of the "parent" document
+这是上方标题中的内容。
+标题修饰符 *必须* 与“父级”文档保持一致。
 
-Another Header
---------------
+另一个标题
+----------
 
-This is content inside the above header.
-This should be the same level as the previous header.
+这是上方标题中的内容。
+其层级应与前一个标题相同。
 
-SubHeader
-~~~~~~~~~
+子标题
+~~~~~~
 
-This is content subsectioned to the previous header.
-It should be one level down from the previous header.
+这是前一个标题下的子节内容。
+其层级应比前一个标题低一级。

@@ -7,28 +7,28 @@ MinIO External Identity Management Plugin
 .. default-domain:: minio
 
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-Overview
+概述
+----
+
+MinIO Identity Management Plugin 提供了一个 REST 接口，用于通过 Webhook 服务将认证委托给外部身份管理器。
+
+启用后，客户端应用程序使用 ``AssumeRoleWithCustomToken`` STS API 扩展为 MinIO 生成访问令牌。
+MinIO 通过向已配置的插件端点发起 POST 请求来验证该令牌，并根据返回的响应判断客户端的认证状态。
+
+配置设置
 --------
 
-The MinIO Identity Management Plugin provides a REST interface for offloading authentication to an external identity manager through a webhook service.
-
-Once enabled, client applications use the ``AssumeRoleWithCustomToken`` STS API extension to generate access tokens for MinIO.
-MinIO verifies this token by making a POST request to the configured plugin endpoint and uses the returned response to determine the authentication status of the client.
-
-Configuration Settings
-----------------------
-
-You can configure the MinIO Identity Management Plugin using the following environment variables or configuration settings:
+你可以使用以下环境变量或配置设置来配置 MinIO Identity Management Plugin：
 
 .. tab-set::
 
    .. tab-item:: Environment Variables
 
-      Specify the following :ref:`environment variables <minio-server-envvar-external-identity-management-plugin>` to each MinIO server in the deployment:
+      为部署中的每个 MinIO 服务器指定以下 :ref:`environment variables <minio-server-envvar-external-identity-management-plugin>`：
 
       .. code-block:: shell
          :class: copyable
@@ -43,7 +43,7 @@ You can configure the MinIO Identity Management Plugin using the following envir
 
    .. tab-item:: Configuration Settings
 
-      Set the following configuration settings using the :mc-cmd:`mc admin config set` command:
+      使用 :mc-cmd:`mc admin config set` 命令设置以下配置项：
 
       .. code-block:: shell
          :class: copyable
@@ -57,18 +57,18 @@ You can configure the MinIO Identity Management Plugin using the following envir
             role_id="external-auth-provider" \
             comment="External Identity Management using PROVIDER"
 
-Authentication and Authorization Flow
--------------------------------------
+认证与授权流程
+--------------
 
-The login flow for an application is as follows:
+应用程序的登录流程如下：
 
-1. Make a POST request using the :ref:`minio-sts-assumerolewithcustomtoken` API.
+1. 使用 :ref:`minio-sts-assumerolewithcustomtoken` API 发起 POST 请求。
 
-   The request includes a token used by the configured external identity manager for authenticating the client.
+   该请求包含一个令牌，供已配置的外部身份管理器用于认证客户端。
 
-2. MinIO makes a POST call to the configured identity plugin URL using the token specified to the STS API.
+2. MinIO 使用为 STS API 指定的令牌，向已配置的身份插件 URL 发起 POST 调用。
 
-3. On successful authentication, the identity manager returns a ``200 OK`` response with an ``application/json`` content-type and body with the following structure:
+3. 认证成功后，身份管理器返回一个 ``200 OK`` 响应，其 ``content-type`` 为 ``application/json``，响应体结构如下：
 
    .. code-block:: json
 
@@ -84,18 +84,18 @@ The login flow for an application is as follows:
       :width: 100%
 
       * - ``user``
-        - The owner of the requested credentials
+        - 所请求凭证的所有者
 
       * - ``maxValiditySeconds``
-        - The maximum allowed expiry duration for the returned credentials
+        - 返回凭证允许的最大过期时长
 
       * - ``claims``
-        - A JSON string of ``"key": "value"`` pair claims associated with the requested credentials.
-          MinIO reserves and ignores the ``exp``, ``parent``, and ``sub`` claims objects if present.
+        - 与所请求凭证关联的、由 ``"key": "value"`` 键值对组成的 claims JSON 字符串。
+          如果存在 ``exp``、``parent`` 和 ``sub`` claims 对象，MinIO 会将其保留并忽略。
 
-4. MinIO returns a response to the STS API request that includes temporary credentials for use with making authenticated requests.
+4. MinIO 向 STS API 请求返回响应，其中包含可用于发起已认证请求的临时凭证。
 
-If the identity manager rejects the authentication request or otherwise encounters an error, the response *must* return a ``403 FORBIDDEN`` HTTP status code with an ``application/json`` content-type and body with the following structure:
+如果身份管理器拒绝该认证请求，或在处理过程中发生其他错误，则响应 *必须* 返回 ``403 FORBIDDEN`` HTTP 状态码，``content-type`` 为 ``application/json``，响应体结构如下：
 
 .. code-block:: json
 
@@ -103,9 +103,9 @@ If the identity manager rejects the authentication request or otherwise encounte
    	"reason": "<string>"
    }
 
-The ``"reason"`` field should include the reason for the 403.
+``"reason"`` 字段应包含返回 403 的原因。
 
-Creating Policies to Match Claims
----------------------------------
+创建与 Claims 匹配的策略
+------------------------
 
-Use the :mc:`mc admin policy` command to create policies that match one or more claim values.
+使用 :mc:`mc admin policy` 命令创建与一个或多个 claim 值匹配的策略。

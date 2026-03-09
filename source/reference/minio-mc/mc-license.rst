@@ -4,35 +4,35 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc license
 
 
-Description
------------
+说明
+----
 
 .. start-mc-license-desc
 
-The :mc:`mc license` commands work with cluster registration for |SUBNET|. 
-Use the commands to register a deployment, display information about the cluster's current license, or update the license key for a cluster.
+:mc:`mc license` 命令用于管理 |SUBNET| 的集群注册。
+可使用这些命令注册部署、显示集群当前许可证信息，或更新集群的许可证密钥。
 
 .. end-mc-license-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc license` includes the following subcommands:
+:mc:`mc license` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc license info`
      - .. include:: /reference/minio-mc/mc-license-info.rst

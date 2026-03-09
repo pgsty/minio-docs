@@ -4,42 +4,42 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin heal
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-heal-desc
 
-The :mc-cmd:`mc admin heal` command scans for objects that are damaged or corrupted and heals those objects.  
+:mc-cmd:`mc admin heal` 命令会扫描受损或损坏的对象，并对这些对象执行自愈。  
 
 .. end-mc-admin-heal-desc
 
-:mc-cmd:`mc admin heal` is resource intensive and typically not required as a manual process, even after drive failures or corruption events. 
+:mc-cmd:`mc admin heal` 资源开销较大，通常不需要手动执行，即使在驱动器故障或数据损坏事件之后也是如此。 
 
-As a part of normal operations, MinIO:
+作为正常运行的一部分，MinIO 会：
 
-- automatically heals objects damaged by silent bit rot corruption, drive failure, or other issues on each ``POST`` or ``GET`` operation. 
-- performs periodic background object healing using the :ref:`scanner <minio-concepts-scanner>`.
-- aggressively heals objects after drive replacement.
+- 在每次 ``POST`` 或 ``GET`` 操作时，自动修复因静默位腐坏、驱动器故障或其他问题而受损的对象。 
+- 使用 :ref:`scanner <minio-concepts-scanner>` 周期性执行后台对象自愈。
+- 在更换驱动器后积极执行对象自愈。
 
-Refer to :ref:`minio-concepts-healing` for more details on how MinIO heals objects.
+有关 MinIO 如何执行对象自愈的更多详细信息，请参阅 :ref:`minio-concepts-healing`。
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
       :start-after: start-minio-only
       :end-before: end-minio-only
 
-Syntax
-------
+语法
+----
 
-:mc-cmd:`mc admin heal` has the following syntax:
+:mc-cmd:`mc admin heal` 使用以下语法：
 
 .. code-block:: shell
    :class: copyable
@@ -49,50 +49,50 @@ Syntax
                          [--force]          \
                          [--verbose, -v]
 
-:mc-cmd:`mc admin heal` supports the following arguments:
+:mc-cmd:`mc admin heal` 支持以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the bucket or bucket prefix on which the command should perform object healing. 
-   Specify the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment as the prefix for the path. 
-   For example:
+   执行对象自愈的存储桶或存储桶前缀的完整路径。 
+   指定已配置的 MinIO 部署的 :mc-cmd:`alias <mc alias>` 作为该路径的前缀。 
+   例如：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin heal play/mybucket/myprefix
 
-   If the ``TARGET`` bucket or bucket prefix has an active healing scan, the command returns the status of that scan.
+   如果 ``TARGET`` 存储桶或存储桶前缀存在活动的自愈扫描，命令将返回该扫描的状态。
 
 .. mc-cmd:: --all-drives, -a
    :optional:
 
-   Select all drives and show verbose information.
+   选择所有驱动器并显示详细信息。
 
 .. mc-cmd:: --force
    :optional:
 
-   Disables warning prompts.
+   禁用警告提示。
 
 .. mc-cmd:: --verbose, -v
    :optional:
 
-   Show information about offline and faulty healing drives.
+   显示离线和故障驱动器的自愈信息。
 
 
 .. _minio-concepts-healing-colors:
 
-Healing Colors
---------------
+自愈颜色
+--------
 
-Some versions of MinIO used a color key as a way to differentiate objects with different healing statuses.
+某些版本的 MinIO 使用颜色标识来区分不同自愈状态的对象。
 
 .. versionchanged:: mc RELEASE.2024-11-17T19-35-25Z
 
-The color meaning has been updated.
+颜色含义已更新。
 
-- Green indicates the bucket is healthy.
-- Yellow indicates the bucket requires healing on one or more drives.
-- Red indicates one or more drives are unhealthy.
-- Grey indicates an indeterminate healing state.
+- 绿色表示存储桶健康。
+- 黄色表示存储桶在一个或多个驱动器上需要执行自愈。
+- 红色表示一个或多个驱动器处于不健康状态。
+- 灰色表示自愈状态不确定。

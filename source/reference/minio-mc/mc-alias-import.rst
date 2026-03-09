@@ -6,39 +6,39 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc alias import
 
-Syntax
-------
+语法
+----
 
 .. start-mc-alias-import-desc
 
-The :mc:`mc alias import` command imports an alias configuration from a JSON document.
+:mc:`mc alias import` 命令从 JSON 文档中导入别名配置。
 
 .. end-mc-alias-import-desc
 
-You can use :mc:`mc alias export` to create the necessary JSON for import.
+你可以使用 :mc:`mc alias export` 生成导入所需的 JSON。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command imports an alias configuration from a JSON document:
+      以下命令从 JSON 文档中导入别名配置：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias import newalias ./credentials.json
 
-      Use :mc:`mc alias list newalias <mc alias list>` to confirm the import succeeded.
+      使用 :mc:`mc alias list newalias <mc alias list>` 确认导入成功。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc alias import` command has the following syntax:
+      :mc:`mc alias import` 命令的语法如下：
 
       .. code-block:: shell
 
@@ -48,42 +48,42 @@ You can use :mc:`mc alias export` to create the necessary JSON for import.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The name of the alias to assign to the imported configuration.
+   分配给导入配置的别名名称。
 
 .. mc-cmd:: PATH
    :required:
 
-   The full path to the JSON object representing the alias configuration to import.
+   表示待导入别名配置的 JSON 对象的完整路径。
 
-   Mutually exclusive with the :mc-cmd:`~mc alias import STDIN` parameter.
+   与 :mc-cmd:`~mc alias import STDIN` 参数互斥。
 
 .. mc-cmd:: STDIN
    :required:
 
-   Directs the command to use the Standard Input (STDIN) as the source of the JSON object for import.
+   指定命令使用标准输入（STDIN）作为导入 JSON 对象的来源。
 
-   Mutually exclusive with the :mc-cmd:`~mc alias import PATH` parameter.
+   与 :mc-cmd:`~mc alias import PATH` 参数互斥。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Behavior
---------
+行为
+----
 
-JSON Format
-~~~~~~~~~~~
+JSON 格式
+~~~~~~~~~
 
-The JSON object **must** have the following format:
+JSON 对象**必须**采用以下格式：
 
 .. code-block:: json
 
@@ -95,17 +95,17 @@ The JSON object **must** have the following format:
       "path": "auto"
    }
 
-You can use the :mc:`mc alias export` command to export an existing alias from the local host configuration.
-Alternatively, you can manually extract the necessary JSOn fields from the :mc:`mc` :ref:`configuration file <mc-configuration>`.
+你可以使用 :mc:`mc alias export` 命令从本地主机配置中导出现有别名。
+或者，你也可以从 :mc:`mc` :ref:`configuration file <mc-configuration>` 中手动提取所需的 JSON 字段。
 
-Examples
---------
+示例
+----
 
-Import an Alias Using Standard Input
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用标准输入导入别名
+~~~~~~~~~~~~~~~~~~~~
 
-The following example imports a custom alias for the `play.min.io <https://play.min.io>`__ sandbox.
-You can modify this example to use user credentials you have already created or validated as existing on the sandbox:
+以下示例为 `play.min.io <https://play.min.io>`__ 沙箱导入一个自定义别名。
+你可以修改该示例，改为使用你已创建或已验证存在于该沙箱上的用户凭据：
 
 .. code-block:: shell
    :class: copyable
@@ -119,10 +119,9 @@ You can modify this example to use user credentials you have already created or 
     "path": "auto"
    }' | mc alias import play-minioadmin
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
-

@@ -1,12 +1,12 @@
 .. _minio-encryption-sse-s3:
 
 ==================================================
-Server-Side Encryption Per-Deployment Key (SSE-S3)
+部署级服务端加密密钥（SSE-S3）
 ==================================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
@@ -18,33 +18,30 @@ Server-Side Encryption Per-Deployment Key (SSE-S3)
 .. |KMS| replace:: :abbr:`KMS (Key Management Service)`
 .. |KES| replace:: :abbr:`KES (Key Encryption Service)`
 
-MinIO Server-Side Encryption (SSE) protects objects as part of write operations,
-allowing clients to take advantage of server processing power to secure objects
-at the storage layer (encryption-at-rest). SSE also provides key functionality
-to regulatory and compliance requirements around secure locking and erasure.
+MinIO 服务端加密（SSE）在写入操作期间保护对象，使客户端能够利用服务端的处理能力，
+在存储层保护对象（静态加密）。SSE 还为围绕安全锁定和擦除的监管与合规要求提供关键能力。
 
-MinIO SSE uses the :kes-docs:`MinIO Key Encryption Service (KES) <>` and an
-external Key Management Service (KMS) for performing secured cryptographic
-operations at scale. MinIO also supports client-managed key management, where
-the application takes full responsibility for creating and managing encryption
-keys for use with MinIO SSE. 
+MinIO SSE 使用 :kes-docs:`MinIO Key Encryption Service (KES) <>` 和外部
+Key Management Service (KMS) 以安全方式大规模执行加密操作。MinIO 还支持
+客户端自主管理密钥，即由应用全权负责创建和管理供 MinIO SSE 使用的加密密钥。
 
-MinIO SSE-S3 en/decrypts objects using an External Key (EK) managed by a 
-Key Management System (KMS). You must specify the |EK| using the 
-:envvar:`MINIO_KMS_KES_KEY_NAME` environment variable when starting up the
-MinIO server. MinIO uses the same EK for *all* SSE-S3 cryptographic operations.
+MinIO SSE-S3 使用由 Key Management System (KMS) 管理的 |EK| 对对象进行加/解密。
+你必须在启动 MinIO 服务器时通过 :envvar:`MINIO_KMS_KES_KEY_NAME` 环境变量指定
+该 |EK|。对于 *所有* SSE-S3 加密操作，MinIO 都使用同一个 EK。
 
-You can enable bucket-default SSE-S3 encryption using the :mc:`mc encrypt set` command:
+你可以使用 :mc:`mc encrypt set` 命令启用存储桶默认 SSE-S3 加密：
 
 .. code-block:: shell
    :class: copyable
 
    mc encrypt set sse-s3 play/mybucket
 
-- Replace ``play/mybucket`` with the :mc:`alias <mc alias>` and bucket 
-  on which you want to enable automatic SSE-KMS encryption.
+- 将 ``play/mybucket`` 替换为你要启用自动 SSE-KMS 加密的 :mc:`alias <mc alias>`
+  和存储桶。
 
-MinIO SSE-S3 is functionally compatible with AWS S3 :s3-docs:`Server-Side Encryption with Amazon S3-Managed Keys <UsingServerSideEncryption.html>` while expanding support to include the following KMS providers:
+MinIO SSE-S3 在功能上兼容 AWS S3
+:s3-docs:`Server-Side Encryption with Amazon S3-Managed Keys <UsingServerSideEncryption.html>`，
+同时将支持扩展到以下 KMS 提供商：
 
 - :kes-docs:`AWS Secrets Manager <integrations/aws-secrets-manager/>`
 - :kes-docs:`Azure KeyVault <integrations/azure-keyvault/>`
@@ -56,7 +53,7 @@ MinIO SSE-S3 is functionally compatible with AWS S3 :s3-docs:`Server-Side Encryp
 
 .. _minio-encryption-sse-s3-quickstart:
 
-Quickstart
+快速开始
 ----------
 
 .. important::
@@ -65,11 +62,11 @@ Quickstart
       :start-after: start-kes-encrypted-backend-desc
       :end-before: end-kes-encrypted-backend-desc
 
-The following procedure uses the ``play`` MinIO |KES| sandbox for 
-supporting |SSE| with SSE-S3 in evaluation and early development environments.
+以下流程使用 ``play`` MinIO |KES| 沙箱，在评估和早期开发环境中为 SSE-S3 提供
+|SSE| 支持。
 
-For extended development or production environments, use one of the following
-supported external Key Management Services (KMS):
+对于较长期的开发环境或生产环境，请使用以下受支持的外部
+Key Management Services (KMS) 之一：
 
 - :kes-docs:`AWS Secrets Manager <integrations/aws-secrets-manager/>`
 - :kes-docs:`Azure KeyVault <integrations/azure-keyvault/>`
@@ -83,21 +80,22 @@ supported external Key Management Services (KMS):
    :start-after: start-kes-play-sandbox-warning
    :end-before: end-kes-play-sandbox-warning
 
-This procedure requires the following components:
+此流程需要以下组件：
 
-- Install :mc:`mc` on a machine with network access to the source deployment. 
-  See the ``mc`` :ref:`Installation Quickstart <mc-install>` for instructions on downloading and installing ``mc``.
+- 在一台能够通过网络访问源部署的机器上安装 :mc:`mc`。
+  有关下载和安装 ``mc`` 的说明，请参阅 ``mc`` :ref:`Installation Quickstart <mc-install>`。
 
-- Install :kes-docs:`MinIO Key Encryption Service (KES) <>` on a machine with internet access. 
-  See the KES :kes-docs:`Getting Started <tutorials/getting-started/>` guide for instructions on downloading, installing, and configuring KES.
+- 在一台可访问互联网的机器上安装 :kes-docs:`MinIO Key Encryption Service (KES) <>`。
+  有关下载、安装和配置 KES 的说明，请参阅 KES :kes-docs:`Getting Started <tutorials/getting-started/>` 指南。
 
 
-1) Create an Encryption Key for SSE-S3 Encryption
+1) 为 SSE-S3 加密创建加密密钥
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :kes-docs:`kes <cli>` command line tool to create a new External Key (EK) for use with SSE-S3 Encryption.
+使用 :kes-docs:`kes <cli>` 命令行工具创建一个新的 |EK|，供 SSE-S3 加密使用。
 
-The following command retrieves the root :minio-git:`identity <kes/wiki/Configuration#policy-configuration>` for the KES server connected to the KES ``play`` sandbox:
+以下命令获取已连接到 KES ``play`` 沙箱的 KES 服务器的 root
+:minio-git:`identity <kes/wiki/Configuration#policy-configuration>`：
 
 .. code-block:: shell
    :class: copyable
@@ -106,7 +104,7 @@ The following command retrieves the root :minio-git:`identity <kes/wiki/Configur
      -O 'https://raw.githubusercontent.com/minio/kes/master/root.key' \
      -O 'https://raw.githubusercontent.com/minio/kes/master/root.cert'
 
-Set the following environment variables in the terminal or shell:
+在终端或 shell 中设置以下环境变量：
 
 .. code-block:: shell
    :class: copyable
@@ -120,29 +118,31 @@ Set the following environment variables in the terminal or shell:
    :width: 100%
 
    * - ``KES_CLIENT_KEY``
-     - The private key for an :kes-docs:`identity <concepts/#authorization>` on the KES server.
-       The identity must grant access to at minimum the ``/v1/create``, ``/v1/generate``, and ``/v1/list`` :kes-docs:`API endpoints <concepts/server-api/>`. 
-       This step uses the ``root`` identity for the MinIO ``play`` KES sandbox, which provides access to all operations on the KES server.
+     - KES 服务器上某个 :kes-docs:`identity <concepts/#authorization>` 的私钥。
+       该 identity 至少必须被授予对 ``/v1/create``、``/v1/generate`` 和
+       ``/v1/list`` :kes-docs:`API endpoints <concepts/server-api/>` 的访问权限。
+       此步骤使用 MinIO ``play`` KES 沙箱的 ``root`` identity，它可访问
+       KES 服务器上的所有操作。
 
    * - ``KES_CLIENT_CERT``
-     - The corresponding certificate for the :kes-docs:`identity <concepts/#authorization>` on the KES server.
-       This step uses the ``root`` identity for the MinIO ``play`` KES sandbox, which provides access to all operations on the KES server.
+     - KES 服务器上该 :kes-docs:`identity <concepts/#authorization>` 对应的证书。
+       此步骤使用 MinIO ``play`` KES 沙箱的 ``root`` identity，它可访问
+       KES 服务器上的所有操作。
 
-The following command creates a new |EK| through the :kes-docs:`KES CLI <cli/kes-key/create/>`:
+以下命令通过 :kes-docs:`KES CLI <cli/kes-key/create/>` 创建一个新的 |EK|：
 
 .. code-block:: shell
    :class: copyable
 
    kes key create my-minio-sse-s3-key
 
-This tutorial uses the example ``my-minio-sse-s3-key`` name for ease of reference. 
-Specify a unique key name to prevent collision with existing keys.
+本教程使用示例名称 ``my-minio-sse-s3-key`` 以便引用。
+请指定唯一的密钥名称，以避免与现有密钥冲突。
 
-2) Configure MinIO for SSE-S3 Object Encryption
+2) 配置 MinIO 以启用 SSE-S3 对象加密
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       
-Specify the following environment variables in the shell or terminal on each
-MinIO server host in the deployment:
+在部署中每个 MinIO 服务器主机的 shell 或终端中设置以下环境变量：
 
 .. code-block:: shell
    :class: copyable
@@ -153,145 +153,135 @@ MinIO server host in the deployment:
 
 .. note::
    
-   - An API key is the preferred way to authenticate with the KES server, as it provides a streamlined and secure authentication process to the KES server.
+   - API key 是与 KES 服务器进行身份验证的首选方式，因为它为 KES 服务器提供了
+     更精简且安全的认证流程。
 
-   - Alternatively, specify the :envvar:`MINIO_KMS_KES_KEY_FILE` and :envvar:`MINIO_KMS_KES_CERT_FILE` instead of :envvar:`MINIO_KMS_KES_API_KEY`.
+   - 或者，使用 :envvar:`MINIO_KMS_KES_KEY_FILE` 和
+     :envvar:`MINIO_KMS_KES_CERT_FILE` 替代 :envvar:`MINIO_KMS_KES_API_KEY`。
      
-     API keys are mutually exclusive with certificate-based authentication. 
-     Specify *either* the API key variable *or* the Key File and Cert File variables.
+     API key 与基于证书的身份验证互斥。
+     请在 API key 变量与 Key File 和 Cert File 变量之间 *二选一*。
    
-   - The documentation on this site uses API keys.
+   - 本站文档使用 API key。
 
 .. list-table::
    :stub-columns: 1
    :widths: 30 80
 
    * - :envvar:`MINIO_KMS_KES_ENDPOINT`
-     - The endpoint for the MinIO ``Play`` KES service.
+     - MinIO ``Play`` KES 服务的端点。
 
    * - :envvar:`MINIO_KMS_KES_KEY_FILE`
-     - The private key file corresponding to an 
+     - 与 KES 服务上的某个
        :minio-git:`identity <kes/wiki/Configuration#policy-configuration>`
-       on the KES service. The identity must grant permission to 
-       create, generate, and decrypt keys. Specify the same
-       identity key file as the ``KES_KEY_FILE`` environment variable
-       in the previous step.
+       对应的私钥文件。该 identity 必须具备创建、生成和解密密钥的权限。
+       请指定与上一步中 ``KES_KEY_FILE`` 环境变量相同的 identity 私钥文件。
 
    * - :envvar:`MINIO_KMS_KES_CERT_FILE`
-     - The public certificate file corresponding to an 
+     - 与 KES 服务上的某个
        :minio-git:`identity <kes/wiki/Configuration#policy-configuration>`
-       on the KES service. The identity must grant permission to 
-       create, generate, and decrypt keys. Specify the same
-       identity certificate as the ``KES_CERT_FILE`` environment
-       variable in the previous step.
+       对应的公钥证书文件。该 identity 必须具备创建、生成和解密密钥的权限。
+       请指定与上一步中 ``KES_CERT_FILE`` 环境变量相同的 identity 证书文件。
 
    * - :envvar:`MINIO_KMS_KES_KEY_NAME`
-     - The name of the External Key (EK) to use for
-       performing SSE encryption operations. KES retrieves the |EK| from
-       the configured Key Management System (KMS). Specify the name of the
-       key created in the previous step. 
+     - 用于执行 SSE 加密操作的 |EK| 名称。
+       KES 从已配置的 Key Management System (KMS) 中获取该 |EK|。
+       请指定上一步创建的密钥名称。
 
-3) Restart the MinIO Deployment to Enable SSE-S3
+3) 重启 MinIO 部署以启用 SSE-S3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+必须重启 MinIO 部署以应用配置变更。
+使用 :mc-cmd:`mc admin service restart` 命令重启部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`alias <alias>`。
 
-4) Configure Automatic Bucket Encryption
+4) 配置存储桶自动加密
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
-You can skip this step if you intend to use only client-driven SSE-S3.
+如果你只打算使用客户端驱动的 SSE-S3，可以跳过此步骤。
 
-Use the :mc:`mc encrypt set` command to enable automatic SSE-S3 protection
-of all objects written to a specific bucket.
+使用 :mc:`mc encrypt set` 命令，为写入特定存储桶的所有对象启用自动
+SSE-S3 保护。
 
 .. code-block:: shell
    :class: copyable
 
    mc encrypt set sse-s3 ALIAS/BUCKET
 
-- Replace :mc-cmd:`ALIAS <mc encrypt set ALIAS>` with the 
-  :mc:`alias <mc alias>` of the MinIO deployment on which you enabled SSE-S3.
+- 将 :mc-cmd:`ALIAS <mc encrypt set ALIAS>` 替换为已启用 SSE-S3 的
+  MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`BUCKET <mc encrypt set ALIAS>`  with the full path to the
-  bucket or bucket prefix on which you want to enable automatic SSE-S3.
+- 将 :mc-cmd:`BUCKET <mc encrypt set ALIAS>` 替换为你要启用自动 SSE-S3 的
+  存储桶或存储桶前缀的完整路径。
 
 .. _minio-encryption-sse-s3-erasure-locking:
 
-Secure Erasure and Locking
+安全擦除与锁定
 --------------------------
 
-SSE-S3 protects objects using an |EK| specified at server startup
-using the :envvar:`MINIO_KMS_KES_KEY_NAME` environment variable. MinIO
-therefore *requires* access to that |EK| for decrypting that object.
+SSE-S3 使用服务器启动时通过 :envvar:`MINIO_KMS_KES_KEY_NAME` 环境变量指定的
+|EK| 来保护对象。因此，MinIO *必须* 访问该 |EK| 才能解密该对象。
 
-- Disabling the |EK| temporarily locks SSE-S3-encrypted objects in the
-  deployment by rendering them unreadable. You can later enable the |EK|
-  to resume normal read operations.
+- 禁用该 |EK| 会使部署中经 SSE-S3 加密的对象暂时无法读取，从而被临时锁定。
+  你之后可以重新启用该 |EK|，以恢复正常读取操作。
 
-- Deleting the |EK| renders all SSE-S3-encrypted objects in the deployment
-  *permanently* unreadable. If the KMS does not have or support backups
-  of the |EK|, this process is *irreversible*.
+- 删除该 |EK| 会使部署中所有经 SSE-S3 加密的对象 *永久* 无法读取。
+  如果 KMS 没有该 |EK| 的备份或不支持其备份，此过程 *不可逆*。
 
-The scope of the |EK| depends on:
+该 |EK| 的作用范围取决于：
 
-- Which buckets specified automatic SSE-S3 encryption, *and*
-- Which write operations requested SSE-S3 encryption.
+- 哪些存储桶指定了自动 SSE-S3 加密，*以及*
+- 哪些写入操作请求了 SSE-S3 加密。
 
 .. _minio-encryption-sse-s3-encryption-process:
 
-Encryption Process
+加密过程
 ------------------
 
 .. note:: 
 
-   The following section describes MinIO internal logic and functionality.
-   This information is purely educational and is not necessary for 
-   configuring or implementing any MinIO feature.
+   以下部分描述 MinIO 的内部逻辑和功能。
+   这些信息仅用于帮助理解，并非配置或实现任何 MinIO 功能所必需。
 
-SSE-S3 uses an External Key (EK) managed by the configured Key Management
-System (KMS) for performing cryptographic operations and protecting objects.
-The table below describes each stage of the encryption process:
+SSE-S3 使用由已配置的 Key Management System (KMS) 管理的 |EK| 来执行加密操作并
+保护对象。下表描述了加密过程的各个阶段：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
 
-   * - Stage
-     - Description
+   * - 阶段
+     - 说明
 
-   * - SSE-Enabled Write Operation
-     - MinIO receives a write operation requesting SSE-S3 encryption. 
-       MinIO uses the key name specified to 
-       :envvar:`MINIO_KMS_KES_KEY_NAME` as the External Key (EK).
+   * - 启用 SSE 的写入操作
+     - MinIO 接收到一个请求执行 SSE-S3 加密的写入操作。
+       MinIO 将 :envvar:`MINIO_KMS_KES_KEY_NAME` 中指定的密钥名称用作 |EK|。
 
-   * - Generate the Data Encryption Key (DEK)
+   * - 生成数据加密密钥（DEK）
      - .. include:: /includes/common-minio-sse.rst
           :start-after: start-sse-dek
           :end-before: end-sse-dek
 
-   * - Generate the Key Encryption Key (KEK)
+   * - 生成密钥加密密钥（KEK）
      - .. include:: /includes/common-minio-sse.rst
           :start-after: start-sse-kek
           :end-before: end-sse-kek
 
-   * - Generate the Object Encryption Key (OEK)
+   * - 生成对象加密密钥（OEK）
      - .. include:: /includes/common-minio-sse.rst
           :start-after: start-sse-oek
           :end-before: end-sse-oek
 
-   * - Encrypt the Object
-     - MinIO uses the |OEK| to encrypt the object *prior* to storing the
-       object to a drive. MinIO then encrypts the |OEK| with the |KEK|. 
+   * - 加密对象
+     - MinIO 在将对象写入磁盘 *之前* 使用 |OEK| 对对象进行加密。
+       随后，MinIO 使用 |KEK| 对 |OEK| 进行加密。
 
-       MinIO stores the encrypted representation of the |OEK| and |DEK| as part
-       of the metadata.
+       MinIO 将 |OEK| 和 |DEK| 的加密表示形式作为元数据的一部分进行存储。

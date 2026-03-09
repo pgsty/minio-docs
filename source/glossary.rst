@@ -1,5 +1,5 @@
 ========
-Glossary
+术语表
 ========
 
 .. default-domain:: minio
@@ -8,149 +8,149 @@ Glossary
    :sorted:
 
    access keys
-     A MinIO deployment or tenant user account with limited account typically used with API calls.
-     Access Keys were previously referred to as "Service Accounts"
+     MinIO 部署或租户中的一种受限用户账户，通常用于 API 调用。
+     Access Keys 过去称为 "Service Accounts"。
 
    active-active
-     A method of :term:`replication` that provides bidirectional mirroring of data.
-     With active-active configuration, changing the data at at any storage location also changes the data at the other storage location(s).
+     一种 :term:`replication` 方式，提供数据的双向镜像。
+     在 active-active 配置中，修改任一存储位置中的数据，也会同步修改其他存储位置中的数据。
      
-     See also: :term:`active-passive`.
+     另请参见：:term:`active-passive`。
 
    active-passive
-     A method of :term:`replication` that provides one-way mirroring of data.
-     With the active-passive configuration, changing data at the originating location also changes the data at the destination.
-     However, changing data at the destination does not affect the data on the origin.
+     一种 :term:`replication` 方式，提供数据的单向镜像。
+     在 active-passive 配置中，修改源位置的数据也会同步修改目标位置的数据。
+     但对目标位置数据的更改不会影响源位置的数据。
      
-     See also: :term:`active-active`.
+     另请参见：:term:`active-active`。
 
    alias
-     A locally defined reference to a MinIO Deployment used in most command line interface operations.
-     See :mc:`mc alias set`.
+     本地定义的 MinIO 部署引用，用于大多数命令行接口操作。
+     参见 :mc:`mc alias set`。
 
    audit logs
-     Granular descriptions of each operation on a MinIO deployment.
-     :ref:`Audit logs <minio-logging>` support security standards and regulations which require detailed tracking of operations.
+     对 MinIO 部署中每项操作的细粒度记录。
+     :ref:`Audit logs <minio-logging>` 有助于满足要求对操作进行详细跟踪的安全标准和法规。
      
-     See also: :term:`server logs`.
+     另请参见：:term:`server logs`。
 
    bit rot 
-     Data corruption that occurs without the user’s knowledge. 
+     在用户不知情的情况下发生的数据损坏。
      
-     MinIO combats bit rot with :term:`hashing` and :term:`erasure coding`.
+     MinIO 通过 :term:`hashing` 和 :term:`erasure coding` 来应对 bit rot。
 
    bit rot healing
-     Objects corrupted due to bit rot are automatically :term:`healed <healing>` during any ``GET`` or ``HEAD`` operation.
-     MinIO captures and heals corrupted objects on the fly with its :term:`hashing` implementation.
+     因 bit rot 而损坏的对象会在任何 ``GET`` 或 ``HEAD`` 操作期间自动 :term:`healed <healing>`。
+     MinIO 借助其 :term:`hashing` 实现，在访问过程中实时检测并修复损坏对象。
 
    bucket
    buckets
-     A grouping of :term:`objects` and associated configurations.
+     :term:`objects` 及相关配置的逻辑分组。
 
    cluster
-     A group of drives and one or more MinIO server processes pooled into a single storage resource.
+     由一组驱动器以及一个或多个 MinIO server 进程组成，并汇聚为单一存储资源的集合。
      
-     See also: :term:`tenant`.
+     另请参见：:term:`tenant`。
 
    cluster registration
-     Cluster registration links a MinIO deployment to a :term:`SUBNET` `subscription <https://min.io/pricing?jmp=docs>`__.
-     An organization may have more than one MinIO clusters registered to the same SUBNET subscription.
+     Cluster registration 会将 MinIO 部署关联到 :term:`SUBNET` `subscription <https://min.io/pricing?jmp=docs>`__。
+     一个组织可以将多个 MinIO 集群注册到同一个 SUBNET 订阅。
 
    Console
    MinIO Console
-     Graphical User Interface (GUI) for interacting with a MinIO deployment or :term:`tenant`.
+     用于与 MinIO 部署或 :term:`tenant` 交互的图形用户界面 (GUI)。
 
    data
-     One of the two types of blocks MinIO writes when doing :term:`erasure coding`.
-     Data blocks contain the contents of a file.
+     MinIO 在执行 :term:`erasure coding` 时写入的两类块之一。
+     data 块包含文件内容。
 
-     :term:`Parity` blocks support data reconstruction should data blocks become corrupt or go missing.
+     当 data 块损坏或丢失时，:term:`parity` 块可用于重建数据。
 
    decommission
-     Process of removing a pool of drives from a :term:`distributed` deployment.
-     When initiated, the objects on the decommission pool drain by moving to other pools on the deployment.
+     从 :term:`distributed` 部署中移除一个驱动器池的过程。
+     启动后，待下线池中的对象会迁移到该部署中的其他池，从而完成排空。
      
-     The process is not reversible.
+     该过程不可逆。
    
    deployment
-     A specific instance of MinIO containing a set of :term:`buckets` and :term:`objects`.
+     一个具体的 MinIO 实例，包含一组 :term:`buckets` 和 :term:`objects`。
 
    disk encryption
-     The conversion of all of the contents written to a disk to values that cannot be easily deciphered by an unauthorized entity.
-     Disk encryption can be used in conjunction with other encryption technologies to create a robust data security system.
+     将写入磁盘的全部内容转换为未经授权实体难以解读的值。
+     磁盘加密可与其他加密技术结合使用，以构建稳健的数据安全体系。
 
    enclave
-     A description of an isolated area within a stateful Key Encryption Service (KES) server.
-     A KES server may have one enclave or multiple enclaves.
-     Each enclave within a KES server holds separate keys, policies, and administration identity.
-     An enclave cannot see or make use of any other enclave on the server.
+     对有状态 Key Encryption Service (KES) 服务器中隔离区域的称谓。
+     一个 KES 服务器可以有一个或多个 enclave。
+     KES 服务器中的每个 enclave 都持有独立的密钥、策略和管理身份。
+     一个 enclave 无法查看或使用服务器上的其他 enclave。
 
-     For example, you might use multiple enclaves to hold completely separate key stores for multiple MinIO tenants within a single stateful KES server.
+     例如，你可以使用多个 enclave，在单个有状态 KES 服务器中为多个 MinIO 租户保存彼此完全隔离的密钥库。
 
    encryption at rest
-     A method of encryption that stores an object in an encrypted state.
-     The object remains encrypted while not moving from one location to another.
+     一种以加密状态存储对象的加密方式。
+     对象在未从一个位置移动到另一个位置时始终保持加密状态。
 
-     Objects can be encrypted by the the server using one of key management methods:
-     :term:`SSE-KMS`, :term:`SSE-S3`, or :term:`SSE-C`.
+     服务器可使用以下密钥管理方式之一对对象进行加密：
+     :term:`SSE-KMS`、:term:`SSE-S3` 或 :term:`SSE-C`。
 
    encryption in transit
-     A method of encryption that protects an object when moving it from one location to another, such as during a GET request.
-     The object may or may not be encrypted on the origin or destination storage devices.
+     一种在对象从一个位置传输到另一个位置时保护对象的加密方式，例如在 GET 请求期间。
+     对象在源端或目标存储设备上可以是加密状态，也可以不是。
    
    erasure coding
-     A technology that splits :term:`objects` into multiple shards and writes the shards to multiple, separate drives.
+     一种将 :term:`objects` 拆分为多个分片，并将这些分片写入多个独立驱动器的技术。
      
-     Depending on the :term:`topology` used, erasure coding allows for loss of drives or nodes within a MinIO deployment without losing read or write access.
+     根据所使用的 :term:`topology`，纠删码允许 MinIO 部署在丢失部分驱动器或节点的情况下仍保留读写能力。
 
    erasure set
-     A group of drives within MinIO that support :term:`erasure coding`. 
-     MinIO divides the number of drives in a deployment's server pool into groups of 4 to 16 drives that make up each *erasure set*.
-     When writing objects, :term:`data` and :term:`parity` blocks write randomly to the drives in the erasure set.
+     MinIO 中支持 :term:`erasure coding` 的一组驱动器。
+     MinIO 会将部署中 server pool 的驱动器划分为若干组，每组包含 4 到 16 个驱动器，每组构成一个 *erasure set*。
+     写入对象时，:term:`data` 和 :term:`parity` 块会随机写入该 erasure set 中的各个驱动器。
 
    hashing
-     The use of an algorithm to create a unique, fixed-length string (a `value`) to identify a piece of data.
+     使用算法创建唯一且定长的字符串（即一个 `value`）来标识一段数据。
    
    healing
-     Restoration of data from partial loss due to bit rot, drive failure, or site failure.
+     从 bit rot、驱动器故障或站点故障导致的部分数据丢失中恢复数据的过程。
 
    health diagnostics
-     A suite of MinIO :ref:`API endpoints <minio-healthcheck-api>` available to check whether a server is
+     一组 MinIO :ref:`API endpoints <minio-healthcheck-api>`，用于检查服务器是否：
      
-     - online 
-     - available for writing data
-     - available for reading data
-     - available for maintenance without affecting the cluster's read and write operations
+     - 在线
+     - 可用于写入数据
+     - 可用于读取数据
+     - 可在不影响集群读写操作的情况下进入维护状态
 
    host bus adapter
    HBA 
-     A circuit board or integrated circuit adapter that connects a host system to a storage device.
-     The :abbr:`HBA (host bus adapter)` handles processing to reduce load on the host system's processor.
+     连接主机系统与存储设备的电路板或集成电路适配器。
+     :abbr:`HBA (host bus adapter)` 负责执行相关处理，以减轻主机系统处理器的负载。
 
    IAM integration
-     MinIO only allows access to data for authenticated users.
-     MinIO provides a built-in identity management solution to create authorized credentials.
-     Optionally, MinIO users can authenticate with credentials from a 3rd party identify provider (IDP), including either OpenID or LDAP providers.
+     MinIO 仅允许经过身份验证的用户访问数据。
+     MinIO 提供内置的身份管理方案来创建授权凭据。
+     此外，MinIO 用户还可以选择使用来自第三方身份提供者 (IDP) 的凭据进行身份验证，包括 OpenID 或 LDAP 提供者。
 
    JBOD 
-     Initialism for "Just A Bunch of Drives".
-     JBOD is a storage device enclosure that holds many hard drives.
-     These drives can combine into one logical drive unit.
+     “Just A Bunch of Drives”的首字母缩写。
+     JBOD 是一种可容纳多个硬盘的存储设备机箱。
+     这些驱动器可以组合成一个逻辑驱动器单元。
      
-     See also: :term:`RAID`
+     另请参见：:term:`RAID`
 
    lifecycle management
    ILM
-     Rules to determine when :term:`objects` should move or expire.
+     用于确定 :term:`objects` 何时迁移或过期的一组规则。
 
    locking
-     A rule that prevents removal or deletion of an object until an authorized agent removes the rule or it expires.
+     一种规则，用于防止对象在授权代理移除该规则或规则到期之前被移除或删除。
 
    monitoring
-     The act of reviewing the status, activity, and availability of a MinIO cluster, deployment, tenant, or server.
-     MinIO provides the following tools: 
+     对 MinIO 集群、部署、租户或服务器的状态、活动和可用性进行审查的行为。
+     MinIO 提供以下工具：
 
-     - `Prometheus <https://prometheus.io/>`__ compatible metrics and alerts
+     - 与 `Prometheus <https://prometheus.io/>`__ 兼容的指标与告警
      - :term:`Audit logs`
      - :term:`server logs`
      - :ref:`Healthcheck API endpoints <minio-healthcheck-api>`
@@ -159,168 +159,168 @@ Glossary
    multi-node multi-drive
    MNMD
    distributed
-     A system :term:`topology` that uses more than one server and more than one drive per server to host a MinIO instance.
-     MinIO recommends Kubernetes for distributed deployments.
+     一种系统 :term:`topology`，使用多台服务器且每台服务器配备多个驱动器来承载 MinIO 实例。
+     对于分布式部署，MinIO 建议使用 Kubernetes。
 
    multipart upload
-     Multipart upload is a client-initiated :s3-docs:`S3 function <mpuoverview.html>` that splits a single object into multiple parts for moving from one location to another.
-     The client uploads each part independently to MinIO, and MinIO manages reconstructing those received parts into the original object. 
+     Multipart upload 是一种由客户端发起的 :s3-docs:`S3 function <mpuoverview.html>`，它将单个对象拆分为多个 part，以便从一个位置传输到另一个位置。
+     客户端将每个 part 独立上传到 MinIO，而 MinIO 负责将这些已接收的 part 重建为原始对象。
 
-     Multipart uploads provide benefits such as improved throughput and resiliency to network errors. 
-     Use multipart uploads for objects greater than 100MB in actual or estimated size for best results.
+     Multipart upload 的优势包括更高的吞吐量以及更强的网络错误恢复能力。
+     对于实际或预估大小超过 100MB 的对象，使用 multipart upload 通常能获得最佳效果。
      
-     See :s3-docs:`Amazon AWS documentation <mpuoverview.html>` for more details.
+     更多细节参见 :s3-docs:`Amazon AWS documentation <mpuoverview.html>`。
 
    network encryption
-     A method of securing data during transit from one location to another, such as server-server or client-server.
-     MinIO supports :ref:`Transport Layer Security (TLS) <minio-tls>`, version 1.2 and later, for both incoming and outgoing traffic.
+     一种在数据从一个位置传输到另一个位置时保护数据的方式，例如 server-server 或 client-server 之间的传输。
+     MinIO 对入站和出站流量均支持 :ref:`Transport Layer Security (TLS) <minio-tls>` 1.2 及更高版本。
 
    object
    objects
-     An item of data MinIO interacts with using an S3-compatible API.
-     Objects can be grouped into :term:`buckets`.
+     MinIO 通过兼容 S3 的 API 交互的数据项。
+     对象可以分组到 :term:`buckets` 中。
 
    Operator
    Operator Console
-     The Graphical User Interface (GUI) to deploy and manage the MinIO :term:`tenants` in a distributed deployment environment.
+     用于在分布式部署环境中部署和管理 MinIO :term:`tenants` 的图形用户界面 (GUI)。
 
    parity
-     The portion of blocks written for an object by MinIO to support data reconstruction due to missing or corrupt data blocks.
-     The number of parity blocks indicates the number of drives in the :term:`erasure set` that a deployment can lose while still retaining read and write operations.
+     MinIO 为对象写入的块中，用于在数据块缺失或损坏时支持数据重建的部分。
+     parity 块的数量表示部署在仍保持读写能力的前提下，可丢失的 :term:`erasure set` 驱动器数量。
 
    prefix
-     Prefixes organize the :term:`objects` in a :term:`bucket` by assigning the same string of characters to objects that should share a similar hierarchy or structure.
-     Use a delimiter character, typically a `/` to add layers to the hierarchy.
-     While prefixed objects may resemble a directory structure in some file systems, prefixes are not directories.
+     Prefix 通过为应共享相似层级或结构的对象分配相同字符串，来组织 :term:`bucket` 中的 :term:`objects`。
+     使用定界字符（通常为 `/`）可以增加层级。
+     虽然带有 prefix 的对象在某些文件系统中可能看起来像目录结构，但 prefix 并不是目录。
 
-     MinIO itself does not limit the number of objects that any specific prefix can contain.
-     However, hardware and network conditions may show performance impacts with large prefixes.
+     MinIO 本身不会限制某个特定 prefix 可包含的对象数量。
+     但对于较大的 prefix，硬件和网络条件可能会带来性能影响。
 
-     - Deployments with modest or budget-focused hardware should architect their workloads to target 10,000 objects per prefix as a baseline. 
-       Increase this target based on benchmarking and monitoring of real world workloads up to what the hardware can meaningfully handle. 
-     - Deployments with high-performance or enterprise-grade :ref:`hardware <deploy-minio-distributed-recommendations>` can typically handle prefixes with millions of objects or more.
+     - 对于硬件配置一般或预算导向的部署，应将每个 prefix 约 10,000 个对象作为工作负载设计的基线。
+       然后根据真实工作负载的基准测试和监控结果，在硬件可有效承载的范围内逐步提高这一目标。
+     - 对于高性能或企业级 :ref:`hardware <deploy-minio-distributed-recommendations>`，通常可以处理包含数百万个甚至更多对象的 prefix。
 
-    |SUBNET| Enterprise accounts can utilize yearly architecture reviews as part of the deployment and maintenance strategy to ensure long-term performance and success of your MinIO-dependent projects.
+     |SUBNET| 企业版账户可将年度架构评审纳入部署和维护策略，以确保依赖 MinIO 的项目获得长期性能与成功。
     
    RAID
-     Initialism for "Redundant Array of Independent Disks".
-     The technology merges multiple separate physical disks into a single storage unit or array.
-     Some RAID levels provide data redundancy or fault tolerance by duplicating data, striping data, or mirroring data across physical disks.
+     “Redundant Array of Independent Disks”的首字母缩写。
+     该技术将多个独立物理磁盘合并为一个存储单元或阵列。
+     某些 RAID 级别通过在物理磁盘之间复制、条带化或镜像数据来提供数据冗余或容错能力。
      
-     See also: :term:`JBOD`.
+     另请参见：:term:`JBOD`。
 
    read quorum
-     The minimum number of object shards necessary to reconstruct the full object for read operations.
-     See :ref:`minio-ec-basics` for more information.
+     执行读操作时，重建完整对象所需的最少对象分片数量。
+     更多信息参见 :ref:`minio-ec-basics`。
 
    replication
    mirror
-     The replication of a :ref:`bucket <minio-bucket-replication>` or entire :ref:`site <minio-site-replication-overview>` to another location.
+     将 :ref:`bucket <minio-bucket-replication>` 或整个 :ref:`site <minio-site-replication-overview>` 复制到另一位置的行为。
 
    scanner 
    MinIO Scanner
-     One of several low-priority processes MinIO runs to check:
+     MinIO 运行的若干低优先级进程之一，用于检查：
      
-     - lifecycle management rules requiring object transition
-     - bucket or site replication status
-     - object :term:`bit rot` and :term:`healing`
-     - usage data
+     - 需要执行对象迁移的生命周期管理规则
+     - 存储桶或站点复制状态
+     - 对象 :term:`bit rot` 和 :term:`healing`
+     - 使用量数据
 
-     For more, see :ref:`minio-concepts-scanner`.
+     更多信息参见 :ref:`minio-concepts-scanner`。
 
    self signed certificates
-     A self-signed certificate is one created by, issued by, and signed by the company or developer responsible for the content the certificate secures.
-     Self-signed certificates are not issued by or signed by a publicly trusted, third-party Certificate Authority (CA).
-     These types of certificates do not expire or require periodic review, and they cannot be revoked.
+     自签名证书是由负责证书所保护内容的公司或开发者自行创建、签发并签名的证书。
+     自签名证书并非由公开受信任的第三方证书颁发机构 (CA) 签发或签名。
+     这类证书不会过期，无需定期审查，也无法被吊销。
 
    server logs
-     Records the ``minio server`` operations logged to the system console.
-     :ref:`Server logs <minio-logging>` support general monitoring and troubleshooting of operations.
+     记录到系统控制台的 ``minio server`` 操作日志。
+     :ref:`Server logs <minio-logging>` 支持常规监控和故障排查。
 
-     For more detailed logging information, see :term:`audit logs`.
+     更详细的日志信息参见 :term:`audit logs`。
 
    server pool
    pool
-     A set of ``minio server`` nodes which combine their drives and resources to support object storage and retrieval requests.
+     一组 ``minio server`` 节点，它们组合各自的驱动器和资源，以支持对象存储与检索请求。
     
-     For more information, see :ref:`minio-intro-server-pool`.
+     更多信息参见 :ref:`minio-intro-server-pool`。
 
    service account
-     Renamed to :term:`access keys`.
-     A MinIO deployment or tenant user account with limited account typically used with API calls.
+     已更名为 :term:`access keys`。
+     MinIO 部署或租户中的一种受限用户账户，通常用于 API 调用。
 
    shard
    shards
-     A portion of an object after being :term:`erasure coded <erasure coding>` by MinIO.
-     Each "shard" represents either data or parity for MinIO to use for reconstructing objects on read requests.
+     对象经过 MinIO :term:`erasure coded <erasure coding>` 后形成的一部分。
+     每个 "shard" 都表示 data 或 parity，供 MinIO 在读请求时用于重建对象。
 
      .. include:: /includes/common-admonitions.rst
         :start-after: start-exclusive-drive-access
         :end-before: end-exclusive-drive-access
      
-     For more detailed information, see :ref:`minio-erasure-coding`.
+     更详细的信息参见 :ref:`minio-erasure-coding`。
 
    single-node multi-drive
    SNMD
-     A system :term:`topology` that deploys MinIO on one compute resource with more than one attached volume.
+     一种系统 :term:`topology`，在单个计算资源上使用多个挂载卷部署 MinIO。
 
    single-node single-drive
    SNSD
    filesystem
-     A system :term:`topology` that deploys MinIO on a single compute resource with a single drive.
-     This adds S3-type functionality to an otherwise standard filesystem. 
+     一种系统 :term:`topology`，在单个计算资源上使用单个驱动器部署 MinIO。
+     这为原本标准的文件系统增加了 S3 类型的功能。
 
    SSE-C
-     A method of :term:`encryption at rest` that encrypts an object at the time of writing with an encryption key included with the write request.
-     To retrieve the object, you must provide the same encryption key provided when originally writing the object.
-     Additionally, you must self-manage the encryption key(s) used.
+     一种 :term:`encryption at rest` 方式，在写入对象时使用随写请求提供的加密密钥对对象进行加密。
+     读取对象时，必须提供与最初写入该对象时相同的加密密钥。
+     此外，还必须自行管理所使用的加密密钥。
 
-     See also: :term:`SSE-KMS`, :term:`SSE-S3`, :term:`encryption at rest`, :term:`network encryption`.
+     另请参见：:term:`SSE-KMS`、:term:`SSE-S3`、:term:`encryption at rest`、:term:`network encryption`。
 
    SSE-KMS
-     A method of :term:`encryption at rest` that encrypts each object at the time of writing with separate keys managed by a service provider.
-     Use keys at either the bucket level (default) or at the object level.
-     MinIO recommends the SSE-KMS method for key management of encryption.
+     一种 :term:`encryption at rest` 方式，在写入时使用由服务提供方管理的独立密钥对每个对象进行加密。
+     可以使用存储桶级（默认）或对象级密钥。
+     对于加密密钥管理，MinIO 推荐使用 SSE-KMS。
 
-     See also: :term:`SSE-S3`, :term:`SSE-C`, :term:`encryption at rest`, :term:`network encryption`.
+     另请参见：:term:`SSE-S3`、:term:`SSE-C`、:term:`encryption at rest`、:term:`network encryption`。
 
    SSE-S3
-     A method of :term:`encryption at rest` that encrypts each object at the time of writing with a single key for all objects on a deployment.
-     A deployment uses a single external key to decrypt any object throughout the deployment.
+     一种 :term:`encryption at rest` 方式，在写入时使用一个单一密钥为部署中的所有对象进行加密。
+     一个部署使用同一个外部密钥来解密该部署中的任意对象。
 
-     See also: :term:`SSE-KMS`, :term:`SSE-C`, :term:`encryption at rest`, :term:`network encryption`.
+     另请参见：:term:`SSE-KMS`、:term:`SSE-C`、:term:`encryption at rest`、:term:`network encryption`。
 
    standalone deployment
-     A :term:`single-node single-drive` (SNSD) MinIO deployment.
-     This term previously referred to the deprecated :ref:`Gateway or Filesystem Mode <minio-gateway-migration>` deployment types.
+     一个 :term:`single-node single-drive` (SNSD) MinIO 部署。
+     该术语此前用于指代已弃用的 :ref:`Gateway or Filesystem Mode <minio-gateway-migration>` 部署类型。
 
    SUBNET
-     `MinIO's Subscription Network <https://min.io/pricing?jmp=docs>`__ tracks support tickets and provides 24 hour direct-to-engineer access for subscribed accounts.
+     `MinIO's Subscription Network <https://min.io/pricing?jmp=docs>`__ 用于跟踪支持工单，并为订阅账户提供 24 小时直连工程师支持。
 
    tenant
    tenants
-     In a :term:`distributed` mode, a specific MinIO deployment.
-     One instance of the MinIO Operator may have multiple tenants.
+     在 :term:`distributed` 模式下，指某个具体的 MinIO 部署。
+     一个 MinIO Operator 实例可以拥有多个 tenant。
 
    topology
-     The hardware configuration used for a deployment.
-     MinIO works with three topologies:
+     部署使用的硬件配置。
+     MinIO 支持三种 topology：
      
      - :term:`multi-node multi-drive`
      - :term:`single-node multi-drive`
      - :term:`single-node single-drive`
 
    versioning
-     The retention of multiple iterations of an :term:`object` as it changes over time.
+     在 :term:`object` 随时间变化的过程中保留其多个迭代版本。
   
    webhook
-     A :ref:`webhook <minio-bucket-notifications-publish-webhook>` is a method for altering the behavior of a web page or web application with a custom callback.
-     The format is typically :abbr:`JSON (JavaScript Object Notation)` sent as an HTTP POST request.
+     :ref:`webhook <minio-bucket-notifications-publish-webhook>` 是一种通过自定义回调改变网页或 Web 应用行为的方法。
+     其格式通常为通过 HTTP POST 请求发送的 :abbr:`JSON (JavaScript Object Notation)`。
 
    write quorum
-     The minimum number of object shards MinIO must successfully write to an :ref:`erasure set <minio-ec-erasure-set>` for write operations.
-     See :ref:`minio-ec-basics` for more information
+     执行写操作时，MinIO 必须成功写入到 :ref:`erasure set <minio-ec-erasure-set>` 的最少对象分片数量。
+     更多信息参见 :ref:`minio-ec-basics`。
 
    WORM
-     Write Once Read Many (WORM) is a data retention methodology that functions as part of object locking.
-     Many requests can retrieve can view a WORM-locked object (``read many``), but no write requests can change the object (``write once``).
+     Write Once Read Many (WORM) 是一种数据保留方法，作为对象锁定的一部分发挥作用。
+     许多请求都可以检索并查看启用 WORM 锁定的对象（``read many``），但任何写请求都不能更改该对象（``write once``）。

@@ -1,65 +1,65 @@
 .. _minio-k8s-upgrade-minio-tenant:
 
 ======================
-Upgrade a MinIO Tenant
+升级 MinIO Tenant
 ======================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 
-The following procedures upgrade a single MinIO Tenant, using either Kustomize or Helm.
-MinIO recommends you test upgrades in a lower environment such as a Dev or QA Tenant, before upgrading production Tenants.
+以下步骤用于升级单个 MinIO Tenant，可选择使用 Kustomize 或 Helm。
+MinIO 建议你在升级生产 Tenant 之前，先在 Dev 或 QA 等较低环境中测试升级流程。
 
 .. important::
 
-   For Tenants using a MinIO Image older than :minio-release:`RELEASE.2024-03-30T09-41-56Z` running with :ref:`AD/LDAP <minio-ldap-config-settings>` enabled, you **must** read through the release notes for :minio-release:`RELEASE.2024-04-18T19-09-19Z` before starting this procedure.
-   You must take the extra steps documented in the linked release as part of the upgrade procedure.
+   对于使用早于 :minio-release:`RELEASE.2024-03-30T09-41-56Z` 的 MinIO Image 且启用了 :ref:`AD/LDAP <minio-ldap-config-settings>` 的 Tenant，在开始本步骤前，你 **必须** 先完整阅读 :minio-release:`RELEASE.2024-04-18T19-09-19Z` 的发布说明。
+   你必须将该发布说明中记录的额外步骤纳入升级过程。
 
 .. _minio-upgrade-tenant-plugin:
 .. _minio-upgrade-tenant-kustomize:
 
-Upgrade a Tenant using Kustomize
---------------------------------
+使用 Kustomize 升级 Tenant
+--------------------------
 
-The following procedure upgrades a MinIO Tenant using Kustomize and the ``kubectl`` CLI.
-If you deployed the Tenant using :ref:`Helm <deploy-tenant-helm>`, use the :ref:`minio-upgrade-tenant-helm` procedure instead.
+以下步骤使用 Kustomize 和 ``kubectl`` CLI 升级 MinIO Tenant。
+如果你是使用 :ref:`Helm <deploy-tenant-helm>` 部署 Tenant，请改用 :ref:`minio-upgrade-tenant-helm` 步骤。
 
-To upgrade a Tenant with Kustomize:
+若要使用 Kustomize 升级 Tenant：
 
-If the tenant was deployed with Operator Console, there are additional steps to create a base configuration file before upgrading.
+如果 Tenant 是通过 Operator Console 部署的，则在升级前还需要额外步骤来创建基础配置文件。
 
-If the tenant was deployed with Kustomize, the base configuration is your existing ``kustomization`` files from the original tenant deployment.
+如果 Tenant 是通过 Kustomize 部署的，则基础配置就是原始 Tenant 部署中已有的 ``kustomization`` 文件。
 
-Choose a tab below depending on how the tenant was deployed:
+请根据 Tenant 的部署方式选择下方标签页：
 
 .. tab-set::
 
    .. tab-item:: Operator Console-Deployed Tenant
       :selected:
 
-      1. Create the base configuration file:
+      1. 创建基础配置文件：
 
-         a. In a convenient directory, save the current Tenant configuration to a file using ``kubectl get``:
+         a. 在一个合适的目录中，使用 ``kubectl get`` 将当前 Tenant 配置保存到文件：
 
              .. code-block:: shell
                 :class: copyable
 
                 kubectl get tenant/my-tenant -n my-tenant-ns -o yaml > my-tenant-base.yaml
 
-             Replace ``my-tenant`` and ``my-tenant-ns`` with the name and namespace of the Tenant to upgrade.
+             将 ``my-tenant`` 和 ``my-tenant-ns`` 替换为待升级 Tenant 的名称和命名空间。
 
-             Edit the file to remove the following lines:
+             编辑该文件，删除以下几行：
 
              - ``creationTimestamp:``
              - ``resourceVersion:``
              - ``uid:``
-             - ``selfLink:`` (if present)
+             - ``selfLink:``（如果存在）
 
-             For example, remove the highlighted lines:
+             例如，删除高亮显示的这些行：
 
              .. code-block:: shell
                 :emphasize-lines: 2, 6, 7
@@ -72,7 +72,7 @@ Choose a tab below depending on how the tenant was deployed:
                   resourceVersion: "4699"
                   uid: d5b8e468-3bed-4aa3-8ddb-dfe1ee0362da
 
-         b. In the same directory, create a ``kustomization.yaml`` file with contents resembling the following:
+         b. 在同一目录中，创建一个 ``kustomization.yaml`` 文件，其内容类似如下：
 
             .. code-block:: shell
                :class: copyable
@@ -86,14 +86,14 @@ Choose a tab below depending on how the tenant was deployed:
                patches:
                - path: upgrade-minio-tenant.yaml
 
-            If you used a different filename for the ``kubectl get`` output in the previous step, replace ``my-tenant-base.yaml`` with the name of that file.
+            如果你在上一步为 ``kubectl get`` 输出使用了不同的文件名，请将 ``my-tenant-base.yaml`` 替换为对应文件名。
 
-   .. tab-item:: Existing Kustomized-deployed Tenant
+   .. tab-item:: 现有 Kustomize 部署 Tenant
 
-      1. You can upgrade the tenant using the ``kustomization`` files from the original deployment as the base configuration.
-         If you no longer have these files, follow the instructions in the Operator Console-Deployed Tenant tab.
+      1. 你可以使用原始部署中的 ``kustomization`` 文件作为基础配置来升级 Tenant。
+         如果你已经没有这些文件，请按照 Operator Console-Deployed Tenant 标签页中的说明操作。
 
-2. Create a ``upgrade-minio-tenant.yaml`` file with contents resembling the following:
+2. 创建一个 ``upgrade-minio-tenant.yaml`` 文件，其内容类似如下：
 
 .. code-block:: shell
    :class: copyable
@@ -109,23 +109,23 @@ Choose a tab below depending on how the tenant was deployed:
    spec:
      image: minio/minio:|minio-tag|
 
-This file instructs Kustomize to upgrade the tenant using the specified image.
-The name of this file, ``upgrade-minio-tenant.yaml``, must match the ``patches.path`` filename specified in the ``kustomization.yaml`` file created in the previous step.
+该文件会指示 Kustomize 使用指定镜像升级 Tenant。
+该文件名 ``upgrade-minio-tenant.yaml`` 必须与上一步创建的 ``kustomization.yaml`` 中 ``patches.path`` 指定的文件名一致。
 
-Replace ``my-tenant`` and ``my-tenant-ns`` with the name and namespace of the Tenant to upgrade.
-Specify the MinIO version to upgrade to in ``image:``.
+将 ``my-tenant`` 和 ``my-tenant-ns`` 替换为待升级 Tenant 的名称和命名空间。
+在 ``image:`` 中指定要升级到的 MinIO 版本。
 
-Alternatively, you can update the base configuration directly, according to your local procedures.
-Refer to the :kube-docs:`Kustomize Documentation <tasks/manage-kubernetes-objects/kustomization>` for more information.
+或者，你也可以按照本地流程直接更新基础配置。
+更多信息请参阅 :kube-docs:`Kustomize Documentation <tasks/manage-kubernetes-objects/kustomization>`。
 
-3. From the same directory as the above files, apply the updated configuration to the Tenant with ``kubectl apply``:
+3. 在与上述文件相同的目录中，使用 ``kubectl apply`` 将更新后的配置应用到 Tenant：
 
   .. code-block:: shell
      :class: copyable
 
      kubectl apply -k ./
 
-  The output resembles the following:
+  输出类似如下：
 
   .. code-block:: shell
 
@@ -134,25 +134,25 @@ Refer to the :kube-docs:`Kustomize Documentation <tasks/manage-kubernetes-object
 
 .. _minio-upgrade-tenant-helm:
 
-Upgrade the Tenant using the MinIO Helm Chart
----------------------------------------------
+使用 MinIO Helm Chart 升级 Tenant
+-----------------------------------
 
-This procedure upgrades an existing MinIO Tenant using Helm Charts.
+本步骤使用 Helm Charts 升级现有 MinIO Tenant。
 
-If you deployed the Tenant using Kustomize, use the :ref:`minio-upgrade-tenant-kustomize` procedure instead.
+如果你是通过 Kustomize 部署 Tenant，请改用 :ref:`minio-upgrade-tenant-kustomize` 步骤。
 
-1. Verify the existing MinIO Tenant installation.
+1. 验证现有 MinIO Tenant 安装。
 
-   Use ``kubectl get all -n TENANT_NAMESPACE`` to verify the health and status of all Tenant pods and services.
+   使用 ``kubectl get all -n TENANT_NAMESPACE`` 验证所有 Tenant pod 和 service 的健康状态。
 
-   Use the ``helm list`` command to view the installed charts in the namespace:
+   使用 ``helm list`` 命令查看该命名空间中已安装的 chart：
 
    .. code-block:: shell
       :class: copyable
 
       helm list -n TENANT_NAMESPACE
 
-   The result should resemble the following:
+   结果应类似如下：
 
    .. code-block:: shell
 
@@ -160,20 +160,20 @@ If you deployed the Tenant using Kustomize, use the :ref:`minio-upgrade-tenant-k
       NAME            NAMESPACE         REVISION        UPDATED                                 STATUS          CHART           APP VERSION
       CHART_NAME      TENANT_NAMESPACE  1               2023-11-01 15:49:58.810412732 -0400 EDT deployed        tenant-5.0.x   v5.0.x
 
-#. Update the Operator Repository 
+#. 更新 Operator 仓库
 
-   Use ``helm repo update minio-operator`` to update the MinIO Operator repo.
-   If you set a different alias for the MinIO Operator repository, specify that to the command.
-   You can use ``helm repo list`` to review your installed repositories.
+   使用 ``helm repo update minio-operator`` 更新 MinIO Operator 仓库。
+   如果你为 MinIO Operator 仓库设置了不同的别名，请在命令中指定该别名。
+   你可以使用 ``helm repo list`` 查看已安装的仓库列表。
 
-   Use ``helm search`` to check the latest available chart version after updating the Operator Repo:
+   在更新 Operator 仓库后，使用 ``helm search`` 检查最新可用的 chart 版本：
 
    .. code-block:: shell
       :class: copyable
 
       helm search repo minio-operator
 
-   The response should resemble the following:
+   返回结果应类似如下：
 
    .. code-block:: shell
       :class: copyable
@@ -184,11 +184,11 @@ If you deployed the Tenant using Kustomize, use the :ref:`minio-upgrade-tenant-k
       minio-operator/operator         |operator-version-stable|          v|operator-version-stable|         A Helm chart for MinIO Operator
       minio-operator/tenant           |operator-version-stable|          v|operator-version-stable|         A Helm chart for MinIO Operator
 
-   The ``minio-operator/minio-operator`` is a legacy chart and should **not** be installed under normal circumstances.
+   ``minio-operator/minio-operator`` 是旧版 chart，正常情况下**不应**安装。
 
-#. Run ``helm upgrade``
+#. 运行 ``helm upgrade``
 
-   Helm uses the latest chart to upgrade the Tenant:
+   Helm 会使用最新 chart 升级 Tenant：
 
    .. code-block:: shell
       :class: copyable
@@ -196,8 +196,8 @@ If you deployed the Tenant using Kustomize, use the :ref:`minio-upgrade-tenant-k
       helm upgrade -n minio-tenant \
         CHART_NAME minio-operator/tenant
 
-   The command results should return success with a bump in the ``REVISION`` value.
+   命令结果应返回成功，并且 ``REVISION`` 值会递增。
 
-#. Validate the Tenant Upgrade
+#. 验证 Tenant 升级
 
-   Check that all services and pods are online and functioning normally.
+   检查所有 service 和 pod 是否都已在线并正常工作。

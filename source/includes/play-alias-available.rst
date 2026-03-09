@@ -1,32 +1,30 @@
 play-alias-only
 
-The following example assumes that the ``play`` alias exists in the
-:mc-cmd:`mc` :ref:`configuration file <mc-configuration>`. You can
-replace ``play`` with the alias for your preferred S3-compatible deployment.
+以下示例假定 ``play`` 别名已存在于 :mc-cmd:`mc`
+:ref:`配置文件 <mc-configuration>` 中。你可以将 ``play`` 替换为
+你首选 S3 兼容部署的别名。
 
-See :mc:`mc alias` for more information on aliases.
+有关别名的更多信息，请参阅 :mc:`mc alias`。
 
 end-play-alias-only
 
 
 play-s3-alias
 
-The following example assumes that the ``play`` and ``s3`` aliases exist in the
-:mc-cmd:`mc` :ref:`configuration file <mc-configuration>`. You can replace
-``play`` and ``s3`` with the aliases for your preferred S3-compatible
-deployments.
+以下示例假定 ``play`` 和 ``s3`` 别名已存在于 :mc-cmd:`mc`
+:ref:`配置文件 <mc-configuration>` 中。你可以将 ``play`` 和 ``s3``
+替换为你首选 S3 兼容部署的别名。
 
-See :mc:`mc alias` for more information on aliases.
+有关别名的更多信息，请参阅 :mc:`mc alias`。
 
 end-play-s3-alias
 
 myminio-alias
 
-The following example uses the default ``myminio`` alias. The ``myminio``
-alias points to a local ``minio`` server running on port ``9000``. See 
-<installation instructions> for more information on installing and running
-a local ``minio`` server instance.
+以下示例使用默认的 ``myminio`` 别名。``myminio`` 别名指向运行在
+``9000`` 端口上的本地 ``minio`` 服务器。有关安装并运行本地 ``minio``
+服务器实例的更多信息，请参阅 <installation instructions>。
 
-See :mc:`mc alias` for more information on aliases.
+有关别名的更多信息，请参阅 :mc:`mc alias`。
 
 end-myminio-alias

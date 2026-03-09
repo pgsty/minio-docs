@@ -4,17 +4,17 @@
 .. _minio-snmd:
 .. _minio-snsd:
 
-===========================
-Installation and Management
-===========================
+==========
+安装与管理
+==========
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This section documents steps for installing and managing the AGPLv3-licensed Community MinIO Object Storage on :ref:`Kubernetes <minio-kubernetes>` and :ref:`Baremetal <minio-baremetal>` infrastructures.
+本节介绍如何在 :ref:`Kubernetes <minio-kubernetes>` 和 :ref:`Baremetal <minio-baremetal>` 基础设施上安装和管理采用 AGPLv3 许可的 Community MinIO 对象存储。
 
 .. meta::
    :description: MinIO Deployment Topologies and Installation Instructions
@@ -28,70 +28,69 @@ This section documents steps for installing and managing the AGPLv3-licensed Com
    
    - `How to Connect to MinIO with JavaScript <https://www.youtube.com/watch?v=yUR4Fvx0D3E&list=PLFOIsHSSYIK3Dd3Y_x7itJT1NUKT5SxDh&index=5>`__
 
-MinIO is a software-defined high performance distributed object storage server.
-You can run MinIO on consumer or enterprise-grade hardware and a variety
-of operating systems and architectures.
+MinIO 是一个软件定义的高性能分布式对象存储服务器。
+你可以在消费级或企业级硬件上，以及多种操作系统和架构上运行 MinIO。
 
-All MinIO deployments implement :ref:`Erasure Coding <minio-erasure-coding>` backends.
-You can deploy MinIO using one of the following topologies: 
+所有 MinIO 部署都实现了 :ref:`纠删码 <minio-erasure-coding>` 后端。
+你可以使用以下拓扑之一部署 MinIO：
 
 .. _minio-installation-comparison:
 
-:ref:`Single-Node Single-Drive <minio-snsd>` (SNSD or "Standalone")
-  Local development and evaluation with no/limited reliability
+:ref:`Single-Node Single-Drive <minio-snsd>` (SNSD 或“Standalone”)
+  适用于本地开发与评估，可靠性有限或无冗余
 
-:ref:`Single-Node Multi-Drive <minio-snmd>` (SNMD or "Standalone Multi-Drive")
-  Workloads with lower performance, scale, and capacity requirements
+:ref:`Single-Node Multi-Drive <minio-snmd>` (SNMD 或“Standalone Multi-Drive”)
+  适用于对性能、规模和容量要求较低的工作负载
 
-  Drive-level reliability with configurable tolerance for loss of up to 1/2 all drives
+  提供驱动器级可靠性，可配置为最多容忍 1/2 驱动器丢失
 
-  Evaluation of multi-drive topologies and failover behavior.
+  适合评估多驱动器拓扑和故障切换行为。
 
-:ref:`Multi-Node Multi-Drive <minio-mnmd>` (MNMD or "Distributed")
-  Enterprise-grade high-performance object storage
+:ref:`Multi-Node Multi-Drive <minio-mnmd>` (MNMD 或“Distributed”)
+  企业级高性能对象存储
 
-  Multi Node/Drive level reliability with configurable tolerance for loss of up to 1/2 all nodes/drives
+  提供节点/驱动器级可靠性，可配置为最多容忍 1/2 节点/驱动器丢失
        
-  Primary storage for AI/ML, Distributed Query, Analytics, and other Data Lake components
+  可作为 AI/ML、分布式查询、分析及其他数据湖组件的主存储
        
-  Scalable for Petabyte+ workloads - both storage capacity and performance
+  可扩展到 PB+ 级工作负载，同时扩展存储容量与性能
 
 Kubernetes
 ----------
 
-MinIO provides a Kubernetes-native Operator framework for managing and deploying Tenants onto your managed infrastructure.
+MinIO 提供 Kubernetes 原生的 Operator 框架，用于在你的托管基础设施上管理和部署 Tenant。
 
-MinIO fully supports upstream Kubernetes and most flavors which inherit from the upstream as a base.
-This includes, but is not limited to, RedHat Openshift, SUSE Rancher, VMWare Tanzu.
-MinIO also fully supports cloud-based Kubernetes engines such as Elastic Kubernetes Engine, Google Kubernetes Service, and Azure Kubernetes Service.
+MinIO 完全支持上游 Kubernetes，以及多数基于上游构建的发行版。
+其中包括但不限于 RedHat Openshift、SUSE Rancher 和 VMWare Tanzu。
+MinIO 也完全支持云厂商提供的 Kubernetes 引擎，例如 Elastic Kubernetes Engine、Google Kubernetes Service 和 Azure Kubernetes Service。
 
-Select the link most appropriate for your Kubernetes infrastructure.
-If your provider is not listed, use the Kubernetes Upstream documentation as a baseline and modify as needed based on your provider's guidance or divergence from upstream semantics and behavior.
+请选择最适合你的 Kubernetes 基础设施的链接。
+如果你的提供商未列出，请以上游 Kubernetes 文档为基线，并根据提供商的指导或其与上游语义和行为的差异进行调整。
 
-- :ref:`Deploy MinIO on Kubernetes (Upstream) <deploy-operator-kubernetes>`
-- :ref:`Deploy MinIO on Openshift Kubernetes <deploy-operator-openshift>`
-- :ref:`Deploy MinIO on SUSE Rancher Kubernetes <deploy-operator-rancher>`
-- :ref:`Deploy MinIO on Elastic Kubernetes Service <deploy-operator-eks>`
-- :ref:`Deploy MinIO on Google Kubernetes Engine <deploy-operator-gke>`
-- :ref:`Deploy MinIO on Azure Kubernetes Service <deploy-operator-aks>`
+- :ref:`在 Kubernetes (Upstream) 上部署 MinIO <deploy-operator-kubernetes>`
+- :ref:`在 Openshift Kubernetes 上部署 MinIO <deploy-operator-openshift>`
+- :ref:`在 SUSE Rancher Kubernetes 上部署 MinIO <deploy-operator-rancher>`
+- :ref:`在 Elastic Kubernetes Service 上部署 MinIO <deploy-operator-eks>`
+- :ref:`在 Google Kubernetes Engine 上部署 MinIO <deploy-operator-gke>`
+- :ref:`在 Azure Kubernetes Service 上部署 MinIO <deploy-operator-aks>`
 
 Baremetal
 ---------
 
-MinIO supports deploying onto baremetal infrastructure - physical machines or virtualized hosts - running Linux, MacOS, and Windows.
-You can also deploy MinIO as a container onto supported Operating Systems.
+MinIO 支持部署到裸机基础设施上，包括运行 Linux、MacOS 和 Windows 的物理机或虚拟化主机。
+你也可以在受支持的操作系统上以容器方式部署 MinIO。
 
-- :ref:`Deploy MinIO onto RedHat Linux <deploy-minio-rhel>`
-- :ref:`Deploy MinIO onto Ubuntu Linux <deploy-minio-ubuntu>`
-- :ref:`Deploy MinIO as a Container <deploy-minio-container>`
-- :ref:`Deploy MinIO onto MacOS <deploy-minio-macos>`
-- :ref:`Deploy MinIO onto Windows <deploy-minio-windows>`
+- :ref:`在 RedHat Linux 上部署 MinIO <deploy-minio-rhel>`
+- :ref:`在 Ubuntu Linux 上部署 MinIO <deploy-minio-ubuntu>`
+- :ref:`以容器方式部署 MinIO <deploy-minio-container>`
+- :ref:`在 MacOS 上部署 MinIO <deploy-minio-macos>`
+- :ref:`在 Windows 上部署 MinIO <deploy-minio-windows>`
 
 .. important::
 
-   MinIO strongly recommends :minio-docs:`Linux (RHEL, Ubuntu) <minio/linux/index.html>` or :minio-docs:`Kubernetes (Upstream, OpenShift) <minio/kubernetes/upstream/index.html>` for long-term development and production environments.
+   MinIO 强烈建议在长期开发和生产环境中使用 :minio-docs:`Linux (RHEL, Ubuntu) <minio/linux/index.html>` 或 :minio-docs:`Kubernetes (Upstream, OpenShift) <minio/kubernetes/upstream/index.html>`。
 
-   MinIO provides no guarantee of support for :abbr:`SNMD (Single-Node Multi-Drive)` or :abbr:`MNMD (Multi-Node Multi-Drive)` topologies on MacOS, Windows, or Containerized deployments.
+   对于 MacOS、Windows 或容器化部署上的 :abbr:`SNMD (Single-Node Multi-Drive)` 和 :abbr:`MNMD (Multi-Node Multi-Drive)` 拓扑，MinIO 不保证提供支持。
 
 .. toctree::
    :titlesonly:

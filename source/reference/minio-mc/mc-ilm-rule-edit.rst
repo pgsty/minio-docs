@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,24 +14,22 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   ``mc ilm rule edit`` replaces ``mc ilm edit``.
+   ``mc ilm rule edit`` 替代 ``mc ilm edit``。
 
-Syntax
-------
+语法
+----
 
 .. start-mc-ilm-rule-edit-desc
 
-The :mc:`mc ilm rule edit` command modifies an existing object lifecycle management
-rule on a MinIO bucket.
+:mc:`mc ilm rule edit` 命令用于修改 MinIO 存储桶上现有的对象生命周期管理规则。
 
 .. end-mc-ilm-rule-edit-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command modifies existing lifecycle management rules for
-      the ``mydata`` bucket on the ``myminio`` deployment:
+      以下命令用于修改 ``myminio`` 部署上 ``mydata`` 存储桶的现有生命周期管理规则：
 
       .. code-block:: shell
          :class: copyable
@@ -42,15 +40,15 @@ rule on a MinIO bucket.
 
          mc ilm rule edit --id "c79n19dn10dnab109fg1" --transition-days 30 --tier "COLDTIER"
          
-      The command modifies the specified rules as follows:
+      该命令按如下方式修改指定规则：
 
-      - Delete objects more than 90 days old.
-      - Delete ``DeleteMarker`` tombstones if that object has no other versions remaining.
-      - Transition objects more than 30 days old to the ``COLDTIER`` remote tier.
+      - 删除超过 90 天的对象。
+      - 如果对象没有其他剩余版本，则删除 ``DeleteMarker`` 墓碑标记。
+      - 将超过 30 天的对象迁移到 ``COLDTIER`` 远程层。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -61,7 +59,7 @@ rule on a MinIO bucket.
                           [--enable]                                          \
                           [--disable]                                         \
                           [--expire-all-object-versions]                      \
-                          [--expire-days "string"]                            \ 
+                          [--expire-days "string"]                            \
                           [--expire-delete-marker]                            \
                           [--transition-days "string"]                        \
                           [--transition-tier "string"]                        \
@@ -76,15 +74,14 @@ rule on a MinIO bucket.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` and full path to the bucket on the MinIO
-   deployment to which to modify the object lifecycle management rule. For
-   example:
+   要修改对象生命周期管理规则的 MinIO 部署中，存储桶的 :ref:`alias <alias>` 和完整路径。
+   例如：
 
    .. code-block:: none
 
@@ -93,32 +90,31 @@ Parameters
 .. mc-cmd:: --id
    :required:
 
-   The unique ID of the rule. Use :mc:`mc ilm rule ls` to list bucket
-   rules and retrieve the ``id`` for the rule you want to modify.
+   规则的唯一 ID。使用 :mc:`mc ilm rule ls` 列出存储桶规则，并获取要修改规则的 ``id``。
 
 .. mc-cmd:: --disable
    :optional:
 
-   Stop using the rule, but retain the rule for future use.
-   Objects do not transition or expire when a rule is disabled.
+   停用该规则，但保留该规则以供后续使用。
+   当规则被禁用时，对象不会迁移或过期。
 
 .. mc-cmd:: --enable
    :optional:
 
-   Use a rule to transition or expire objects.
+   启用规则以迁移或使对象过期。
 
 .. mc-cmd:: --prefix
    :optional:
    
-   Restrict the management rule to a specific bucket prefix.
+   将管理规则限制为特定的存储桶前缀。
    
-   For example:
+   例如：
 
    .. code-block:: none
 
       mc ilm rule edit --prefix "meetingnotes/" myminio/mydata --expire-days "90"
 
-   The command modifies a rule that expires objects in the ``mydata`` bucket of the ``myminio`` ALIAS after 90 days for any object with the ``meetingnotes/`` prefix.
+   该命令会修改一条规则：对于 ``myminio`` ALIAS 中 ``mydata`` 存储桶内前缀为 ``meetingnotes/`` 的任意对象，在 90 天后过期。
 
 
 .. mc-cmd:: --expire-all-object-versions
@@ -126,226 +122,205 @@ Parameters
 
    .. versionadded:: mc RELEASE.2024-02-24T01-33-20Z
 
-   Expire all current **and** noncurrent versions of an object.
-   Use with the :mc-cmd:`~mc ilm rule add --expire-days` option to specify the number of days after which all versions of an object should be deleted by the scanner process.
+   使对象的所有当前版本和非当前版本都过期。
+   与 :mc-cmd:`~mc ilm rule add --expire-days` 选项结合使用，可指定扫描器进程在多少天后删除对象的所有版本。
 
-   After the :ref:`scanner <minio-concepts-scanner>` processes this command, no versions of the object remain on the deployment.
+   在 :ref:`scanner <minio-concepts-scanner>` 处理该命令后，部署中不会保留该对象的任何版本。
 
    .. versionadded:: MinIO RELEASE.2024-05-01T01-11-10Z
 
-   This flag *only* applies to objects that do **not** have a delete marker as the latest version.
+   该标志*仅*适用于最新版本**不**是 delete marker 的对象。
 
 
 .. mc-cmd:: --expire-days
    :optional:
 
-   The number of days to retain an object after being created. MinIO
-   marks the object for deletion after the specified number of days pass.
+   对象创建后保留的天数。达到指定天数后，MinIO 会将对象标记为待删除。
 
-   Exercise caution when using this option, as its behavior can result in
-   immediate expiration of uploaded objects. Any objects created *after* 
-   the specified expiration date are automatically eligible for expiration. 
-   Similarly, specifying a calendar date that is *prior* to the current 
-   system host datetime marks all objects covered by the rule for deletion. 
-   Consider immediately removing any ILM rule using this option once the
-   specified calendar date has passed.
+   使用该选项时请谨慎，其行为可能导致已上传对象立即过期。任何在指定过期日期*之后*
+   创建的对象都会自动满足过期条件。同样地，若指定的日历日期*早于*当前系统主机时间，
+   该规则覆盖的所有对象都会被标记为删除。指定日历日期过后，请考虑立即移除使用该选项的 ILM 规则。
 
-   For versioned buckets, the expiry rule applies only to the *current*
-   object version. Use the 
-   :mc-cmd:`~mc ilm rule edit --noncurrent-expire-days` option
-   to apply expiration behavior to noncurrent object versions.
+   对于启用版本控制的存储桶，过期规则仅适用于*当前*
+   对象版本。使用
+   :mc-cmd:`~mc ilm rule edit --noncurrent-expire-days` 选项
+   可将过期行为应用于非当前对象版本。
 
-   MinIO uses a :ref:`scanner process <minio-concepts-scanner>` to check objects against all configured
-   lifecycle management rules. Slow scanning due to high IO workloads or
-   limited system resources may delay application of lifecycle management
-   rules. See :ref:`minio-lifecycle-management-scanner` for more information.
+   MinIO 使用 :ref:`scanner process <minio-concepts-scanner>` 根据所有已配置的
+   生命周期管理规则检查对象。高 IO 负载或系统资源受限导致的扫描变慢，可能会延迟
+   生命周期管理规则的生效。更多信息请参阅 :ref:`minio-lifecycle-management-scanner`。
 
-   Mutually exclusive with the following options:
+   与以下选项互斥：
 
    - :mc-cmd:`~mc ilm rule edit --expire-delete-marker`
 
 .. mc-cmd:: --expire-delete-marker
    :optional:
 
-   Specify this option to direct MinIO to remove delete markers for
-   objects with no remaining object versions. Specifically, the delete marker is
-   the *only* remaining "version" of the given object.
+   指定该选项可让 MinIO 删除没有剩余对象版本的对象的 delete marker。
+   具体来说，delete marker 是给定对象*唯一*剩余的“版本”。
 
-   This option is mutually exclusive with the following options:
+   该选项与以下选项互斥：
    
    - :mc-cmd:`~mc ilm rule edit --tags`
    - :mc-cmd:`~mc ilm rule edit --expire-days`
 
-   MinIO uses a :ref:`scanner process <minio-concepts-scanner>` to check objects against all configured
-   lifecycle management rules. Slow scanning due to high IO workloads or
-   limited system resources may delay application of lifecycle management
-   rules. See :ref:`minio-lifecycle-management-scanner` and :ref:`minio-object-delete` for more information.
+   MinIO 使用 :ref:`scanner process <minio-concepts-scanner>` 根据所有已配置的
+   生命周期管理规则检查对象。高 IO 负载或系统资源受限导致的扫描变慢，可能会延迟
+   生命周期管理规则的生效。更多信息请参阅 :ref:`minio-lifecycle-management-scanner` 和 :ref:`minio-object-delete`。
 
 .. mc-cmd:: --noncurrent-expire-days
    :optional:
 
-   The number of days to retain an object version after becoming
-   *non-current* (i.e. a different version of that object is now the `HEAD`).
-   MinIO marks noncurrent object versions for deletion after the specified
-   number of days pass.
+   对象版本变为
+   *non-current*（即该对象的另一个版本成为当前 `HEAD`）后保留的天数。
+   达到指定天数后，MinIO 会将非当前对象版本标记为待删除。
 
-   This option has the same behavior as the 
-   S3 ``NoncurrentVersionExpiration`` action.
+   该选项的行为与
+   S3 ``NoncurrentVersionExpiration`` 操作一致。
 
-   MinIO uses a :ref:`scanner process <minio-concepts-scanner>` to check objects against all configured
-   lifecycle management rules. Slow scanning due to high IO workloads or
-   limited system resources may delay application of lifecycle management
-   rules. See :ref:`minio-lifecycle-management-scanner` for more information.
+   MinIO 使用 :ref:`scanner process <minio-concepts-scanner>` 根据所有已配置的
+   生命周期管理规则检查对象。高 IO 负载或系统资源受限导致的扫描变慢，可能会延迟
+   生命周期管理规则的生效。更多信息请参阅 :ref:`minio-lifecycle-management-scanner`。
 
 .. mc-cmd:: --noncurrent-expire-newer
    :optional:
 
-   The number of non-current versions of an object to retain before applying expiration.
-   Older non-current versions beyond the specified number expire.
+   在应用过期前要保留的对象 non-current 版本数量。
+   超出指定数量的较旧 non-current 版本会过期。
    
-   By default, MinIO does not retain any non-current versions when an expiration rule applies.
+   默认情况下，当过期规则生效时，MinIO 不保留任何 non-current 版本。
 
 .. mc-cmd:: --noncurrent-transition-days
    :optional:
 
-   The number of days an object has been non-current (i.e. replaced
-   by a newer version of that same object) after which MinIO marks the object
-   version as eligible for transition. MinIO transitions the object to the
-   configured remote storage tier specified to the 
-   :mc-cmd:`~mc ilm rule edit --transition-tier` once the system host datetime
-   passes that calendar date.
+   对象处于 non-current 状态（即被该对象更新版本替换）后经过多少天，
+   MinIO 将该对象版本标记为可迁移。系统主机时间到达该日历日期后，
+   MinIO 会将对象迁移到
+   :mc-cmd:`~mc ilm rule edit --transition-tier` 指定的
+   远程存储层。
 
-   This option has no effect on non-versioned buckets. Requires specifying
-   :mc-cmd:`~mc ilm rule edit --noncurrent-transition-tier`.
+   该选项对未启用版本控制的存储桶无效。需要指定
+   :mc-cmd:`~mc ilm rule edit --noncurrent-transition-tier`。
 
-   This option has the same behavior as the 
-   S3 ``NoncurrentVersionTransition`` action.
+   该选项的行为与
+   S3 ``NoncurrentVersionTransition`` 操作一致。
 
-   If the remote tier is another MinIO deployment, you can set the value to ``0`` to mark new objects as immediately eligible for transition to the remote tier.
+   如果远程层是另一个 MinIO 部署，可将值设置为 ``0``，使新对象立即满足迁移到远程层的条件。
 
-   MinIO uses a :ref:`scanner process <minio-concepts-scanner>` to check objects against all configured
-   lifecycle management rules. Slow scanning due to high IO workloads or
-   limited system resources may delay application of lifecycle management
-   rules. See :ref:`minio-lifecycle-management-scanner` for more information.
+   MinIO 使用 :ref:`scanner process <minio-concepts-scanner>` 根据所有已配置的
+   生命周期管理规则检查对象。高 IO 负载或系统资源受限导致的扫描变慢，可能会延迟
+   生命周期管理规则的生效。更多信息请参阅 :ref:`minio-lifecycle-management-scanner`。
 
 
 .. mc-cmd:: --noncurrent-transition-tier
    :optional:
 
-   The remote storage tier to which MinIO :ref:`transitions noncurrent objects versions <minio-lifecycle-management-tiering>`. 
-   Specify a remote storage tier created by :mc:`mc ilm tier add`.
+   MinIO :ref:`transitions noncurrent objects versions <minio-lifecycle-management-tiering>` 所使用的远程存储层。
+   指定一个通过 :mc:`mc ilm tier add` 创建的远程存储层。
 
-   MinIO does *not* automatically migrate objects from the previously
-   specified remote tier to the new remote tier. MinIO continues to
-   route requests for objects stored on the old remote tier.
+   MinIO *不会*自动将对象从先前指定的远程层迁移到新的远程层。
+   MinIO 会继续将存储在旧远程层上的对象请求路由到旧远程层。
 
 
 .. mc-cmd:: --tags
    :optional:
 
-   One or more ampersand ``&``-delimited key-value pairs describing
-   the object tags to which to apply the lifecycle configuration rule.
+   一个或多个以 ``&`` 分隔的键值对，用于描述要应用生命周期配置规则的对象标签。
 
-   This option is mutually exclusive with the following option:
+   该选项与以下选项互斥：
 
    - :mc-cmd:`~mc ilm rule edit --expire-delete-marker`
 
 .. mc-cmd:: --transition-days
    :optional:
    
-   The number of calendar days from object creation after which MinIO
-   marks an object as eligible for transition. MinIO transitions the object to
-   the configured remote storage tier specified to the 
-   :mc-cmd:`~mc ilm rule edit --transition-tier`. 
-   Specify the number of days as an integer, e.g. ``30`` for 30 days.
-   If the remote tier is another MinIO deployment, you can set the value to ``0`` to mark new objects as immediately eligible for transition to the remote tier.
+   对象创建后经过多少个日历天，MinIO 会将对象标记为可迁移。
+   MinIO 会将对象迁移到
+   :mc-cmd:`~mc ilm rule edit --transition-tier` 指定的远程存储层。
+   以整数指定天数，例如 ``30`` 表示 30 天。
+   如果远程层是另一个 MinIO 部署，可将值设置为 ``0``，使新对象立即满足迁移到远程层的条件。
 
-   For versioned buckets, the transition rule applies only to the *current*
-   object version. Use the 
-   :mc-cmd:`~mc ilm rule edit --noncurrent-transition-days` option
-   to apply transition behavior to noncurrent object versions.
+   对于启用版本控制的存储桶，迁移规则仅适用于*当前*
+   对象版本。使用
+   :mc-cmd:`~mc ilm rule edit --noncurrent-transition-days` 选项
+   可将迁移行为应用于非当前对象版本。
 
-   Requires specifying :mc-cmd:`~mc ilm rule edit --transition-tier`.
+   需要指定 :mc-cmd:`~mc ilm rule edit --transition-tier`。
 
-   MinIO uses a :ref:`scanner process <minio-concepts-scanner>` to check objects against all configured
-   lifecycle management rules. Slow scanning due to high IO workloads or
-   limited system resources may delay application of lifecycle management
-   rules. See :ref:`minio-lifecycle-management-scanner` for more information.
+   MinIO 使用 :ref:`scanner process <minio-concepts-scanner>` 根据所有已配置的
+   生命周期管理规则检查对象。高 IO 负载或系统资源受限导致的扫描变慢，可能会延迟
+   生命周期管理规则的生效。更多信息请参阅 :ref:`minio-lifecycle-management-scanner`。
 
 .. mc-cmd:: --transition-tier
    :optional:
 
-   The remote storage tier to which MinIO 
-   :ref:`transition objects <minio-lifecycle-management-tiering>`. Specify a
-   remote storage tier created by :mc:`mc ilm tier add`. 
+   MinIO :ref:`transition objects <minio-lifecycle-management-tiering>` 所使用的远程存储层。
+   指定一个通过 :mc:`mc ilm tier add` 创建的远程存储层。
 
-   Required if specifying :mc-cmd:`~mc ilm rule edit --transition-days`.
+   如果指定 :mc-cmd:`~mc ilm rule edit --transition-days`，则该选项必填。
 
-   MinIO does *not* automatically migrate objects from the previously
-   specified remote tier to the new remote tier. MinIO continues to
-   route requests for objects stored on the old remote tier.
+   MinIO *不会*自动将对象从先前指定的远程层迁移到新的远程层。
+   MinIO 会继续将存储在旧远程层上的对象请求路由到旧远程层。
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Modify an Existing Lifecycle Management Rule
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+修改现有生命周期管理规则
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc ilm rule edit` with :mc-cmd:`~mc ilm rule edit --id` to modify
-an existing object expiration rule:
+使用带有 :mc-cmd:`~mc ilm rule edit --id` 的 :mc:`mc ilm rule edit` 修改现有对象过期规则：
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm rule edit ALIAS/PATH --id "RULEID" [FLAGS]
 
-- Replace :mc-cmd:`ALIAS <mc ilm rule edit ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc ilm rule edit ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc ilm rule edit ALIAS>` with the path to the bucket on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc ilm rule edit ALIAS>` 替换为 S3 兼容主机上存储桶的路径。
 
-- Replace ``RULEID`` with the unique ID of the object lifecycle management rule.
-  Use :mc:`mc ilm rule ls` to find the ``RULEID``.
+- 将 ``RULEID`` 替换为对象生命周期管理规则的唯一 ID。
+  使用 :mc:`mc ilm rule ls` 查找 ``RULEID``。
 
-- Specify any additional flags to add or modify the lifecycle management
-  rule. For example, specify
-  :mc-cmd:`~mc ilm rule edit --transition-days` to override the existing 
-  transition days value for the rule.
+- 指定任意附加标志以新增或修改生命周期管理规则。
+  例如，指定
+  :mc-cmd:`~mc ilm rule edit --transition-days` 以覆盖该规则现有的迁移天数值。
 
-Disable a Lifecycle Management Rule
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+禁用生命周期管理规则
+~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc ilm rule edit` with :mc-cmd:`~mc ilm rule edit --disable` to stop using an existing management rule.
+使用带有 :mc-cmd:`~mc ilm rule edit --disable` 的 :mc:`mc ilm rule edit` 停止使用现有管理规则。
 
 .. code-block:: shell
    :class: copyable
    
    mc ilm rule edit --id "RULEID" --disable myminio/mybucket
 
-- Replace ``RULEID`` with the unique ID of the object lifecycle management rule.
-  Use :mc:`mc ilm rule ls` to find the ``RULEID``.
-- Replace ``myminio`` with the ALIAS of the deployment where the rule exists.
-- Replace ``mybucket`` with the bucket for the rule.
+- 将 ``RULEID`` 替换为对象生命周期管理规则的唯一 ID。
+  使用 :mc:`mc ilm rule ls` 查找 ``RULEID``。
+- 将 ``myminio`` 替换为规则所在部署的 ALIAS。
+- 将 ``mybucket`` 替换为规则对应的存储桶。
 
-Required Permissions
---------------------
-
-For permissions required to edit a rule, refer to the :ref:`required permissions <minio-mc-ilm-rule-permissions>` on the parent command.
-
-
-Behavior
+所需权限
 --------
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+有关编辑规则所需的权限，请参阅父命令中的 :ref:`required permissions <minio-mc-ilm-rule-permissions>`。
+
+
+行为
+----
+
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

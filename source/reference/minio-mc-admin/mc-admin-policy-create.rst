@@ -15,11 +15,11 @@ Syntax
 
 .. start-mc-admin-policy-create-desc
 
-Creates a new policy on the target MinIO deployment. 
+在目标 MinIO 部署上创建一个新策略。
 
 .. end-mc-admin-policy-create-desc
 
-MinIO deployments include the following :ref:`built-in policies <minio-policy-built-in>` by default:
+MinIO 部署默认包含以下 :ref:`内置策略 <minio-policy-built-in>`：
 
 - :userpolicy:`readonly` 
 - :userpolicy:`readwrite`
@@ -31,7 +31,7 @@ MinIO deployments include the following :ref:`built-in policies <minio-policy-bu
    .. tab-item:: EXAMPLE
 
 
-      Consider the following JSON policy document saved at a file called ``/tmp/listmybuckets.json``:
+      假设以下 JSON 策略文档保存在名为 ``/tmp/listmybuckets.json`` 的文件中：
       
       .. code-block:: javascript
          :class: copyable
@@ -51,7 +51,7 @@ MinIO deployments include the following :ref:`built-in policies <minio-policy-bu
             ]
          }
 
-      The following command creates a new policy called ``listmybuckets`` on the :term:`alias` ``myminio`` using the policy found at the file ``/tmp/listmybuckets.json``.
+      以下命令使用文件 ``/tmp/listmybuckets.json`` 中的策略，在 :term:`alias` ``myminio`` 上创建一个名为 ``listmybuckets`` 的新策略。
 
       .. code-block:: shell
          :class: copyable
@@ -60,7 +60,7 @@ MinIO deployments include the following :ref:`built-in policies <minio-policy-bu
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -79,22 +79,22 @@ MinIO deployments include the following :ref:`built-in policies <minio-policy-bu
 Parameters
 ~~~~~~~~~~
 
-The :mc-cmd:`mc admin policy create` command accepts the following arguments:
+:mc-cmd:`mc admin policy create` 命令接受以下参数：
 
 .. mc-cmd:: TARGET
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which to add the new policy.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，用于向该部署添加新策略。
 
 .. mc-cmd:: POLICYNAME
 
-   The name of the policy to add. 
+   要添加的策略名称。
       
-   Specifying the name of an existing policy overwrites that policy on the :mc-cmd:`~mc admin policy create TARGET` MinIO deployment.
+   指定已有策略的名称会覆盖 :mc-cmd:`~mc admin policy create TARGET` MinIO 部署上的该策略。
 
 .. mc-cmd:: POLICYPATH
 
-   The file path of the policy to add. 
-   The file *must* be a JSON-formatted file with :iam-docs:`IAM-compatible syntax <reference_policies.html>` and no more than 2048 characters.
+   要添加的策略文件路径。
+   该文件 *必须* 为 JSON 格式，使用 :iam-docs:`IAM 兼容语法 <reference_policies.html>`，且长度不超过 2048 个字符。
 
 Global Flags
 ~~~~~~~~~~~~
@@ -106,7 +106,7 @@ Global Flags
 Examples
 --------
 
-Create a new policy called ``writeonly`` from the JSON file at ``/tmp/writeonly.json`` on the deployment at the alias ``myminio``.
+在别名为 ``myminio`` 的部署上，使用 ``/tmp/writeonly.json`` 的 JSON 文件创建一个名为 ``writeonly`` 的新策略。
 
 .. code-block:: shell
    :class: copyable

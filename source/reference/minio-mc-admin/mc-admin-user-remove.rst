@@ -6,42 +6,42 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin user remove
 .. mc:: mc admin user rm
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-user-remove-desc
 
-The :mc:`mc admin user rm` command removes a :ref:`MinIO user <minio-internal-idp>` on the target MinIO deployment.
+:mc:`mc admin user rm` 命令用于在目标 MinIO 部署上移除 :ref:`MinIO 用户 <minio-internal-idp>`。
 
 .. end-mc-admin-user-remove-desc
 
-The :mc:`mc admin user remove` command has equivalent functionality to :mc:`mc admin user rm`.
+:mc:`mc admin user remove` 命令与 :mc:`mc admin user rm` 的功能等效。
 
-To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :mc:`AD/LDAP <mc idp ldap>`.
+要管理外部身份提供商用户，请参阅 :mc:`OIDC <mc idp openid>` 或 :mc:`AD/LDAP <mc idp ldap>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes user ``myuser`` on the ``myminio`` MinIO deployment:
+      以下命令会在 ``myminio`` MinIO 部署上移除用户 ``myuser``：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin user rm myminio myuser
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      Removes a user on the target MinIO deployment.
+      在目标 MinIO 部署上移除用户。
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -55,48 +55,48 @@ To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :m
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc:`alias <mc alias>` of the configured MinIO deployment with the user to remove.
+   已配置 MinIO 部署的 :mc:`alias <mc alias>`，该部署中包含要移除的用户。
 
 .. mc-cmd:: USERNAME
    :required:
 
-   The username of the user to remove.
+   要移除的用户名。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Example
--------
+示例
+----
 
-Remove a User
-~~~~~~~~~~~~~
+移除用户
+~~~~~~~~
 
-Use :mc-cmd:`mc admin user rm` to remove a user from a MinIO deployment:
+使用 :mc-cmd:`mc admin user rm` 从 MinIO 部署中移除用户：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user rm ALIAS USERNAME
 
-- Replace :mc-cmd:`ALIAS <mc admin user rm ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user rm ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`USERNAME <mc admin user rm USERNAME>` with the username of the user to remove.
+- 将 :mc-cmd:`USERNAME <mc admin user rm USERNAME>` 替换为要移除的用户名。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

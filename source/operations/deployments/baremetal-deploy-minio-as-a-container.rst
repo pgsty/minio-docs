@@ -1,72 +1,72 @@
 .. _deploy-minio-container:
 
-===========================
-Deploy MinIO as a Container
-===========================
+=====================
+以容器方式部署 MinIO
+=====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-This page documents deploying MinIO as a Container onto any operating system that supports containerized processes.
+本页说明如何在任何支持容器化进程的操作系统上以容器方式部署 MinIO。
 
-This documentation assumes installation of Docker, Podman, or a similar runtime which supports the standard container image format.
-MinIO images use `Red Hat Universal Base Image 9 Micro <https://catalog.redhat.com/software/container-stacks/detail/609560d9e2b160d361d24f98>`__.
+本文档假定已安装 Docker、Podman 或其他支持标准容器镜像格式的类似 runtime。
+MinIO 镜像使用 `Red Hat Universal Base Image 9 Micro <https://catalog.redhat.com/software/container-stacks/detail/609560d9e2b160d361d24f98>`__。
 
-Functionality and performance of the MinIO container may be constrained by the base OS.
+MinIO 容器的功能和性能可能会受到基础操作系统的限制。
 
-The procedure includes guidance for deploying Single-Node Multi-Drive (SNMD) and Single-Node Single-Drive (SNSD) topologies in support of early development and evaluation environments.
+本步骤包含对 Single-Node Multi-Drive (SNMD) 和 Single-Node Single-Drive (SNSD) 拓扑的指导，适用于早期开发和评估环境。
 
 .. important::
 
-   MinIO officially supports containerized Multi-Node Multi-Drive (MNMD) "Distributed" configurations on Kubernetes infrastructures through the MinIO Kubernetes Operator.
+   MinIO 通过 MinIO Kubernetes Operator 正式支持在 Kubernetes 基础设施上运行容器化的 Multi-Node Multi-Drive (MNMD)“Distributed”配置。
 
-   MinIO does not support nor provide instruction for deploying distributed clusters using Docker Swarm, Docker Compose, or any other orchestrated container environment.
+   MinIO 不支持，也不提供使用 Docker Swarm、Docker Compose 或其他编排容器环境部署分布式集群的说明。
 
-Considerations
---------------
+注意事项
+--------
 
-Review Checklists
-~~~~~~~~~~~~~~~~~
+检查清单
+~~~~~~~~
 
-Ensure you have reviewed our published Hardware, Software, and Security checklists before attempting this procedure.
+在执行本步骤前，请先阅读我们发布的硬件、软件和安全检查清单。
 
-Erasure Coding Parity
-~~~~~~~~~~~~~~~~~~~~~
+纠删码校验
+~~~~~~~~~~
 
-MinIO automatically determines the default :ref:`erasure coding <minio-erasure-coding>` configuration for the cluster based on the total number of nodes and drives in the topology.
-You can configure the per-object :term:`parity` setting when you set up the cluster *or* let MinIO select the default (``EC:4`` for production-grade clusters).
+MinIO 会根据拓扑中的节点和驱动器总数，自动为集群确定默认的 :ref:`纠删码 <minio-erasure-coding>` 配置。
+你可以在设置集群时配置按对象生效的 :term:`parity`，也可以让 MinIO 选择默认值（生产级集群默认为 ``EC:4``）。
 
-Parity controls the relationship between object availability and storage on disk. 
-Use the MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ for guidance in selecting the appropriate erasure code parity level for your cluster.
+校验值决定了对象可用性与磁盘存储占用之间的关系。
+可使用 MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ 选择适合你集群的纠删码校验级别。
 
-While you can change erasure parity settings at any time, objects written with a given parity do **not** automatically update to the new parity settings.
+虽然你可以随时更改纠删码校验设置，但以既有校验值写入的对象 **不会** 自动更新为新的校验设置。
 
-Container Storage
-~~~~~~~~~~~~~~~~~
+容器存储
+~~~~~~~~
 
-This procedure assumes you mount one or more dedicated storage devices to the container to act as persistent storage for MinIO.
+本步骤假定你会将一个或多个专用存储设备挂载到容器中，作为 MinIO 的持久化存储。
 
-Data stored on ephemeral container paths is lost when the container restarts or is deleted.
-Use any such paths at your own risk.
+存储在容器临时路径上的数据会在容器重启或删除时丢失。
+使用此类路径的风险需自行承担。
 
-Procedure
----------
+步骤
+----
 
-1. Start the Container
+1. 启动容器
 
-This procedure provides instructions for Podman and Docker in rootfull mode.
-For rootless deployments, defer to documentation by each runtime for configuration and container startup.
+本步骤提供 Podman 和 Docker 在 rootfull 模式下的说明。
+对于 rootless 部署，请参考各 runtime 自身的文档完成配置和容器启动。
 
-For all other container runtimes, follow the documentation for that runtime and specify the equivalent options, parameters, or configurations.
+对于其他容器 runtime，请参阅对应文档，并使用等效的选项、参数或配置。
 
 .. tab-set::
 
    .. tab-item:: Podman
 
-      The following command creates a folder in your home directory, then starts the MinIO container using Podman:
+      以下命令会先在你的主目录中创建一个文件夹，然后使用 Podman 启动 MinIO 容器：
 
       .. code-block:: shell
          :class: copyable
@@ -82,13 +82,13 @@ For all other container runtimes, follow the documentation for that runtime and 
             -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
             quay.io/minio/minio server /data --console-address ":9001"
 
-      The command binds ports ``9000`` and ``9001`` to the MinIO S3 API and Web Console respectively.
+      该命令分别将端口 ``9000`` 和 ``9001`` 绑定到 MinIO S3 API 和 Web Console。
 
-      The local drive ``~/minio/data`` is mounted to the ``/data`` folder on the container.
-      You can modify the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` variables to change the root login as needed.
+      本地驱动器 ``~/minio/data`` 会挂载到容器内的 ``/data`` 目录。
+      你可以按需修改 :envvar:`MINIO_ROOT_USER` 和 :envvar:`MINIO_ROOT_PASSWORD` 变量，以变更 root 登录信息。
 
-      For multi-drive deployments, bind each local drive or folder it's on sequentially-numbered path on the remote.
-      You can then modify the :mc:`minio server` startup to specify those paths:
+      对于多驱动器部署，请将每个本地驱动器或其所在文件夹绑定到容器中按顺序编号的路径。
+      然后修改 :mc:`minio server` 启动命令以指定这些路径：
 
       .. code-block:: shell
          :class: copyable
@@ -107,11 +107,11 @@ For all other container runtimes, follow the documentation for that runtime and 
             -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
             quay.io/minio/minio server http://localhost:9000/mnt/drive-{1...4} --console-address ":9001"
 
-      For Windows hosts, specify the local folder path using Windows filesystem semantics ``C:\minio\:/data``.
+      对于 Windows 主机，请使用 Windows 文件系统语义指定本地文件夹路径，例如 ``C:\minio\:/data``。
 
    .. tab-item:: Docker
 
-      The following command creates a folder in your home directory, then starts the MinIO container using Docker:
+      以下命令会先在你的主目录中创建一个文件夹，然后使用 Docker 启动 MinIO 容器：
 
       .. code-block:: shell
          :class: copyable
@@ -127,13 +127,13 @@ For all other container runtimes, follow the documentation for that runtime and 
             -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
             quay.io/minio/minio server /data --console-address ":9001"
 
-      The command binds ports ``9000`` and ``9001`` to the MinIO S3 API and Web Console respectively.
+      该命令分别将端口 ``9000`` 和 ``9001`` 绑定到 MinIO S3 API 和 Web Console。
 
-      The local drive ``~/minio/data`` is mounted to the ``/data`` folder on the container.
-      You can modify the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` variables to change the root login as needed.
+      本地驱动器 ``~/minio/data`` 会挂载到容器内的 ``/data`` 目录。
+      你可以按需修改 :envvar:`MINIO_ROOT_USER` 和 :envvar:`MINIO_ROOT_PASSWORD` 变量，以变更 root 登录信息。
 
-      For multi-drive deployments, bind each local drive or folder it's on sequentially-numbered path on the remote.
-      You can then modify the :mc:`minio server` startup to specify those paths:
+      对于多驱动器部署，请将每个本地驱动器或其所在文件夹绑定到容器中按顺序编号的路径。
+      然后修改 :mc:`minio server` 启动命令以指定这些路径：
 
       .. code-block:: shell
          :class: copyable
@@ -152,40 +152,38 @@ For all other container runtimes, follow the documentation for that runtime and 
             -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
             quay.io/minio/minio server http://localhost:9000/mnt/drive-{1...4} --console-address ":9001"
 
-      For Windows hosts, specify the local folder path using Windows filesystem semantics ``C:\minio\:/data``.
+      对于 Windows 主机，请使用 Windows 文件系统语义指定本地文件夹路径，例如 ``C:\minio\:/data``。
 
-2. Connect to the Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2. 连接到部署
+~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Console
+   .. tab-item:: 控制台
 
-      Open your browser to http://localhost:9000 to open the :ref:`MinIO Console <minio-console>` login page. 
+      在浏览器中打开 http://localhost:9000 以访问 :ref:`MinIO Console <minio-console>` 登录页。
 
-      Log in with the :guilabel:`MINIO_ROOT_USER` and :guilabel:`MINIO_ROOT_PASSWORD`
-      from the previous step.
+      使用上一步中的 :guilabel:`MINIO_ROOT_USER` 和 :guilabel:`MINIO_ROOT_PASSWORD`
+      进行登录。
 
       .. image:: /images/minio-console/console-login.png
          :width: 600px
-         :alt: MinIO Console Login Page
+         :alt: MinIO Console 登录页
          :align: center
 
-      You can use the MinIO Console for general administration tasks like Identity and Access Management, Metrics and Log Monitoring, or Server Configuration. 
-      Each MinIO server includes its own embedded MinIO Console.
+      你可以使用 MinIO Console 执行常规管理任务，例如身份与访问管理、指标和日志监控，或 Server 配置。
+      每个 MinIO server 都包含自身内嵌的 MinIO Console。
 
    .. tab-item:: CLI
 
-      Follow the :ref:`installation instructions <mc-install>` for ``mc`` on your local host.
-      Run ``mc --version`` to verify the installation.
+      请按照本地主机上的 ``mc`` :ref:`安装说明 <mc-install>` 完成安装。
+      运行 ``mc --version`` 验证安装结果。
 
-      Once installed, create an alias for the MinIO deployment:
+      安装完成后，为该 MinIO 部署创建一个别名：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set myminio http://localhost:9000 USERNAME PASSWORD
 
-      Change the hostname, username, and password to reflect your deployment.
-
-
+      请根据你的部署修改主机名、用户名和密码。

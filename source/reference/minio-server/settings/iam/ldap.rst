@@ -1,30 +1,30 @@
 .. _minio-server-envvar-external-identity-management-ad-ldap:
 .. _minio-ldap-config-settings:
 
-================================
-Active Directory / LDAP Settings
-================================
+===========================
+Active Directory / LDAP 设置
+===========================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for enabling external identity management using an Active Directory or LDAP service.
-See :ref:`minio-authenticate-using-ad-ldap-generic` for a tutorial on using these settings.
+本页面说明通过 Active Directory 或 LDAP 服务启用外部身份管理所需的设置。
+有关使用这些设置的教程，请参见 :ref:`minio-authenticate-using-ad-ldap-generic`。
 
 .. important:: 
 
-   New in version ``RELEASE.2023-05-26T23-31-54Z``: 
+   在 ``RELEASE.2023-05-26T23-31-54Z`` 版本中新增：
 
-   :mc:`mc idp ldap` commands are preferred over using configuration settings to configure MinIO to use Active Directory or LDAP for identity management.
+   相比使用配置设置，优先使用 :mc:`mc idp ldap` 命令将 MinIO 配置为使用 Active Directory 或 LDAP 进行身份管理。
 
-   MinIO recommends using the :mc:`mc idp ldap` commands for LDAP management operations. 
-   These commands offer better validation and additional features, while providing the same settings as the ``identity_ldap`` configuration key. 
-   See :ref:`minio-authenticate-using-ad-ldap-generic` for a tutorial on using :mc:`mc idp ldap`.
+   MinIO 建议使用 :mc:`mc idp ldap` 命令执行 LDAP 管理操作。
+   这些命令提供了更好的校验能力和附加功能，同时提供与 ``identity_ldap`` 配置键相同的设置。
+   有关 :mc:`mc idp ldap` 的使用教程，请参见 :ref:`minio-authenticate-using-ad-ldap-generic`。
 
-The ``identity_ldap`` configuration settings remains available for existing scripts and other tools.
+``identity_ldap`` 配置设置仍可用于现有脚本和其他工具。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -34,12 +34,12 @@ The ``identity_ldap`` configuration settings remains available for existing scri
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Examples
---------
+示例
+----
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -49,17 +49,17 @@ Examples
 
       .. note::
 
-         ``srv_record_name`` automatically identifies the port.
+         ``srv_record_name`` 会自动识别端口。
 
-         If your AD/LDAP server uses ``DNS SRV Records``, do *not* append the port number to your ``server_addr`` value. 
-         SRV requests automatically include port numbers when returning the list of available servers.
+         如果你的 AD/LDAP 服务器使用 ``DNS SRV Records``，请 *不要* 在 ``server_addr`` 值后附加端口号。
+         SRV 请求在返回可用服务器列表时会自动包含端口号。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap
-         
-      The following settings are required when defining LDAP using :mc:`mc admin config set`:
+
+      使用 :mc:`mc admin config set` 定义 LDAP 时，以下设置为必需项：
 
       - ``enabled``
       - ``server_addr``
@@ -79,27 +79,27 @@ Examples
             user_dn_search_base_dn="dc=example,dc=net"            \
             user_dn_search_filter="(&(objectCategory=user)(sAMAccountName=%s))"
 
-Settings
---------
+设置
+----
 
-Server Address
-~~~~~~~~~~~~~~
+服务器地址
+~~~~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_SERVER_ADDR
-      
-      
+
+
          .. include:: /includes/common-minio-external-auth.rst
             :start-after: start-minio-ad-ldap-server-addr
             :end-before: end-minio-ad-ldap-server-addr
-      
-   .. tab-item:: Configuration Setting
+
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap server_addr
@@ -112,16 +112,16 @@ Server Address
 Lookup Bind DN
 ~~~~~~~~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_LOOKUP_BIND_DN
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap lookup_bind_dn
@@ -131,19 +131,19 @@ Lookup Bind DN
    :start-after: start-minio-ad-ldap-lookup-bind-dn
    :end-before: end-minio-ad-ldap-lookup-bind-dn
 
-Lookup Bind Password
-~~~~~~~~~~~~~~~~~~~~
+Lookup Bind 密码
+~~~~~~~~~~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_LOOKUP_BIND_PASSWORD
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap lookup_bind_password
@@ -152,20 +152,20 @@ Lookup Bind Password
 .. include:: /includes/common-minio-external-auth.rst
    :start-after: start-minio-ad-ldap-lookup-bind-password
    :end-before: end-minio-ad-ldap-lookup-bind-password
-         
-User DN Search Base DN
-~~~~~~~~~~~~~~~~~~~~~~
 
-*Required*
+用户 DN 搜索基准 DN
+~~~~~~~~~~~~~~~~~~~
+
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_USER_DN_SEARCH_BASE_DN
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap user_dn_search_base_dn
@@ -175,20 +175,20 @@ User DN Search Base DN
 .. include:: /includes/common-minio-external-auth.rst
    :start-after: start-minio-ad-ldap-user-dn-search-base-dn
    :end-before: end-minio-ad-ldap-user-dn-search-base-dn
-         
-User DN Search Filter
-~~~~~~~~~~~~~~~~~~~~~
 
-*Required*
+用户 DN 搜索过滤器
+~~~~~~~~~~~~~~~~~~
+
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_USER_DN_SEARCH_FILTER
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap user_dn_search_filter
@@ -197,20 +197,20 @@ User DN Search Filter
 .. include:: /includes/common-minio-external-auth.rst
    :start-after: start-minio-ad-ldap-user-dn-search-filter
    :end-before: end-minio-ad-ldap-user-dn-search-filter
-         
-User DN Attributes
-~~~~~~~~~~~~~~~~~~
 
-*Optional*
+用户 DN 属性
+~~~~~~~~~~~~
+
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_USER_DN_ATTRIBUTES
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap user_dn_attributes
@@ -220,45 +220,45 @@ User DN Attributes
    :start-after: start-minio-ad-ldap-user-dn-attributes
    :end-before: end-minio-ad-ldap-user-dn-attributes
 
-Enabled
-~~~~~~~
+启用
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
-      This setting does not have an environment variable option.
-      Use the configuration setting instead.
+      此设置没有环境变量选项。
+      请改用配置设置。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :selected:
 
       .. mc-conf:: identity_ldap enabled
          :delimiter: " "
 
-Set to ``false`` to disable the AD/LDAP configuration.
+将其设置为 ``false`` 可禁用 AD/LDAP 配置。
 
-If ``false``, applications cannot generate STS credentials or otherwise authenticate to MinIO using the configured provider.
+若为 ``false``，应用程序将无法生成 STS 凭证，也无法通过已配置的提供者向 MinIO 进行身份验证。
 
-Defaults to ``true`` or "enabled".
+默认为 ``true``（即 "enabled"）。
 
-Group Search Filter
-~~~~~~~~~~~~~~~~~~~
+组搜索过滤器
+~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_GROUP_SEARCH_FILTER
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
-   
+
       .. mc-conf:: identity_ldap group_search_filter
          :delimiter: " "
 
@@ -266,24 +266,24 @@ Group Search Filter
    :start-after: start-minio-ad-ldap-group-search-filter
    :end-before: end-minio-ad-ldap-group-search-filter
 
-When providing an AD/LDAP group search filter, configure a filter that returns the minimum number of relevant groups for the purpose of supporting authentication.
-Filters that return large group assignments increase the size of associated calls and resources.
-Functions sensitive to large request or response bodies may exhibit unexpected behaviors as a result.
+在提供 AD/LDAP 组搜索过滤器时，应配置一个仅返回满足身份验证需求的最小相关组集合的过滤器。
+返回大量组分配信息的过滤器会增加相关调用和资源消耗。
+对大体积请求或响应体敏感的功能可能因此出现非预期行为。
 
-         
-Group Search Base DN
-~~~~~~~~~~~~~~~~~~~~
 
-*Optional*
+组搜索基准 DN
+~~~~~~~~~~~~~
+
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_GROUP_SEARCH_BASE_DN
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap group_search_base_dn
@@ -292,20 +292,20 @@ Group Search Base DN
 .. include:: /includes/common-minio-external-auth.rst
    :start-after: start-minio-ad-ldap-group-search-base-dn
    :end-before: end-minio-ad-ldap-group-search-base-dn
-         
-TLS Skip Verify
-~~~~~~~~~~~~~~~
 
-*Optional*
+TLS 跳过校验
+~~~~~~~~~~~~
+
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_TLS_SKIP_VERIFY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap tls_skip_verify
@@ -315,19 +315,19 @@ TLS Skip Verify
    :start-after: start-minio-ad-ldap-tls-skip-verify
    :end-before: end-minio-ad-ldap-tls-skip-verify
 
-Server Insecure
-~~~~~~~~~~~~~~~
+服务器不安全模式
+~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_SERVER_INSECURE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap server_insecure
@@ -337,19 +337,19 @@ Server Insecure
    :start-after: start-minio-ad-ldap-server-insecure
    :end-before: end-minio-ad-ldap-server-insecure
 
-Server Start TLS
+服务器 Start TLS
 ~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_SERVER_STARTTLS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap server_starttls
@@ -359,21 +359,21 @@ Server Start TLS
    :start-after: start-minio-ad-ldap-server-starttls
    :end-before: end-minio-ad-ldap-server-starttls
 
-SRV Record Name
-~~~~~~~~~~~~~~~
+SRV 记录名称
+~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. versionadded:: RELEASE.2022-12-12T19-27-27Z
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_SRV_RECORD_NAME
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap srv_record_name
@@ -383,19 +383,19 @@ SRV Record Name
    :start-after: start-minio-ad-ldap-srv_record_name
    :end-before: end-minio-ad-ldap-srv_record_name
 
-Comment
-~~~~~~~
+备注
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_LDAP_COMMENT
-      
-   .. tab-item:: Configuration Setting
+
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_ldap identity_ldap comment

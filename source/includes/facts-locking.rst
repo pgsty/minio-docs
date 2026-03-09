@@ -1,8 +1,7 @@
 .. start-command-requires-locking-desc
 
-   The bucket *must* have object locking enabled to use this command. 
-   You can only enable object locking when creating a bucket. See
-   :mc-cmd:`mc mb --with-lock` for more information on creating buckets
-   with object locking enabled.
+   要使用此命令，存储桶 *必须* 启用对象锁定。
+   只能在创建存储桶时启用对象锁定。有关创建已启用对象锁定的存储桶的更多信息，
+   请参阅 :mc-cmd:`mc mb --with-lock`。
 
 .. end-command-requires-locking-desc

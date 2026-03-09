@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
@@ -13,35 +13,35 @@
 
 .. important:: 
 
-   ``mc license register`` requires :ref:`MinIO Client <minio-client>` version ``RELEASE.2023-11-20T16-30-59Z`` or later.
-   While not strictly required, best practice keeps the :ref:`MinIO Client version <mc-client-versioning>` in alignment with the MinIO Server version.
+   ``mc license register`` 需要 :ref:`MinIO Client <minio-client>` ``RELEASE.2023-11-20T16-30-59Z`` 或更高版本。
+   虽非强制要求，但最佳实践是保持 :ref:`MinIO Client 版本 <mc-client-versioning>` 与 MinIO Server 版本一致。
 
 
-Description
------------
+描述
+----
 
 .. start-mc-license-register-desc
 
-The :mc-cmd:`mc license register` command connects your deployment with your |SUBNET| account.
+:mc-cmd:`mc license register` 命令会将你的部署与 |SUBNET| 账户关联。
 
 .. end-mc-license-register-desc
 
-After registration, you can upload deployment health reports directly to SUBNET using the :mc-cmd:`mc support diag` command.
+注册后，你可以使用 :mc-cmd:`mc support diag` 命令将部署健康报告直接上传到 SUBNET。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-         The following example registers the ``minio`` :ref:`alias <alias>` with |SUBNET|:
+         以下示例将 ``minio`` :ref:`alias <alias>` 注册到 |SUBNET|：
 
       .. code-block:: shell
          :class: copyable
 
          mc license register minio
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -52,94 +52,94 @@ After registration, you can upload deployment health reports directly to SUBNET 
                                   [--license <path to license file>]  \
                                   [--name <value>]
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment.
+   MinIO 部署的 :ref:`alias <alias>`。
 
   
 .. mc-cmd:: --airgap
    :optional:
 
-   Use in environments without network access to SUBNET (for example, airgapped, firewalled, or similar configuration).
+   用于无法访问 SUBNET 网络的环境（例如 airgapped、受防火墙限制或类似配置）。
 
-   For instructions, see the :ref:`airgap example <minio-license-register-airgap>`.
+   说明请参见 :ref:`airgap 示例 <minio-license-register-airgap>`。
 
-   If the deployment is airgapped, but the local device where you are using the :ref:`minio client <minio-client>` has network access, you do not need to use the ``--airgap`` flag.
+   如果部署处于 airgapped 环境，但你运行 :ref:`minio client <minio-client>` 的本地设备可以访问网络，则无需使用 ``--airgap`` 标志。
 
 .. mc-cmd:: --api-key
 
-   API key of the account on SUBNET.
+   SUBNET 上账户的 API key。
 
-   Corresponds with the ``MC_SUBNET_API_KEY`` environment variable.
+   对应环境变量 ``MC_SUBNET_API_KEY``。
 
-   To find the API key:
+   获取 API key 的步骤：
 
-   #. Log in to |SUBNET|
-   #. Go to the :guilabel:`Deployments` tab
-   #. Select the :guilabel:`API Key` button near the top of the page on the right side of the account statistics information box
-   #. Select copy button to the right of the key field to copy the key value to your clipboard
+   #. 登录 |SUBNET|
+   #. 进入 :guilabel:`Deployments` 选项卡
+   #. 在页面顶部、账户统计信息框右侧，选择 :guilabel:`API Key` 按钮
+   #. 选择 key 字段右侧的复制按钮，将 key 值复制到剪贴板
 
 .. mc-cmd:: --license
    :optional:
 
-   Path to the license file to use for registering the deployment.
+   用于注册部署的 license 文件路径。
    
-   You must first download the license file for the account from |SUBNET|.
+   你必须先从 |SUBNET| 下载该账户的 license 文件。
 
-   #. Log in to |SUBNET|
-   #. Go to the :guilabel:`Deployments` tab
-   #. Select the :guilabel:`License` button near the top of the page on the right side of the account statistics information box
-   #. Select the copy button to the right of the license field to copy the key value to your clipboard or
-      select the :guilabel:`Download` button to save a txt file of the license locally
+   #. 登录 |SUBNET|
+   #. 进入 :guilabel:`Deployments` 选项卡
+   #. 在页面顶部、账户统计信息框右侧，选择 :guilabel:`License` 按钮
+   #. 选择 license 字段右侧的复制按钮，将 key 值复制到剪贴板，或
+      选择 :guilabel:`Download` 按钮将 license 的 txt 文件保存到本地
 
 .. mc-cmd:: --name
    :optional:
 
-   Specify a name other than the alias to associate to the MinIO deployment in SUBNET.
+   指定一个不同于 alias 的名称，用于在 SUBNET 中关联该 MinIO 部署。
 
-   Use ``--name <value>`` replacing ``<value>`` with the name you want to use for the deployment on SUBNET.
+   使用 ``--name <value>``，将 ``<value>`` 替换为你希望在 SUBNET 上为该部署使用的名称。
 
-Examples
---------
+示例
+----
 
-Register a Deployment Using the Deployment's Name
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用部署名称注册部署
+~~~~~~~~~~~~~~~~~~~~
 
-Register the MinIO deployment at alias ``minio1`` on SUBNET, using ``minio1`` as the deployment name:
+将 alias 为 ``minio1`` 的 MinIO 部署注册到 SUBNET，并使用 ``minio1`` 作为部署名称：
 
 .. code-block:: shell
    :class: copyable
 
    mc license register minio1
 
-If not already registered, a prompt asks for SUBNET credentials for the deployment.
+如果尚未注册，系统会提示输入该部署的 SUBNET 凭证。
 
-Register a Deployment Using the Account's License File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用账户的 License 文件注册部署
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Register a new MinIO deployment at alias ``minio5`` on SUBNET, using the license file downloaded for the account:
+将 alias 为 ``minio5`` 的新 MinIO 部署注册到 SUBNET，并使用为该账户下载的 license 文件：
 
 .. code-block:: shell
    :class: copyable
 
    mc license register minio5 /path/to/minio.license
 
-If not already downloaded, you can download the license file from SUBNET.
+如果尚未下载，你可以从 SUBNET 下载 license 文件。
 
-#. Log in to |SUBNET|
-#. Go to the :guilabel:`Deployments` tab
-#. Select the :guilabel:`License` button near the top of the page on the right side of the account statistics information box
-#. Select the :guilabel:`Download` button to save a txt file of the license locally
+#. 登录 |SUBNET|
+#. 进入 :guilabel:`Deployments` 选项卡
+#. 在页面顶部、账户统计信息框右侧，选择 :guilabel:`License` 按钮
+#. 选择 :guilabel:`Download` 按钮将 license 的 txt 文件保存到本地
 
 
-Register a Deployment with a Different Deployment Name
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用不同的部署名称注册部署
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Register a MinIO deployment at alias ``minio2`` on SUBNET, using ``second-deployment`` as the name:
+将 alias 为 ``minio2`` 的 MinIO 部署注册到 SUBNET，并使用 ``second-deployment`` 作为名称：
 
 .. code-block:: shell
    :class: copyable
@@ -148,38 +148,38 @@ Register a MinIO deployment at alias ``minio2`` on SUBNET, using ``second-deploy
 
 .. _minio-license-register-airgap:
 
-Register a Deployment Without Direct Internet Access
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+在无法直接访问互联网时注册部署
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Register a MinIO deployment at alias ``minio3`` on SUBNET that does not have direct Internet access due to a firewall, airgap, or the like.
+将 alias 为 ``minio3`` 的 MinIO 部署注册到 SUBNET；该部署由于防火墙、airgap 或类似原因无法直接访问互联网。
 
 .. versionchanged:: mc RELEASE.2022-07-29T19-17-16Z
 
-   The airgap registration process works with MinIO Client version ``RELEASE.2022-07-29T19-17-16Z`` or later.
-   Earlier versions of the MinIO Client cannot register an airgapped deployment.
+   airgap 注册流程适用于 ``RELEASE.2022-07-29T19-17-16Z`` 或更高版本的 MinIO Client。
+   早期版本的 MinIO Client 无法注册 airgapped 部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc license register minio3 --airgap
 
-#. Run the command to return a registration link with token
-#. Open the copied registration link in a web browser and sign in to SUBNET
-#. Select the :guilabel:`?` button to the right of the :guilabel:`License` number for the deployment
-#. In the popup, select the download link and save the key to a path you have access to
-#. In the command line, run the following command
+#. 运行命令，返回带有 token 的注册链接
+#. 在 Web 浏览器中打开复制的注册链接，并登录 SUBNET
+#. 选择部署 :guilabel:`License` 编号右侧的 :guilabel:`?` 按钮
+#. 在弹窗中选择下载链接，并将 key 保存到你有访问权限的路径
+#. 在命令行中运行以下命令
    
    .. code-block:: shell
       :class: copyable
 
       mc license update minio3 <path-to-file>
 
-   Replace ``<path-to-file>`` with the path to the file you downloaded from SUBNET.
+   将 ``<path-to-file>`` 替换为你从 SUBNET 下载的文件路径。
 
-Syntax
-------
+语法
+----
       
-The command has the following syntax:
+命令语法如下：
 
 .. code-block:: shell
 
@@ -191,21 +191,21 @@ The command has the following syntax:
 
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Behavior
---------
+行为
+----
 
-Automatic License Updates
-~~~~~~~~~~~~~~~~~~~~~~~~~
+自动更新 License
+~~~~~~~~~~~~~~~~
 
 .. versionadded:: RELEASE.2023-01-18T04-36-38Z
 
-Once registered for |SUBNET|, MinIO automatically checks for and updates the license every month.
+注册到 |SUBNET| 后，MinIO 会每月自动检查并更新 license。
 
-In airgapped or other environments where the server does not have direct access to the internet, use :mc-cmd:`mc license update` with the path to the file to update the registration.
+在 airgapped 或其他服务器无法直接访问互联网的环境中，使用带文件路径的 :mc-cmd:`mc license update` 来更新注册。

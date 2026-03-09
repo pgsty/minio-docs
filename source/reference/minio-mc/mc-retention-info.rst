@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -16,41 +16,38 @@
 .. |alias| replace:: :mc-cmd:`~mc retention info ALIAS`
 .. |versions| replace:: :mc-cmd:`~mc retention info --versions`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-retention-info-desc
 
-The :mc:`mc retention info` command configures the :ref:`Write-Once Read-Many (WORM)
-locking <minio-object-locking>` settings for an object or object(s) in a bucket.
-You can also set the default object lock settings for a bucket, where all
-objects without explicit object lock settings inherit the bucket default.
+:mc:`mc retention info` 命令用于为对象或存储桶中的对象配置 :ref:`Write-Once Read-Many (WORM)
+locking <minio-object-locking>` 设置。
+你还可以为存储桶设置默认对象锁设置，未显式配置对象锁的对象会继承该存储桶默认值。
 
 .. end-mc-retention-info-desc
 
-To lock an object under :ref:`legal hold <minio-object-locking-legalhold>`, 
-use :mc:`mc legalhold set`.
+如需基于 :ref:`legal hold <minio-object-locking-legalhold>` 锁定对象，
+请使用 :mc:`mc legalhold set`。
 
-:mc:`mc retention info` *requires* that the specified bucket has object locking
-enabled. You can **only** enable object locking at bucket creation. See
-:mc-cmd:`mc mb --with-lock` for documentation on creating buckets with
-object locking enabled. 
+:mc:`mc retention info` *要求* 指定存储桶已启用对象锁定。
+你**只能**在创建存储桶时启用对象锁定。有关创建启用对象锁定的存储桶，请参见
+:mc-cmd:`mc mb --with-lock` 文档。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command returns the default object lock configuration for 
-      the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令返回 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的默认对象锁配置：
 
       .. code-block:: shell
          :class: copyable
 
          mc retention info --default myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -67,52 +64,46 @@ object locking enabled.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-      :mc-cmd:`mc retention info --version-id` is mutually exclusive with
-      multiple other parameters. See the reference documentation for more
-      information.
+      :mc-cmd:`mc retention info --version-id` 与多个其他参数互斥。
+      更多信息请参见参考文档。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The full path to the object for which to retrieve
-   the object lock configuration. Specify the :ref:`alias <alias>` of a
-   configured S3-compatible service as the prefix to the ``ALIAS`` bucket
-   path. For example:
+   要检索对象锁配置的对象完整路径。
+   将已配置的 S3 兼容服务的 :ref:`alias <alias>` 作为 ``ALIAS`` 存储桶路径前缀。
+   例如：
 
    .. code-block:: shell
 
       mc retention info play/mybucket/object.txt
 
-   - If the ``ALIAS`` specifies a bucket or bucket prefix, include 
-      :mc-cmd:`~mc retention info --recursive` to return the object
-      lock settings for all objects in the bucket or bucket prefix.
+   - 如果 ``ALIAS`` 指定的是存储桶或存储桶前缀，请添加
+      :mc-cmd:`~mc retention info --recursive`，以返回该存储桶或前缀下所有对象的对象锁设置。
 
-   - If the ``ALIAS`` bucket has versioning enabled, 
-      :mc:`mc retention info` by default applies to only the latest object
-      version. Use :mc-cmd:`~mc retention info --version-id` or
-      :mc-cmd:`~mc retention info --versions` to return the object lock
-      settings for a specific version or for all versions of the object.
+   - 如果 ``ALIAS`` 存储桶已启用版本控制，
+      :mc:`mc retention info` 默认仅作用于对象的最新版本。
+      使用 :mc-cmd:`~mc retention info --version-id` 或
+      :mc-cmd:`~mc retention info --versions` 可返回特定版本或对象全部版本的对象锁设置。
 
 
 .. mc-cmd:: --default
    :optional:
 
-   Returns the default object lock settings for the bucket specified
-   to :mc-cmd:`~mc retention info ALIAS`.
+   返回 :mc-cmd:`~mc retention info ALIAS` 指定存储桶的默认对象锁设置。
 
-   If specifying :mc-cmd:`~mc retention info --default`, 
-   :mc:`mc retention info` ignores all other flags.
+   如果指定 :mc-cmd:`~mc retention info --default`，
+   :mc:`mc retention info` 会忽略所有其他标志。
 
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Recursively returns the object lock settings for all objects in the
-   specified :mc-cmd:`~mc retention info ALIAS` path.
+   递归返回指定 :mc-cmd:`~mc retention info ALIAS` 路径下所有对象的对象锁设置。
 
-   Mutually exclusive with :mc-cmd:`~mc retention info --version-id`.
+   与 :mc-cmd:`~mc retention info --version-id` 互斥。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -128,97 +119,91 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-   Mutually exclusive with any of the following flags:
-   
+   与以下任一标志互斥：
+
    - :mc-cmd:`~mc retention info --versions`
    - :mc-cmd:`~mc retention info --rewind`
    - :mc-cmd:`~mc retention info --recursive`
 
 .. mc-cmd:: --versions
-   :optional:   
+   :optional:
 
    .. include:: /includes/facts-versioning.rst
       :start-after: start-versions-desc
       :end-before: end-versions-desc
 
-   Use :mc-cmd:`~mc retention info --versions` and
-   :mc-cmd:`~mc retention info --rewind` together to retrieve the
-   retention settings for all object versions that existed at a
-   specific point-in-time.
+   同时使用 :mc-cmd:`~mc retention info --versions` 和
+   :mc-cmd:`~mc retention info --rewind`，可检索某个特定时间点存在的所有对象版本的
+   保留设置。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Retrieve Object Lock Settings for an Object or Object(s)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+检索单个或多个对象的对象锁设置
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Specific Object
+   .. tab-item:: 指定对象
 
       .. code-block:: shell
          :class: copyable
 
          mc retention info ALIAS/PATH
 
-      - Replace :mc-cmd:`ALIAS <mc retention info ALIAS>` with the
-        :mc:`alias <mc alias>` of a configured S3-compatible host.
+      - 将 :mc-cmd:`ALIAS <mc retention info ALIAS>` 替换为已配置 S3 兼容主机的
+        :mc:`alias <mc alias>`。
 
-      - Replace :mc-cmd:`PATH <mc retention info ALIAS>` with the path to the
-        object.
+      - 将 :mc-cmd:`PATH <mc retention info ALIAS>` 替换为对象路径。
 
-   .. tab-item:: Multiple Objects
+   .. tab-item:: 多个对象
 
-      Use :mc:`mc retention info` with
-      :mc-cmd:`~mc retention info --recursive` to retrieve the retention
-      settings for all objects in a bucket:
+      将 :mc:`mc retention info` 与
+      :mc-cmd:`~mc retention info --recursive` 一起使用，以检索存储桶中所有对象的保留设置：
 
       .. code-block:: shell
          :class: copyable
 
          mc retention info --recursive ALIAS/PATH
 
-      - Replace :mc-cmd:`ALIAS <mc retention info ALIAS>` with the
-        :mc:`alias <mc alias>` of a configured S3-compatible host.
+      - 将 :mc-cmd:`ALIAS <mc retention info ALIAS>` 替换为已配置 S3 兼容主机的
+        :mc:`alias <mc alias>`。
 
-      - Replace :mc-cmd:`PATH <mc retention info ALIAS>` with the path to the 
-        bucket.
+      - 将 :mc-cmd:`PATH <mc retention info ALIAS>` 替换为存储桶路径。
 
 .. include:: /includes/facts-locking.rst
    :start-after: start-command-requires-locking-desc
    :end-before: end-command-requires-locking-desc
 
-Retrieve Default Object Lock Settings for a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+检索存储桶的默认对象锁设置
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc retention info` with 
-:mc-cmd:`~mc retention info --default` to retrieve the default 
-object lock settings for a bucket:
+将 :mc:`mc retention info` 与
+:mc-cmd:`~mc retention info --default` 一起使用，以检索存储桶的默认对象锁设置：
 
 .. code-block:: shell
    :class: copyable
 
    mc retention info --default ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc retention info ALIAS>` with the
-   :mc:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc retention info ALIAS>` 替换为已配置 S3 兼容主机的
+   :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc retention info ALIAS>` with the path to the
-  bucket.
+- 将 :mc-cmd:`PATH <mc retention info ALIAS>` 替换为存储桶路径。
 
 .. include:: /includes/facts-locking.rst
    :start-after: start-command-requires-locking-desc
    :end-before: end-command-requires-locking-desc
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

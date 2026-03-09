@@ -1,39 +1,39 @@
 ==================
-MinIO Admin Client
+MinIO 管理客户端
 ==================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. mc:: mc admin
 
-The MinIO Client :mc-cmd:`mc` command line tool provides the :mc:`mc admin`
-command for performing administrative tasks on your MinIO deployments.
+MinIO 客户端 :mc-cmd:`mc` 命令行工具提供 :mc:`mc admin` 命令，
+用于在 MinIO 部署上执行管理任务。
 
-While :mc-cmd:`mc` supports any S3-compatible service, 
-:mc:`mc admin` *only* supports MinIO deployments.
+虽然 :mc-cmd:`mc` 支持任意兼容 S3 的服务，
+:mc:`mc admin` *仅* 支持 MinIO 部署。
 
-:mc:`mc admin` has the following syntax:
+:mc:`mc admin` 语法如下：
 
 .. code-block:: shell
 
    mc admin [FLAGS] COMMAND [ARGUMENTS]
 
-Command Quick reference
------------------------
+命令速查
+--------
 
-The following table lists :mc:`mc admin` commands:
+下表列出了 :mc:`mc admin` 命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
    :width: 100%
 
-   * - Command
-     - Description
+   * - 命令
+     - 说明
 
    * - :mc:`mc admin accesskey`
      - .. include:: /reference/minio-mc-admin/mc-admin-accesskey.rst
@@ -127,27 +127,23 @@ The following table lists :mc:`mc admin` commands:
 
 .. _mc-admin-install:
 
-Installation
-------------
+安装
+----
 
 .. include:: /includes/minio-mc-installation.rst
 
-Quickstart
-----------
+快速开始
+--------
 
-Ensure that the host machine has :mc:`mc`
-:ref:`installed <mc-admin-install>` prior to starting this procedure.
+开始此流程前，请确保主机已 :ref:`安装 <mc-admin-install>` :mc:`mc`。
 
 .. important::
 
-   The following example temporarily disables the bash history to mitigate the
-   risk of authentication credentials leaking in plain text. This is a basic
-   security measure and does not mitigate all possible attack vectors. Defer to
-   security best practices for your operating system for inputting sensitive
-   information on the command line.
+   以下示例会临时禁用 bash 历史记录，以降低认证凭据明文泄露的风险。
+   这是一项基础安全措施，无法缓解所有可能的攻击向量。请遵循你所用操作系统的
+   安全最佳实践，在命令行中输入敏感信息。
 
-Use the :mc:`mc alias set` command to add the
-deployment to the :program:`mc` configuration.
+使用 :mc:`mc alias set` 命令将该部署添加到 :program:`mc` 配置中。
 
 .. code-block:: shell
    :class: copyable
@@ -156,23 +152,21 @@ deployment to the :program:`mc` configuration.
    mc config host add <ALIAS> <ENDPOINT> ACCESS_KEY SECRET_KEY
    bash -o history
 
-Replace each argument with the required values. Specifying only the 
-``mc config host add`` command starts an input prompt for entering the
-required values.
+将各参数替换为所需值。仅指定 ``mc config host add`` 命令会启动输入提示，
+用于录入所需值。
 
-Use the :mc-cmd:`mc admin info` command to test the connection to
-the newly added MinIO deployment:
+使用 :mc-cmd:`mc admin info` 命令测试与新添加 MinIO 部署的连接：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin info <ALIAS>
 
-Global Options
---------------
+全局选项
+--------
 
-:mc:`mc admin` supports the same global options as :mc-cmd:`mc`. 
-See :ref:`minio-mc-global-options`.
+:mc:`mc admin` 支持与 :mc-cmd:`mc` 相同的全局选项。
+参见 :ref:`minio-mc-global-options`。
 
 .. toctree::
    :titlesonly:

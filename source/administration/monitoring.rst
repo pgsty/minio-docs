@@ -1,22 +1,21 @@
-===================================
-Monitoring Bucket and Object Events
-===================================
+======================
+监控存储桶与对象事件
+======================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-Bucket Notifications
---------------------
+存储桶通知
+----------
 
-MinIO bucket notifications allow administrators to send notifications to supported external services on certain object or bucket events. 
-MinIO supports bucket and object-level S3 events similar to the 
-:s3-docs:`Amazon S3 Event Notifications <NotificationHowTo.html>`.
+MinIO 存储桶通知允许管理员在特定对象或存储桶事件发生时，将通知发送到受支持的外部服务。
+MinIO 支持与 :s3-docs:`Amazon S3 Event Notifications <NotificationHowTo.html>`
+类似的存储桶级和对象级 S3 事件。
 
-MinIO supports publishing bucket or object events to the following supported 
-targets on certain supported events. 
+在某些受支持的事件上，MinIO 支持将存储桶或对象事件发布到以下受支持的目标。
 
 - :ref:`minio-bucket-notifications-publish-amqp`
 - :ref:`minio-bucket-notifications-publish-mqtt`
@@ -29,22 +28,21 @@ targets on certain supported events.
 - :ref:`minio-bucket-notifications-publish-redis`
 - :ref:`minio-bucket-notifications-publish-webhook` 
 
-See :ref:`minio-bucket-notifications`
-for more complete documentation on MinIO Bucket Notifications.
+有关 MinIO 存储桶通知的更完整文档，请参见 :ref:`minio-bucket-notifications`。
 
-Deployment Metrics
-------------------
+部署指标
+--------
 
-MinIO provides a Prometheus-compatible endpoint for supporting time-series querying of metrics.
+MinIO 提供兼容 Prometheus 的端点，以支持对指标进行时间序列查询。
 
-Server Logs
------------
+服务日志
+--------
 
-MinIO provides the following interfaces for remotely reading server logs:
+MinIO 提供以下接口用于远程读取服务日志：
 
-- The :mc:`mc admin logs` command returns the specified server's console output.
-- MinIO supports pushing server logs to an HTTP webhook for further ingestion. 
-  See :ref:`minio-logging-publish-server-logs` for more information.
+- :mc:`mc admin logs` 命令会返回指定服务器的控制台输出。
+- MinIO 支持将服务日志推送到 HTTP webhook，以便进一步采集。
+  更多信息请参见 :ref:`minio-logging-publish-server-logs`。
 
 .. toctree::
    :titlesonly:

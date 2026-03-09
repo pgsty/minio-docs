@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,20 +14,19 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   ``mc ilm ls`` replaced by :mc-cmd:`mc ilm rule ls`.
+   ``mc ilm ls`` 已由 :mc-cmd:`mc ilm rule ls` 替代。
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-ilm-ls-desc
 
-The :mc:`mc ilm ls` command summrizes all configured object lifecycle management 
-rules on a MinIO bucket in a tabular format.
+:mc:`mc ilm ls` 命令以表格形式汇总 MinIO 存储桶上已配置的所有对象生命周期管理规则。
 
 .. end-mc-ilm-ls-desc
 
-The output of the command might resemble the following:
+该命令的输出可能如下所示：
 
 .. code-block:: shell
 
@@ -63,19 +62,18 @@ The output of the command might resemble the following:
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command lists all lifecycle management rules for the
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令列出 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的所有生命周期管理规则：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm ls myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc ilm ls` command has the following syntax:
+      :mc:`mc ilm ls` 命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -87,15 +85,13 @@ The output of the command might resemble the following:
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
    
-   The :ref:`alias <alias>` and full path to the bucket on the MinIO
-   deployment for which to list the object lifecycle management rules. For
-   example:
+   用于指定要列出对象生命周期管理规则的 MinIO 部署 :ref:`alias <alias>` 和存储桶完整路径。例如：
 
    .. code-block:: none
 
@@ -106,49 +102,47 @@ Parameters
    :optional:
    
 
-   :mc:`mc ilm ls` returns only fields related to lifecycle rule expiration.
+   :mc:`mc ilm ls` 仅返回与生命周期规则过期相关的字段。
 
-   Mutually exclusive with :mc-cmd:`~mc ilm ls --transition`.
+   与 :mc-cmd:`~mc ilm ls --transition` 互斥。
 
 .. mc-cmd:: --transition
    :optional:
 
-   :mc:`mc ilm ls` returns only fields related to lifecycle rule transition.
+   :mc:`mc ilm ls` 仅返回与生命周期规则转换相关的字段。
 
-   Mutually exclusive with :mc-cmd:`~mc ilm ls --expiry`.
+   与 :mc-cmd:`~mc ilm ls --expiry` 互斥。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-List Bucket Lifecycle Management Rules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出存储桶生命周期管理规则
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc ilm ls` to list a bucket's lifecycle management rules:
+使用 :mc:`mc ilm ls` 列出存储桶的生命周期管理规则：
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm ls ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc ilm ls ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc ilm ls ALIAS>` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc ilm ls ALIAS>` with the path to the bucket on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc ilm ls ALIAS>` 替换为 S3 兼容主机上存储桶的路径。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

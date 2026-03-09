@@ -1,10 +1,12 @@
-1. Access the Operator Console
+1. 访问 Operator Console
 
-   Temporarily forward traffic between the local host machine and the MinIO Operator Console and retrieve the JWT token for your Operator deployment.
-   For instructions, see :ref:`Configure access to the Operator Console service <minio-k8s-deploy-operator-access-console>`.
+   临时在本地主机与 MinIO Operator Console 之间转发流量，
+   并获取 Operator 部署的 JWT token。
+   具体步骤请参阅
+   :ref:`配置对 Operator Console 服务的访问 <minio-k8s-deploy-operator-access-console>`。
 
-   Open your browser to the temporary URL and enter the JWT Token into the login page.
-   You should see the :guilabel:`Tenants` page:
+   在浏览器中打开临时 URL，并在登录页面输入 JWT Token。
+   你应该会看到 :guilabel:`Tenants` 页面：
 
    .. image:: /images/k8s/operator-dashboard.png
       :align: center
@@ -12,15 +14,17 @@
       :class: no-scaled-link
       :alt: MinIO Operator Console
 
-   To deploy a new MinIO Tenant with OIDC external identity management, select the :guilabel:`+ Create Tenant` button.
+   如果要部署启用 OIDC 外部身份管理的新 MinIO Tenant，
+   请选择 :guilabel:`+ Create Tenant` 按钮。
 
-   TO configure an existing MinIO Tenant with OIDC external identity management select that Tenant from the displayed list.
-   The following steps reference the necessary sections and configuration settings for existing Tenants.
+   如果要为现有 MinIO Tenant 配置 OIDC 外部身份管理，
+   请从显示列表中选择该 Tenant。
+   以下步骤将说明现有 Tenant 所需的配置区段和设置项。
 
-#. Complete the :guilabel:`Identity Provider` Section
+#. 完成 :guilabel:`Identity Provider` 区段
 
-   To enable external identity management with an OIDC select the :guilabel:`Identity Provider` section.
-   You can then change the radio button to :guilabel:`OIDC` to display the configuration settings.
+   如需启用基于 OIDC 的外部身份管理，请选择 :guilabel:`Identity Provider` 区段。
+   然后将单选按钮切换为 :guilabel:`OIDC`，以显示相关配置项。
 
    .. image:: /images/k8s/operator-create-tenant-identity-provider-openid.png
       :align: center
@@ -28,38 +32,40 @@
       :class: no-scaled-link
       :alt: MinIO Operator Console - Create a Tenant - External Identity Provider Section - OpenID
 
-   An asterisk ``*`` marks required fields.
-   The following table provides general guidance for those fields:
+   星号 ``*`` 表示必填字段。
+   下表给出了这些字段的一般说明：
 
    .. list-table::
       :header-rows: 1
       :widths: 40 60
       :width: 100%
 
-      * - Field
-        - Description
+      * - 字段
+        - 说明
 
       * - Configuration URL
-        - The hostname of the OpenID ``.well-known/openid-configuration`` file.
+        - OpenID ``.well-known/openid-configuration`` 文件所在的主机名。
 
       * - | Client ID
           | Secret ID
-        - The Client and Secret ID MinIO uses when authenticating OIDC user credentials against OIDC service.
+        - MinIO 在向 OIDC 服务认证 OIDC 用户凭证时使用的 Client ID 和 Secret ID。
 
       * - Claim Name
-        - The OIDC Claim MinIO uses for identifying the :ref:`policies <minio-policy>` to attach to the authenticated user.
+        - MinIO 用于识别并附加到认证用户上的 :ref:`policy <minio-policy>` 的 OIDC Claim。
 
-   Once you complete the section, you can finish any other required sections of :ref:`Tenant Deployment <minio-k8s-deploy-minio-tenant>`.
+   完成该区段后，你可以继续填写
+   :ref:`Tenant Deployment <minio-k8s-deploy-minio-tenant>` 的其他必需区段。
 
-#. Assign Policies to OIDC Users
+#. 为 OIDC 用户分配 Policy
 
-   MinIO by default assigns no :ref:`policies <minio-policy>` to OIDC users.
-   MinIO uses the specified user Claim to identify one or more policies to attach to the authenticated user.
-   If the Claim is empty or specifies policies which do not exist on the deployment, the authenticated user has no permissions on the Tenant.
+   MinIO 默认不会为 OIDC 用户分配任何 :ref:`policy <minio-policy>`。
+   MinIO 使用指定的用户 Claim 来识别并附加一个或多个 policy 到认证用户。
+   如果 Claim 为空，或其中指定的 policy 在部署中不存在，
+   则认证用户对该 Tenant 不具备任何权限。
 
-   The following example assumes an existing :ref:`alias <alias>` configured for the MinIO Tenant.
+   以下示例假定你已经为 MinIO Tenant 配置好了 :ref:`alias <alias>`。
 
-   Consider the following example policy that grants general S3 API access on only the ``data`` bucket:
+   下面的示例 policy 仅对 ``data`` 存储桶授予通用 S3 API 访问权限：
 
    .. code-block:: json
       :class: copyable
@@ -80,27 +86,38 @@
          ]
       }
 
-   Use the :mc:`mc admin policy create` command to create a policy for use by an OIDC user:
+   使用 :mc:`mc admin policy create` 命令，
+   创建供 OIDC 用户使用的 policy：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin policy create minio-tenant datareadonly /path/to/datareadonly.json
 
-   MinIO attaches the ``datareadonly`` policy to any authenticated OIDC user with ``datareadonly`` included in the configured claim.
+   只要认证后的 OIDC 用户在所配置的 claim 中包含 ``datareadonly``，
+   MinIO 就会为其附加 ``datareadonly`` policy。
 
-   See :ref:`minio-external-identity-management-openid-access-control` for more information on access control with OIDC users and groups.
+   关于 OIDC 用户和组的访问控制，请参阅
+   :ref:`minio-external-identity-management-openid-access-control`。
 
-#. Generate S3-Compatible Temporary Credentials using OIDC Credentials
+#. 使用 OIDC 凭证生成 S3 兼容临时凭证
 
-   Applications can generate temporary access credentials as-needed using the :ref:`minio-sts-assumerolewithwebidentity` Security Token Service (STS) API endpoint and the JSON Web Token (JWT) returned by the :abbr:`OIDC (OpenID Connect)` provider.
+   应用程序可以按需使用
+   :ref:`minio-sts-assumerolewithwebidentity`
+   Security Token Service (STS) API 端点，
+   以及 :abbr:`OIDC (OpenID Connect)` 提供方返回的 JSON Web Token (JWT)
+   生成临时访问凭证。
 
-   The application must provide a workflow for logging into the :abbr:`OIDC (OpenID Connect)` provider and retrieving the JSON Web Token (JWT) associated to the authentication session. 
-   Defer to the provider documentation for obtaining and parsing the JWT token after successful authentication. 
-   MinIO provides an example Go application :minio-git:`web-identity.go <minio/blob/master/docs/sts/web-identity.go>` with an example of managing this workflow.
+   应用程序必须提供一个工作流，用于登录
+   :abbr:`OIDC (OpenID Connect)` 提供方并获取与认证会话关联的
+   JSON Web Token (JWT)。
+   关于如何在认证成功后获取和解析 JWT token，请参阅提供方文档。
+   MinIO 提供了示例 Go 应用程序
+   :minio-git:`web-identity.go <minio/blob/master/docs/sts/web-identity.go>`，
+   用于演示该工作流。
 
-
-   Once the application retrieves the JWT token, use the ``AssumeRoleWithWebIdentity`` endpoint to generate the temporary credentials:
+   应用程序获取 JWT token 后，使用 ``AssumeRoleWithWebIdentity`` 端点
+   生成临时凭证：
 
    .. code-block:: shell
       :class: copyable
@@ -111,14 +128,18 @@
       &DurationSeconds=86400
       &Policy=Policy
 
-   - Replace ``minio.example.net`` with the hostname or URL of the MinIO Tenant service.
-   - Replace the ``TOKEN`` with the JWT token returned in the previous step.
-   - Replace the ``DurationSeconds`` with the duration in seconds until the temporary credentials expire. The example above specifies a period of ``86400`` seconds, or 24 hours.
-   - Replace the ``Policy`` with an inline URL-encoded JSON :ref:`policy <minio-policy>` that further restricts the permissions associated to the temporary credentials. 
+   - 将 ``minio.example.net`` 替换为 MinIO Tenant 服务的主机名或 URL。
+   - 将 ``TOKEN`` 替换为上一步返回的 JWT token。
+   - 将 ``DurationSeconds`` 替换为临时凭证过期前的秒数。
+     上例指定为 ``86400`` 秒，也就是 24 小时。
+   - 将 ``Policy`` 替换为内联、经过 URL 编码的 JSON :ref:`policy <minio-policy>`，
+     以进一步限制这些临时凭证关联的权限。
 
-   Omit to use the policy associated to the OpenID user :ref:`policy claim <minio-external-identity-management-openid-access-control>`.
+   如果省略，则会使用与 OpenID 用户
+   :ref:`policy claim <minio-external-identity-management-openid-access-control>`
+   关联的 policy。
 
-   The API response consists of an XML document containing the access key, secret key, session token, and expiration date. 
-   Applications can use the access key and secret key to access and perform operations on MinIO.
+   API 响应为 XML 文档，其中包含 access key、secret key、session token 和过期时间。
+   应用程序可使用 access key 和 secret key 访问 MinIO 并执行操作。
 
-   See the :ref:`minio-sts-assumerolewithwebidentity` for reference documentation.
+   参考文档请参阅 :ref:`minio-sts-assumerolewithwebidentity`。

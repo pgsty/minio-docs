@@ -1,22 +1,27 @@
-1) Download the MinIO Server
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 下载 MinIO Server
+~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-binary-desc
    :end-before: end-install-minio-binary-desc
 
-2) Create the ``systemd`` Service File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 创建 ``systemd`` 服务文件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``.deb`` or ``.rpm`` packages install the following `systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ service file to ``/usr/lib/systemd/system/minio.service``. 
-For binary installations, create this file manually on all MinIO hosts.
+``.deb`` 或 ``.rpm`` 软件包会将以下
+`systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ 服务文件
+安装到 ``/usr/lib/systemd/system/minio.service``。
+对于二进制安装方式，请在所有 MinIO 主机上手动创建该文件。
 
 .. note::
    
-   ``systemd`` checks the ``/etc/systemd/...`` path before checking the ``/usr/lib/systemd/...`` path and uses the first file it finds.
-   To avoid conflicting or unexpected configuration options, check that the file exists only at the ``/usr/lib/systemd/system/minio.service`` path.
+   ``systemd`` 会先检查 ``/etc/systemd/...`` 路径，再检查 ``/usr/lib/systemd/...`` 路径，
+   并使用它找到的第一个文件。
+   为避免配置冲突或意外选项，请确认该文件仅存在于
+   ``/usr/lib/systemd/system/minio.service`` 路径下。
 
-   Refer to the `man page for systemd.unit <https://www.man7.org/linux/man-pages/man5/systemd.unit.5.html>`__ for details on the file path search order.
+   关于文件路径搜索顺序的详细信息，请参阅
+   `systemd.unit 的 man page <https://www.man7.org/linux/man-pages/man5/systemd.unit.5.html>`__。
     
 .. code-block:: shell
    :class: copyable
@@ -62,11 +67,10 @@ For binary installations, create this file manually on all MinIO hosts.
 
    # Built for ${project.name}-${project.version} (${project.name})
 
-The ``minio.service`` file runs as the ``minio-user`` User and Group by default.
-You can create the user and group using the ``groupadd`` and ``useradd``
-commands. The following example creates the user and group, and sets permissions
-to access the folder paths intended for use by MinIO. These commands typically
-require root (``sudo``) permissions.
+``minio.service`` 文件默认使用 ``minio-user`` 作为 User 和 Group 运行。
+你可以使用 ``groupadd`` 和 ``useradd`` 命令创建该用户和组。
+以下示例会创建用户和组，并设置对 MinIO 目标文件夹路径的访问权限。
+这些命令通常需要 root（``sudo``）权限。
 
 .. code-block:: shell
    :class: copyable
@@ -75,25 +79,24 @@ require root (``sudo``) permissions.
    useradd -M -r -g minio-user minio-user
    chown minio-user:minio-user /mnt/data
 
-The drive path in this example is specified by the `MINIO_VOLUMES` environment variable. Change the value here and in the environment variable file to match
-the path to the drive intended for use by MinIO.
+此示例中的驱动器路径由 ``MINIO_VOLUMES`` 环境变量指定。
+请同时修改此处和环境变量文件中的值，使其与 MinIO 实际使用的驱动器路径一致。
 
-Alternatively, change the ``User`` and ``Group`` values to another user and
-group on the system host with the necessary access and permissions.
+或者，也可以将 ``User`` 和 ``Group`` 的值改为系统主机上其他具备所需访问权限的用户和组。
 
-MinIO publishes additional startup script examples on 
-:minio-git:`github.com/minio/minio-service <minio-service>`.
+MinIO 在 :minio-git:`github.com/minio/minio-service <minio-service>`
+中提供了更多启动脚本示例。
 
-To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-systemctl`.
+如需更新由 ``systemctl`` 管理的部署，请参阅 :ref:`minio-upgrade-systemctl`。
 
 
-3) Create the Environment Variable File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 创建环境变量文件
+~~~~~~~~~~~~~~~~~~~
 
-Create an environment variable file at ``/etc/default/minio``.
-The MinIO Server container can use this file as the source of all :ref:`environment variables <minio-server-environment-variables>`.
+在 ``/etc/default/minio`` 路径下创建环境变量文件。
+MinIO Server 容器可以将此文件用作所有 :ref:`环境变量 <minio-server-environment-variables>` 的来源。
 
-The following example provides a starting environment file:
+以下示例给出了可作为起点的环境文件：
 
 .. code-block:: shell
    :class: copyable
@@ -114,42 +117,47 @@ The following example provides a starting environment file:
    # For example, `--console-address :9001` sets the MinIO Console listen port
    MINIO_OPTS="--console-address :9001"
 
-Include any other environment variables as required for your deployment.
+根据你的部署要求，补充其他所需环境变量。
 
 .. versionadded:: Server RELEASE.2024-03-03T17-50-39Z
 
-MinIO automatically generates unique root credentials if all of the following conditions are true:
+如果同时满足以下所有条件，MinIO 会自动生成唯一的 root 凭证：
 
-- :kes-docs:`KES <tutorials/getting-started/>` Release 2024-03-01T18-06-46Z or later running
+- 正在运行 :kes-docs:`KES <tutorials/getting-started/>` Release 2024-03-01T18-06-46Z 或更高版本
   
-- **Have not** defined:
+- **未** 定义：
   
-  - ``MINIO_ROOT_USER`` variable 
-  - ``MINIO_ROOT_PASSWORD`` variable 
+  - ``MINIO_ROOT_USER`` 变量
+  - ``MINIO_ROOT_PASSWORD`` 变量 
   
-- **Have**:
+- **已满足**：
   
-  - set up KES with a :kes-docs:`supported KMS target <#supported-kms-targets>`
-  - disabled root access with the :ref:`MinIO environment variable <minio-disable-root-access>`
+  - 使用 :kes-docs:`受支持的 KMS 目标 <#supported-kms-targets>` 完成 KES 配置
+  - 通过 :ref:`MinIO 环境变量 <minio-disable-root-access>` 禁用 root 访问
 
-When those conditions are met at startup, MinIO uses the KMS to generate unique root credentials for the deployment using a `hash-based message authentication code (HMAC) <https://en.wikipedia.org/wiki/HMAC>`__.
+当这些条件在启动时满足后，
+MinIO 会使用 KMS 和 `hash-based message authentication code (HMAC) <https://en.wikipedia.org/wiki/HMAC>`__
+为该部署生成唯一的 root 凭证。
 
-If MinIO generates such credentials, the key used to generate the credentials **must** remain the same *and* continue to exist.
-All data on the deployment is encrypted with this key!
+如果 MinIO 生成了此类凭证，
+则用于生成这些凭证的密钥 **必须** 保持不变，并且必须持续存在。
+该部署中的所有数据都使用此密钥加密！
 
-To rotate the generated root credentials, generate a new key in the KMS, then update the value of the :envvar:`MINIO_KMS_KES_KEY_NAME` with the new key.
+如果要轮换已生成的 root 凭证，
+请先在 KMS 中生成新密钥，然后将 :envvar:`MINIO_KMS_KES_KEY_NAME`
+的值更新为该新密钥。
 
 
-4) Start the MinIO Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 启动 MinIO 服务
+~~~~~~~~~~~~~~~~~~
 
-Issue the following command on the local host to start the MinIO |SNSD| deployment as a service:
+在本地主机上执行以下命令，以服务方式启动 MinIO |SNSD| 部署：
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-start-service-desc
    :end-before: end-install-minio-start-service-desc
 
-The ``journalctl`` output should resemble the following:
+``journalctl`` 输出应类似如下：
 
 .. code-block:: shell
 
@@ -166,11 +174,11 @@ The ``journalctl`` output should resemble the following:
 
    Documentation: https://minio.pigsty.io/index.html
 
-The ``API`` block lists the network interfaces and port on which clients can access the MinIO S3 API.
-The ``Console`` block lists the network interfaces and port on which clients can access the MinIO Web Console.
+``API`` 区块列出了客户端可访问 MinIO S3 API 的网络接口和端口。
+``Console`` 区块列出了客户端可访问 MinIO Web Console 的网络接口和端口。
 
-5) Connect to the MinIO Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5) 连接到 MinIO 服务
+~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-deploy.rst
    :start-after: start-common-deploy-connect-to-minio-deployment

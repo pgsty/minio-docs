@@ -6,40 +6,37 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc alias list
 
-Syntax
+语法
 ------
 
 .. start-mc-alias-list-desc
 
-The :mc:`mc alias list` command lists all aliases in the local 
-:program:`mc` configuration. 
+:mc:`mc alias list` 命令列出本地 :program:`mc` 配置中的所有别名。
 
 .. end-mc-alias-list-desc
 
-The command output includes the configured access key and secret key associated
-to each alias.
+该命令输出包含每个别名关联的 access key 和 secret key 配置。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command lists all :ref:`aliases <alias>` configured
-      on the local host machine:
+      以下命令列出本地主机上配置的所有 :ref:`aliases <alias>`：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias list
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc alias list` command has the following syntax:
+      :mc:`mc alias list` 命令语法如下：
 
       .. code-block:: shell
 
@@ -49,73 +46,71 @@ to each alias.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Optional* The name of a specific alias to display.
+   *可选* 要显示的特定别名名称。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-List All Configured Aliases
+列出所有已配置别名
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following :mc:`mc alias list` command lists all configured aliases
-      in the local :program:`mc` configuration. 
-
-      .. code-block:: shell
-         :class: copyable
-
-         mc alias list
-
-   .. tab-item:: Syntax
+      以下 :mc:`mc alias list` 命令列出本地 :program:`mc` 配置中所有已配置的别名。
 
       .. code-block:: shell
          :class: copyable
 
          mc alias list
 
-List a Specific Alias
+   .. tab-item:: 语法
+
+      .. code-block:: shell
+         :class: copyable
+
+         mc alias list
+
+列出特定别名
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following :mc:`mc alias list` command lists the details of a 
-      specific alias in the local :program:`mc` configuration.
+      以下 :mc:`mc alias list` 命令列出本地 :program:`mc` 配置中特定别名的详细信息。
 
       .. code-block:: shell
          :class: copyable
 
          mc alias list myminio
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc alias list ALIAS 
 
-      - Replace ``ALIAS`` with the the name of the alias to return.
+      - 将 ``ALIAS`` 替换为要返回的别名名称。
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

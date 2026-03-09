@@ -1,18 +1,18 @@
 .. _minio-server-envvar-bucket-notification-redis:
 .. _minio-server-config-bucket-notification-redis:
 
-===========================
-Redis Notification Settings
-===========================
+======================
+Redis 通知设置
+======================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for configuring a Redis service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
-See :ref:`minio-bucket-notifications-publish-redis` for a tutorial on using these settings.
+本页记录了将 Redis 服务配置为 :ref:`Bucket Notifications <minio-bucket-notifications>` 目标所需的设置。
+有关如何使用这些设置的教程，请参阅 :ref:`minio-bucket-notifications-publish-redis`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -22,15 +22,15 @@ See :ref:`minio-bucket-notifications-publish-redis` for a tutorial on using thes
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Multiple Redis Targets
-----------------------
+多个 Redis 目标
+----------------
 
-You can specify multiple Redis service endpoints by appending a unique identifier ``_ID`` to the end of the top level key for each set of related Redis settings. 
-For example, the following commands set two distinct Redis service endpoints as ``PRIMARY`` and ``SECONDARY`` respectively:
+你可以通过在每组相关 Redis 设置的顶层键末尾追加唯一标识符 ``_ID`` 来指定多个 Redis 服务端点。
+例如，以下命令分别将两个不同的 Redis 服务端点设置为 ``PRIMARY`` 和 ``SECONDARY``：
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -47,7 +47,7 @@ For example, the following commands set two distinct Redis service endpoints as 
          export MINIO_NOTIFY_REDIS_KEY_SECONDARY="bucketevents"
          export MINIO_NOTIFY_REDIS_FORMAT_SECONDARY="namespace"
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
       :sync: config
 
       .. code-block:: shell
@@ -64,46 +64,46 @@ For example, the following commands set two distinct Redis service endpoints as 
             format="namespace"                                 \
             [ARGUMENT="VALUE"] ... 
 
-Settings
---------
+设置
+----
 
-Enable
-~~~~~~
+启用
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_ENABLE
 
-      Specify ``on`` to enable publishing bucket notifications to a Redis service endpoint.
+      指定 ``on`` 以启用将存储桶通知发布到 Redis 服务端点。
 
-      Defaults to ``off``.
+      默认为 ``off``。
    
-      Requires specifying the following additional environment variables if set to ``on``:
+      如果设置为 ``on``，还必须指定以下附加环境变量：
    
       - :envvar:`MINIO_NOTIFY_REDIS_ADDRESS`
       - :envvar:`MINIO_NOTIFY_REDIS_KEY`
       - :envvar:`MINIO_NOTIFY_REDIS_FORMAT`
    
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis
 
-      The top-level configuration key for defining an Redis server/broker endpoint for use with :ref:`MinIO bucket notifications <minio-bucket-notifications>`.
+      用于定义 Redis server/broker 端点并供 :ref:`MinIO bucket notifications <minio-bucket-notifications>` 使用的顶层配置键。
    
-      Use :mc-cmd:`mc admin config set` to set or update an Redis server/broker endpoint. 
-      The following arguments are *required* for each endpoint: 
+      使用 :mc-cmd:`mc admin config set` 设置或更新 Redis server/broker 端点。
+      对于每个端点，以下参数为*必需*：
       
       - :mc-conf:`~notify_redis.address`
       - :mc-conf:`~notify_redis.key`
       - :mc-conf:`~notify_redis.format`
    
-      Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+      将其他可选参数指定为以空白字符（``" "``）分隔的列表。
    
       .. code-block:: shell
          :class: copyable
@@ -114,188 +114,188 @@ Enable
             format="<string>" \
             [ARGUMENT="VALUE"] ... \
 
-Address
-~~~~~~~
+地址
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_ADDRESS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis address
          :delimiter: " "
 
-Specify the Redis service endpoint to which MinIO publishes bucket events.
-For example, ``redis.example.com:6369``.
+指定 MinIO 发布存储桶事件的 Redis 服务端点。
+例如：``redis.example.com:6369``。
 
 .. include:: /includes/linux/minio-server.rst
    :start-after: start-notify-target-online-desc
    :end-before: end-notify-target-online-desc
 
-Key
-~~~
+键
+~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_KEY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis key
          :delimiter: " "
 
-Specify the Redis key to use for storing and updating events. 
-Redis auto-creates the key if it does not exist.
+指定用于存储和更新事件的 Redis 键。
+如果该键不存在，Redis 会自动创建。
 
-Format
-~~~~~~
+格式
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_FORMAT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
       
       .. mc-conf:: notify_redis format
          :delimiter: " "
 
-Specify the format of event data written to the Redis service endpoint. 
-MinIO supports the following values:
+指定写入 Redis 服务端点的事件数据格式。
+MinIO 支持以下取值：
 
 ``namespace``
-   For each bucket event, MinIO creates a JSON document with the bucket and object name from the event as the document ID and the actual event as part of the document body. 
-   Additional updates to that object modify the existing index entry for that object. 
-   Similarly, deleting the object also deletes the corresponding index entry.
+   对于每个存储桶事件，MinIO 会创建一个 JSON 文档，以事件中的存储桶名和对象名作为文档 ID，并将实际事件作为文档体的一部分。
+   对该对象的后续更新会修改该对象现有的索引条目。
+   同样，删除对象也会删除对应的索引条目。
    
 ``access``
-   For each bucket event, MinIO creates a JSON document with the event details and appends it to the key with a Redis-generated random ID. 
-   Additional updates to an object result in new index entries, and existing entries remain unmodified.
+   对于每个存储桶事件，MinIO 会创建一个包含事件详情的 JSON 文档，并以 Redis 生成的随机 ID 将其追加到该键。
+   对对象的后续更新会产生新的索引条目，现有条目保持不变。
 
-Password
-~~~~~~~~
+密码
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_PASSWORD
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis password
          :delimiter: " "
 
-Specify the password for the Redis server.
+指定 Redis 服务器的密码。
 
 .. versionchanged:: RELEASE.2023-06-23T20-26-00Z
 
-   MinIO redacts this value when returned as part of :mc-cmd:`mc admin config get`.
+   当该值作为 :mc-cmd:`mc admin config get` 返回结果的一部分时，MinIO 会对其进行脱敏。
 
-User
+用户
 ~~~~
 
-*Optional*
+*可选*
 
 .. versionadded:: RELEASE.2024-03-21T23-13-43Z
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_USER
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis user
          :delimiter: " "
 
 
-Specify the user for the Redis server.
+指定 Redis 服务器的用户。
 
-Queue Directory
-~~~~~~~~~~~~~~~
+队列目录
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis queue_dir
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径以启用 MinIO 的持久化事件存储，用于保存未投递消息，例如 ``/opt/minio/events``。
 
-MinIO stores undelivered events in the specified store while the Redis server/broker is offline and replays the stored events when connectivity resumes.
+当 Redis server/broker 离线时，MinIO 会将未投递事件存储到指定存储中；连接恢复后，会重放这些已存储事件。
 
-Queue Limit
-~~~~~~~~~~~
+队列上限
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_QUEUE_LIMIT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis queue_limit
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. 
-Defaults to ``100000``.
+指定未投递消息的最大上限。
+默认为 ``100000``。
 
-Comment
-~~~~~~~
+注释
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_REDIS_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_redis comment
          :delimiter: " "
 
-Specify a comment to associate with the Redis configuration.
+指定与 Redis 配置关联的注释。

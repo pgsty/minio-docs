@@ -1,171 +1,146 @@
 .. _minio-users:
 
 ===============
-User Management
+用户管理
 ===============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-Overview
+概述
 --------
 
-A MinIO user consists of a unique access key (username) and corresponding secret
-key (password). Clients must authenticate their identity by specifying both
-a valid access key (username) and the corresponding secret key (password) of
-an existing MinIO user.
+MinIO 用户由唯一的访问密钥（用户名）及其对应的密钥（密码）组成。
+客户端必须同时指定现有 MinIO 用户的有效访问密钥（用户名）及其对应的密钥（密码），才能完成身份认证。
 
-Each user can have one or more assigned :ref:`policies <minio-policy>` that
-explicitly list the actions and resources to which that user has access. 
-Users can also inherit policies from the :ref:`groups <minio-groups>` in which
-they have membership. 
+每个用户都可以分配一个或多个 :ref:`策略 <minio-policy>`，
+这些策略会显式列出该用户有权访问的操作和资源。
+用户还可以从其所属的 :ref:`组 <minio-groups>` 继承策略。
 
-MinIO by default denies access to all actions or resources not explicitly
-allowed by a user's assigned or inherited :ref:`policies <minio-policy>`. You
-must either explicitly assign a :ref:`policy <minio-policy>` describing the
-user's authorized actions and resources *or* assign the user to :ref:`groups
-<minio-groups>` which have associated policies. See
-:ref:`minio-access-management` for more information.
+默认情况下，MinIO 会拒绝访问任何未被用户已分配或继承的 :ref:`策略 <minio-policy>` 显式允许的操作或资源。
+你必须显式为用户分配一个描述其授权操作和资源的 :ref:`策略 <minio-policy>`，*或者* 将用户加入已关联策略的 :ref:`组
+<minio-groups>`。更多信息请参见 :ref:`minio-access-management`。
 
-This page documents user management for the MinIO internal IDentity Provider
-(IDP). MinIO also external management of identities using either an
-OpenID Connect (OIDC) or Active Directory/LDAP IDentity Provider (IDP).
-For more information, see:
+本页介绍 MinIO 内部 IDentity Provider (IDP) 的用户管理。
+MinIO 还支持使用 OpenID Connect (OIDC) 或 Active Directory/LDAP IDentity Provider (IDP) 对身份进行外部管理。
+更多信息请参见：
 
 - :ref:`minio-external-identity-management-openid`
 - :ref:`minio-external-identity-management-ad-ldap`
 
-Enabling external identity management disables the MinIO internal IDP, with
-the exception of creating :ref:`access keys
-<minio-idp-service-account>`.
+启用外部身份管理后，会禁用 MinIO 内部 IDP，但仍可创建 :ref:`访问密钥
+<minio-idp-service-account>`。
 
 .. _minio-idp-service-account:
 .. _minio-id-access-keys:
 
-Access Keys
+访问密钥
 -----------
 
-MinIO Access Keys (formerly "Service Accounts") are child identities of an authenticated MinIO user, including :ref:`externally managed identities <minio-authentication-and-identity-management>`. 
-Each access key inherits its privileges based on the :ref:`policies <minio-policy>` attached to it's parent user *or* those groups in which the parent user has membership. 
-Access keys also support an optional inline policy which further restricts access to a subset of actions and resources available to the parent user.
+MinIO Access Keys（原称 "Service Accounts"）是已认证 MinIO 用户的子身份，其中也包括 :ref:`外部管理的身份 <minio-authentication-and-identity-management>`。
+每个访问密钥都会基于其父用户附加的 :ref:`策略 <minio-policy>`，*或者* 父用户所属组的策略来继承权限。
+访问密钥还支持可选的内联策略，用于进一步将访问限制为父用户可用操作和资源的子集。
 
-A MinIO user can generate any number of access keys. 
-This allows application owners to generate arbitrary access keys for their applications without requiring action from the MinIO administrators. 
-Since the generated access keys have the same or fewer permissions as the parents, administrators can focus on managing the top-level parent users without micro-managing generated access keys.
+MinIO 用户可以生成任意数量的访问密钥。
+这使应用所有者可以为其应用生成访问密钥，而无需 MinIO 管理员介入。
+由于生成的访问密钥拥有与父用户相同或更少的权限，管理员可以专注于管理顶层父用户，而无需细致管理这些生成的访问密钥。
 
-You can create access keys by using the :mc:`mc admin user svcacct add` command.
-Identities created by these methods do not expire until you remove the access key or the parent account.
+你可以使用 :mc:`mc admin user svcacct add` 命令创建访问密钥。
+通过这些方式创建的身份在你移除访问密钥或父账户之前不会过期。
 
-You can also create :ref:`security token service <minio-security-token-service>` accounts programmatically with the ``AssumeRole`` STS API endpoint.
-STS tokens default to expire in 1 hour, but you set expiration for up to 7 days from creation.
+你还可以通过 ``AssumeRole`` STS API 端点，以编程方式创建 :ref:`security token service <minio-security-token-service>` 账户。
+STS token 默认在 1 小时后过期，但你可以将过期时间设置为自创建起最长 7 天。
 
-.. admonition:: Access Keys are for Programmatic Access
+.. admonition:: 访问密钥用于编程访问
    :class: dropdown, note
 
-   Access Keys support programmatic access by applications. 
-   You cannot use an access key to log into the MinIO Console.
+   访问密钥支持应用程序进行编程访问。
+   你不能使用访问密钥登录 MinIO Console。
 
 .. _minio-users-root:
 
-MinIO ``root`` User
+MinIO ``root`` 用户
 -------------------
 
-MinIO deployments have a ``root`` user with access to all actions and resources
-on the deployment, regardless of the configured :ref:`identity manager
-<minio-authentication-and-identity-management>`. When a :mc:`minio` server first
-starts, it sets the ``root`` user credentials by checking the value of the
-following environment variables:
+每个 MinIO 部署都具有一个 ``root`` 用户，可访问该部署上的所有操作和资源，
+无论配置的是哪种 :ref:`身份管理器
+<minio-authentication-and-identity-management>`。当 :mc:`minio` 服务器首次启动时，
+会通过检查以下环境变量的值来设置 ``root`` 用户凭证：
 
 - :envvar:`MINIO_ROOT_USER`
 - :envvar:`MINIO_ROOT_PASSWORD`
 
-Rotating the root user credentials requires updating either or both variables
-for all MinIO servers in the deployment. Specify *long, unique, and random*
-strings for root credentials. Exercise all possible precautions in storing the
-access key and secret key, such that only known and trusted individuals who
-*require* superuser access to the deployment can retrieve the ``root``
-credentials.
+轮换 root 用户凭证时，需要为部署中的所有 MinIO 服务器更新其中一个或两个变量。
+root 凭证应指定为*长、唯一且随机*的字符串。
+存储访问密钥和密钥时应采取一切可能的防护措施，确保只有已知且受信任、并且*确实需要*该部署超级用户访问权限的人员才能获取 ``root`` 凭证。
 
-- MinIO *strongly discourages* using the ``root`` user for regular client access
-  regardless of the environment (development, staging, or production).
+- MinIO *强烈不建议* 在任何环境中（开发、预发或生产）使用 ``root`` 用户进行常规客户端访问。
 
-- MinIO *strongly recommends* creating users such that each client has access to
-  the minimal set of actions and resources required to perform their assigned
-  workloads. 
+- MinIO *强烈建议* 创建用户时，使每个客户端仅拥有执行其分配工作负载所需的最小操作和资源集合。
 
-If these variables are unset, :mc:`minio` defaults to ``minioadmin`` and
-``minioadmin`` as the access key and secret key respectively. MinIO *strongly
-discourages* use of the default credentials regardless of deployment
-environment.
+如果这些变量未设置，:mc:`minio` 默认分别使用 ``minioadmin`` 和
+``minioadmin`` 作为访问密钥和密钥。无论部署环境如何，MinIO 都 *强烈不建议* 使用默认凭证。
 
-.. admonition:: Deprecation of Legacy Root User Environment Variables
+.. admonition:: 旧版 Root 用户环境变量已弃用
    :class: dropdown, important
 
-   MinIO :minio-release:`RELEASE.2021-04-22T15-44-28Z` and later deprecates the
-   following variables used for setting or updating root user
-   credentials:
+   MinIO :minio-release:`RELEASE.2021-04-22T15-44-28Z` 及后续版本已弃用以下用于设置或更新 root 用户凭证的变量：
 
-   - :envvar:`MINIO_ACCESS_KEY` to the new access key.
-   - :envvar:`MINIO_SECRET_KEY` to the new secret key.
-   - :envvar:`MINIO_ACCESS_KEY_OLD` to the old access key.
-   - :envvar:`MINIO_SECRET_KEY_OLD` to the old secret key.
+   - :envvar:`MINIO_ACCESS_KEY` 表示新的访问密钥。
+   - :envvar:`MINIO_SECRET_KEY` 表示新的密钥。
+   - :envvar:`MINIO_ACCESS_KEY_OLD` 表示旧的访问密钥。
+   - :envvar:`MINIO_SECRET_KEY_OLD` 表示旧的密钥。
 
-User Management
+用户管理
 ---------------
 
-Create a User
+创建用户
 ~~~~~~~~~~~~~
 
-Use the :mc:`mc admin user add` command to create a new user on the
-MinIO deployment:
+使用 :mc:`mc admin user add` 命令在 MinIO 部署上创建新用户：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user add ALIAS ACCESSKEY SECRETKEY
 
-- Replace :mc-cmd:`ALIAS <mc admin user add ALIAS>` with the
-  :mc:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user add ALIAS>` 替换为 MinIO 部署的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`ACCESSKEY <mc admin user add ACCESSKEY>` with the 
-  access key for the user. MinIO allows retrieving the access key after
-  user creation through the :mc:`mc admin user info` command.
+- 将 :mc-cmd:`ACCESSKEY <mc admin user add ACCESSKEY>` 替换为用户的访问密钥。
+  MinIO 允许在用户创建后，通过 :mc:`mc admin user info` 命令检索访问密钥。
 
-- Replace :mc-cmd:`SECRETKEY <mc admin user add SECRETKEY>` with the
-  secret key for the user. MinIO *does not* provide any method for retrieving
-  the secret key once set.
+- 将 :mc-cmd:`SECRETKEY <mc admin user add SECRETKEY>` 替换为用户的密钥。
+  MinIO *不提供* 在密钥设置后再进行检索的任何方法。
 
-Specify a unique, random, and long string for both the ``ACCESSKEY`` and 
-``SECRETKEY``. Your organization may have specific internal or regulatory
-requirements around generating values for use with access or secret keys. 
+``ACCESSKEY`` 和 ``SECRETKEY`` 都应指定为唯一、随机且足够长的字符串。
+你的组织可能对生成用于访问密钥或密钥的值有特定的内部或监管要求。
 
-After creating the user, use :mc:`mc admin policy attach` to associate a
-:ref:`MinIO Policy Based Access Control <minio-policy>` to the new user. 
-The following command assigns the built-in :userpolicy:`readwrite` policy:
+创建用户后，使用 :mc:`mc admin policy attach` 为新用户关联
+:ref:`MinIO 基于策略的访问控制 <minio-policy>`。
+以下命令分配内置的 :userpolicy:`readwrite` 策略：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy attach ALIAS readwrite --user=USERNAME
 
-Replace ``USERNAME`` with the ``ACCESSKEY`` created in the previous step.
+将 ``USERNAME`` 替换为上一步创建的 ``ACCESSKEY``。
 
-Delete a User
+删除用户
 ~~~~~~~~~~~~~
 
-Use the :mc:`mc admin user rm` command to remove a user on a 
-MinIO deployment:
+使用 :mc:`mc admin user rm` 命令从 MinIO 部署中移除用户：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user rm ALIAS USERNAME
 
-- Replace :mc-cmd:`ALIAS <mc admin user rm ALIAS>` with the
-  :mc:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user rm ALIAS>` 替换为 MinIO 部署的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`USERNAME <mc admin user rm USERNAME>` with the name of
-  the user to remove.
+- 将 :mc-cmd:`USERNAME <mc admin user rm USERNAME>` 替换为要移除的用户名。

@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,30 +14,30 @@
 
 .. versionchanged:: MinIO RELEASE.2022-10-08T20-11-00Z or later
 
-Syntax
-------
+语法
+----
 
 .. start-mc-batch-list-desc
 
-The :mc:`mc batch list` command outputs a list of the batch jobs currently in progress on a deployment.
+:mc:`mc batch list` 命令会输出部署中当前正在进行的批处理作业列表。
 
 .. end-mc-batch-list-desc
 
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command outputs a list of all jobs currently in progress on the ``myminio`` alias.
+      以下命令会输出 ``myminio`` alias 上当前正在进行的所有作业列表。
 
       .. code-block:: shell
          :class: copyable
 
          mc batch list myminio
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -49,60 +49,60 @@ The :mc:`mc batch list` command outputs a list of the batch jobs currently in pr
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
    
-   The :ref:`alias <alias>` of the deployment for which you want to list jobs in progress. 
+   要列出进行中作业的目标部署的 :ref:`alias <alias>`。
    
 .. mc-cmd:: --type
    :optional:
 
-   List batch jobs only of a certain type.
+   仅列出指定类型的批处理作业。
    
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Example
--------
+示例
+----
 
-List all ``replicate`` type batch jobs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出所有 ``replicate`` 类型的批处理作业
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists the ``replicate``` type job(s) on the deployment at :mc:`alias <mc alias>` ``myminio``:
+以下命令列出 :mc:`alias <mc alias>` ``myminio`` 所对应部署上的 ``replicate``` 类型作业：
 
 .. code-block:: shell
    :class: copyable
 
    mc batch list myminio --type "replicate"
 
-- Replace ``myminio`` with the :mc:`alias <mc alias>` of the MinIO deployment that should run the job.
+- 将 ``myminio`` 替换为应运行该作业的 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace ``replicate`` with the job type to output.
+- 将 ``replicate`` 替换为要输出的作业类型。
   
-  Currently, :mc:`mc batch` only supports the ``replicate`` job type.
+  当前，:mc:`mc batch` 仅支持 ``replicate`` 作业类型。
 
-The output of the above command is similar to the following:
+上述命令的输出类似如下：
 
 .. code-block:: shell
 
    ID                      TYPE            USER            STARTED
    E24HH4nNMcgY5taynaPfxu  replicate       minioadmin      1 minute ago
  
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
 
-Permissions
------------
+权限
+----
 
-You must have the :policy-action:`admin:ListBatchJobs` permission to list jobs on the deployment. 
+你必须具有 :policy-action:`admin:ListBatchJobs` 权限，才能列出该部署上的作业。 

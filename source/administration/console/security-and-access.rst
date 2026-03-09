@@ -3,137 +3,137 @@
 .. _minio-console-security-access:
 
 ===================
-Security and Access
+安全与访问
 ===================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-You can use the MinIO Console to perform several of the identity and access management functions available in MinIO, such as:
+你可以使用 MinIO Console 执行 MinIO 提供的多种身份与访问管理功能，例如：
 
-- Create child :ref:`access keys <minio-console-user-access-keys>` that inherit the parent's permissions.
-- View, manage, and create access :ref:`policies <minio-console-admin-policies>`.
-- Create and manage :ref:`user credentials <minio-console-admin-identity>` or groups with the built-in MinIO IDP, connect to one or more OIDC provider, or add an AD/LDAP provider for SSO.
+- 创建继承父级权限的子 :ref:`访问密钥 <minio-console-user-access-keys>`。
+- 查看、管理和创建访问 :ref:`策略 <minio-console-admin-policies>`。
+- 使用内置的 MinIO IDP 创建和管理 :ref:`用户凭证 <minio-console-admin-identity>` 或组，连接一个或多个 OIDC provider，或添加 AD/LDAP provider 以实现 SSO。
 
 
 .. _minio-console-user-access-keys:
 
-Access Keys
+访问密钥
 -----------
 
-The :guilabel:`Access Keys` or `Service Accounts` section displays all :ref:`minio-id-access-keys` associated to the authenticated user.
-The summary list of access keys that already exist for a particular user includes the access key, expiration, status, name, and description.
+:guilabel:`Access Keys` 或 `Service Accounts` 部分会显示与已认证用户关联的所有 :ref:`minio-id-access-keys`。
+某个用户已有访问密钥的摘要列表包括访问密钥、过期时间、状态、名称和描述。
 
-Access Keys support providing applications authentication credentials which inherit permissions from the "parent" user.
+访问密钥可为应用程序提供认证凭证，并继承“父”用户的权限。
 
-For deployments using an external identity manager such as Active Directory or an OIDC-compatible provider, access keys provide a way for users to create long-lived credentials.
+对于使用外部身份管理器（例如 Active Directory 或兼容 OIDC 的 provider）的部署，访问密钥为用户提供了一种创建长期有效凭证的方式。
 
-- You can select the access key row to view its custom policy, if one exists.
+- 你可以选择访问密钥所在行查看其自定义策略（如果存在）。
 
-   You can create or modify the policy from this screen.
-   Access key policies cannot exceed the permissions granted to the parent user.
+   你可以在此页面创建或修改策略。
+   访问密钥策略不能超过父用户被授予的权限。
 
-- You can create a new access key by selecting :guilabel:`Create access key`.
+- 你可以选择 :guilabel:`Create access key` 创建新的访问密钥。
 
-   The Console auto-generates an access key and password.
-   You can select the eye :octicon:`eye` icon on the password field to reveal the value.
-   You can override these values as needed.
+   Console 会自动生成访问密钥和密码。
+   你可以选择密码字段上的眼睛 :octicon:`eye` 图标以显示该值。
+   你也可以根据需要覆盖这些值。
 
-   You can set a custom policy for the access key that further restricts the permissions granted to users authenticating with that key.
-   Select :guilabel:`Restrict beyond user policy` to open the policy editor and modify as necessary.
+   你可以为访问密钥设置自定义策略，进一步限制使用该密钥进行认证的用户所拥有的权限。
+   选择 :guilabel:`Restrict beyond user policy` 打开策略编辑器，并按需修改。
 
-   Ensure you have saved the access key password to a secure location before selecting :guilabel:`Create` to create the access key.
-   You cannot retrieve or reset the password value after creating the access key.
+   在选择 :guilabel:`Create` 创建访问密钥之前，请确保你已将访问密钥密码保存到安全位置。
+   创建访问密钥后，你无法再次获取或重置该密码值。
 
-   To rotate credentials for an application, create a new access key and delete the old one once the application updates to using the new credentials.
+   如需轮换应用程序凭证，请创建新的访问密钥，并在应用程序切换为使用新凭证后删除旧密钥。
 
 .. _minio-console-admin-policies:
 
-Policies
+策略
 --------
 
-The :guilabel:`Policies` section displays all :ref:`policies <minio-policy>` on the MinIO deployment. 
-The Policies section allows you to create, modify, or delete policies.
+:guilabel:`Policies` 部分会显示 MinIO 部署上的所有 :ref:`策略 <minio-policy>`。
+`Policies` 部分允许你创建、修改或删除策略。
 
-:ref:`Policies <minio-policy>` define the authorized actions and resources to which an authenticated user has access.
-Each policy describes one or more actions a user, group of users, or access key can perform or conditions they must meet.
+:ref:`策略 <minio-policy>` 定义了已认证用户可以访问的授权操作和资源。
+每个策略描述用户、用户组或访问密钥可以执行的一项或多项操作，或其必须满足的条件。
 
-The policies are JSON formatted text files compatible with Amazon AWS Identity and Access Management policy syntax, structure, and behavior.
-Refer to :ref:`Policy Based Action Control <minio-policy>` for details on managing access in MinIO with policies.
+这些策略是 JSON 格式的文本文件，并兼容 Amazon AWS Identity and Access Management 的策略语法、结构和行为。
+有关在 MinIO 中使用策略管理访问的详细信息，请参阅 :ref:`Policy Based Action Control <minio-policy>`。
 
-This section or its contents may not be visible if the authenticated user does not have the :ref:`required administrative permissions <minio-policy-mc-admin-actions>`.
+如果已认证用户没有 :ref:`所需的管理权限 <minio-policy-mc-admin-actions>`，则此部分或其中的内容可能不可见。
 
-- Select :guilabel:`+ Create Policy` to create a new MinIO Policy.
+- 选择 :guilabel:`+ Create Policy` 创建新的 MinIO Policy。
 
-- Select the policy row to manage the policy details.
+- 选择策略所在行以管理该策略的详细信息。
 
-  The :guilabel:`Summary` view displays a summary of the policy.
+  :guilabel:`Summary` 视图显示策略摘要。
 
-  The :guilabel:`Users` view displays all users assigned to the policy.
+  :guilabel:`Users` 视图显示所有分配了该策略的用户。
 
-  The :guilabel:`Groups` view displays all groups assigned to the policy.
+  :guilabel:`Groups` 视图显示所有分配了该策略的组。
 
-  The :guilabel:`Raw Policy` view displays the raw JSON policy.
+  :guilabel:`Raw Policy` 视图显示原始 JSON 策略。
 
-Use the :guilabel:`Users` and :guilabel:`Groups` views to assign a created policy to users and groups, respectively.
+使用 :guilabel:`Users` 和 :guilabel:`Groups` 视图，可分别将已创建的策略分配给用户和组。
 
 .. _minio-console-admin-identity:
 
-Identity
+身份
 --------
 
-The :guilabel:`Identity` section provides a management interface for :ref:`MinIO-Managed users <minio-users>`.
+:guilabel:`Identity` 部分为 :ref:`MinIO 管理的用户 <minio-users>` 提供管理界面。
 
-The section contains the following subsections.
-Some subsections may not be visible if the authenticated user does not have the :ref:`required administrative permissions <minio-policy-mc-admin-actions>`.
+该部分包含以下子部分。
+如果已认证用户没有 :ref:`所需的管理权限 <minio-policy-mc-admin-actions>`，某些子部分可能不可见。
 
-Users
+用户
 ~~~~~
 
-The :guilabel:`Users` section displays all MinIO-managed  :ref:`users <minio-users>` on the deployment.
+:guilabel:`Users` 部分显示部署中的所有 MinIO 管理 :ref:`用户 <minio-users>`。
 
-This section is not visible for deployments using an external identity manager such as Active Directory or an OIDC-compatible provider.
+对于使用外部身份管理器（例如 Active Directory 或兼容 OIDC 的 provider）的部署，此部分不可见。
 
-- Select :guilabel:`Create User` to create a new MinIO-managed user. 
+- 选择 :guilabel:`Create User` 创建新的 MinIO 管理用户。
         
-  You can assign :ref:`groups <minio-groups>` and :ref:`policies <minio-policy>` to the user during creation.
+  你可以在创建时为该用户分配 :ref:`组 <minio-groups>` 和 :ref:`策略 <minio-policy>`。
 
-- Select a user's row to view details for that user.
+- 选择某个用户所在行以查看该用户的详细信息。
         
-  You can view and modify the user's assigned :ref:`groups <minio-groups>` and :ref:`policies <minio-policy>`.
+  你可以查看并修改该用户已分配的 :ref:`组 <minio-groups>` 和 :ref:`策略 <minio-policy>`。
         
-  You can also view and manage any :ref:`Access Keys <minio-idp-service-account>` associated to the user.
+  你还可以查看和管理与该用户关联的所有 :ref:`访问密钥 <minio-idp-service-account>`。
 
-Groups
+组
 ~~~~~~
 
-The :guilabel:`Groups` section displays all :ref:`groups <minio-groups>` on the MinIO deployment. 
+:guilabel:`Groups` 部分显示 MinIO 部署上的所有 :ref:`组 <minio-groups>`。
 
-This section is not visible for deployments using an external identity manager such as Active Directory or an OIDC-compatible provider.
+对于使用外部身份管理器（例如 Active Directory 或兼容 OIDC 的 provider）的部署，此部分不可见。
 
-- Select :guilabel:`Create Group` to create a new MinIO Group. 
+- 选择 :guilabel:`Create Group` 创建新的 MinIO Group。
         
-  You can assign new users to the group during creation.
+  你可以在创建时将新用户分配到该组。
 
-  You can assign policies to the group after creation.
+  你可以在创建后为该组分配策略。
 
-- Select the group row to open the details for that group.
+- 选择组所在行以打开该组的详细信息。
 
-  You can modify the group membership from the :guilabel:`Members` view.
+  你可以在 :guilabel:`Members` 视图中修改组成员。
         
-  You can modify the group's assigned policies from the :guilabel:`Policies` view.
+  你可以在 :guilabel:`Policies` 视图中修改该组已分配的策略。
 
-  Changing a user's group membership modifies the policies that user inherits. See :ref:`minio-access-management` for more information.
+  更改用户的组成员关系会修改该用户继承的策略。更多信息请参阅 :ref:`minio-access-management`。
 
 OpenID
 ~~~~~~
 
-MinIO supports using an :ref:`OpenID Connect (OIDC) compatible IDentity Provider (IDP) <minio-external-identity-management-openid>` for external management of user identities.
+MinIO 支持使用 :ref:`兼容 OpenID Connect (OIDC) 的身份提供者 (IDP) <minio-external-identity-management-openid>` 对用户身份进行外部管理。
 
-Examples of OpenID providers include:
+OpenID provider 的示例包括：
 
 - Okta
 - KeyCloak
@@ -141,21 +141,21 @@ Examples of OpenID providers include:
 - Google
 - Facebook 
 
-Configuring an external IDP enables Single-Sign On workflows, where applications authenticate against the external IDP before accessing MinIO.
+配置外部 IDP 后即可启用 Single-Sign On 工作流，应用程序会先针对外部 IDP 完成认证，然后再访问 MinIO。
 
-Use the the screens in this section to view, add, or edit OIDC configurations for the deployment.
-MinIO supports any number of active OIDC configurations.
+使用本节中的界面可以查看、添加或编辑部署的 OIDC 配置。
+MinIO 支持任意数量的活动 OIDC 配置。
 
 .. _minio-console-admin-identity-ldap:
 
 LDAP
 ~~~~
 
-MinIO supports using an :ref:`Active Directory or LDAP (AD/LDAP) <minio-external-identity-management-ad-ldap>` service for external management of user identities. 
-Configuring an external IDentity Provider (IDP) enables Single-Sign On (SSO) workflows, where applications authenticate against the external IDP before accessing MinIO.
+MinIO 支持使用 :ref:`Active Directory 或 LDAP (AD/LDAP) <minio-external-identity-management-ad-ldap>` 服务对用户身份进行外部管理。
+配置外部身份提供者 (IDP) 后即可启用 Single-Sign On (SSO) 工作流，应用程序会先针对外部 IDP 完成认证，然后再访问 MinIO。
 
-Use the the screens in this section to view, add, or edit an LDAP configuration for the deployment.
-MinIO only supports one active LDAP configuration.
+使用本节中的界面可以查看、添加或编辑部署的 LDAP 配置。
+MinIO 仅支持一个活动 LDAP 配置。
 
-MinIO queries the Active Directory / LDAP server to verify the client-specified credentials. 
-MinIO also performs a group lookup on the AD/LDAP server if configured to do so.
+MinIO 会查询 Active Directory / LDAP 服务器，以验证客户端指定的凭证。
+如果进行了相应配置，MinIO 还会在 AD/LDAP 服务器上执行组查找。

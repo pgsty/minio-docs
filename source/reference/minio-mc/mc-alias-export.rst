@@ -14,37 +14,37 @@
 
 .. versionadded:: mc.RELEASE.2023-11-15T22-45-58Z
 
-Syntax
-------
+语法
+----
 
 .. start-mc-alias-export-desc
 
-The :mc:`mc alias export` command exports an alias configuration from the existing :ref:`configuration <mc-configuration>`.
+:mc:`mc alias export` 命令从现有的 :ref:`configuration <mc-configuration>` 中导出别名配置。
 
 .. end-mc-alias-export-desc
 
-The command outputs the result to ``STDOUT`` where you can either capture the output as a file *or* perform further modifications to the output as necessary.
+该命令将结果输出到 ``STDOUT``，你可以将输出保存为文件，*或* 按需进一步修改输出内容。
 
-Use the :mc:`mc alias import` command to import the resulting JSON configuration.
+使用 :mc:`mc alias import` 命令导入生成的 JSON 配置。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command exports an alias configuration from the existing host and outputs it to a file:
+      以下命令从现有主机导出别名配置并输出到文件：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias export play > play.json
 
-      The command outputs the file to Standard Out (``STDOUT``).
-      You can alternatively pipe the output to a utility of your choice for further operations.
+      该命令会将内容输出到标准输出（``STDOUT``）。
+      你也可以将输出通过管道传递给所选工具执行后续操作。
 
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc alias export` command has the following syntax:
+      :mc:`mc alias export` 命令的语法如下：
 
       .. code-block:: shell
 
@@ -54,28 +54,28 @@ Use the :mc:`mc alias import` command to import the resulting JSON configuration
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The name of the alias to export.
+   要导出的别名名称。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Behavior
---------
+行为
+----
 
-JSON Format
-~~~~~~~~~~~
+JSON 格式
+~~~~~~~~~
 
-The command outputs a JSON object with the following schema:
+该命令输出一个符合以下结构的 JSON 对象：
 
 .. code-block:: json
 
@@ -87,37 +87,36 @@ The command outputs a JSON object with the following schema:
       "path": "auto"
    }
 
-You can use the :mc:`mc alias import` to import the JSON document.
+你可以使用 :mc:`mc alias import` 导入该 JSON 文档。
 
-Examples
---------
+示例
+----
 
-Export and Transform an Alias
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+导出并转换别名
+~~~~~~~~~~~~~~
 
-The following example exports the alias for the `play.min.io <https://play.min.io>`__ sandbox.
-It then transforms the configuration using the `jq <https://jqlang.github.io/jq/>`__ utility and creates a new alias from the modified configuration:
+以下示例导出 `play.min.io <https://play.min.io>`__ 沙箱的别名。
+随后使用 `jq <https://jqlang.github.io/jq/>`__ 工具转换该配置，并基于修改后的配置创建新别名：
 
 .. code-block:: shell
    :class: copyable
 
    mc alias export play | jq '.accessKey = "minioadmin" | .secretKey = "minioadmin"' | mc alias import play-custom
 
-Back Up An Alias Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+备份别名配置
+~~~~~~~~~~~~
 
-The following command exports an alias configuration to a JSON file.
-You can then back up that file using your preferred process.
+以下命令将别名配置导出为 JSON 文件。
+然后你可以按你偏好的流程备份该文件。
 
 .. code-block:: shell
    :class: copyable
 
    mc alias export play > play-backup.json
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
-

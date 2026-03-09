@@ -4,41 +4,39 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc mb
 
-Syntax
+语法
 ------
 
 .. start-mc-mb-desc
 
-The :mc:`mc mb` command creates a new bucket or directory at the
-specified path. 
+:mc:`mc mb` 命令在指定路径创建新的存储桶或目录。
 
 .. end-mc-mb-desc
 
-You can also use :mc:`mc mb` against the local filesystem to produce
-similar results to the ``mkdir -p`` commandline tool.
+你也可将 :mc:`mc mb` 用于本地文件系统，实现与 ``mkdir -p``
+命令行工具类似的效果。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command creates a new bucket ``mydata`` on the
-      ``myminio`` MinIO deployment. The command creates the bucket
-      with :ref:`object locking enabled <minio-object-locking>`.
+      以下命令会在 ``myminio`` MinIO 部署上创建一个新的存储桶 ``mydata``。
+      该命令创建的存储桶将 :ref:`启用对象锁定 <minio-object-locking>`。
 
       .. code-block:: shell
          :class: copyable
 
          mc mb --with-locks myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -55,23 +53,23 @@ similar results to the ``mkdir -p`` commandline tool.
          :end-before: end-minio-syntax
 
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The MinIO or other S3-compatible service on which to create the new bucket.
+   要在其上创建新存储桶的 MinIO 或其他 S3 兼容服务。
 
-   For creating a bucket on MinIO, specify the
-   :ref:`alias <alias>` and the name of the bucket. For example:
+   如果要在 MinIO 上创建存储桶，请指定
+   :ref:`alias <alias>` 和存储桶名称。例如：
 
    .. code-block:: none
 
       mc mb play/mybucket
 
-   For creating a directory on a local filesystem, specify the full
-   path to that directory. For example:
+   如果要在本地文件系统上创建目录，请指定该目录的完整
+   路径。例如：
 
    .. code-block:: none
 
@@ -80,78 +78,78 @@ Parameters
 .. mc-cmd:: --ignore-existing, p
    :optional:
 
-   Directs :mc:`mc mb` to do nothing if the bucket or directory already exists.
+   指示 :mc:`mc mb` 在存储桶或目录已存在时不执行任何操作。
 
 .. mc-cmd:: --region
    :optional:
 
-   The region in which to create the specified bucket. 
-   Has no effect if the specified :mc-cmd:`~mc mb ALIAS` is a filesystem directory.
+   指定创建存储桶的区域。
+   如果指定的 :mc-cmd:`~mc mb ALIAS` 是文件系统目录，则该选项无效。
 
-   If not specified, default value is ``us-east-1``.
+   如果未指定，默认值为 ``us-east-1``。
 
 .. mc-cmd:: --with-lock, l
    :optional:
 
-   Enables :ref:`object locking <minio-object-locking>` on the specified bucket.
-   Object locking requires, and therefore implies, enabling object versioning.
+   在指定存储桶上启用 :ref:`对象锁定 <minio-object-locking>`。
+   对象锁定要求并因此隐含启用对象版本控制。
 
    .. important::
 
-      You can *only* enable object locking when creating the bucket. 
-      Buckets created without object locking cannot use
-      :ref:`Bucket Lifecycle Management <minio-lifecycle-management>` or
-      :ref:`Bucket Object Locking <minio-object-locking>` functionality.
+      你*只能*在创建存储桶时启用对象锁定。
+      未启用对象锁定创建的存储桶无法使用
+      :ref:`存储桶生命周期管理 <minio-lifecycle-management>` 或
+      :ref:`存储桶对象锁定 <minio-object-locking>` 功能。
 
 .. mc-cmd:: --with-versioning
    :optional:
 
-   Enables :ref:`object versioning <minio-bucket-versioning>` on the new bucket.
-   With versioning enabled, by default MinIO allows up to the maximum value of an Int64 versions per object, or over 9.2 quintillion.
-   Define :ref:`object expiration <minio-lifecycle-management-create-expiry-rule>` rules to remove versions of objects no longer needed, such as by the number of versions or the date of versions.
+   在新存储桶上启用 :ref:`对象版本控制 <minio-bucket-versioning>`。
+   启用版本控制后，默认情况下 MinIO 允许每个对象的版本数最多达到 Int64 最大值，即超过 9.2 quintillion。
+   可定义 :ref:`对象过期 <minio-lifecycle-management-create-expiry-rule>` 规则，清理不再需要的对象版本，例如按版本数量或版本日期删除。
 
-   Versioning is required for :ref:`bucket replication <minio-bucket-replication>` or :ref:`site replication <minio-site-replication-overview>`.
-   Versioning does not imply or require object locking.
+   :ref:`存储桶复制 <minio-bucket-replication>` 或 :ref:`站点复制 <minio-site-replication-overview>` 需要版本控制。
+   版本控制不隐含也不要求对象锁定。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Create Bucket with Object Locking
+创建启用对象锁定的存储桶
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mb` to create a bucket on an S3-compatible host. 
-The :mc-cmd:`~mc mb --with-lock` option creates the bucket with locking enabled:
+使用 :mc:`mc mb` 在 S3 兼容主机上创建存储桶。
+:mc-cmd:`~mc mb --with-lock` 选项创建启用锁定的存储桶：
 
 .. code-block:: shell
    :class: copyable
 
    mc mb --with-lock ALIAS/BUCKET
 
-- Replace :mc-cmd:`ALIAS <mc mb ALIAS>` with the :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc mb ALIAS>` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`BUCKET <mc mb ALIAS>` with the bucket to create.
+- 将 :mc-cmd:`BUCKET <mc mb ALIAS>` 替换为要创建的存储桶。
 
-Create a New Bucket in a Specific Region
+在指定区域创建新存储桶
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mb` to create a bucket on an S3-compatible host.
-The :mc-cmd:`~mc mb --region` option creates the bucket in a desired region.
+使用 :mc:`mc mb` 在 S3 兼容主机上创建存储桶。
+:mc-cmd:`~mc mb --region` 选项在目标区域创建该存储桶。
 
 .. code-block:: shell
    :class: copyable
 
    mc mb --region --region=us-west-2 myminio/mynewbucket
 
-The above command creates a new bucket, ``mynewbucket`` on the ``myminio`` bucket within the ``us-west-2`` region.
+上述命令会在 ``us-west-2`` 区域中的 ``myminio`` 上创建新存储桶 ``mynewbucket``。
 
-Create a New Bucket with Versioning Enabled
+创建启用版本控制的新存储桶
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
@@ -159,42 +157,40 @@ Create a New Bucket with Versioning Enabled
 
    mc mb --with-versioning myminio/myversionedbucket
 
-The above command creates a new bucket, ``myversionedbucket``, on the ``myminio`` alias.
-The new bucket enables :ref:`object versioning <minio-bucket-versioning>` for all objects in the bucket.
+上述命令会在 ``myminio`` alias 上创建新的存储桶 ``myversionedbucket``。
+新存储桶为桶内所有对象启用 :ref:`对象版本控制 <minio-bucket-versioning>`。
 
-Behavior
+行为
 --------
 
-Bucket Limits Per Deployment
+每个部署的存储桶限制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO does not limit the number of buckets you can create on a deployment.
-However, MinIO recommends no more than 500,000 buckets per deployment as a general guideline.
+MinIO 不限制你在单个部署上可创建的存储桶数量。
+但作为通用指导，MinIO 建议每个部署的存储桶数量不超过 500,000。
 
-Bucket Limits for Non-MinIO S3 Services
+非 MinIO S3 服务的存储桶限制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Certain S3 services may restrict the number of buckets a given user or account
-can create. For example, Amazon S3 limits each account to 
-:s3-docs:`100 buckets <BucketRestrictions.html>`. :mc:`mc mb` may return an 
-error if the user has reached bucket limits on the target S3 service.
+某些 S3 服务可能限制单个用户或账户可创建的存储桶数量。
+例如，Amazon S3 将每个账户限制为
+:s3-docs:`100 buckets <BucketRestrictions.html>`。如果用户在目标 S3 服务上达到存储桶上限，:mc:`mc mb` 可能返回错误。
 
-MinIO Object Storage deployments do not place any limits on the number of
-buckets each user can create.
+MinIO 对象存储部署不限制每个用户可创建的
+存储桶数量。
 
-Enable Object Locking at Bucket Creation
+在创建存储桶时启用对象锁定
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO follows 
-:s3-docs:`AWS S3 behavior <object-lock-overview.html#object-lock-bucket-config>` 
-where you *must* enable :ref:`object locking <minio-object-locking>` at
-bucket creation. Buckets created without object locking can *never* enable object
-retention or locking.
+MinIO 遵循
+:s3-docs:`AWS S3 behavior <object-lock-overview.html#object-lock-bucket-config>`，
+要求你*必须*在创建存储桶时启用 :ref:`对象锁定 <minio-object-locking>`。
+未启用对象锁定创建的存储桶*永远*无法启用对象保留或锁定。
 
-Enabling bucket locking does *not* set any object locking or retention settings.
-Consider enabling bucket locking as standard practice.
+启用存储桶锁定并*不会*设置任何对象锁定或保留配置。
+建议将启用存储桶锁定作为标准实践。
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

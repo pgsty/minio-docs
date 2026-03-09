@@ -3,90 +3,88 @@
 .. _minio-tls-user-generated:
 
 ========================
-Network Encryption (TLS)
+网络加密（TLS）
 ========================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-.. admonition:: SSL is Deprecated
+.. admonition:: SSL 已弃用
    :class: note
 
-   TLS is the successor to Secure Socket Layer (SSL) encryption.
-   SSL is fully `deprecated <https://tools.ietf.org/html/rfc7568>`__ as of June 30th, 2018.
+   TLS 是 Secure Socket Layer（SSL）加密的后继方案。
+   自 2018 年 6 月 30 日起，SSL 已被完全 `弃用 <https://tools.ietf.org/html/rfc7568>`__。
 
-Overview
---------
+概览
+----
 
-MinIO supports Transport Layer Security (TLS) 1.2+ encryption of incoming and outgoing traffic. 
-MinIO can automatically detect certificates specified to either a default or custom search path and enable TLS for all connections.
-MinIO supports Server Name Indication (SNI) requests from clients, where MinIO attempts to locate the appropriate TLS certificate for the hostname specified by the client.
+MinIO 支持使用 Transport Layer Security (TLS) 1.2+ 对入站和出站流量进行加密。
+MinIO 可以自动检测默认或自定义搜索路径中的证书，并为所有连接启用 TLS。
+MinIO 支持客户端发起的 Server Name Indication (SNI) 请求，此时 MinIO 会尝试为客户端指定的主机名定位合适的 TLS 证书。
 
 .. todo: add an image
 
-MinIO requires *at minimum* a single default TLS certificate and can support multiple TLS certificates in support of SNI connectivity.
-MinIO uses the TLS Subject Alternate Name (SAN) list to determine which certificate to return to the client.
-If MinIO cannot find a TLS certificate whose SAN covers the client-requested hostname, MinIO uses the default certificate and attempts to establish the handshake.
+MinIO *至少* 需要一张默认 TLS 证书，并且可以通过多张 TLS 证书支持 SNI 连接。
+MinIO 使用 TLS Subject Alternative Name (SAN) 列表来判断应向客户端返回哪张证书。
+如果 MinIO 找不到 SAN 覆盖客户端请求主机名的 TLS 证书，则会使用默认证书并尝试完成握手。
 
-You can specify a single TLS certificate which covers all possible SANs for which the MinIO deployment accepts connections.
+你可以指定一张 TLS 证书，覆盖 MinIO 部署可接受连接的所有 SAN。
 
-This configuration requires the least configuration, but necessarily exposes all hostnames configured in the TLS SAN to connecting clients.
-Depending on your TLS configuration, this may include internal or private SAN domains.
+这种配置所需设置最少，但会向连接客户端暴露 TLS SAN 中配置的全部主机名。
+根据你的 TLS 配置，这些主机名可能包含内部或私有 SAN 域名。
 
-You can instead specify multiple TLS certificates separated by domain(s) with a single default certificate for any non-matching hostname requests.
-This configuration requires more configuration, but only exposes those hostnames configured in the returned TLS SAN array.
+你也可以按域名拆分配置多张 TLS 证书，并为所有未匹配主机名请求保留一张默认证书。
+这种配置需要更多设置，但只会暴露返回证书的 TLS SAN 数组中所配置的主机名。
 
 .. _minio-tls-kubernetes:
 
-MinIO TLS on Kubernetes
------------------------
+Kubernetes 上的 MinIO TLS
+-------------------------
 
-The MinIO Kubernetes Operator provides three approaches for configuring TLS on MinIO Tenants:
+MinIO Kubernetes Operator 为 MinIO 租户提供三种 TLS 配置方式：
 
-Automatic TLS using Cluster Signing API
-   For Kubernetes clusters with a valid :ref:`TLS Cluster Signing Certificate <minio-k8s-deploy-operator-tls>`,the MinIO Kubernetes Operator can automatically generate TLS certificates while :ref:`deploying <minio-k8s-deploy-minio-tenant-security>` or :ref:`modifying <minio-k8s-modify-minio-tenant-security>` a MinIO Tenant. 
+使用 Cluster Signing API 自动启用 TLS
+   对于具备有效 :ref:`TLS Cluster Signing Certificate <minio-k8s-deploy-operator-tls>` 的 Kubernetes 集群，MinIO Kubernetes Operator 可以在 :ref:`部署 <minio-k8s-deploy-minio-tenant-security>` 或 :ref:`修改 <minio-k8s-modify-minio-tenant-security>` MinIO 租户时自动生成 TLS 证书。
 
-   The Kubernetes TLS API uses the Kubernetes cluster Certificate Authority (CA) signature algorithm when generating new TLS certificates.
-   See :ref:`minio-TLS-supported-cipher-suites` for a complete list of MinIO's supported TLS Cipher Suites and recommended signature algorithms.
+   Kubernetes TLS API 在生成新的 TLS 证书时，会使用 Kubernetes 集群 Certificate Authority (CA) 的签名算法。
+   MinIO 支持的 TLS Cipher Suite 和推荐签名算法完整列表，请参见 :ref:`minio-TLS-supported-cipher-suites`。
 
-   By default, Kubernetes places a certificate bundle on each pod at ``/var/run/secrets/kubernetes.io/serviceaccount/ca.crt``.
-   This CA bundle should include the cluster or root CA used to sign the MinIO Tenant TLS certificates.
-   Other applications deployed within the Kubernetes cluster can trust this cluster certificate to connect to a MinIO Tenant using the :kube-docs:`MinIO service DNS name <concepts/services-networking/dns-pod-service/>` (e.g. ``https://minio.minio-tenant-1.svc.cluster-domain.example:443``).
+   默认情况下，Kubernetes 会在每个 pod 的 ``/var/run/secrets/kubernetes.io/serviceaccount/ca.crt`` 放置一份证书 bundle。
+   该 CA bundle 应包含用于签发 MinIO 租户 TLS 证书的集群 CA 或根 CA。
+   部署在同一 Kubernetes 集群中的其他应用，可以信任这份集群证书，并通过 :kube-docs:`MinIO service DNS 名称 <concepts/services-networking/dns-pod-service/>` 连接到 MinIO 租户（例如 ``https://minio.minio-tenant-1.svc.cluster-domain.example:443``）。
 
-   .. admonition:: Subject Alternative Name Certificates
+   .. admonition:: Subject Alternative Name 证书
       :class: note
 
-      If you have a custom Subject Alternative Name (SAN) certificate that is *not* also a wildcard cert, the TLS certificate SAN **must** apply to the hostname for its parent node.
-      Without a wildcard, the SAN must match exactly to be able to connect to the tenant.
+      如果你使用的是自定义 Subject Alternative Name (SAN) 证书，并且它 *不是* 通配符证书，那么 TLS 证书的 SAN **必须** 覆盖其父节点主机名。
+      在没有通配符的情况下，SAN 必须精确匹配，才能成功连接到该租户。
 
-cert-manager Certificate Management
-   The MinIO Operator supports using `cert-manager <https://cert-manager.io/>`__ as a full replacement for its built-in automatic certificate management *or* user-driven manual certificate management.
-   For instructions for deploying the MinIO Operator and tenants using cert-manager, refer to the :ref:`cert-manager page <minio-certmanager>`.
+cert-manager 证书管理
+   MinIO Operator 支持使用 `cert-manager <https://cert-manager.io/>`__ 作为其内置自动证书管理或用户手动证书管理的完整替代方案。
+   关于如何使用 cert-manager 部署 MinIO Operator 和租户，请参见 :ref:`cert-manager 页面 <minio-certmanager>`。
 
-Manual Certificate Management
-   The Tenant CRD spec ``spec.externalCertsSecret`` supp      .. include:: /includes/common/common-configure-keycloak-identity-management.rst
-               :start-after: start-configure-keycloak-minio-cli
-      orts specifying either ``opaque`` or ``kubernetes.io/tls`` type :kube-docs:`secrets <concepts/configuration/secret/#secret-types>` containing the ``private.key`` and ``public.crt`` to use for TLS.
+手动证书管理
+   Tenant CRD 规范中的 ``spec.externalCertsSecret`` 支持引用类型为 ``opaque`` 或 ``kubernetes.io/tls`` 的 :kube-docs:`secret <concepts/configuration/secret/#secret-types>`，其中包含用于 TLS 的 ``private.key`` 和 ``public.crt``。
 
-   You can specify multiple certificates to support Tenants which have multiple assigned hostnames.
+   你可以指定多张证书，以支持分配了多个主机名的租户。
 
 
-Self-signed, Internal, Private Certificates, and Public CAs with Intermediate Certificates
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+自签名、内部、私有证书以及带中间证书的公共 CA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If deploying MinIO Tenants with certificates minted by a non-global or non-public Certificate Authority, *or* if using a global CA that requires the use of intermediate certificates, you must provide those CAs to the Operator to ensure it can trust those certificates.
+如果你为 MinIO 租户部署的是由非全球或非公共 Certificate Authority 签发的证书，*或者* 使用了需要中间证书的公共 CA，则必须将这些 CA 提供给 Operator，以确保它能够信任这些证书。
 
-The Operator may log warnings related to TLS cert validation for Tenants deployed with untrusted certificates.
+对于使用不受信任证书部署的租户，Operator 可能会记录与 TLS 证书校验相关的警告。
 
-The following procedure attaches a secret containing the ``public.crt`` of the Certificate Authority to the MinIO Operator.
-You can specify multiple CAs in a single certificate, as long as you maintain the ``BEGIN`` and ``END`` delimiters as-is.
+以下过程会将一个包含 Certificate Authority ``public.crt`` 的 secret 挂载到 MinIO Operator。
+你可以在同一证书文件中放入多个 CA，只要保持 ``BEGIN`` 和 ``END`` 分隔符原样不变即可。
 
-1. Create the ``operator-ca-tls`` secret
+1. 创建 ``operator-ca-tls`` secret
 
-   The following creates a Kubernetes secret in the MinIO Operator namespace (``minio-operator``).
+   以下命令会在 MinIO Operator 命名空间（``minio-operator``）中创建一个 Kubernetes secret。
 
    .. code-block:: shell
       :class: copyable
@@ -94,138 +92,138 @@ You can specify multiple CAs in a single certificate, as long as you maintain th
       kubectl create secret generic operator-ca-tls \
          --from-file=public.crt -n minio-operator
 
-   The ``public.crt`` file must correspond to a valid TLS certificate containing one or more CA definitions.
+   ``public.crt`` 文件必须是包含一个或多个 CA 定义的有效 TLS 证书。
 
-2. Restart the Operator
+2. 重启 Operator
 
-   Once created, you must restart the Operator to load the new CAs:
+   创建完成后，你必须重启 Operator 以加载新的 CA：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl rollout restart deployments.apps/minio-operator -n minio-operator
 
-Third-Party Certificate Authorities
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+第三方 Certificate Authority
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The MinIO Kubernetes Operator can automatically attach third-party Certificate Authorities when :ref:`deploying <minio-k8s-deploy-minio-tenant-security>` or :ref:`modifying <minio-k8s-modify-minio-tenant-security>` a MinIO Tenant.
+MinIO Kubernetes Operator 可以在 :ref:`部署 <minio-k8s-deploy-minio-tenant-security>` 或 :ref:`修改 <minio-k8s-modify-minio-tenant-security>` MinIO 租户时自动挂载第三方 Certificate Authority。
 
-You can add, update, or remove CAs from the tenant at any time.
-You must restart the MinIO Tenant for the changes to the configured CAs to apply.
+你可以随时为租户添加、更新或删除 CA。
+要让配置中的 CA 变更生效，必须重启 MinIO 租户。
 
-The Operator places the specified CAs on each MinIO Server pod such that all pods have a consistent set of trusted CAs. 
+Operator 会将指定的 CA 放置到每个 MinIO Server pod 上，从而确保所有 pod 拥有一致的受信任 CA 集合。
 
-If the MinIO Server cannot match an incoming client's TLS certificate issuer against any of the available CAs, the server rejects the connection as invalid.
+如果 MinIO Server 无法将传入客户端的 TLS 证书签发者与任一可用 CA 匹配，则会将该连接视为无效并拒绝。
 
 .. _minio-tls-baremetal:
 
-MinIO TLS on Baremetal
-----------------------
+Baremetal 上的 MinIO TLS
+------------------------
 
-The MinIO Server searches for TLS keys and certificates for each node and uses those credentials for enabling TLS.
-MinIO automatically enables TLS upon discovery and validation of certificates.
-The search location depends on your MinIO configuration:
+MinIO Server 会为每个节点搜索 TLS 私钥和证书，并使用这些凭据启用 TLS。
+MinIO 会在发现并验证证书后自动启用 TLS。
+搜索位置取决于你的 MinIO 配置：
 
 .. tab-set::
 
-   .. tab-item:: Default Path
+   .. tab-item:: 默认路径
 
-      By default, the MinIO server looks for the TLS keys and certificates for each node in the following directory:
+      默认情况下，MinIO server 会在以下目录中查找每个节点的 TLS 私钥和证书：
 
       .. code-block:: shell
 
          ${HOME}/.minio/certs
 
-      Where ``${HOME}`` is the home directory of the user running the MinIO Server process.
-      You may need to create the ``${HOME}/.minio/certs`` directory if it does not exist.
+      其中 ``${HOME}`` 是运行 MinIO Server 进程的用户主目录。
+      如果 ``${HOME}/.minio/certs`` 目录不存在，你可能需要手动创建它。
 
-      For ``systemd`` managed deployments this must correspond to the ``USER`` running the MinIO process.
-      If that user has no home directory, use the :guilabel:`Custom Path` option instead.
+      对于由 ``systemd`` 管理的部署，该路径必须对应运行 MinIO 进程的 ``USER``。
+      如果该用户没有主目录，请改用 :guilabel:`自定义路径` 选项。
 
-   .. tab-item:: Custom Path
+   .. tab-item:: 自定义路径
 
-      You can specify a path for the MinIO server to search for certificates using the :mc-cmd:`minio server --certs-dir` or ``-S`` parameter.
+      你可以通过 :mc-cmd:`minio server --certs-dir` 或 ``-S`` 参数指定 MinIO server 搜索证书的路径。
 
-      For example, the following command fragment directs the MinIO process to use the ``/opt/minio/certs`` directory for TLS certificates.
+      例如，以下命令片段指示 MinIO 进程使用 ``/opt/minio/certs`` 目录存放 TLS 证书。
 
       .. code-block:: shell
 
          minio server --certs-dir /opt/minio/certs ...
 
-      The user running the MinIO service *must* have read and write permissions to this directory.
+      运行 MinIO service 的用户 *必须* 对该目录拥有读写权限。
 
-Place the TLS certificates for the default domain (e.g. ``minio.example.net``) in the ``/certs`` directory, with the private key as ``private.key`` and public certificate as ``public.crt``.
+请将默认域名（例如 ``minio.example.net``）对应的 TLS 证书放入 ``/certs`` 目录，其中私钥命名为 ``private.key``，公钥证书命名为 ``public.crt``。
 
-For distributed MinIO deployments, each node in the deployment must have matching TLS certificate configurations.
+对于分布式 MinIO 部署，部署中的每个节点都必须具有一致的 TLS 证书配置。
 
-Self-signed, Internal, Private Certificates, and Public CAs with Intermediate Certificates
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+自签名、内部、私有证书以及带中间证书的公共 CA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If using Certificates signed by a non-global or non-public Certificate Authority, *or* if using a global CA that requires the use of intermediate certificates, you must provide those CAs to the MinIO Server.
-If the MinIO server does not have the necessary CAs, it may return warnings or errors related to TLS validation when connecting to other services.
+如果你使用的是由非全球或非公共 Certificate Authority 签发的证书，*或者* 使用了需要中间证书的公共 CA，则必须将这些 CA 提供给 MinIO Server。
+如果 MinIO server 不具备这些必要 CA，在连接其他服务时可能会返回与 TLS 校验相关的警告或错误。
 
-Place the CA certificates in the ``/certs/CAs`` folder.
-The root path for this folder depends on whether you use the default certificate path *or* a custom certificate path (:mc-cmd:`minio server --certs-dir` or ``-S``)
+请将 CA 证书放入 ``/certs/CAs`` 目录。
+该目录的根路径取决于你使用的是默认证书路径，还是自定义证书路径（:mc-cmd:`minio server --certs-dir` 或 ``-S``）。
 
 .. tab-set::
 
-   .. tab-item:: Default Certificate Path
+   .. tab-item:: 默认证书路径
 
       .. code-block:: shell
 
          mv myCA.crt ${HOME}/.minio/certs/CAs
 
-   .. tab-item:: Custom Certificate Path
+   .. tab-item:: 自定义证书路径
 
-      The following example assumes the MinIO Server was started with ``--certs dir /opt/minio/certs``:
+      以下示例假设 MinIO Server 以 ``--certs dir /opt/minio/certs`` 启动：
 
       .. code-block:: shell
 
          mv myCA.crt /opt/minio/certs/CAs/
 
-For a self-signed certificate, the Certificate Authority is typically the private key used to sign the cert.
+对于自签名证书，Certificate Authority 通常就是用于签署该证书的私钥。
 
-For certificates signed by an internal, private, or other non-global Certificate Authority, use the same CA that signed the cert.
-A non-global CA must include the full chain of trust from the intermediate certificate to the root.
+对于由内部、私有或其他非全球 Certificate Authority 签发的证书，请使用签发该证书的同一 CA。
+非全球 CA 必须包含从中间证书到根证书的完整信任链。
 
-If the provided file is not an X.509 certificate, MinIO ignores it and may return errors for validating certificates signed by that CA.
+如果提供的文件不是 X.509 证书，MinIO 会忽略它，并可能在校验由该 CA 签发的证书时返回错误。
 
-Third-Party Certificate Authorities
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+第三方 Certificate Authority
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The MinIO Server validates the TLS certificate presented by each connecting client against the host system's trusted root certificate store.
+MinIO Server 会使用主机系统中的受信任根证书存储来校验每个连接客户端提交的 TLS 证书。
 
-Place the CA certificates in the ``/certs/CAs`` folder.
-The root path for this folder depends on whether you use the default certificate path *or* a custom certificate path (:mc-cmd:`minio server --certs-dir` or ``-S``)
+请将 CA 证书放入 ``/certs/CAs`` 目录。
+该目录的根路径取决于你使用的是默认证书路径，还是自定义证书路径（:mc-cmd:`minio server --certs-dir` 或 ``-S``）。
 
 .. tab-set::
 
-   .. tab-item:: Default Certificate Path
+   .. tab-item:: 默认证书路径
 
       .. code-block:: shell
 
          mv myCA.crt ${HOME}/certs/CAs
 
-   .. tab-item:: Custom Certificate Path
+   .. tab-item:: 自定义证书路径
 
-      The following example assumes the MinIO Server was started with ``--certs dir /opt/minio/certs``:
+      以下示例假设 MinIO Server 以 ``--certs dir /opt/minio/certs`` 启动：
 
       .. code-block:: shell
 
          mv myCA.crt /opt/minio/certs/CAs/
 
-Place the certificate file for each CA into the ``/CAs`` subdirectory.
-Ensure all hosts in the MinIO deployment have a consistent set of trusted CAs in that directory.
-If the MinIO Server cannot match an incoming client's TLS certificate issuer against any of the available CAs, the server rejects the connection as invalid.
+请将每个 CA 的证书文件放入 ``/CAs`` 子目录。
+确保 MinIO 部署中的所有主机在该目录下拥有一致的受信任 CA 集合。
+如果 MinIO Server 无法将传入客户端的 TLS 证书签发者与任一可用 CA 匹配，则会将该连接视为无效并拒绝。
 
 .. _minio-TLS-supported-cipher-suites:
 
-Supported TLS Cipher Suites
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+支持的 TLS Cipher Suite
+~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO recommends generating ECDSA (e.g. `NIST P-256 curve <https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf>`__) or EdDSA (e.g. :rfc:`Curve25519 <7748>`) TLS private keys/certificates due to their lower computation requirements compared to RSA.
+与 RSA 相比，MinIO 更推荐生成 ECDSA（例如 `NIST P-256 曲线 <https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf>`__）或 EdDSA（例如 :rfc:`Curve25519 <7748>`）TLS 私钥/证书，因为它们的计算开销更低。
 
-MinIO supports the following TLS 1.2 and 1.3 cipher suites as supported by `Go <https://cs.opensource.google/go/go/+/refs/tags/go1.17.1:src/crypto/tls/cipher_suites.go;l=52>`__. The lists mark recommended algorithms with a :octicon:`star-fill` icon:
+MinIO 支持以下由 `Go <https://cs.opensource.google/go/go/+/refs/tags/go1.17.1:src/crypto/tls/cipher_suites.go;l=52>`__ 支持的 TLS 1.2 和 TLS 1.3 cipher suite。列表中使用 :octicon:`star-fill` 标记推荐算法：
 
 .. tab-set::
 

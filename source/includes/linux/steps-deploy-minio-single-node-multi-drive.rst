@@ -1,19 +1,19 @@
-1) Download the MinIO Server
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 下载 MinIO Server
+~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-binary-desc
    :end-before: end-install-minio-binary-desc
 
-2) Create the ``systemd`` Service File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 创建 ``systemd`` 服务文件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-systemd-desc
    :end-before: end-install-minio-systemd-desc
 
-3) Create the Environment Variable File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 创建环境变量文件
+~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-deploy.rst
    :start-after: start-common-deploy-create-environment-file-multi-drive 
@@ -23,16 +23,16 @@
    :start-after: start-common-deploy-create-unique-root-credentials 
    :end-before: end-common-deploy-create-unique-root-credentials
 
-4) Start the MinIO Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 启动 MinIO 服务
+~~~~~~~~~~~~~~~~~~
 
-Issue the following command on the local host to start the MinIO |SNSD| deployment as a service:
+在本地主机上执行以下命令，以服务方式启动 MinIO |SNSD| 部署：
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-start-service-desc
    :end-before: end-install-minio-start-service-desc
 
-The ``journalctl`` output should resemble the following:
+``journalctl`` 输出应类似如下：
 
 .. code-block:: shell
 
@@ -49,11 +49,11 @@ The ``journalctl`` output should resemble the following:
 
    Documentation: https://minio.pigsty.io/index.html
 
-The ``API`` block lists the network interfaces and port on which clients can access the MinIO S3 API.
-The ``Console`` block lists the network interfaces and port on which clients can access the MinIO Web Console.
+``API`` 区块列出了客户端可访问 MinIO S3 API 的网络接口和端口。
+``Console`` 区块列出了客户端可访问 MinIO Web Console 的网络接口和端口。
 
-5) Connect to the MinIO Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5) 连接到 MinIO 服务
+~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-deploy.rst
    :start-after: start-common-deploy-connect-to-minio-deployment

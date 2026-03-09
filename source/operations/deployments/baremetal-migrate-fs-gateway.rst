@@ -1,258 +1,258 @@
 .. _minio-gateway-migration:
 
-=======================================
-Migrate from Gateway or Filesystem Mode
-=======================================
+===================================
+从 Gateway 或 Filesystem 模式迁移
+===================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-Background
-----------
+背景
+----
 
-The MinIO Gateway and the related filesystem mode entered a feature freeze in July 2020.
-In February 2022, MinIO announced the `deprecation of the MinIO Gateway <https://blog.min.io/deprecation-of-the-minio-gateway/?ref=docs>`__.
-Along with the deprecation announcement, MinIO also announced that the feature would be removed in six months time.
+MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结状态。
+2022 年 2 月，MinIO 宣布 `弃用 MinIO Gateway <https://blog.min.io/deprecation-of-the-minio-gateway/?ref=docs>`__。
+在该弃用公告中，MinIO 同时宣布该功能将在六个月后移除。
 
-As of :minio-release:`RELEASE.2022-10-29T06-21-33Z`, the MinIO Gateway and the related filesystem mode code have been removed.
-Deployments still using the `standalone` or `filesystem` MinIO modes that upgrade to MinIO Server :minio-release:`RELEASE.2022-10-29T06-21-33Z` or later receive an error when attempting to start MinIO.
+从 :minio-release:`RELEASE.2022-10-29T06-21-33Z` 起，MinIO Gateway 和相关 filesystem 模式代码已被移除。
+仍在使用 `standalone` 或 `filesystem` MinIO 模式的部署，一旦升级到 MinIO Server :minio-release:`RELEASE.2022-10-29T06-21-33Z` 或更高版本，在尝试启动 MinIO 时会报错。
 
 
-Overview
---------
+概览
+----
 
-To upgrade to the :minio-release:`RELEASE.2022-10-29T06-21-33Z` or later release, those who were using the `standalone` or `filesystem` deployment modes must create a new :ref:`Single-Node Single-Drive <minio-snsd>` deployment and migrate settings and content to the new deployment.
+若要升级到 :minio-release:`RELEASE.2022-10-29T06-21-33Z` 或更高版本，原先使用 `standalone` 或 `filesystem` 部署模式的用户必须新建一个 :ref:`Single-Node Single-Drive <minio-snsd>` 部署，并将设置和内容迁移到新部署中。
 
-This document outlines the steps required to successfully launch and migrate to a new deployment.
+本文概述成功启动并迁移到新部署所需的步骤。
 
 .. important:: 
 
-   Standalone/file system mode continues to work on any release up to and including MinIO Server `RELEASE.2022-10-24T18-35-07Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-10-24T18-35-07Z>`__.
-   To continue using a standalone deployment, install that MinIO Server release with MinIO Client `RELEASE.2022-10-29T10-09-23Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-10-29T10-09-23Z>`__ or any `earlier release <https://github.com/minio/minio/releases>`__ with its corresponding MinIO Client. Note that the version of the MinIO Client should be newer and as close as possible to the version of the MinIO server.
+   Standalone/filesystem 模式在截至 MinIO Server `RELEASE.2022-10-24T18-35-07Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-10-24T18-35-07Z>`__ 的所有版本中仍可使用。
+   若要继续使用 standalone 部署，请安装该 MinIO Server 版本以及 MinIO Client `RELEASE.2022-10-29T10-09-23Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-10-29T10-09-23Z>`__，或安装任意 `更早版本 <https://github.com/minio/minio/releases>`__ 及其对应的 MinIO Client。请注意，MinIO Client 的版本应更新，且尽可能接近 MinIO Server 的版本。
 
-   Filesystem mode deployments must be on at least `RELEASE.2022-06-25T15-50-16Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-25T15-50-16Z>`__  to use the MinIO Client import and export commands.
-   Filesystem mode deployments up to and including `RELEASE.2022-06-20T23-13-45Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-20T23-13-45Z>`__ can be migrated by manually recreating users, policies, buckets, and other resources on the new deployment.
+   Filesystem 模式部署至少需要升级到 `RELEASE.2022-06-25T15-50-16Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-25T15-50-16Z>`__，才能使用 MinIO Client 的导入和导出命令。
+   对于截至 `RELEASE.2022-06-20T23-13-45Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-20T23-13-45Z>`__ 的 filesystem 模式部署，可以通过在新部署上手动重建用户、策略、存储桶和其他资源完成迁移。
 
 
-Procedure
----------
+步骤
+----
 
 .. note:: 
    
-   You can set MinIO configuration settings in environment variables and using :mc-cmd:`mc admin config set <mc admin config set>`.
-   Depending on your current deployment setup, you may need to retrieve the values for both.
+   你可以通过环境变量和 :mc-cmd:`mc admin config set <mc admin config set>` 设置 MinIO 配置项。
+   根据你当前的部署方式，可能需要同时获取这两类配置值。
 
-   You can examine any runtime settings using ``env | grep MINIO_`` or, for deployments using MinIO's systemd service, check the contents of ``/etc/default/minio``.
+   你可以使用 ``env | grep MINIO_`` 查看运行时设置；对于使用 MinIO systemd 服务的部署，也可以直接检查 ``/etc/default/minio`` 的内容。
 
-#. For filesystem mode deployments:
+#. 对于 filesystem 模式部署：
 
-   If needed, upgrade the existing deployment.
+   如有需要，先升级现有部署。
 
-   The oldest acceptable versions are:
+   可接受的最低版本为：
 
    - MinIO `RELEASE.2022-06-25T15-50-16Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-25T15-50-16Z>`__
    - MinIO Client `RELEASE.2022-06-26T18-51-48Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-06-26T18-51-48Z>`__
 
-   The newest acceptable versions are:
+   可接受的最高版本为：
 
    - MinIO `RELEASE.2022-10-24T18-35-07Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-10-24T18-35-07Z>`__
    - MinIO Client `RELEASE.2022-10-29T10-09-23Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-10-29T10-09-23Z>`__
 
-#. Create a new Single-Node Single-Drive MinIO deployment.
+#. 创建新的 Single-Node Single-Drive MinIO 部署。
 
-   Follow our :ref:`installation instructions <deploy-minio-standalone>` for your OS of choice and configure the installation as a Single-Node Single-Drive (SNSD) topology.
+   按照适用于所选操作系统的 :ref:`安装说明 <deploy-minio-standalone>`，将安装配置为 Single-Node Single-Drive (SNSD) 拓扑。
 
-   The location of the deployment can be any empty folder on the storage medium of your choice.
-   A new folder on the same drive can work for the new deployment as long as the existing deployment is not on the root of a drive.
-   If the existing standalone system points to the root of the drive, you must use a separate drive for the new deployment.
+   部署位置可以是所选存储介质上的任意空目录。
+   如果现有部署不在磁盘根目录上，则同一块磁盘上的新目录也可以用于新部署。
+   如果现有 standalone 系统指向磁盘根目录，则新部署必须使用另一块独立磁盘。
 
-   If both old and new deployments are on the same host:
+   如果旧部署和新部署位于同一主机上：
    
-   - Install the new deployment to a different path from the existing deployment.
-   - Set the new deployment's Console and API ports to different ports than the existing deployment.
+   - 将新部署安装到不同于现有部署的路径。
+   - 将新部署的 Console 和 API 端口设置为不同于现有部署的端口。
 
-     The following commandline options set the ports at startup:
+     以下命令行选项可在启动时设置端口：
 
-     - :mc-cmd:`~minio server --address` to set the API port.
-     - :mc-cmd:`~minio server --console-address` to set the Console port.
+     - :mc-cmd:`~minio server --address` 用于设置 API 端口。
+     - :mc-cmd:`~minio server --console-address` 用于设置 Console 端口。
 
-   - For deployments managed by ``systemd``:
+   - 对于由 ``systemd`` 管理的部署：
 
-     - Duplicate the existing ``/etc/default/minio`` environment file with a unique name.
-     - In the new deployment's service file, update ``EnvironmentFile`` to reference the new environment file.
+     - 复制现有 ``/etc/default/minio`` 环境文件，并使用唯一的新文件名。
+     - 在新部署的服务文件中，更新 ``EnvironmentFile`` 以引用新的环境文件。
 
-   The steps below use the :mc:`mc` command line tool from both deployments.
-   *Existing MinIO Client* is :mc:`mc` from the old deployment.
-   *New MinIO Client* is :mc:`mc` from the new deployment.
+   以下步骤会同时使用两个部署中的 :mc:`mc` 命令行工具。
+   *现有 MinIO Client* 指旧部署中的 :mc:`mc`。
+   *新的 MinIO Client* 指新部署中的 :mc:`mc`。
 
-#. Add an alias for the deployment created in the previous step using :mc:`mc alias set` and the new MinIO Client.
+#. 使用 :mc:`mc alias set` 和新的 MinIO Client 为上一步创建的部署添加别名。
 
    .. code-block:: shell
       :class: copyable
       
       mc alias set NEWALIAS PATH ACCESSKEY SECRETKEY
 
-   - Use the new MinIO Client.
-   - Replace ``NEWALIAS`` with the alias to create for the deployment.
-   - Replace ``PATH`` with the IP address or hostname and port for the new deployment.
-   - Replace ``ACCESSKEY`` and ``SECRETKEY`` with the credentials you used when creating the new deployment.
+   - 使用新的 MinIO Client。
+   - 将 ``NEWALIAS`` 替换为要为该部署创建的别名。
+   - 将 ``PATH`` 替换为新部署的 IP 地址或主机名及端口。
+   - 将 ``ACCESSKEY`` 和 ``SECRETKEY`` 替换为创建新部署时使用的凭证。
 
-#. Migrate settings according to the type of deployment:
+#. 根据部署类型迁移设置：
 
-   - The MinIO Gateway is a stateless proxy service that provides S3 API compatibility for an array of backend storage systems.
+   - MinIO Gateway 是一个无状态代理服务，为多种后端存储系统提供 S3 API 兼容层。
 
-   - Filesystem mode deployments provide an S3 access layer for a single MinIO server process and single storage volume.
+   - Filesystem 模式部署为单个 MinIO server 进程和单个存储卷提供 S3 访问层。
 
    .. tab-set::
 
       .. tab-item:: Gateway
 
-         Migrate configuration settings:
+         迁移配置设置：
 
-	 If your deployment uses :ref:`environment variables <minio-server-environment-variables>` for configuration settings, copy the environment variables from the existing deployment's ``/etc/default/minio`` file to the same file in the new deployment.
-         You may omit any ``MINIO_CACHE_*`` and ``MINIO_GATEWAY_SSE`` environment variables, as these are no longer used.                                                               
+         如果你的部署使用 :ref:`环境变量 <minio-server-environment-variables>` 作为配置方式，请将现有部署 ``/etc/default/minio`` 文件中的环境变量复制到新部署的同名文件中。
+         你可以省略所有 ``MINIO_CACHE_*`` 和 ``MINIO_GATEWAY_SSE`` 环境变量，因为这些变量已不再使用。                                                               
 
-	 If you use :mc-cmd:`mc admin config set <mc admin config set>` for configuration settings, duplicate the existing settings for the new deployment using the new MinIO Client.
+         如果你使用 :mc-cmd:`mc admin config set <mc admin config set>` 管理配置，请使用新的 MinIO Client 将现有设置复制到新部署中。
 
       .. tab-item:: Filesystem mode
 
          .. note::
 
-            The following Filesystem mode steps presume the existing MinIO Client supports the needed export commands.
-	    If it does not, recreate users, policies, lifecycle rules, and buckets manually on the new deployment using the new MinIO Client.
+            以下 filesystem 模式步骤默认现有 MinIO Client 支持所需的导出命令。
+            如果不支持，请在新部署上使用新的 MinIO Client 手动重建用户、策略、生命周期规则和存储桶。
 
-         a. Export the existing deployment's **configurations**.
+         a. 导出现有部署的**配置**。
 
-            Use the :mc-cmd:`mc admin config export <mc admin config export>` command with the existing MinIO Client to retrieve the configurations defined for the existing standalone MinIO deployment.
+            使用现有 MinIO Client 运行 :mc-cmd:`mc admin config export <mc admin config export>`，导出现有 standalone MinIO 部署中定义的配置。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin config export ALIAS > config.txt
 
-            - Use the existing MinIO Client.
-            - Replace ``ALIAS`` with the alias used for the existing standalone deployment you are retrieving values from. 
+            - 使用现有 MinIO Client。
+            - 将 ``ALIAS`` 替换为现有 standalone 部署的别名，也就是你要从中导出配置的目标。 
 
-         b. Import **configurations** from the existing standalone deployment to the new deployment with the new MinIO Client.
+         b. 使用新的 MinIO Client 将现有 standalone 部署的**配置**导入到新部署。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin config import ALIAS < config.txt
 
-            - Use the new MinIO Client.
-            - Replace ``ALIAS`` with the alias for the new deployment.
+            - 使用新的 MinIO Client。
+            - 将 ``ALIAS`` 替换为新部署的别名。
 
-	    If :mc-cmd:`~mc admin config import` reports an error for a configuration key, comment it out with ``#`` at the beginning of the relevant line and try again.
-            When you are finished migrating the deployment, verify the current syntax for the target MinIO Server version and set any needed keys manually using :mc-cmd:`mc admin config set`.
+            如果 :mc-cmd:`~mc admin config import` 对某个配置键报错，请在对应行开头加上 ``#`` 注释掉，再重新尝试。
+            完成迁移后，请根据目标 MinIO Server 版本核对当前配置语法，并使用 :mc-cmd:`mc admin config set` 手动设置所需键值。
 
-         c. Restart the server for the new deployment with the new MinIO Client.
+         c. 使用新的 MinIO Client 重启新部署的服务。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin service restart ALIAS
    
-            - Use the new MinIO Client.
-            - Replace ``ALIAS`` with the alias for the new deployment.
+            - 使用新的 MinIO Client。
+            - 将 ``ALIAS`` 替换为新部署的别名。
 
-         d. Export **bucket metadata** from the existing standalone deployment with the existing MinIO Client.
+         d. 使用现有 MinIO Client 导出现有 standalone 部署的**存储桶元数据**。
 
-            The following command exports bucket metadata from the existing deployment to a ``.zip`` file.
+            以下命令会将现有部署中的存储桶元数据导出到一个 ``.zip`` 文件中。
 
-            The data includes:
+            数据包括：
 
-            - bucket targets
-            - lifecycle rules
-            - notifications
-            - quotas
-            - locks
-            - versioning
+            - 存储桶目标
+            - 生命周期规则
+            - 通知
+            - 配额
+            - 锁
+            - 版本控制
 
-            The export includes the bucket metadata only.
-            This command does not export objects from the existing deployment.
+            导出内容仅包含存储桶元数据。
+            此命令不会导出现有部署中的对象数据。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin cluster bucket export ALIAS
 
-            - Use the existing MinIO Client.
-            - Replace ``ALIAS`` with the alias for your existing deployment.
+            - 使用现有 MinIO Client。
+            - 将 ``ALIAS`` 替换为现有部署的别名。
 
-            This command creates a ``cluster-metadata.zip`` file with metadata for each bucket.
+            此命令会生成 ``cluster-metadata.zip`` 文件，其中包含每个存储桶的元数据。
 
-         e. Import **bucket metadata** to the new deployment with the new MinIO Client.
+         e. 使用新的 MinIO Client 将**存储桶元数据**导入到新部署。
 
-            The following command reads the contents of the exported bucket ``.zip`` file and creates buckets on the new deployment with the same configurations.
+            以下命令会读取导出的存储桶 ``.zip`` 文件内容，并在新部署上创建具有相同配置的存储桶。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin cluster bucket import ALIAS cluster-metadata.zip
 
-            - Use the new MinIO Client.
-            - Replace ``ALIAS`` with the alias for the new deployment.
+            - 使用新的 MinIO Client。
+            - 将 ``ALIAS`` 替换为新部署的别名。
 
-            The command creates buckets on the new deployment with the same configurations as provided by the metadata in the .zip file from the existing deployment.
+            该命令会依据现有部署导出的 .zip 文件中的元数据，在新部署上创建具有相同配置的存储桶。
 
-         f. Export **IAM settings** from the existing standalone deployment to new deployment with the existing MinIO Client.
+         f. 使用现有 MinIO Client 将现有 standalone 部署的**IAM 设置**导出到新部署。
 
-            If you are using an external identity and access management provider, recreate those settings in the new deployment along with all associated policies.
+            如果你使用的是外部身份与访问管理提供方，请在新部署中重建这些设置及所有关联策略。
 
-            Use the following command to export IAM settings from the existing deployment.
-            This command exports:
+            使用以下命令从现有部署导出 IAM 设置。
+            此命令会导出：
 
-            - Groups and group mappings
-            - STS users and STS user mappings
-            - Policies
-            - Users and user mappings
+            - 组和组映射
+            - STS 用户和 STS 用户映射
+            - 策略
+            - 用户和用户映射
 
             .. code-block:: shell
                :class: copyable
 
                mc admin cluster iam export ALIAS
 
-            - Use the existing MinIO Client.
-            - Replace ``ALIAS`` with the alias for your existing deployment.
+            - 使用现有 MinIO Client。
+            - 将 ``ALIAS`` 替换为现有部署的别名。
 
-            This command creates a ``ALIAS-iam-info.zip`` file with IAM data.
+            此命令会生成包含 IAM 数据的 ``ALIAS-iam-info.zip`` 文件。
 
-         g. Import the **IAM settings** to the new deployment with the new MinIO Client.
+         g. 使用新的 MinIO Client 将**IAM 设置**导入到新部署。
 
-            Use the exported file to create the IAM setting on the new deployment.
+            使用导出的文件在新部署上创建 IAM 设置。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin cluster iam import ALIAS alias-iam-info.zip
 
-            - Use the new MinIO Client.
-            - Replace ``ALIAS`` with the alias for the new deployment.
-            - Replace the name of the zip file with the name for the existing deployment's file.
+            - 使用新的 MinIO Client。
+            - 将 ``ALIAS`` 替换为新部署的别名。
+            - 将 zip 文件名替换为现有部署导出的文件名。
 
-#. Migrate bucket contents with :mc:`mc mirror`.
+#. 使用 :mc:`mc mirror` 迁移存储桶内容。
 
-   Use :mc:`mc mirror` with the :mc-cmd:`~mc mirror --preserve` and :mc-cmd:`~mc mirror --watch` flags on the standalone deployment to move objects to the new |SNSD| deployment with the existing MinIO Client
+   在 standalone 部署上，使用现有 MinIO Client 运行带有 :mc-cmd:`~mc mirror --preserve` 和 :mc-cmd:`~mc mirror --watch` 参数的 :mc:`mc mirror`，将对象迁移到新的 |SNSD| 部署中。
 
    .. code-block:: shell
       :class: copyable
 
       mc mirror --preserve --watch SOURCE/BUCKET TARGET/BUCKET
 
-   - Use the existing MinIO Client.
-   - Replace ``SOURCE/BUCKET`` with the alias and a bucket for the existing standalone deployment.
-   - Replace ``TARGET/BUCKET`` with the alias and corresponding bucket for the new deployment.
+   - 使用现有 MinIO Client。
+   - 将 ``SOURCE/BUCKET`` 替换为现有 standalone 部署的别名和存储桶。
+   - 将 ``TARGET/BUCKET`` 替换为新部署的别名和对应存储桶。
 
-#. Stop writes to the standalone deployment from any S3 or POSIX client.
+#. 停止所有 S3 或 POSIX 客户端向 standalone 部署写入数据。
 
-#. Wait for ``mc mirror`` to complete for all buckets for any remaining operations.
+#. 等待 ``mc mirror`` 完成所有存储桶的剩余操作。
 
-#. Stop the server for both deployments.
+#. 停止两个部署的服务。
 
-#. Restart the new MinIO deployment with the ports used for the previous standalone deployment.
+#. 使用之前 standalone 部署所用的端口重启新的 MinIO 部署。
    
-   Ensure you apply all environment variables and runtime configuration settings and validate the behavior of the new deployment.
+   确保应用所有环境变量和运行时配置设置，并验证新部署的行为是否符合预期。

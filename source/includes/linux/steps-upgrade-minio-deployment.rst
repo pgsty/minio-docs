@@ -1,92 +1,112 @@
-MinIO uses an update-then-restart methodology for upgrading a deployment to a newer release:
+MinIO 使用先更新后重启的方法将部署升级到较新版本：
 
-1. Update the MinIO binary with the newer release.
-2. Restart the deployment using :mc-cmd:`mc admin service restart`.
+1. 使用较新版本更新 MinIO 二进制文件。
+2. 使用 :mc-cmd:`mc admin service restart` 重启部署。
 
-This procedure does not require taking downtime and is non-disruptive to ongoing operations.
+该流程无需停机，也不会中断正在进行的操作。
 
-This page documents methods for upgrading using the update-then-restart method for both ``systemctl`` and user-managed MinIO deployments.
-Deployments using Ansible, Terraform, or other management tools can use the procedures here as guidance for implementation within the existing automation framework.
+本页介绍对 ``systemctl`` 管理的 MinIO 部署和用户自管 MinIO 部署使用
+先更新后重启方法进行升级的方式。
+使用 Ansible、Terraform 或其他管理工具的部署，
+可以将此处流程作为在现有自动化框架中实施升级的参考。
 
-Prerequisites
--------------
+前提条件
+--------
 
-Back Up Cluster Settings First
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+先备份集群设置
+~~~~~~~~~~~~~~
 
-Use the :mc:`mc admin cluster bucket export` and :mc:`mc admin cluster iam export` commands to take a snapshot of the bucket metadata and IAM configurations prior to starting decommissioning.
-You can use these snapshots to restore :ref:`bucket <minio-mc-admin-cluster-bucket-import>` and :ref:`IAM <minio-mc-admin-cluster-iam-import>` settings to recover from user or process errors as necessary.
+在开始执行此流程之前，使用 :mc:`mc admin cluster bucket export`
+和 :mc:`mc admin cluster iam export` 命令对存储桶元数据和 IAM 配置进行快照。
+如有需要，你可以使用这些快照恢复
+:ref:`bucket <minio-mc-admin-cluster-bucket-import>` 和
+:ref:`IAM <minio-mc-admin-cluster-iam-import>` 设置，
+以便从用户或流程错误中恢复。
 
-Check Release Notes
-~~~~~~~~~~~~~~~~~~~
+检查发行说明
+~~~~~~~~~~~~
 
-MinIO publishes :minio-git:`Release Notes <minio/releases>` for your reference as part of identifying the changes applied in each release.
-Review the associated release notes between your current MinIO version and the newer release so you have a complete view of any changes.
+MinIO 发布 :minio-git:`Release Notes <minio/releases>` 供你参考，
+以识别每个版本所引入的变更。
+请查看当前 MinIO 版本与目标较新版本之间各版本对应的发行说明，
+以完整了解所有变更。
 
-Pay particular attention to any releases that are *not* backwards compatible.
-You cannot trivially downgrade from any such release.
+尤其要注意任何 *不* 向后兼容的版本。
+你无法轻易从这类版本回退。
 
-Test Upgrades Before Applying To Production
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+在应用到生产环境前先测试升级
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO uses a testing and validation suite as part of all releases.
-However, no testing suite can account for unique combinations and permutations of hardware, software, and workloads of your production environment.
+MinIO 在每个版本发布时都会使用测试和验证套件。
+但任何测试套件都无法覆盖你生产环境中硬件、软件和工作负载的所有特定组合。
 
-You should always validate any MinIO upgrades in a lower environment (Dev/QA/Staging) *before* applying those upgrades to Production deployments, or any other environment containing critical data.
-Performing updates to production environments without first validating in lower environments is done at your own risk.
+在将任何 MinIO 升级应用到生产部署或其他包含关键数据的环境之前，
+你都应先在较低环境（Dev/QA/Staging）中完成验证。
+如果不先在较低环境中验证就直接更新生产环境，风险由你自行承担。
 
-For MinIO deployments that are significantly behind latest stable (6+ months), consider using |SUBNET| for additional support and guidance during the upgrade procedure.
+对于明显落后于最新稳定版（6 个月以上）的 MinIO 部署，
+建议在升级过程中使用 |SUBNET| 获取额外支持和指导。
 
-Considerations
---------------
+注意事项
+--------
 
-Upgrades Are Non-Disruptive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+升级不会中断业务
+~~~~~~~~~~~~~~~~
 
-MinIO's upgrade-then-restart procedure does *not* require taking downtime or scheduling a maintenance period.
-MinIO restarts are fast, such that restarting all server processes in parallel typically completes in a few seconds. 
-MinIO operations are atomic and strictly consistent, such that applications using MinIO or S3 SDKs can rely on the built-in :aws-docs:`transparent retry <general/latest/gr/api-retries.html>` without further client-side logic.
-This ensures upgrades are non-disruptive to ongoing operations.
+MinIO 的先更新后重启流程 *不* 需要停机或安排维护窗口。
+MinIO 重启速度很快，并行重启所有服务端进程通常只需几秒。
+MinIO 操作具备原子性且严格一致，因此使用 MinIO 或 S3 SDK 的应用
+可以依赖内置的
+:aws-docs:`transparent retry <general/latest/gr/api-retries.html>`，
+无需额外的客户端逻辑。
+这可确保升级不会中断正在进行的操作。
 
 .. _minio-upgrade-systemctl:
 
-Update ``systemctl``-Managed MinIO Deployments
-----------------------------------------------
+升级由 ``systemctl`` 管理的 MinIO 部署
+--------------------------------------
 
-Use these steps to upgrade a MinIO deployment where the MinIO server process is managed by ``systemctl``, such as those created using the MinIO :ref:`DEB/RPM packages <deploy-minio-distributed-baremetal>`.
+使用以下步骤升级由 ``systemctl`` 管理 MinIO 服务进程的部署，
+例如通过 MinIO
+:ref:`DEB/RPM packages <deploy-minio-distributed-baremetal>` 创建的部署。
 
-This procedure assumes you have the :envvar:`MINIO_CONFIG_ENV_FILE` variable set on all MinIO nodes.
+本流程假定你已在所有 MinIO 节点上设置
+:envvar:`MINIO_CONFIG_ENV_FILE` 变量。
 
-1. Update the MinIO Binary on Each Node
+1. 在每个节点上更新 MinIO 二进制文件
 
    .. include:: /includes/linux/common-installation.rst
       :start-after: start-upgrade-minio-binary-desc
       :end-before: end-upgrade-minio-binary-desc
 
-   Run ``minio --version`` on each node to validate that you successfully upgraded all binaries to the same version.
-   Do **not** proceed unless all nodes use the same MinIO binary version.
+   在每个节点上运行 ``minio --version``，
+   确认你已将所有二进制文件成功升级到相同版本。
+   除非所有节点都使用相同的 MinIO 二进制版本，否则 **不要** 继续。
 
-2. Restart the Deployment
+2. 重启部署
 
-   Run the :mc-cmd:`mc admin service restart` command to restart all MinIO server processes in the deployment simultaneously.
+   运行 :mc-cmd:`mc admin service restart` 命令，
+   同时重启部署中的所有 MinIO 服务进程。
 
    .. code-block:: shell
       :class: copyable
 
       mc admin service restart ALIAS
 
-   Replace :ref:`alias <alias>` of the MinIO deployment to restart.
+   将 ``ALIAS`` 替换为要重启的 MinIO 部署的 :ref:`别名 <alias>`。
 
-   S3-compatible SDKs and applications should retry operations automatically, such that the restart process is typically *non-disruptive* to ongoing operations.
+   S3 兼容 SDK 和应用应自动重试操作，
+   因此重启过程通常 *不会中断* 正在进行的操作。
 
-3. Validate the Upgrade
+3. 验证升级
 
-   Use the :mc:`mc admin info` command to check that all MinIO servers are online, operational, and reflect the installed MinIO version.
+   使用 :mc:`mc admin info` 命令检查所有 MinIO 服务器是否在线、运行正常，
+   且显示已安装的 MinIO 版本。
 
-4. Update MinIO Client
+4. 更新 MinIO Client
 
-   You should upgrade your :mc:`mc` binary to match or closely follow the MinIO server release. 
-   You can use the :mc:`mc update` command to update the binary to the latest stable release:
+   你应升级 :mc:`mc` 二进制文件，使其与 MinIO server 版本一致或尽量接近。
+   你可以使用 :mc:`mc update` 命令将该二进制文件更新到最新稳定版本：
 
    .. code-block:: shell
       :class: copyable
@@ -95,52 +115,58 @@ This procedure assumes you have the :envvar:`MINIO_CONFIG_ENV_FILE` variable set
 
 .. _minio-upgrade-mc-admin-update:
 
-Update Non-System Managed MinIO Deployments
--------------------------------------------
+升级非系统管理的 MinIO 部署
+---------------------------
 
-Use these steps to upgrade a MinIO deployment where the MinIO server process is managed outside of the system (``systemd``, ``systemctl``), such as by a user, an automated script, or some other process management tool.
-This procedure only works for systems where the user running the MinIO process has write permissions for the path to the MinIO binary.
-For deployments managed using ``systemctl``, see :ref:`minio-upgrade-systemctl`.
+使用以下步骤升级不由系统（``systemd``、``systemctl``）管理 MinIO 服务进程的部署，
+例如由用户、自动化脚本或其他进程管理工具管理的部署。
+该流程仅适用于运行 MinIO 进程的用户对 MinIO 二进制文件路径具有写权限的系统。
+对于使用 ``systemctl`` 管理的部署，请参阅 :ref:`minio-upgrade-systemctl`。
 
-Update using ``mc admin update``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用 ``mc admin update`` 更新
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :mc:`mc admin update` command updates all MinIO server binaries in the target MinIO deployment before restarting all nodes simultaneously.
-The restart process typically completes within a few seconds and is *non-disruptive* to ongoing operations.
+:mc:`mc admin update` 命令会先更新目标 MinIO 部署中的所有 MinIO server 二进制文件，
+然后同时重启所有节点。
+重启过程通常会在几秒内完成，且 *不会中断* 正在进行的操作。
 
-The following command updates a MinIO deployment with the specified :ref:`alias <alias>` to the latest stable release:
+以下命令会将具有指定 :ref:`别名 <alias>` 的 MinIO 部署
+更新到最新稳定版本：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin update ALIAS
 
-The user running the ``mc admin update`` command **must** have ``write`` permissions to the location where the binary installs.
+运行 ``mc admin update`` 命令的用户 **必须**
+对二进制文件安装位置具有 ``write`` 权限。
 
-You can specify a URL resolving to a specific MinIO server binary version.
-Airgapped or internet-isolated deployments may utilize this feature for updating from an internally-accessible server:
+你可以指定一个解析到特定 MinIO server 二进制版本的 URL。
+气隙或与互联网隔离的部署可以利用此功能，
+从内部可访问的服务器执行更新：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin update ALIAS https://minio-mirror.example.com/minio.sha256sum
 
-You should upgrade your :mc:`mc` binary to match or closely follow the MinIO server release. 
-You can use the :mc:`mc update` command to update the binary to the latest stable release:
+你应升级 :mc:`mc` 二进制文件，使其与 MinIO server 版本一致或尽量接近。
+你可以使用 :mc:`mc update` 命令将该二进制文件更新到最新稳定版本：
 
 .. code-block:: shell
    :class: copyable
 
    mc update
 
-Update by manually replacing the binary
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+通过手动替换二进制文件更新
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can download and manually replace the ``minio`` server binary on each of the host nodes in the deployment.
-You must then restart all nodes simultaneously, such as by using :mc-cmd:`mc admin service restart`.
+你可以在部署中的每个主机节点上下载并手动替换 ``minio`` server 二进制文件。
+然后必须同时重启所有节点，例如使用 :mc-cmd:`mc admin service restart`。
 
-For example, the following command downloads the latest stable MinIO binary for Linux and copies it to ``/usr/local/bin``. 
-The command overwrites the existing ``minio`` binary at that path.
+例如，以下命令会下载适用于 Linux 的最新稳定版 MinIO 二进制文件，
+并将其复制到 ``/usr/local/bin``。
+该命令会覆盖该路径上现有的 ``minio`` 二进制文件。
 
 .. code-block:: shell
    :class: copyable
@@ -149,10 +175,11 @@ The command overwrites the existing ``minio`` binary at that path.
    chmod +x ./minio
    sudo mv -f ./minio /usr/local/bin/minio
 
-Once you have replaced the binary on all MinIO hosts in the deployment, you must restart all nodes simultaneously.
+在你替换完部署中所有 MinIO 主机上的二进制文件后，
+必须同时重启所有节点。
 
-You should upgrade your :mc:`mc` binary to match or closely follow the MinIO server release. 
-You can use the :mc:`mc update` command to update the binary to the latest stable release:
+你应升级 :mc:`mc` 二进制文件，使其与 MinIO server 版本一致或尽量接近。
+你可以使用 :mc:`mc update` 命令将该二进制文件更新到最新稳定版本：
 
 .. code-block:: shell
    :class: copyable

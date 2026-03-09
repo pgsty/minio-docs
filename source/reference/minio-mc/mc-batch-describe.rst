@@ -14,32 +14,32 @@
 
 .. versionchanged:: MinIO RELEASE.2022-10-08T20-11-00Z or later
 
-Syntax
-------
+语法
+----
 
 .. start-mc-batch-describe-desc
 
-The :mc:`mc batch describe` command outputs the job definition for a specified job ID.
+:mc:`mc batch describe` 命令会输出指定作业 ID 的作业定义。
 
 .. end-mc-batch-describe-desc
 
-You must specify the job ID.
-To find the job ID, use :mc-cmd:`mc batch list`.
+必须指定作业 ID。
+要查找作业 ID，请使用 :mc-cmd:`mc batch list`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command outputs the job definition for the job identified as ``KwSysDpxcBU9FNhGkn2dCf``.
+      以下命令会输出标识为 ``KwSysDpxcBU9FNhGkn2dCf`` 的作业定义。
 
       .. code-block:: shell
          :class: copyable
 
          mc batch describe myminio KwSysDpxcBU9FNhGkn2dCf
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      此命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -51,44 +51,44 @@ To find the job ID, use :mc-cmd:`mc batch list`.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
    
-   The :ref:`alias <alias>` for the MinIO deployment to look for the Job ID. 
+   用于查找作业 ID 的 MinIO 部署 :ref:`alias <alias>`。
 
 .. mc-cmd:: JOBID
    :required:
 
-   The unique identifier of a job to describe.
-   To find the ID of a job, use :mc:`mc batch list`.
+   要描述的作业的唯一标识符。
+   要查找作业 ID，请使用 :mc:`mc batch list`。
    
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Example
--------
+示例
+----
 
-Show the Definition of an In Progress Batch Job
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示进行中批处理作业的定义
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command provides the full job definition of a specific job at :mc:`alias <mc alias>` ``myminio``:
+以下命令会输出 :mc:`alias <mc alias>` ``myminio`` 上特定作业的完整作业定义：
 
 .. code-block:: shell
    :class: copyable
 
    mc batch describe myminio KwSysDpxcBU9FNhGkn2dCf
 
-- Replace ``myminio`` with the :mc:`alias <mc alias>` of the MinIO deployment that should run the job.
-- Replace ``KwSysDpxcBU9FNhGkn2dCf`` with the ID of the job to define.
+- 将 ``myminio`` 替换为应运行该作业的 MinIO 部署的 :mc:`alias <mc alias>`。
+- 将 ``KwSysDpxcBU9FNhGkn2dCf`` 替换为要定义的作业 ID。
 
-The output of the above command is similar to the following:
+上述命令的输出类似如下：
 
 .. code-block:: shell
 
@@ -97,17 +97,17 @@ The output of the above command is similar to the following:
      apiVersion: v1
    ...
  
-Note, this example is truncated.
-The output is the full job definition for the specified job.
+注意，此示例已截断。
+输出结果是指定作业的完整作业定义。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
 
-Permissions
------------
+权限
+----
 
-You must have the :policy-action:`admin:DescribeBatchJobs` permission to describe jobs on the deployment. 
+你必须具有 :policy-action:`admin:DescribeBatchJobs` 权限，才能描述该部署上的作业。 

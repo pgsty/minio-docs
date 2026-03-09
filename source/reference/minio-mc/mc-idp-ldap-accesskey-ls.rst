@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -15,16 +15,16 @@
 .. mc:: mc idp ldap accesskey ls
 
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-accesskey-ls-desc
 
-The :mc:`mc idp ldap accesskey ls` displays a list of LDAP access key pairs.
+:mc:`mc idp ldap accesskey ls` 用于显示 LDAP 访问密钥对列表。
 
 .. end-mc-idp-ldap-accesskey-ls-desc
 
-:mc:`mc idp ldap accesskey ls` is also known as :mc:`mc idp ldap accesskey list`.
+:mc:`mc idp ldap accesskey ls` 也称为 :mc:`mc idp ldap accesskey list`。
 
 .. include:: /includes/common-minio-ad-ldap-params.rst
    :start-after: start-minio-ad-ldap-accesskey-creation
@@ -32,20 +32,20 @@ The :mc:`mc idp ldap accesskey ls` displays a list of LDAP access key pairs.
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-         The following example returns a list of access keys associated with the authenticated user on the ``minio`` :ref:`alias <alias>`:
+         以下示例返回 ``minio`` :ref:`alias <alias>` 上与已认证用户关联的访问密钥列表：
 
       .. code-block:: shell
          :class: copyable
 
          mc idp ldap accesskey ls minio/
 
-      If the authenticated user has the ``admin:ListUsers`` permission, the example command returns a list of all users and their associated access keys.
+      如果已认证用户具有 ``admin:ListUsers`` 权限，则该示例命令会返回所有用户及其关联访问密钥的列表。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -60,24 +60,24 @@ The :mc:`mc idp ldap accesskey ls` displays a list of LDAP access key pairs.
                                           [DN] ...
 
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment configured for AD/LDAP integration.
-      - Replace ``DN`` with the string of a user's `distinguished name <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names>`__.
-        You may list multiple distinguished names by separating each with a space.
+      - 将 ``ALIAS`` 替换为已配置 AD/LDAP 集成的 MinIO 部署 :ref:`alias <alias>`。
+      - 将 ``DN`` 替换为用户的 `distinguished name <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names>`__ 字符串。
+        你可以用空格分隔多个 distinguished name。
 
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment configured for AD/LDAP.
+   已配置 AD/LDAP 的 MinIO 部署的 :ref:`alias <alias>`。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -88,42 +88,42 @@ Parameters
 
    .. versionadded:: mc RELEASE.2024-07-31T15-58-33Z
 
-   List all access keys for all LDAP users.
+   列出所有 LDAP 用户的全部访问密钥。
 
 .. mc-cmd:: --self
    :optional:
 
    .. versionadded:: mc RELEASE.2024-07-31T15-58-33Z
       
-   List access keys for the currently authenticated user.
+   列出当前已认证用户的访问密钥。
 
 .. mc-cmd:: --svcacc-only
    :optional:
 
-   Output only service account access keys.
+   仅输出服务账号访问密钥。
 
-   Mutually exclusive with :mc-cmd:`~mc idp ldap accesskey ls --temp-only`.
+   与 :mc-cmd:`~mc idp ldap accesskey ls --temp-only` 互斥。
 
 .. mc-cmd:: --temp-only
    :optional:
 
-   Output only temporary access keys.
+   仅输出临时访问密钥。
 
-   Mutually exclusive with :mc-cmd:`~mc idp ldap accesskey ls --svcacc-only`.
+   与 :mc-cmd:`~mc idp ldap accesskey ls --svcacc-only` 互斥。
 
 .. mc-cmd:: --users-only
    :optional:
 
-   Output only the user distinguished names.
+   仅输出用户 distinguished name。
 
-Examples
-~~~~~~~~
+示例
+~~~~
 
-List All Access Keys
-++++++++++++++++++++
+列出所有访问密钥
+++++++++++++++++
 
-To return a list of all access keys, you must first authenticate as the ``admin`` user.
-Once authenticated, the following command returns all AD/LDAP access keys on the ``minio`` deployment.
+要返回所有访问密钥列表，你必须先以 ``admin`` 用户完成认证。
+认证完成后，以下命令会返回 ``minio`` 部署上的全部 AD/LDAP 访问密钥。
 
 .. code-block:: shell
    :class: copyable
@@ -132,54 +132,54 @@ Once authenticated, the following command returns all AD/LDAP access keys on the
 
 .. note::
 
-   If the user does not have the ``admin:ListUsers`` permission, the command returns a list of access keys for the authenticated user only.
+   如果用户没有 ``admin:ListUsers`` 权限，该命令仅返回已认证用户的访问密钥列表。
 
-List User Distinguished Names
-+++++++++++++++++++++++++++++
+列出用户 Distinguished Name
++++++++++++++++++++++++++++
 
-To return a list of DNs for a deployment, you must first authenticate as a user with the ``admin:ListUsers`` permission.
-Once authenticated, the following command outputs the AD/LDAP distinguished names on the ``minio`` deployment.
+要返回某个部署的 DN 列表，你必须先以具有 ``admin:ListUsers`` 权限的用户完成认证。
+认证完成后，以下命令会输出 ``minio`` 部署上的 AD/LDAP distinguished name。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey ls minio --users-only
 
-List Temporary Access Keys
-++++++++++++++++++++++++++
+列出临时访问密钥
+++++++++++++++++
 
-To return a list of all temporary access keys for a deployment, you must first authenticate as a user with the ``admin:ListUsers`` permission.
-Once authenticated, the following command outputs a list of distinguished names with their associated temporary access keys.
+要返回某个部署的全部临时访问密钥列表，你必须先以具有 ``admin:ListUsers`` 权限的用户完成认证。
+认证完成后，以下命令会输出 distinguished name 及其关联临时访问密钥的列表。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey ls minio --temp-only
 
-List a User's Access Keys
-+++++++++++++++++++++++++
+列出某个用户的访问密钥
+++++++++++++++++++++++
 
-The following command returns the AD/LDAP access keys for the user ``bobfisher`` on the ``minio`` deployment.
+以下命令返回 ``minio`` 部署上用户 ``bobfisher`` 的 AD/LDAP 访问密钥。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey list minio/ uid=bobfisher,dc=min,dc=io
 
-List Access Keys for Multiple Users
-+++++++++++++++++++++++++++++++++++
+列出多个用户的访问密钥
+++++++++++++++++++++++
 
-The following command returns the AD/LDAP access keys for the users ``bobfisher`` and ``cody3`` on the ``minio`` deployment.
+以下命令返回 ``minio`` 部署上用户 ``bobfisher`` 和 ``cody3`` 的 AD/LDAP 访问密钥。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey list minio/ uid=bobfisher,dc=min,dc=io uid=cody3,dc=min,dc=io
 
-List Access Keys for Authenticated User
-+++++++++++++++++++++++++++++++++++++++
+列出已认证用户的访问密钥
+++++++++++++++++++++++++
 
-The following command returns the AD/LDAP access keys for the currently authenticated user on the ``minio`` deployment.
+以下命令返回 ``minio`` 部署上当前已认证用户的 AD/LDAP 访问密钥。
 
 .. code-block:: shell
    :class: copyable
@@ -188,21 +188,21 @@ The following command returns the AD/LDAP access keys for the currently authenti
 
 .. note:: 
 
-   If the authenticated user has the ``admin:ListUsers`` permission, the command returns a list of all users and access keys on the deployment.
+   如果已认证用户具有 ``admin:ListUsers`` 权限，则该命令会返回部署上所有用户及其访问密钥列表。
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

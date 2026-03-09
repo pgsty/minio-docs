@@ -1,17 +1,18 @@
 .. start-install-minio-binary-desc
 
-The following tabs provide examples of installing MinIO onto 64-bit Linux operating systems using RPM, DEB, or binary.
-The RPM and DEB packages automatically install MinIO to the necessary system paths and create a ``minio`` service for ``systemctl``.
-MinIO strongly recommends using the RPM or DEB installation routes.
-To update deployments managed using ``systemctl``, see :ref:`minio-upgrade`.
+下列选项卡给出了在 64 位 Linux 操作系统上使用 RPM、DEB 或二进制文件安装
+MinIO 的示例。
+RPM 和 DEB 软件包会自动将 MinIO 安装到所需的系统路径，并为 ``systemctl`` 创建
+``minio`` 服务。
+MinIO 强烈建议使用 RPM 或 DEB 安装方式。
+如需更新通过 ``systemctl`` 管理的部署，请参见 :ref:`minio-upgrade`。
 
 .. tab-set::
 
    .. tab-item:: RPM (RHEL)
       :sync: rpm
 
-      Use the following commands to download the latest stable MinIO RPM and
-      install it.
+      使用以下命令下载并安装最新稳定版的 MinIO RPM。
 
       .. code-block:: shell
          :class: copyable
@@ -23,8 +24,7 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade`.
    .. tab-item:: DEB (Debian/Ubuntu)
       :sync: deb
 
-      Use the following commands to download the latest stable MinIO DEB and
-      install it:
+      使用以下命令下载并安装最新稳定版的 MinIO DEB：
 
       .. code-block:: shell
          :class: copyable
@@ -33,11 +33,11 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade`.
          wget |minio-deb| -O minio.deb
          sudo dpkg -i minio.deb
 
-   .. tab-item:: Binary
+   .. tab-item:: 二进制文件
       :sync: binary
 
-      Use the following commands to download the latest stable MinIO binary and
-      install it to the system ``$PATH``:
+      使用以下命令下载最新稳定版的 MinIO 二进制文件，并将其安装到系统
+      ``$PATH`` 中：
 
       .. code-block:: shell
          :class: copyable
@@ -50,17 +50,18 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade`.
 
 .. start-upgrade-minio-binary-desc
 
-The following tabs provide examples of updating MinIO onto 64-bit Linux operating systems using RPM, DEB, or binary executable.
+下列选项卡给出了在 64 位 Linux 操作系统上使用 RPM、DEB 或二进制可执行文件
+更新 MinIO 的示例。
 
-For infrastructure managed by tools such as Ansible or Terraform, defer to your internal procedures for updating packages or binaries across multiple managed hosts.
+对于使用 Ansible 或 Terraform 等工具管理的基础设施，请遵循你们内部的流程，
+在多个受管主机上更新软件包或二进制文件。
 
 .. tab-set::
 
    .. tab-item:: RPM (RHEL)
       :sync: rpm
 
-      Use the following commands to download the latest stable MinIO RPM and
-      update the existing installation.
+      使用以下命令下载最新稳定版的 MinIO RPM，并更新现有安装。
 
       .. code-block:: shell
          :class: copyable
@@ -72,8 +73,7 @@ For infrastructure managed by tools such as Ansible or Terraform, defer to your 
    .. tab-item:: DEB (Debian/Ubuntu)
       :sync: deb
 
-      Use the following commands to download the latest stable MinIO DEB and
-      upgrade the existing installation:
+      使用以下命令下载最新稳定版的 MinIO DEB，并升级现有安装：
 
       .. code-block:: shell
          :class: copyable
@@ -82,11 +82,10 @@ For infrastructure managed by tools such as Ansible or Terraform, defer to your 
          curl |minio-deb| -O minio.deb
          sudo dpkg -i minio.deb
 
-   .. tab-item:: Binary
+   .. tab-item:: 二进制文件
       :sync: binary
 
-      Use the following commands to download the latest stable MinIO binary and
-      overwrite the existing binary:
+      使用以下命令下载最新稳定版的 MinIO 二进制文件，并覆盖现有二进制文件：
 
       .. code-block:: shell
          :class: copyable
@@ -95,88 +94,90 @@ For infrastructure managed by tools such as Ansible or Terraform, defer to your 
          chmod +x minio
          sudo mv minio /usr/local/bin/
 
-      Replace ``/usr/local/bin`` with the location of the existing MinIO binary. 
-      Run ``which minio`` to identify the path if not already known.
+      将 ``/usr/local/bin`` 替换为现有 MinIO 二进制文件所在的位置。
+      如果尚不清楚路径，可运行 ``which minio`` 进行确认。
 
-You can validate the upgrade by computing the ``SHA256`` checksum of each binary and ensuring the checksum matches across all hosts:
+你可以通过计算每个二进制文件的 ``SHA256`` 校验和，并确认所有主机上的校验和
+一致，来验证升级结果：
 
 .. code-block:: shell
    :class: copyable
 
    shasum -a 256 /usr/local/bin/minio
 
-The output of :mc-cmd:`minio --version <minio server>` should also match across all hosts.
+:mc-cmd:`minio --version <minio server>` 的输出在所有主机上也应保持一致。
 
 .. end-upgrade-minio-binary-desc
 
 .. start-install-minio-tls-desc
 
-MinIO enables :ref:`Transport Layer Security (TLS) <minio-tls>` 1.2+ 
-automatically upon detecting a valid x.509 certificate (``.crt``) and
-private key (``.key``) in the MinIO ``${HOME}/.minio/certs`` directory.
+当 MinIO 检测到 ``${HOME}/.minio/certs`` 目录中存在有效的 x.509 证书
+（``.crt``）和私钥（``.key``）时，会自动启用
+:ref:`传输层安全（TLS） <minio-tls>` 1.2+。
 
-For ``systemd``-managed deployments, use the ``$HOME`` directory for the
-user which runs the MinIO server process. The provided ``minio.service``
-file runs the process as ``minio-user``. The previous step includes instructions
-for creating this user with a home directory ``/home/minio-user``.
+对于由 ``systemd`` 管理的部署，请使用运行 MinIO server 进程的用户对应的
+``$HOME`` 目录。提供的 ``minio.service`` 文件会以 ``minio-user`` 身份运行
+该进程。前一步已经包含了如何创建该用户及其主目录 ``/home/minio-user`` 的说明。
 
-- Place TLS certificates into ``/home/minio-user/.minio/certs`` on each host.
+- 在每个主机上将 TLS 证书放置到 ``/home/minio-user/.minio/certs`` 中。
 
-- If *any* MinIO server or client uses certificates signed by an unknown
-  Certificate Authority (self-signed or internal CA), you *must* place the CA
-  certs in the ``/home/minio-user/.minio/certs/CAs`` on all MinIO hosts in the
-  deployment. MinIO rejects invalid certificates (untrusted, expired, or
-  malformed).
+- 如果 *任何* MinIO server 或客户端使用了由未知证书颁发机构签名的证书
+  （自签或内部 CA），你 *必须* 将 CA 证书放到该部署中所有 MinIO 主机的
+  ``/home/minio-user/.minio/certs/CAs`` 下。MinIO 会拒绝无效证书
+  （不受信任、已过期或格式错误）。
 
-If the ``minio.service`` file specifies a different user account, use the
-``$HOME`` directory for that account. Alternatively, specify a custom
-certificate directory using the :mc-cmd:`minio server --certs-dir`
-commandline argument. Modify the ``MINIO_OPTS`` variable in
-``/etc/default/minio`` to set this option. The ``systemd`` user which runs the
-MinIO server process *must* have read and listing permissions for the specified
-directory.
+如果 ``minio.service`` 文件指定了其他用户账户，请改用该账户对应的 ``$HOME``
+目录。或者，也可以通过 :mc-cmd:`minio server --certs-dir` 命令行参数指定
+自定义证书目录。修改 ``/etc/default/minio`` 中的 ``MINIO_OPTS`` 变量即可设置
+此选项。运行 MinIO server 进程的 ``systemd`` 用户 *必须* 对指定目录具有读取和
+列目录权限。
 
-For more specific guidance on configuring MinIO for TLS, including multi-domain
-support via Server Name Indication (SNI), see :ref:`minio-tls`. You can
-optionally skip this step to deploy without TLS enabled. MinIO strongly
-recommends *against* non-TLS deployments outside of early development.
+有关为 MinIO 配置 TLS 的更具体指导，包括通过 Server Name Indication (SNI)
+支持多域名，请参见 :ref:`minio-tls`。你也可以跳过这一步，以不启用 TLS 的方式
+部署。除了早期开发阶段以外，MinIO 强烈 *不建议* 使用非 TLS 部署。
 
 .. end-install-minio-tls-desc
 
 .. start-install-minio-console-desc
 
-Open your browser and access any of the MinIO hostnames at port ``:9001`` to
-open the :ref:`MinIO Console <minio-console>` login page. For example,
-``https://minio1.example.com:9001``.
+打开浏览器，访问任意 MinIO 主机名的 ``:9001`` 端口，以打开
+:ref:`MinIO Console <minio-console>` 登录页面。例如：
+``https://minio1.example.com:9001``。
 
-Log in with the :guilabel:`MINIO_ROOT_USER` and :guilabel:`MINIO_ROOT_PASSWORD`
-from the previous step.
+使用上一步中的 :guilabel:`MINIO_ROOT_USER` 和
+:guilabel:`MINIO_ROOT_PASSWORD` 登录。
 
 .. image:: /images/minio-console/console-login.png
    :width: 600px
-   :alt: MinIO Console Login Page
+   :alt: MinIO Console 登录页
    :align: center
 
-Each MinIO server includes its own embedded MinIO
-Console.
+每个 MinIO server 都内置了自己的 MinIO
+Console。
 
 .. end-install-minio-console-desc
 
 .. start-local-jbod-single-node-desc
 
-MinIO strongly recommends direct-attached :abbr:`JBOD (Just a Bunch of Disks)`
-arrays with XFS-formatted disks for best performance.
-Using any other type of backing storage (SAN/NAS, ext4, RAID, LVM) typically results in a reduction in performance, reliability, predictability, and consistency.
+MinIO 强烈建议使用直连的 :abbr:`JBOD (Just a Bunch of Disks)` 阵列，并使用
+XFS 格式化磁盘，以获得最佳性能。
+使用任何其他类型的后端存储（SAN/NAS、ext4、RAID、LVM）通常都会降低性能、
+可靠性、可预测性和一致性。
 
-Ensure all server drives for which you intend MinIO to use are of the same type (NVMe, SSD, or HDD) with identical capacity (e.g. ``12`` TB).
-MinIO does not distinguish drive types and does not benefit from mixed storage types. 
-Additionally. MinIO limits the size used per drive to the smallest drive in the deployment. 
-For example, if the deployment has 15 10TB drives and 1 1TB drive, MinIO limits the per-drive capacity to 1TB.
+确保打算交由 MinIO 使用的所有 server 磁盘都属于相同类型（NVMe、SSD 或 HDD），
+并且容量一致（例如 ``12`` TB）。
+MinIO 不区分磁盘类型，也无法从混合存储类型中获益。
+此外，MinIO 会将每块磁盘的可用容量限制为部署中最小磁盘的容量。
+例如，如果部署中有 15 块 10TB 磁盘和 1 块 1TB 磁盘，MinIO 会将每块磁盘的容量
+限制为 1TB。
 
-MinIO *requires* using expansion notation ``{x...y}`` to denote a sequential series of drives when creating the new |deployment|, where all nodes in the |deployment| have an identical set of mounted drives. 
-MinIO also requires that the ordering of physical drives remain constant across restarts, such that a given mount point always points to the same formatted drive. 
-MinIO therefore **strongly recommends** using ``/etc/fstab`` or a similar file-based mount configuration to ensure that drive ordering cannot change after a reboot.
-For example:
+MinIO *要求* 在创建新的 |deployment| 时使用扩展表示法 ``{x...y}`` 表示顺序连续的
+磁盘序列，其中 |deployment| 中所有节点都挂载了完全相同的一组磁盘。
+MinIO 还要求物理磁盘的顺序在重启前后保持不变，也就是说，某个挂载点必须始终指向
+同一块已经格式化的磁盘。
+因此，MinIO **强烈建议** 使用 ``/etc/fstab`` 或类似的基于文件的挂载配置，确保
+重启后磁盘顺序不会发生变化。
+例如：
 
 .. code-block:: shell
 
@@ -195,77 +196,89 @@ For example:
 
 .. note:: 
 
-   Cloud environment instances which depend on mounted external storage may encounter boot failure if one or more of the remote file mounts return errors or failure.
-   For example, an AWS ECS instances with mounted persistent EBS volumes may fail to boot with the standard ``/etc/fstab`` configuration if one or more EBS volumes fail to mount.
+   依赖挂载外部存储的云环境实例，如果一个或多个远程文件挂载返回错误或失败，
+   可能会在启动时失败。
+   例如，挂载了持久化 EBS 卷的 AWS ECS 实例，如果一个或多个 EBS 卷挂载失败，
+   在使用标准 ``/etc/fstab`` 配置时可能无法启动。
 
-   You can set the ``nofail`` option to silence error reporting at boot and allow the instance to boot with one or more mount issues.
+   你可以设置 ``nofail`` 选项，以便在启动时静默挂载错误，并允许实例在存在一个或
+   多个挂载问题的情况下继续启动。
    
-   You should not use this option on systems which have locally attached disks, as silencing drive errors prevents both MinIO and the OS from responding to those errors in a normal fashion.
+   对于使用本地直连磁盘的系统，你不应使用这个选项，因为屏蔽磁盘错误会阻止
+   MinIO 和操作系统以正常方式响应这些错误。
 
-You can then specify the entire range of drives using the expansion notation ``/mnt/disk{1...4}``. 
-If you want to use a specific subfolder on each drive, specify it as ``/mnt/disk{1...4}/minio``.
+然后，你就可以使用扩展表示法 ``/mnt/disk{1...4}`` 指定整组磁盘。
+如果你想在每块磁盘上使用特定子目录，则可指定为 ``/mnt/disk{1...4}/minio``。
 
-MinIO **does not** support arbitrary migration of a drive with existing MinIO data to a new mount position, whether intentional or as the result of OS-level behavior.
+MinIO **不** 支持将包含现有 MinIO 数据的磁盘任意迁移到新的挂载位置，无论这是
+有意操作，还是由操作系统层面的行为导致。
 
 .. end-local-jbod-single-node-desc
 
 .. start-storage-requirements-desc
 
-The following requirements summarize the :ref:`minio-hardware-checklist-storage` section of MinIO's hardware recommendations:
+以下要求概括了 MinIO 硬件建议中的
+:ref:`minio-hardware-checklist-storage` 一节：
 
-Use Local Storage
-   Direct-Attached Storage (DAS) has significant performance and consistency advantages over networked storage (:abbr:`NAS (Network Attached Storage)`, :abbr:`SAN (Storage Area Network)`, :abbr:`NFS (Network File Storage)`).
-   MinIO strongly recommends flash storage (NVMe, SSD) for primary or "hot" data.
+使用本地存储
+   直连存储（DAS）相比网络存储
+   （:abbr:`NAS (Network Attached Storage)`、:abbr:`SAN (Storage Area Network)`、
+   :abbr:`NFS (Network File Storage)`）在性能和一致性方面具有显著优势。
+   对于主数据或“热”数据，MinIO 强烈建议使用闪存存储（NVMe、SSD）。
 
-Use XFS-Formatting for Drives
-   MinIO strongly recommends provisioning XFS formatted drives for storage.
-   MinIO uses XFS as part of internal testing and validation suites, providing additional confidence in performance and behavior at all scales.
+磁盘使用 XFS 格式
+   MinIO 强烈建议为存储配置使用 XFS 格式化的磁盘。
+   MinIO 在内部测试和验证套件中使用 XFS，因此对其在各种规模下的性能和行为更有信心。
 
-   MinIO does **not** test nor recommend any other filesystem, such as EXT4, BTRFS, or ZFS.
+   对于 EXT4、BTRFS 或 ZFS 等其他文件系统，MinIO **既不** 测试，也不推荐。
 
-Use Consistent Type of Drive
-   MinIO does not distinguish drive types and does not benefit from mixed storage types. 
-   Each :term:`pool` must use the same type (NVMe, SSD)
+使用一致的磁盘类型
+   MinIO 不区分磁盘类型，也无法从混合存储类型中获益。
+   每个 :term:`pool` 都必须使用相同类型的磁盘（NVMe、SSD）
 
-   For example, deploy a pool consisting of only NVMe drives.
-   If you deploy some drives as SSD or HDD, MinIO treats those drives identically to the NVMe drives.
-   This can result in performance issues, as some drives have differing or worse read/write characteristics and cannot respond at the same rate as the NVMe drives.
+   例如，部署一个仅由 NVMe 磁盘组成的 pool。
+   如果你在其中混用 SSD 或 HDD，MinIO 会将这些磁盘与 NVMe 磁盘一视同仁。
+   这可能导致性能问题，因为某些磁盘的读写特性不同或更差，无法以与 NVMe 磁盘相同
+   的速率响应。
 
-Use Consistent Size of Drive
-   MinIO limits the size used per drive to the smallest drive in the pool.
+使用一致的磁盘容量
+   MinIO 会将每块磁盘的可用容量限制为 pool 中最小磁盘的容量。
 
-   For example, deploy a pool consisting of the same number of NVMe drives with identical capacity of ``7.68TiB``.
-   If you deploy one drive with ``3.84TiB``, MinIO treats all drives in the pool as having that smaller capacity.
+   例如，部署一个由相同数量、容量均为 ``7.68TiB`` 的 NVMe 磁盘组成的 pool。
+   如果其中有一块磁盘容量为 ``3.84TiB``，MinIO 会将 pool 中所有磁盘都视为只有
+   该较小容量。
 
-Configure Sequential Drive Mounting
-   MinIO uses Go expansion notation ``{x...y}`` to denote a sequential series of drives when creating the new |deployment|, where all nodes in the |deployment| have an identical set of mounted drives. 
-   Configure drive mounting paths as a sequential series to best support this notation.
-   For example, mount your drives using a pattern of ``/mnt/drive-n``, where ``n`` starts at ``1`` and increments by ``1`` per drive.
+配置顺序编号的磁盘挂载
+   MinIO 在创建新的 |deployment| 时使用 Go 扩展表示法 ``{x...y}`` 表示顺序连续的
+   磁盘序列，其中 |deployment| 中所有节点都挂载了完全相同的一组磁盘。
+   最好将磁盘挂载路径也配置成顺序序列，以便支持这种表示法。
+   例如，可按 ``/mnt/drive-n`` 的模式挂载磁盘，其中 ``n`` 从 ``1`` 开始，并随每块
+   磁盘按 ``1`` 递增。
 
-Persist Drive Mounting and Mapping Across Reboots
-   Use ``/etc/fstab`` to ensure consistent drive-to-mount mapping across node reboots.
+在重启后保持磁盘挂载与映射一致
+   使用 ``/etc/fstab`` 确保节点重启前后磁盘到挂载点的映射保持一致。
 
-   Non-Linux Operating Systems should use the equivalent drive mount management tool.
+   非 Linux 操作系统应使用等效的磁盘挂载管理工具。
 
 .. end-storage-requirements-desc
 
 .. start-nondisruptive-upgrade-desc
 
-MinIO strongly recommends restarting all MinIO Server processes in a deployment simultaneously. 
-MinIO operations are atomic and strictly consistent. 
-As such the restart procedure is non-disruptive to applications and ongoing operations.
+MinIO 强烈建议同时重启一个部署中的所有 MinIO Server 进程。
+MinIO 操作具有原子性并保持严格一致。
+因此，该重启过程不会中断应用或正在进行的操作。
 
-Do **not** perform "rolling" (e.g. one node at a time) restarts.
+**不要** 执行“滚动”重启（例如一次只重启一个节点）。
 
 .. end-nondisruptive-upgrade-desc
 
 .. start-pool-order-must-not-change
 
-.. admonition:: Maintain pool order when decommissioning and then adding
+.. admonition:: 先下线再新增时保持 pool 顺序
    :class: note
 
-   If you decommission one pool in a multiple pool deployment, you cannot use the same node sequence for a new pool.
-   For example, consider a deployment with the following pools:
+   如果你在多 pool 部署中下线了一个 pool，就不能在新 pool 中复用相同的节点编号序列。
+   例如，假设某个部署包含以下几个 pool：
 
    .. code-block::
 
@@ -273,8 +286,8 @@ Do **not** perform "rolling" (e.g. one node at a time) restarts.
       https://minio-{5...8}.example.net/mnt/drive-{1...4}
       https://minio-{9...12}.example.net/mnt/drive-{1...4}
 
-   If you decommission the ``minio-{5...8}`` pool, you cannot add a new pool with the same node numbering.
-   You must add the new pool *after* ``minio-{9...12}``:
+   如果你下线了 ``minio-{5...8}`` 这个 pool，就不能再用相同的节点编号新增一个
+   pool。你必须将新 pool 添加在 ``minio-{9...12}`` *之后*：
 
    .. code-block::
 

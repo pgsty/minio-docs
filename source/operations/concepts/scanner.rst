@@ -1,89 +1,89 @@
 .. _minio-concepts-scanner:
 
 ==============
-Object Scanner
+对象扫描器
 ==============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-Overview
+概览
 --------
 
-MinIO uses the built-in scanner to check objects for healing and to take any scheduled object actions.
-Such actions may include:
+MinIO 使用内置扫描器检查对象是否需要自愈，并执行任何已计划的对象操作。
+这类操作可能包括：
 
-- calculate data usage on drives
-- evaluate and apply configured :ref:`lifecycle management <minio-lifecycle-management>` or :ref:`object retention <minio-object-retention>` rules
-- perform :ref:`bucket <minio-bucket-replication>` or :ref:`site <minio-site-replication-overview>` replication
-- check objects for missing or corrupted data or parity shards and perform :ref:`healing <minio-concepts-healing>`
+- 计算驱动器上的数据使用量
+- 评估并应用已配置的 :ref:`生命周期管理 <minio-lifecycle-management>` 或 :ref:`对象保留 <minio-object-retention>` 规则
+- 执行 :ref:`存储桶 <minio-bucket-replication>` 或 :ref:`站点 <minio-site-replication-overview>` 复制
+- 检查对象是否存在丢失或损坏的数据分片或校验分片，并执行 :ref:`自愈 <minio-concepts-healing>`
 
-The scanner performs these functions at two levels: cluster and bucket.
-At the cluster level, the scanner splits all buckets into groups and scans one group of buckets at a time.
-The scanner starts with any new buckets added since the last scan, then randomizes the scanning of other buckets.
-The scanner completes checks on all bucket groups before starting over with a new set of scans.
+扫描器在两个层级执行这些功能：集群层级和存储桶层级。
+在集群层级，扫描器会将所有存储桶划分为多个组，并一次扫描其中一组。
+扫描器会先处理自上次扫描以来新增的存储桶，然后再以随机顺序扫描其他存储桶。
+在完成所有存储桶组的检查后，扫描器会重新开始新一轮扫描。
 
-At the bucket level, the scanner groups items in buckets and scans selected items from that bucket.
-The scanner selects objects for a scan based on a hash of the object name.
-Over a span of 16 scans, MinIO checks every object in the namespace.
-MinIO fully scans any prefixes known to be new since the last scan.
+在存储桶层级，扫描器会对存储桶内条目分组，并从该存储桶中选择部分条目进行扫描。
+扫描器会根据对象名称的哈希值来选择要扫描的对象。
+在 16 轮扫描的周期内，MinIO 会检查命名空间中的每个对象。
+对于自上次扫描以来确认新增的任何前缀，MinIO 会执行完整扫描。
 
-Scan Length
+扫描时长
 -----------
 
-Multiple factors impact the time it takes for a scan to complete.
+影响一次扫描完成时间的因素有很多。
 
-Some of these factors include:
+其中包括：
 
-- Type of drives provided to MinIO
-- Throughput and :abbr:`iops (input/output operations per second)` available
-- Number and size of objects
-- Other activity on the MinIO Server
+- 提供给 MinIO 的驱动器类型
+- 可用吞吐量和 :abbr:`iops (input/output operations per second)`
+- 对象数量和大小
+- MinIO Server 上的其他活动
 
-For example, by default, MinIO pauses the scanner to make I/O operations available for read and write requests.
-This can lengthen the time it takes for a scan to complete.
+例如，默认情况下，MinIO 会暂停扫描器，以便将 I/O 资源让给读写请求。
+这会拉长扫描完成所需的时间。
 
-MinIO waits between each scan by a factor multiplication of the time it takes each scan operation to complete.
-By default, the value of this factor is ``10.0``, meaning MinIO waits 10x the length of an operation after one scan completes before starting the next scan.
-The value of this factor changes depending on the configured :ref:`scanner speed setting <minio-scanner-speed-options>`. 
+MinIO 在每次扫描之间的等待时间，会按本次扫描操作耗时乘以一个系数来计算。
+默认情况下，该系数为 ``10.0``，表示 MinIO 会在一次扫描完成后等待相当于该操作耗时 10 倍的时间，再开始下一次扫描。
+这个系数会根据配置的 :ref:`扫描器速度设置 <minio-scanner-speed-options>` 发生变化。
 
-Scanner Performance
+扫描器性能
 -------------------
 
-Many factors impact the scanner performance.
-Some of these factors include:
+影响扫描器性能的因素有很多。
+其中包括：
 
-- available node resources
-- size of the cluster
-- number of erasure sets compared to the number of drives
-- complexity of bucket hierarchy (objects and prefixes).
+- 可用节点资源
+- 集群规模
+- 纠删码集合数量相对于驱动器数量的关系
+- 存储桶层级结构的复杂度（对象和前缀）
 
-For example, a cluster that starts with 100TB of data and then grows to 200TB of data may require more time to scan the entire namespace of buckets and objects given the same hardware and workload.
-Likewise, a single erasure set of 16 drives takes longer to scan than the same number of drives split into two erasure sets of 8 drives each.
+例如，在相同硬件和工作负载条件下，一个从 100TB 数据增长到 200TB 数据的集群，扫描完整个存储桶和对象命名空间所需的时间会更长。
+同样地，单个包含 16 块驱动器的纠删码集合，其扫描耗时会长于把相同数量驱动器拆分为两个 8 驱动器纠删码集合的情况。
 
-MinIO treats the scanner as a background task and pauses it in favor of completing read and write requests on the cluster.
-As the cluster or workload increases, scanner performance decreases as it yields more frequently to ensure priority of normal S3 operations.
+MinIO 将扫描器视为后台任务，并会暂停它以优先完成集群中的读写请求。
+随着集群规模或工作负载增长，为保证普通 S3 操作的优先级，扫描器会更频繁地让出资源，因此其性能会下降。
 
 .. include:: /includes/common/scanner.rst
    :start-after: start-scanner-speed-config
    :end-before: end-scanner-speed-config
 
-Scanner Metrics
+扫描器指标
 ---------------
 
-MinIO provides a number of `metrics related to the scanner <https://minio.pigsty.io/operations/monitoring/metrics-v2.html#scanner-metrics>`__.
+MinIO 提供了若干 `与扫描器相关的指标 <https://minio.pigsty.io/operations/monitoring/metrics-v2.html#scanner-metrics>`__。
 
-Use ``mc admin scanner info`` to see the current status of the scanner and the time since the last full scan.
-This can help in understanding the metrics provided by the scanner operation.
+使用 ``mc admin scanner info`` 可以查看扫描器当前状态，以及距离上次完整扫描所经过的时间。
+这有助于理解扫描器操作提供的各项指标。
 
-Scanner metrics, including usage metrics, reflect the last completed scan. 
-``PUT`` or ``DELETE`` operations since the last scan do not update in the usage until the next scan of the affected bucket(s).
+扫描器指标（包括 usage 指标）反映的是最近一次完成的扫描结果。
+自上次扫描以来发生的 ``PUT`` 或 ``DELETE`` 操作，不会在 usage 中体现，直到受影响的存储桶完成下一次扫描。
 
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block::
 

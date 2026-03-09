@@ -4,44 +4,44 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin policy entities
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-policy-entities-desc
 
-List the entities associated with a policy, user, or group on a target MinIO deployment. 
+列出目标 MinIO 部署中与策略、用户或组关联的实体。
 
 .. end-mc-admin-policy-entities-desc
 
 .. versionchanged:: RELEASE.2023-05-27T05-56-19Z
 
-   This command only returns :ref:`minio-managed users and groups <minio-users>`.
+   此命令仅返回 :ref:`MinIO 管理的用户和组 <minio-users>`。
 
-To list entities associated with an Active Directory or LDAP (AD/LDAP) configuration, use :mc-cmd:`mc idp ldap policy entities`.
+如需列出与 Active Directory 或 LDAP（AD/LDAP）配置关联的实体，请使用 :mc-cmd:`mc idp ldap policy entities`。
 
 
-For example, you can list all of the users and groups attached to a policy or list all of the policies attached to a specific user or group.
+例如，你可以列出附加到某个策略的所有用户和组，或者列出附加到特定用户或组的所有策略。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command returns a list of the policies associated with the user ``bob`` on the deployment at alias ``myminio``.
+      以下命令返回别名为 ``myminio`` 的部署中与用户 ``bob`` 关联的策略列表。
 
       .. code-block:: shell
          :class: copyable
 
          mc admin policy entities myminio/ --user bob  
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -59,106 +59,106 @@ For example, you can list all of the users and groups attached to a policy or li
 
 .. important::
 
-   This command is intended for managing policy associations for :ref:`MinIO-managed <minio-users>` users only.
+   此命令仅用于管理 :ref:`MinIO 管理的 <minio-users>` 用户的策略关联。
 
-   For managing policies to OpenID-managed users, see :ref:`minio-external-identity-management-openid`.
+   如需管理 OpenID 管理用户的策略，请参阅 :ref:`minio-external-identity-management-openid`。
 
-   For viewing policies for Active Directory/LDAP users or groups, use :mc-cmd:`mc idp ldap policy entities`.
+   如需查看 Active Directory/LDAP 用户或组的策略，请使用 :mc-cmd:`mc idp ldap policy entities`。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
-The :mc-cmd:`mc admin policy entities` command accepts the following arguments:
+:mc-cmd:`mc admin policy entities` 命令接受以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which to add the new policy.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，将在该部署上添加新策略。
 
 .. mc-cmd:: --group
    :optional:
 
-   The name of the group identity for which you want to list attached policies.
+   要列出其附加策略的组身份名称。
 
-   You may include multiple groups by repeating the flag multiple times.
-   The command returns each group with a list of associated entities.
+   你可以通过多次重复该标志来包含多个组。
+   命令会返回每个组及其关联实体列表。
 
 .. mc-cmd:: --policy
    :optional:
 
-   The name of a policy for which to list associated entities. 
+   要列出其关联实体的策略名称。
       
-   You may include multiple policies by repeating the flag multiple times.
-   The command returns each policy with a list of all associated entities.
+   你可以通过多次重复该标志来包含多个策略。
+   命令会返回每个策略及其所有关联实体列表。
 
 .. mc-cmd:: --user
    :optional:
 
-   The username of the identity for which you want to list attached policies.
+   要列出其附加策略的身份用户名。
 
-   You may include multiple users by repeating the flag multiple times.
-   The command returns each user with a list of associated policies.
+   你可以通过多次重复该标志来包含多个用户。
+   命令会返回每个用户及其关联策略列表。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-List all entities and policy associations for a deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出某个部署的所有实体及策略关联
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists all policies and the entity mappings associated with them on the deployment at alias ``myminio``.
+以下命令列出别名为 ``myminio`` 的部署上所有策略及其关联的实体映射。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy entities myminio/
 
-List entities associated with two different policies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出与两个不同策略关联的实体
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists all entities associated with the policies ``inteam-policy`` and ``mlteam-policy`` on the deployment at alias ``myminio``.
+以下命令列出别名为 ``myminio`` 的部署上与策略 ``inteam-policy`` 和 ``mlteam-policy`` 关联的所有实体。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy entities myminio/ --policy finteam-policy --policy mlteam-policy
 
-List policies associated with two different users
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出与两个不同用户关联的策略
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists all policies associated with the users ``bob`` and ``james`` on the deployment at alias ``myminio``.
+以下命令列出别名为 ``myminio`` 的部署上与用户 ``bob`` 和 ``james`` 关联的所有策略。
 
-The command outputs the list of policies associated with ``bob`` then the list of policies associated with ``james`` on the deployment at alias ``myminio``.
+该命令先输出与 ``bob`` 关联的策略列表，再输出别名为 ``myminio`` 的部署中与 ``james`` 关联的策略列表。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy entities myminio/ --user bob --user james 
 
-List policies associated with two different groups
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出与两个不同组关联的策略
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists all policies associated with the groups ``auditors`` and ``accounting`` on the deployment at alias ``myminio``.
+以下命令列出别名为 ``myminio`` 的部署上与组 ``auditors`` 和 ``accounting`` 关联的所有策略。
 
-The command outputs the list of policies associated with the group ``auditors`` then the list of policies associated with the group ``accounting`` on the deployment at alias ``myminio``.
+该命令先输出与组 ``auditors`` 关联的策略列表，再输出别名为 ``myminio`` 的部署中与组 ``accounting`` 关联的策略列表。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy entities play/ --group auditors --group accounting
 
-List policies associated with a policy, a group, and a user
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出与一个策略、一个组和一个用户关联的策略
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists all policies associated with the policy ``finteam-policy``, the user ``bobfisher``, and the group ``consulting`` on the deployment at alias ``myminio``.
+以下命令列出别名为 ``myminio`` 的部署上与策略 ``finteam-policy``、用户 ``bobfisher`` 和组 ``consulting`` 关联的所有策略。
 
-The command outputs the list of groups and users associated with the policy ``finteam-policy``, then lists the policies associated with the user ``bobfisher``, and finally lists the policies associated with the group ``consulting`` on the deployment at alias ``myminio``.
+该命令先输出与策略 ``finteam-policy`` 关联的组和用户列表，然后列出与用户 ``bobfisher`` 关联的策略，最后列出别名为 ``myminio`` 的部署中与组 ``consulting`` 关联的策略。
 
 .. code-block:: shell
    :class: copyable
@@ -166,10 +166,10 @@ The command outputs the list of groups and users associated with the policy ``fi
    mc admin policy entities play/ \                                                                        
               --policy finteam-policy --user bobfisher --group consulting 
 
-Output
-------
+输出
+----
 
-The output of the commands resembles the following:
+命令输出类似如下：
 
 .. code-block:: shell
 

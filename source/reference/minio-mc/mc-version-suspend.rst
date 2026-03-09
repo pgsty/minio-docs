@@ -6,36 +6,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc version suspend
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-version-suspend-desc
 
-The :mc:`mc version suspend` command disables versioning on the specified bucket.
+:mc:`mc version suspend` 命令用于禁用指定存储桶上的版本控制。
 
 .. end-mc-version-suspend-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command disables versioning for the ``mybucket`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会为 ``myminio`` MinIO 部署中的 ``mybucket`` 存储桶禁用版本控制：
 
       .. code-block:: shell
          :class: copyable
 
          mc version suspend myminio/mybucket
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -47,58 +47,58 @@ The :mc:`mc version suspend` command disables versioning on the specified bucket
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   The full path to the bucket on which to disable versioning.
-   For example:
+   要禁用版本控制的存储桶完整路径。
+   例如：
 
    .. code-block:: shell
 
       mc version suspend myminio/mybucket
 
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Example
--------
+示例
+----
 
-Disable Bucket Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~~
+禁用存储桶版本控制
+~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc version suspend` to disable versioning for a bucket:
+使用 :mc:`mc version suspend` 为存储桶禁用版本控制：
 
 .. code-block:: shell
    :class: copyable
 
    mc version suspend ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc version suspend ALIAS>` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc version suspend ALIAS>` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc version suspend ALIAS>` with the bucket on which to disable versioning.
-
-
-Behavior
---------
-
-Bucket Versioning with Existing Data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Disabling bucket versioning on a bucket with existing versioned data does *not* remove any versioned objects.
-Applications can continue to access versioned data after disabling bucket versioning.
-Use :mc-cmd:`mc rm --versions ALIAS/BUCKET/OBJECT <mc rm --versions>` to delete an object *and* all its versions.
+- 将 :mc-cmd:`PATH <mc version suspend ALIAS>` 替换为要禁用版本控制的存储桶。
 
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+行为
+----
+
+现有数据下的存储桶版本控制
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+在包含现有版本化数据的存储桶上禁用版本控制时，*不会* 删除任何已版本化对象。
+应用程序在禁用存储桶版本控制后仍可继续访问版本化数据。
+使用 :mc-cmd:`mc rm --versions ALIAS/BUCKET/OBJECT <mc rm --versions>` 删除某个对象及其所有版本。
+
+
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

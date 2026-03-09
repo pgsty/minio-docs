@@ -1,11 +1,11 @@
-1. Start MinIO with an FTP and/or SFTP port enabled.
+1. 启动 MinIO 并启用 FTP 和/或 SFTP 端口。
 
    .. tab-set::
 
       .. tab-item:: FTPS
          :sync: ftps
 
-         The following example starts MinIO with FTPS enabled.
+         以下示例以启用 FTPS 的方式启动 MinIO。
 
          .. code-block:: shell
             :class: copyable
@@ -19,8 +19,8 @@
 
          .. note:: 
 
-            Omit ``tls-private-key`` and ``tls-public-cert`` to use the MinIO default TLS keys for FTPS.
-            For more information, see the :ref:`TLS on MinIO documentation <minio-tls>`.
+            省略 ``tls-private-key`` 和 ``tls-public-cert`` 可使用 MinIO 默认 TLS 密钥进行 FTPS 连接。
+            更多信息请参阅 :ref:`MinIO TLS 文档 <minio-tls>`。
 
       .. tab-item:: SFTP/FTP
          :sync: sftp
@@ -35,25 +35,25 @@
             --sftp="ssh-private-key=/home/miniouser/.ssh/id_rsa" \
             ...
     
-         See the :mc-cmd:`minio server --ftp` and :mc-cmd:`minio server --sftp` for details on using these flags to start the MinIO service.
-         To connect to the an FTP port with TLS (FTPS), pass the ``tls-private-key`` and ``tls-public-cert`` keys and values, as well, unless using the MinIO default TLS keys.
+         有关使用这些标志启动 MinIO 服务的详细信息，请参阅 :mc-cmd:`minio server --ftp` 和 :mc-cmd:`minio server --sftp`。
+         若要通过 TLS (FTPS) 连接到 FTP 端口，除非使用 MinIO 默认 TLS 密钥，否则还需要传入 ``tls-private-key`` 和 ``tls-public-cert`` 键值。
 
-         The output of the command should return a response that resembles the following:
+         命令输出应类似如下：
 
          .. code-block:: shell
 
             MinIO FTP Server listening on :8021
             MinIO SFTP Server listening on :8022
 
-2. Use your preferred FTP client to connect to the MinIO deployment.
-   You must connect as a user whose :ref:`policies <minio-policy>` allow access to the desired buckets and objects.
+2. 使用你偏好的 FTP 客户端连接到 MinIO 部署。
+   你必须使用其 :ref:`策略 <minio-policy>` 允许访问目标存储桶和对象的用户身份进行连接。
 
-   The specifics of connecting to the MinIO deployment depend on your FTP client.
-   Refer to the documentation for your client.
+   连接到 MinIO 部署的具体方式取决于所使用的 FTP 客户端。
+   请参阅该客户端的文档。
 
-   To connect over TLS or through SSH, you must use a client that supports the desired protocol.
+   若要通过 TLS 或 SSH 连接，必须使用支持相应协议的客户端。
 
-3. Connect to MinIO
+3. 连接到 MinIO
 
    .. tab-set::
 
@@ -61,7 +61,7 @@
          :sync: sftp
 
 
-         The following example connects to an SFTP server, and lists the contents of a bucket named ``runner``.
+         以下示例连接到 SFTP 服务器，并列出名为 ``runner`` 的存储桶内容。
 
          .. code-block:: console
 
@@ -75,7 +75,7 @@
       .. tab-item:: FTPS
          :sync: ftps
 
-         The following uses the Linux uses the `FTP CLI client <https://linux.die.net/man/1/ftp>`__ to connect to the MinIO server using ``minio`` credentials to list contents in a bucket named ``runner``
+         以下示例使用 Linux 的 `FTP CLI client <https://linux.die.net/man/1/ftp>`__，通过 ``minio`` 凭证连接到 MinIO 服务器，并列出名为 ``runner`` 的存储桶内容。
 
          .. code-block:: shell
 
@@ -96,14 +96,14 @@
             ...
 
 
-4. Download an Object
+4. 下载对象
 
    .. tab-set:: 
 
       .. tab-item:: SFTP/FTP
          :sync: sftp
 
-         This example lists items in a bucket, then downloads the contents of the bucket.
+         本示例先列出存储桶中的条目，然后下载该存储桶中的内容。
 
          .. code-block:: console
 
@@ -120,7 +120,7 @@
       .. tab-item:: FTPS
          :sync: ftps
 
-         This example lists items in a bucket, then downloads the contents of the bucket.
+         本示例先列出存储桶中的条目，然后下载该存储桶中的内容。
 
          .. code-block:: console
 

@@ -1,8 +1,8 @@
 .. start-kes-configuration-hashicorp-vault-desc
 
-|KES| uses a YAML-formatted configuration file. 
-The following YAML provides the minimum required fields for using HashiCorp Vault as the root |KMS|. 
-You must modify this YAML to reflect your deployment environment.
+|KES| 使用 YAML 格式的配置文件。
+以下 YAML 给出了使用 HashiCorp Vault 作为根 |KMS| 所需的最小字段集。
+你必须根据自己的部署环境修改此 YAML。
 
 .. code-block:: shell
    :class: copyable
@@ -12,7 +12,7 @@ You must modify this YAML to reflect your deployment environment.
 
    # Disable the root administrator identity, as we do not need that level of access for
    # supporting SSE operations.
-   admin: 
+   admin:
      identity: disabled
 
    # Specify the TLS keys generated in the previous step here
@@ -42,7 +42,7 @@ You must modify this YAML to reflect your deployment environment.
        - /v1/log/audit
        - /v1/log/error
        identities:
-       - MINIO_API_KEY_HASH # Replace with the hash output returned from kes identity new 
+       - MINIO_API_KEY_HASH # Replace with the hash output returned from kes identity new
 
    # Specify the connection information for the Vault server.
    # The endpoint should be resolvable from the host.
@@ -60,39 +60,47 @@ You must modify this YAML to reflect your deployment environment.
        status:
          ping: 10s
        # Required if Vault uses certificates signed by an unknown CA,
-       # e.g. self-signed or internal (non-globally trusted).  
+       # e.g. self-signed or internal (non-globally trusted).
        # Replace this value with the full path to the Vault CA certificate.
        tls:
-         ca: vault-tls-CA.cert 
+         ca: vault-tls-CA.cert
 
 .. end-kes-configuration-hashicorp-vault-desc
 
 
 .. start-kes-prereq-hashicorp-vault-desc
 
-This procedure assumes an existing `HashiCorp Vault <https://www.vaultproject.io/>`__ installation accessible from the local host.
-The Vault `Quick Start <https://learn.hashicorp.com/tutorials/vault/getting-started-install>`__ provides a sufficient foundation for the purposes of this procedure.
-Defer to the `Vault Documentation <https://learn.hashicorp.com/vault>`__ for guidance on deployment and configuration.
+本流程假定本地主机可访问一个现有的 `HashiCorp Vault <https://www.vaultproject.io/>`__ 安装。
+出于本流程目的，Vault 的
+`Quick Start <https://learn.hashicorp.com/tutorials/vault/getting-started-install>`__
+已足够提供所需基础。
+关于部署和配置的具体指导，请参考
+`Vault Documentation <https://learn.hashicorp.com/vault>`__。
 
-.. admonition:: KES Operations Require Unsealed Vault
+.. admonition:: KES 操作要求 Vault 已解封
    :class: important
 
-   You must unseal the Vault instance to allow any cryptographic operations, including key creation and retrieval.
-   KES returns an error if the configured Vault service is sealed.
+   你必须解封 Vault 实例，才能执行包括密钥创建和检索在内的任何加密操作。
+   如果配置的 Vault 服务处于 sealed 状态，KES 会返回错误。
 
-   If you restart or otherwise seal the Vault instance, KES cannot perform any cryptographic operations against the Vault.
-   You must unseal the Vault to ensure normal operations.
+   如果你重启或以其他方式重新封存 Vault 实例，
+   KES 将无法对 Vault 执行任何加密操作。
+   你必须解封 Vault 才能保证其正常运行。
 
-   See the Vault documentation on `Seal/Unseal <https://www.vaultproject.io/docs/concepts/seal>`__ for more information.
+   更多信息请参见 Vault 关于
+   `Seal/Unseal <https://www.vaultproject.io/docs/concepts/seal>`__
+   的文档。
 
 .. end-kes-prereq-hashicorp-vault-desc
 
 .. start-kes-vault-seal-unseal-desc
 
-.. admonition:: KES Operations Requires Unsealed Vault
+.. admonition:: KES 操作要求 Vault 已解封
    :class: important
 
-   You must unseal the Vault instance to allow normal cryptographic operations, including key creation or retrieval.
-   See the Vault documentation on `Seal/Unseal <https://www.vaultproject.io/docs/concepts/seal>`__ for more information.
+   你必须解封 Vault 实例，才能执行包括密钥创建或检索在内的正常加密操作。
+   更多信息请参见 Vault 关于
+   `Seal/Unseal <https://www.vaultproject.io/docs/concepts/seal>`__
+   的文档。
 
 .. end-kes-vault-seal-unseal-desc

@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,29 +14,29 @@
 
 .. versionadded:: RELEASE.2023-10-30T18-43-32Z
 
-Description
------------
+说明
+----
 
 .. start-mc-idp-ldap-accesskey-desc
 
-The :mc-cmd:`mc idp ldap accesskey` commands allow you to list, delete, or display information about LDAP access key pairs. 
+:mc-cmd:`mc idp ldap accesskey` 命令可用于列出、删除或显示 LDAP 访问密钥对的信息。
 
 .. end-mc-idp-ldap-accesskey-desc
 
-The :mc-cmd:`mc idp ldap accesskey` commands are only supported against MinIO deployments.
+:mc-cmd:`mc idp ldap accesskey` 命令仅支持 MinIO 部署。
 
 .. include:: /includes/common-minio-ad-ldap-params.rst
    :start-after: start-minio-ad-ldap-accesskey-creation
    :end-before: end-minio-ad-ldap-accesskey-creation
 
-The :mc-cmd:`mc idp ldap accesskey` command has the following subcommands:
+:mc-cmd:`mc idp ldap accesskey` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc-cmd:`mc idp ldap accesskey create`
      - .. include:: /reference/minio-mc/mc-idp-ldap-accesskey-create.rst

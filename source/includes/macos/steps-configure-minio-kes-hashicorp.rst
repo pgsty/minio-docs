@@ -1,7 +1,7 @@
-Deploy MinIO and KES with Server-Side Encryption
-------------------------------------------------
+部署启用服务器端加密的 MinIO 和 KES
+---------------------------------
 
-Prior to starting these steps, create the following folders:
+开始以下步骤前，请先创建这些目录：
 
 .. code-block:: shell
    :class: copyable
@@ -11,19 +11,20 @@ Prior to starting these steps, create the following folders:
    mkdir -p |kesconfigpath|
    mkdir -p |miniodatapath|
 
-Prerequisite
-~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-Depending on your chosen :kes-docs:`supported KMS target <#supported-kms-targets>` configuration, you may need to pass the ``kes-server.cert`` as a trusted Certificate Authority (CA).
-Defer to the client documentation for instructions on trusting a third-party CA.
+根据你选择的 :kes-docs:`受支持 KMS 目标 <#supported-kms-targets>` 配置，
+你可能需要将 ``kes-server.cert`` 作为受信任的 Certificate Authority (CA) 传递。
+关于如何信任第三方 CA，请参阅客户端文档。
 
-1) Create the MinIO Configurations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 创建 MinIO 配置
+~~~~~~~~~~~~~~~~~~
 
-Create the MinIO Environment File
+创建 MinIO 环境文件
 
-Create the environment file using your preferred text editor.
-The following example uses ``nano``:
+使用你偏好的文本编辑器创建环境文件。
+以下示例使用 ``nano``：
 
 .. code-block:: shell
    :substitutions:
@@ -34,31 +35,31 @@ The following example uses ``nano``:
    :start-after: start-kes-configuration-minio-desc
    :end-before: end-kes-configuration-minio-desc
 
-3) Start the MinIO Server
-~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 启动 MinIO Server
+~~~~~~~~~~~~~~~~~~~~
 
 .. note::
 
-   You **must** start KES *before* starting MinIO. 
-   The MinIO deployment requires access to KES as part of its startup.
+   你必须先启动 KES，再启动 MinIO。
+   MinIO 部署在启动过程中需要访问 KES。
 
 .. include:: /includes/common/common-minio-kes.rst
    :start-after: start-kes-minio-start-server-desc
    :end-before: end-kes-minio-start-server-desc
 
-Foreground processes depend on the shell or terminal in which they run.
-Exiting or terminating the shell/terminal instance also kills the attached process.
-Defer to your operating system best practices for running processes in the background.
+前台进程依赖其运行所在的 shell 或终端。
+退出或终止该 shell/终端实例，也会一并结束所附着的进程。
+关于如何将进程放到后台运行，请遵循你的操作系统最佳实践。
 
-4) Generate a New Encryption Key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 生成新的加密密钥
+~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-minio-kes.rst
    :start-after: start-kes-generate-key-desc
    :end-before: end-kes-generate-key-desc
 
-5) Enable SSE-KMS for a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5) 为存储桶启用 SSE-KMS
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-minio-kes.rst
    :start-after: start-kes-enable-sse-kms-desc

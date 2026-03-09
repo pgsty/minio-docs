@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,27 +14,27 @@
 
    .. versionchanged:: RELEASE.2022-08-11T00-30-48Z
 
-   ``mc support top`` replaces the ``mc admin top`` command.
+   ``mc support top`` 替代 ``mc admin top`` 命令。
 
 .. include:: /includes/common-mc-support.rst
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Description
------------
+描述
+----
 
 .. start-mc-support-top-desc
 
-The :mc:`mc support top` command returns statistics for distributed
-MinIO deployments, similar to the output of the ``top`` command in a shell. 
+:mc:`mc support top` 命令返回分布式 MinIO 部署的统计信息，
+类似于 shell 中 ``top`` 命令的输出。
 
 .. end-mc-support-top-desc
 
 .. note::
 
-   :mc:`mc support top` is not supported on single-node single-drive MinIO deployments.
+   :mc:`mc support top` 不支持单节点单驱动 MinIO 部署。
 
-:mc-cmd:`mc support top` has the following subcommands:
+:mc-cmd:`mc support top` 具有以下子命令：
 
 - :mc-cmd:`~mc support top api`
 - :mc-cmd:`~mc support top locks`
@@ -42,12 +42,12 @@ MinIO deployments, similar to the output of the ``top`` command in a shell.
 - :mc-cmd:`~mc support top net`
 - :mc-cmd:`~mc support top rpc`
 
-Refer to the pages linked above for each subcommand for details.
+有关每个子命令的详细信息，请参阅上方链接的页面。
 
-Syntax
-------
+语法
+----
 
-The command has the following syntax:
+该命令的语法如下：
 
 .. code-block:: shell
 

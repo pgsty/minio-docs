@@ -4,38 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin policy detach
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-policy-detach-desc
 
-Remove one or more IAM policies from either a :ref:`MinIO-managed user or a group <minio-users>`. 
+从 :ref:`MinIO 管理的用户或组 <minio-users>` 中移除一个或多个 IAM 策略。
 
 .. end-mc-admin-policy-detach-desc
 
-Exactly one :mc-cmd:`~mc admin policy detach --user` or one :mc-cmd:`~mc admin policy detach --group` is required.
+必须且只能指定 :mc-cmd:`~mc admin policy detach --user` 或 :mc-cmd:`~mc admin policy detach --group` 其中之一。
 
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command detaches the policy ``readonly`` from the user ``james`` on the deployment at alias ``myminio``.
+      以下命令从别名为 ``myminio`` 的部署中为用户 ``james`` 解绑 ``readonly`` 策略。
 
       .. code-block:: shell
          :class: copyable
 
          mc admin policy detach myminio readonly --user james   
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -53,29 +53,29 @@ Exactly one :mc-cmd:`~mc admin policy detach --user` or one :mc-cmd:`~mc admin p
 
 .. important::
 
-   This command is intended for managing policy associations for :ref:`MinIO-managed <minio-users>` users only.
+   此命令仅用于管理 :ref:`MinIO 管理 <minio-users>` 用户的策略关联。
 
-   For managing policies to OpenID-managed users, see :ref:`minio-external-identity-management-openid`.
+   如需管理 OpenID 管理的用户策略，请参见 :ref:`minio-external-identity-management-openid`。
 
-   For detaching policies from Active Directory/LDAP users or groups, use :mc-cmd:`mc idp ldap policy detach`.
+   如需从 Active Directory/LDAP 用户或组解绑策略，请使用 :mc-cmd:`mc idp ldap policy detach`。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
-The :mc-cmd:`mc admin policy detach` command accepts the following arguments:
+:mc-cmd:`mc admin policy detach` 命令接受以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment with the user or group for which you want to detach one or more policies.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，其中包含你要解绑一个或多个策略的用户或组。
 
 .. mc-cmd:: POLICY
    :required:
 
-   The name of the policy to detach from either the user or the group. 
-   You may detach multiple policies at once by separating each policy name with a space.
+   要从用户或组解绑的策略名称。
+   你可以通过空格分隔多个策略名称，一次解绑多个策略。
 
-   MinIO deployments include the following :ref:`built-in policies <minio-policy-built-in>` by default:
+   MinIO 部署默认包含以下 :ref:`内置策略 <minio-policy-built-in>`：
 
    - :userpolicy:`readonly` 
    - :userpolicy:`readwrite`
@@ -85,41 +85,41 @@ The :mc-cmd:`mc admin policy detach` command accepts the following arguments:
 .. mc-cmd:: --user
    :optional:
 
-   The username of the identity you want to detach the policy or policies from.
-   You may only list one user.
+   要解绑策略的身份用户名。
+   只能指定一个用户。
 
-   You must include either the ``--user`` flag or the ``--group`` flag.
-   You may not use the ``--user`` flag at the same time as the ``--group`` flag.
+   必须包含 ``--user`` 或 ``--group`` 标志之一。
+   不能将 ``--user`` 与 ``--group`` 标志同时使用。
 
 .. mc-cmd:: --group
    :optional:
 
-   The name of the group identity you want to detach the policy or policies from.
-   You may only list one group.
+   要解绑策略的组名称。
+   只能指定一个组。
 
-   All users with membership in the group lose access to any permissions granted by the policies associated to the group, unless those are granted by other policies or groups the users belong to.
+   组内所有成员都会失去该组关联策略所授予的权限，除非这些权限也由用户所属的其他策略或组授予。
 
-   You must include either the ``--group`` flag or the ``--user`` flag.
-   You may not use the ``--group`` flag at the same time as the ``--user`` flag.
+   必须包含 ``--group`` 或 ``--user`` 标志之一。
+   不能将 ``--group`` 与 ``--user`` 标志同时使用。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Detach the policy ``readonly`` from the user ``james`` on the deployment at alias ``myminio``.
+从别名为 ``myminio`` 的部署中为用户 ``james`` 解绑 ``readonly`` 策略。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy detach myminio readonly --user james
 
-Detach the ``audit-policy`` and ``acct-policy`` policies from group ``legal`` on the deployment at alias ``myminio``.
+从别名为 ``myminio`` 的部署中为组 ``legal`` 解绑 ``audit-policy`` 和 ``acct-policy`` 策略。
 
 .. code-block:: shell
    :class: copyable

@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
@@ -17,16 +17,16 @@
 
 .. versionchanged:: RELEASE.2022-12-02T23-48-47Z
 
-   ``mc support logs`` moved to ``mc admin logs`` and provide a simpler command interface for displaying server logs for the MinIO deployment.
+   ``mc support logs`` 已迁移至 ``mc admin logs``，并提供了更简化的命令接口，用于显示 MinIO 部署的服务器日志。
 
-   The output is similar to what is available via ``journalctl -uf minio`` for systemd-controlled deployments.
+   对于由 systemd 管理的部署，其输出与 ``journalctl -uf minio`` 提供的内容类似。
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-logs-desc
 
-Use the :mc-cmd:`mc admin logs` command to show MinIO server logs.
+使用 :mc-cmd:`mc admin logs` 命令显示 MinIO 服务器日志。
 
 .. end-mc-admin-logs-desc
 
@@ -34,43 +34,43 @@ Use the :mc-cmd:`mc admin logs` command to show MinIO server logs.
    :start-after: start-support-logs-opt-in
    :end-before: end-support-logs-opt-in
 
-Examples
---------
+示例
+----
 
-Show Logs for a Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示某个部署的日志
+~~~~~~~~~~~~~~~~~~
 
-The following command displays the most recent ten server logs of any type for the alias ``minio1``.
+以下命令显示别名为 ``minio1`` 的部署中任意类型的最近 10 条服务器日志。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin logs minio1
 
-Show Last 5 Log Entries for a Node
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示某个节点最近 5 条日志条目
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command shows the most recent five log entries for a ``node1`` on the deployment with alias ``minio1``.
+以下命令显示别名为 ``minio1`` 的部署中 ``node1`` 节点最近的 5 条日志条目。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin logs --last 5 myminio node1
 
-Show Application Type Log Entires for a Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示某个部署的 application 类型日志条目
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command shows log entries of the type ``application`` for all nodes on the deployment with alias ``minio1``.
+以下命令显示别名为 ``minio1`` 的部署中所有节点的 ``application`` 类型日志条目。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin logs --type application minio1
 
-Syntax
-------
+语法
+----
 
-The command has the following syntax:
+命令语法如下：
 
 .. code-block:: shell
                
@@ -80,36 +80,36 @@ The command has the following syntax:
                  ALIAS              \
                  [NODE]
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment.
+   MinIO 部署的 :ref:`alias <alias>`。
    
 .. mc-cmd:: --last, -l
    :optional:
 
-   Show only the most recent specified number of log entries.
+   仅显示最近指定数量的日志条目。
 
-   If this flag is not included, up to the last 10 log entries show.
+   如果不包含此标志，则最多显示最近 10 条日志条目。
 
 .. mc-cmd:: --type, --type
    :optional:
 
-   List log entries of a specified type.
-   Valid types are ``minio``, ``application``, or ``all``.
+   列出指定类型的日志条目。
+   有效类型为 ``minio``、``application`` 或 ``all``。
 
-   If not specified, all log entry types show.
+   如果未指定，则显示所有类型的日志条目。
 
 .. mc-cmd:: NODE
    :optional:
 
-   In distributed deployments, specify which node's logs to show by entering the node's name.
+   在分布式部署中，输入节点名称以指定要显示其日志的节点。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

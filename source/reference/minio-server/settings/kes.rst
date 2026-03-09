@@ -1,27 +1,27 @@
 .. _minio-server-envvar-kes:
 
 ===============================
-Key Encryption Service Settings
+密钥加密服务设置
 ===============================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-.. |SSE| replace:: :abbr:`SSE (Server-Side Encryption)`
+.. |SSE| replace:: :abbr:`SSE (服务端加密)`
 
-MinIO Server includes three groups of environment variables to manage how the MinIO Server interacts with the Key Encryption Service (KES), Key Management Service (KMS), or static key files.
-You may only define one of the three sets.
-If more than one type of environment variable sets is defined, MinIO returns an error.
+MinIO Server 提供三组环境变量，用于管理 MinIO Server 与 Key Encryption Service (KES)、Key Management Service (KMS) 或静态密钥文件的交互方式。
+这三组中只能定义一组。
+如果定义了多种类型的环境变量组，MinIO 会返回错误。
 
 .. note::
 
-   These settings do not have configuration setting options for use with :mc:`mc admin config set`.
+   这些设置不支持通过 :mc:`mc admin config set` 进行配置。
 
-Define any one set of these environment variables in the host system prior to starting or restarting the MinIO process.
-Refer to your operating system's documentation for how to define an environment variable.
+在启动或重启 MinIO 进程之前，请在宿主系统中定义其中任意一组环境变量。
+有关如何定义环境变量，请参考操作系统文档。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-test-before-prod
@@ -30,23 +30,23 @@ Refer to your operating system's documentation for how to define an environment 
 Key Encryption Service
 ----------------------
 
-Define the following variables to use the Key Encryption Service (KES) to connect to a :kes-docs:`supported 3rd party Key Management Service provider <#supported-kms-targets>`.
+定义以下变量以使用 Key Encryption Service (KES) 连接到 :kes-docs:`受支持的第三方 Key Management Service 提供商 <#supported-kms-targets>`。
 
 .. envvar:: MINIO_KMS_KES_ENDPOINT
 
-   The endpoint(s) for the MinIO Key Encryption Service (KES) process to use for supporting SSE-S3 and MinIO backend encryption operations.
-   Separate multiple KES endpoints with a ``,``.
+   MinIO Key Encryption Service (KES) 进程用于支持 SSE-S3 和 MinIO 后端加密操作的 endpoint。
+   多个 KES endpoint 使用 ``,`` 分隔。
 
 .. envvar:: MINIO_KMS_KES_KEY_NAME
 
-   The name of an external key on the Key Management system (KMS) configured on the KES server and used for performing en/decryption operations. 
-   MinIO uses this key for the following:
+   KES 服务器上配置的 Key Management system (KMS) 中外部密钥名称，用于执行加密和解密操作。
+   MinIO 将此密钥用于以下用途：
 
-   - Encrypting backend data (:ref:`IAM <minio-authentication-and-identity-management>`, server configuration).
+   - 加密后端数据（:ref:`IAM <minio-authentication-and-identity-management>`、服务器配置）。
 
-   - The default encryption key for Server-Side Encryption with :ref:`SSE-KMS <minio-encryption-sse-kms>`.
+   - :ref:`SSE-KMS <minio-encryption-sse-kms>` 的默认服务端加密密钥。
 
-   - The encryption key for Server-Side Encryption with :ref:`SSE-S3 <minio-encryption-sse-s3>`.
+   - :ref:`SSE-S3 <minio-encryption-sse-s3>` 的服务端加密密钥。
 
    .. important::
 
@@ -56,85 +56,84 @@ Define the following variables to use the Key Encryption Service (KES) to connec
 
 .. envvar:: MINIO_KMS_KES_API_KEY
 
-   Preferred method for authenticating with the encryption service using the KES API key obtained from the :kes-docs:`kes identity new <cli/kes-identity/new/>` command.
+   使用通过 :kes-docs:`kes identity new <cli/kes-identity/new/>` 命令获取的 KES API key 与加密服务进行身份认证的首选方式。
 
-   This environment variable is mutually exclusive with the :envvar:`MINIO_KMS_KES_KEY_FILE` and :envvar:`MINIO_KMS_KES_CERT_FILE` environment variables.
+   此环境变量与 :envvar:`MINIO_KMS_KES_KEY_FILE` 和 :envvar:`MINIO_KMS_KES_CERT_FILE` 环境变量互斥。
 
 .. envvar:: MINIO_KMS_KES_KEY_FILE
 
-   The private key associated to the the :envvar:`MINIO_KMS_KES_CERT_FILE` x.509 certificate to use when authenticating to the KES server. 
-   The KES server requires clients to present their certificate for performing mutual TLS (mTLS).
+   与 :envvar:`MINIO_KMS_KES_CERT_FILE` x.509 证书关联的私钥，用于向 KES 服务器进行身份认证。
+   KES 服务器要求客户端提供证书以执行 mutual TLS (mTLS)。
 
-   See the :minio-git:`KES wiki <kes/wiki/Configuration#policy-configuration>` for more complete documentation on KES access control.
+   有关 KES 访问控制的完整文档，请参见 :minio-git:`KES wiki <kes/wiki/Configuration#policy-configuration>`。
 
-   You must also set the :envvar:`MINIO_KMS_KES_CERT_FILE`.
-   This variable is mutually exclusive with :envvar:`MINIO_KMS_KES_API_KEY`.
+   还必须设置 :envvar:`MINIO_KMS_KES_CERT_FILE`。
+   此变量与 :envvar:`MINIO_KMS_KES_API_KEY` 互斥。
 
 .. envvar:: MINIO_KMS_KES_CERT_FILE
 
-   The x.509 certificate to present to the KES server. 
-   The KES server requires clients to present their certificate for performing mutual TLS (mTLS).
+   提供给 KES 服务器的 x.509 证书。
+   KES 服务器要求客户端提供证书以执行 mutual TLS (mTLS)。
 
-   The KES server computes an :minio-git:`identity <kes/wiki/Configuration#policy-configuration>` from the certificate and compares it to its configured    policies. 
-   The KES server grants the :mc:`minio` server access to only those operations explicitly granted by the policy.
+   KES 服务器会根据证书计算 :minio-git:`identity <kes/wiki/Configuration#policy-configuration>`，并将其与已配置策略进行比对。
+   KES 服务器仅向 :mc:`minio` 服务器授予策略中明确允许的操作访问权限。
 
-   See the :minio-git:`KES wiki <kes/wiki/Configuration#policy-configuration>` for more complete documentation on KES access control.
+   有关 KES 访问控制的完整文档，请参见 :minio-git:`KES wiki <kes/wiki/Configuration#policy-configuration>`。
 
-   You must also set the :envvar:`MINIO_KMS_KES_KEY_FILE`.
-   This variable is mutually exclusive with :envvar:`MINIO_KMS_KES_API_KEY`.
+   还必须设置 :envvar:`MINIO_KMS_KES_KEY_FILE`。
+   此变量与 :envvar:`MINIO_KMS_KES_API_KEY` 互斥。
 
 .. envvar:: MINIO_KMS_KES_CAPATH
    :optional:
 
-   Allows validation of the KES Server Certificate for a Self-Signed or Third-Party :abbr:`CA (Certificate Authority)`.
-   Specify the path to the location of the :abbr:`CA (Certificate Authority)` certificate for your KES deployment.
+   允许使用自签名或第三方 :abbr:`CA (Certificate Authority)` 验证 KES 服务器证书。
+   指定 KES 部署所使用的 :abbr:`CA (Certificate Authority)` 证书路径。
 
-   This variable is not required if you use a public certificate authority.
+   如果使用公共证书颁发机构，则不需要此变量。
 
 .. envvar:: MINIO_KMS_KES_KEY_PASSWORD
    :optional:
 
-   The password used to encrypt and decrypt the TLS private key, if used.
+   用于加密和解密 TLS 私钥的密码（如果使用）。
 
 MinIO Key Management Server (KMS)
 ---------------------------------
 
-Define the following variables to use `MinIO KMS <https://min.io/product/enterprise/key-management-server?ref=docs>`__ to manage keys.
+定义以下变量以使用 `MinIO KMS <https://min.io/product/enterprise/key-management-server?ref=docs>`__ 管理密钥。
 
 .. envvar:: MINIO_KMS_SERVER
 
-   The endpoint(s) for the MinIO Key Management Service (KMS) process to use for supporting SSE-S3 and MinIO backend encryption operations.
-   Separate multiple KMS endpoints with a ``,``.
+   MinIO Key Management Service (KMS) 进程用于支持 SSE-S3 和 MinIO 后端加密操作的 endpoint。
+   多个 KMS endpoint 使用 ``,`` 分隔。
 
 .. envvar:: MINIO_KMS_ENCLAVE
 
-   The MinIO KMS Enclave where the key and identity exist.
+   密钥和身份所在的 MinIO KMS Enclave。
 
 .. envvar:: MINIO_KMS_SSE_KEY
 
-   The default key to use for SSE-S3 encryption when a call does not specify a key identity.
+   当调用未指定密钥身份时，用于 SSE-S3 加密的默认密钥。
 
 .. envvar:: MINIO_KMS_API_KEY
 
-   The credential used to authenticate with the MinIO KMS service.
+   用于向 MinIO KMS 服务进行身份认证的凭据。
 
-Static Key Files
-----------------
+静态密钥文件
+------------
 
 .. warning::
 
-   These settings support early development and evaluation of Server-Side Encryption of Objects without depending on an external KMS.
-   Do not use these settings in any extended development, QA, or production environments.
-   See :ref:`minio-sse-vault` for guidance on deploying SSE using MinIO Key Encryption Service (KES) and an external KMS.
+   这些设置用于在不依赖外部 KMS 的情况下，对对象服务端加密进行早期开发和评估。
+   不要在长期开发、QA 或生产环境中使用这些设置。
+   关于如何使用 MinIO Key Encryption Service (KES) 和外部 KMS 部署 SSE，请参见 :ref:`minio-sse-vault`。
 
-Provide a static KMS key or key file to use for encryption.
+提供静态 KMS 密钥或密钥文件用于加密。
 
 .. envvar:: MINIO_KMS_SECRET_KEY
 
-   The base64 form of the static KMS key in the form ``<key-name>:<base64-32byte-key>``. 
-   Implements a subset of KMS APIs.
+   静态 KMS 密钥的 base64 形式，格式为 ``<key-name>:<base64-32byte-key>``。
+   实现了部分 KMS API。
 
 .. envvar:: MINIO_KMS_SECRET_KEY_FILE
 
-   Path to the file to read the static KMS key from.
-
+   读取静态 KMS 密钥的文件路径。

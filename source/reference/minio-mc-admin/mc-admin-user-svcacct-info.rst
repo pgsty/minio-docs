@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,40 +14,40 @@
 
 .. important::
 
-   This command has been replaced and will be deprecated in a future MinIO Client release.
+   此命令已被替代，并将在未来的 MinIO Client 版本中弃用。
 
-   As of MinIO Client RELEASE.2024-10-08T09-37-26Z, use the :mc:`mc admin accesskey info` command to display information about access keys for built-in MinIO IDP users.
+   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 开始，请使用 :mc:`mc admin accesskey info` 命令显示内置 MinIO IDP 用户的 access key 信息。
 
-   For access keys for AD/LDAP users, use the :mc:`mc idp ldap accesskey info` command.
+   对于 AD/LDAP 用户的 access key，请使用 :mc:`mc idp ldap accesskey info` 命令。
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-svcacct-info-desc
 
-The :mc-cmd:`mc admin user svcacct info` command returns a description of the specified :ref:`access key <minio-id-access-keys>`.
+:mc-cmd:`mc admin user svcacct info` 命令返回指定 :ref:`access key <minio-id-access-keys>` 的描述信息。
 
 .. end-mc-admin-svcacct-info-desc
 
-"Access Keys" have equivalent functionality to and replace the concept of "Service Accounts" in MinIO.
+在 MinIO 中，“Access Keys” 与 “Service Accounts” 功能等效，并取代了后者这一概念。
 
-The description output includes the following details, as available:
+描述输出在可用时包含以下详细信息：
 
 - Access Key
-- Parent user of the specified access key
-- Access key status (``on`` or ``off``)
-- Policy or policies
-- Comment
-- Expiration
+- 指定 access key 的父用户
+- access key 状态（``on`` 或 ``off``）
+- 策略（单个或多个）
+- 注释
+- 过期时间
 
-Use :mc-cmd:`~mc admin user svcacct info --policy` to view the attached policies.
+使用 :mc-cmd:`~mc admin user svcacct info --policy` 查看附加的策略。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command returns information on the specified access key:
+      以下命令返回指定 access key 的信息：
   
       .. code-block:: shell  
          :class: copyable 
@@ -56,7 +56,7 @@ Use :mc-cmd:`~mc admin user svcacct info --policy` to view the attached policies
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax: 
+      该命令语法如下： 
   
       .. code-block:: shell  
          :class: copyable 
@@ -71,51 +71,51 @@ Use :mc-cmd:`~mc admin user svcacct info --policy` to view the attached policies
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: ACCESSKEY
    :required:
 
-   The service account access key to display.
+   要显示的 service account access key。
 
 .. mc-cmd:: --policy
    :optional:
 
-   Displays policies attached to the specified service account.
+   显示附加到指定 service account 的策略。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Display Service Account Details
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示 Service Account 详情
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin user svcacct info` to display details of a service account on a MinIO deployment:
+使用 :mc-cmd:`mc admin user svcacct info` 显示 MinIO 部署上某个 service account 的详细信息：
 
 .. code-block:: shell
    :class: copyable
 
       mc admin user svcacct info ALIAS ACCESSKEY
 
-- Replace :mc-cmd:`ALIAS <mc admin user add ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user add ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`ACCESSKEY <mc admin user svcacct info ACCESSKEY>` with the service account access key.
+- 将 :mc-cmd:`ACCESSKEY <mc admin user svcacct info ACCESSKEY>` 替换为 service account access key。
 
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -127,21 +127,21 @@ The output resembles the following:
    Expiration: no-expiry
 
 
-Display Service Account Policy Details
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示 Service Account 策略详情
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin user svcacct info` to display the policies attached to service account:
+使用 :mc-cmd:`mc admin user svcacct info` 显示附加到 service account 的策略：
 
 .. code-block:: shell
    :class: copyable
 
       mc admin user svcacct info --policy ALIAS ACCESSKEY
 
-- Replace :mc-cmd:`ALIAS <mc admin user add ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user add ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`ACCESSKEY <mc admin user svcacct info ACCESSKEY>` with the service account access key.
+- 将 :mc-cmd:`ACCESSKEY <mc admin user svcacct info ACCESSKEY>` 替换为 service account access key。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -161,11 +161,11 @@ The output resembles the following:
    }
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

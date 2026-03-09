@@ -2,24 +2,24 @@
 .. _minio-installation-platform-support:
 .. _deploy-minio-distributed-baremetal:
 
-=========================
-Deploy MinIO on Baremetal
-=========================
+=====================
+在裸机上部署 MinIO
+=====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports deploying onto baremetal infrastructure - physical machines or virtualized hosts - running Linux, MacOS, and Windows.
-You can also deploy MinIO as a container onto supported Operating Systems.
+MinIO 支持部署到裸机基础设施上，包括运行 Linux、MacOS 和 Windows 的物理机或虚拟化主机。
+你也可以在受支持的操作系统上以容器方式部署 MinIO。
 
-- :ref:`Deploy MinIO onto RedHat Linux <deploy-minio-rhel>`
-- :ref:`Deploy MinIO onto Ubuntu Linux <deploy-minio-ubuntu>`
-- :ref:`Deploy MinIO onto Apple MacOS <deploy-minio-macos>`
-- :ref:`Deploy MinIO as a Container <deploy-minio-container>`
-- :ref:`Deploy MinIO onto Microsoft Windows <deploy-minio-windows>`
+- :ref:`在 RedHat Linux 上部署 MinIO <deploy-minio-rhel>`
+- :ref:`在 Ubuntu Linux 上部署 MinIO <deploy-minio-ubuntu>`
+- :ref:`在 Apple MacOS 上部署 MinIO <deploy-minio-macos>`
+- :ref:`以容器方式部署 MinIO <deploy-minio-container>`
+- :ref:`在 Microsoft Windows 上部署 MinIO <deploy-minio-windows>`
 
 .. toctree::
    :titlesonly:

@@ -1,126 +1,125 @@
 .. _minio-encryption-sse-c:
 
 =======================================================
-Server-Side Encryption with Client-Managed Keys (SSE-C)
+使用客户端管理密钥的服务端加密（SSE-C）
 =======================================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-.. |EK|  replace:: :abbr:`EK (External Key)`
-.. |DEK| replace:: :abbr:`DEK (Data Encryption Key)`
-.. |KEK| replace:: :abbr:`KEK (Key Encryption Key)`
-.. |OEK| replace:: :abbr:`OEK (Object Encryption Key)`
-.. |SSE| replace:: :abbr:`SSE (Server-Side Encryption)`
-.. |KMS| replace:: :abbr:`KMS (Key Management Service)`
-.. |KES| replace:: :abbr:`KES (Key Encryption Service)`
+.. |EK|  replace:: :abbr:`EK (外部密钥)`
+.. |DEK| replace:: :abbr:`DEK (数据加密密钥)`
+.. |KEK| replace:: :abbr:`KEK (密钥加密密钥)`
+.. |OEK| replace:: :abbr:`OEK (对象加密密钥)`
+.. |SSE| replace:: :abbr:`SSE (服务端加密)`
+.. |KMS| replace:: :abbr:`KMS (密钥管理服务)`
+.. |KES| replace:: :abbr:`KES (密钥加密服务)`
 
-MinIO Server-Side Encryption (SSE) protects objects as part of write operations,
-allowing clients to take advantage of server processing power to secure objects
-at the storage layer (encryption-at-rest). SSE also provides key functionality
-to regulatory and compliance requirements around secure locking and erasure.
+MinIO Server-Side Encryption (SSE) 在写入操作过程中保护对象，
+使客户端能够利用服务端处理能力在存储层实现对象保护
+（静态加密，encryption-at-rest）。SSE 还提供满足安全锁定与擦除相关
+监管和合规要求所需的关键能力。
 
-The procedure on this page configures and enables Server-Side Encryption
-with Client-Managed Keys (SSE-C). MinIO SSE-C supports client-driven
-encryption of objects *before* writing the object to the drive. Clients must
-specify the correct key to decrypt objects for read operations.
+本页中的步骤用于配置并启用使用客户端管理密钥的服务端加密
+（SSE-C）。MinIO SSE-C 支持由客户端在对象写入磁盘*之前*
+驱动对象加密。客户端在执行读取操作时必须提供正确的密钥
+才能解密对象。
 
-MinIO SSE-C is functionally compatible with Amazon
+MinIO SSE-C 在功能上兼容 Amazon
 :s3-docs:`Server-Side Encryption with Customer-Provided Keys
 <ServerSideEncryptionCustomerKeys.html>`. 
 
 .. _minio-encryption-sse-c-erasure-locking:
 
-Secure Erasure and Locking
---------------------------
+安全擦除与锁定
+----------------
 
-SSE-C protects objects using an |EK| specified by the client as part
-of the write operation. Assuming the client-side key management
-supports disabling or deleting these keys:
+SSE-C 在写入操作期间使用客户端指定的 |EK| 来保护对象。
+前提是客户端侧的密钥管理支持禁用或删除这些密钥：
 
-- Disabling the |EK| temporarily locks any objects encrypted using that
-   |EK| by rendering them unreadable. You can later enable the |EK| to
-   resume normal read operations on those objects.
+- 禁用 |EK| 会通过使使用该 |EK| 加密的对象变得不可读，
+   从而暂时锁定这些对象。之后您可以重新启用该 |EK|，
+   以恢复对这些对象的正常读取操作。
 
-- Deleting the |EK| renders all objects encrypted by that |EK|
-   *permanently* unreadable. If the client-side KMS does not support
-   backups of the |EK|, this process is *irreversible*.
+- 删除 |EK| 会使所有使用该 |EK| 加密的对象
+   *永久* 不可读。如果客户端侧 KMS 不支持
+   对 |EK| 进行备份，则该过程 *不可逆*。
 
-The scope of a single |EK| depends on the number of write operations
-which specified that |EK| when requesting SSE-C encryption. 
+单个 |EK| 的影响范围取决于在请求 SSE-C 加密时
+有多少次写入操作指定了该 |EK|。 
 
-Considerations
---------------
+注意事项
+--------
 
-SSE-C with Replication
-~~~~~~~~~~~~~~~~~~~~~~
+复制场景中的 SSE-C
+~~~~~~~~~~~~~~~~~~
 
 .. versionchanged:: Server RELEASE.2024-03-30T09-41-56Z
 
-   Objects encrypted with SSE-C can replicate through both site replication or bucket replication.
-   Previous versions of MinIO Object Store did not replicate SSE-C encrypted objects.
+   使用 SSE-C 加密的对象现在可以通过站点复制或存储桶复制进行复制。
+   早期版本的 MinIO Object Store 不会复制经过 SSE-C 加密的对象。
 
-SSE-C encrypted objects that are compressed are not compatible with MinIO :ref:`bucket replication <minio-bucket-replication>` or :ref:`site replication <minio-site-replication-overview>`. 
-Use :ref:`SSE-KMS <minio-encryption-sse-kms>` or :ref:`SSE-S3 <minio-encryption-sse-s3>` to ensure encrypted objects are compatible with replication.
+经过压缩的 SSE-C 加密对象与 MinIO :ref:`bucket replication <minio-bucket-replication>` 或 :ref:`site replication <minio-site-replication-overview>` 不兼容。 
+请使用 :ref:`SSE-KMS <minio-encryption-sse-kms>` 或 :ref:`SSE-S3 <minio-encryption-sse-s3>`，以确保加密对象与复制兼容。
 
-SSE-C Overrides SSE-S3 and SSE-KMS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SSE-C 会覆盖 SSE-S3 和 SSE-KMS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Encrypting an object using SSE-C prevents MinIO from applying 
-:ref:`SSE-KMS <minio-encryption-sse-kms>` or
-:ref:`SSE-S3 <minio-encryption-sse-s3>` encryption to that object.
+使用 SSE-C 加密对象后，MinIO 将不会再对该对象应用 
+:ref:`SSE-KMS <minio-encryption-sse-kms>` 或
+:ref:`SSE-S3 <minio-encryption-sse-s3>` 加密。
 
-Quickstart
-----------
+快速开始
+--------
 
-MinIO SSE-C requires the client to perform all key creation and storage operations.
+MinIO SSE-C 要求客户端执行所有密钥创建和存储操作。
 
-This procedure uses :mc:`mc` for performing operations on the source MinIO deployment. 
-Install :mc:`mc` on a machine with network access to the source deployment. 
-See the ``mc`` :ref:`Installation Quickstart <mc-install>` for instructions on downloading and installing ``mc``.
+本流程使用 :mc:`mc` 对源 MinIO 部署执行操作。 
+请在可访问该源部署网络的机器上安装 :mc:`mc`。 
+有关下载和安装 ``mc`` 的说明，请参见 ``mc`` :ref:`Installation Quickstart <mc-install>`。
 
-The SSE-C key *must* be a 256-bit raw encoded string or a hex encoded string. 
-The client application is responsible for generation and storage of the encryption key.
-MinIO does *not* store SSE-C encryption keys and cannot decrypt SSE-C encrypted objects without the client-managed key.
+SSE-C 密钥 *必须* 是一个 256 位原始编码字符串或十六进制编码字符串。 
+客户端应用负责生成并存储该加密密钥。
+MinIO *不会* 存储 SSE-C 加密密钥，并且在没有客户端管理密钥的情况下无法解密 SSE-C 加密对象。
 
 .. note::
 
-   Support for hex encoded keys was added in MinIO Client ``RELEASE.2024-06-20T14-50-54Z``.
+   MinIO Client 从 ``RELEASE.2024-06-20T14-50-54Z`` 开始支持十六进制编码密钥。
 
-1) Generate the Encryption Key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 生成加密密钥
+~~~~~~~~~~~~~~~
 
-Generate the 256-bit base64 raw encoded string or a hex encoded string for use as the encryption key.
+生成一个 256 位 base64 原始编码字符串或十六进制编码字符串作为加密密钥。
 
-The following example generates a string that meets the encryption key requirements. 
-The resulting string is appropriate for non-production environments:
+以下示例生成一个满足加密密钥要求的字符串。 
+生成的字符串适用于非生产环境：
 
 .. code-block:: shell
    :class: copyable
 
    cat /dev/urandom | head -c 32 | base64 -
 
-Defer to your organizations requirements for generating cryptographically secure encryption keys.
+请遵循您所在组织关于生成加密安全密钥的要求。
 
-Copy the encryption key for use in the next step.
+复制该加密密钥，以便在下一步中使用。
 
-2) Encrypt an Object using SSE-C
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 使用 SSE-C 加密对象
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO supports the following AWS S3 headers for specifying SSE-C encryption:
+MinIO 支持使用以下 AWS S3 请求头指定 SSE-C 加密：
 
-- ``X-Amz-Server-Side-Encryption-Customer-Algorithm`` set to ``AES256``.
+- ``X-Amz-Server-Side-Encryption-Customer-Algorithm`` 设置为 ``AES256``。
 
-- ``X-Amz-Server-Side-Encryption-Customer-Key`` set to the encryption key value.
+- ``X-Amz-Server-Side-Encryption-Customer-Key`` 设置为加密密钥值。
 
-- ``X-Amz-Server-Side-Encryption-Customer-Key-MD5`` to the 128-bit MD5 digest of the encryption key.
+- ``X-Amz-Server-Side-Encryption-Customer-Key-MD5`` 设置为加密密钥的 128 位 MD5 摘要。
 
-The MinIO :mc:`mc` commandline tool S3-compatible SDKs include specific syntax
-for setting headers. Certain :mc:`mc` commands like :mc:`mc cp` include specific
-arguments for enabling SSE-S3 encryption:
+MinIO :mc:`mc` 命令行工具及兼容 S3 的 SDK 提供了设置这些请求头的特定语法。
+某些 :mc:`mc` 命令（例如 :mc:`mc cp`）包含用于启用 SSE-S3 加密的
+专用参数：
 
 .. code-block:: shell
    :class: copyable
@@ -128,31 +127,29 @@ arguments for enabling SSE-S3 encryption:
    mc cp ~/data/mydata.json ALIAS/BUCKET/mydata.json \
       --encrypt-key "ALIAS/BUCKET/=c2VjcmV0ZW5jcnlwdGlvbmtleWNoYW5nZW1lMTIzNAo="
 
-- Replace :mc-cmd:`ALIAS <mc encrypt set ALIAS>` with the 
-  :mc:`alias <mc alias>` of the MinIO deployment on which you want to write
-  the SSE-C encrypted object.
+- 将 :mc-cmd:`ALIAS <mc encrypt set ALIAS>` 替换为您要写入
+  SSE-C 加密对象的 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`BUCKET <mc encrypt set ALIAS>`  with the full path to the
-  bucket or bucket prefix to which you want to write the SSE-C encrypted object.
+- 将 :mc-cmd:`BUCKET <mc encrypt set ALIAS>` 替换为您要写入
+  SSE-C 加密对象的存储桶或存储桶前缀的完整路径。
 
-3) Copy an SSE-C Encrypted Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 复制 SSE-C 加密对象
+~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO supports the following AWS S3 headers for copying an SSE-C encrypted
-object to another S3-compatible service:
+MinIO 支持使用以下 AWS S3 请求头，将 SSE-C 加密对象复制到另一个兼容 S3 的服务：
 
-- ``X-Amz-Copy-Source-Server-Side-Encryption-Algorithm`` set to ``AES256``
+- ``X-Amz-Copy-Source-Server-Side-Encryption-Algorithm`` 设置为 ``AES256``
 
-- ``X-Amz-Copy-Source-Server-Side-Encryption-Key`` set to the encryption key 
-  value. The copy operation will fail if the specified key does not match
-  the key used to SSE-C encrypt the object.
+- ``X-Amz-Copy-Source-Server-Side-Encryption-Key`` 设置为加密密钥值。
+  如果指定的密钥与用于对该对象执行 SSE-C 加密的密钥不匹配，
+  复制操作将失败。
 
-- ``X-Amz-Copy-Source-Server-Side-Encryption-Key-MD5`` set to the 128-bit MD5
-  digest of the encryption key.
+- ``X-Amz-Copy-Source-Server-Side-Encryption-Key-MD5`` 设置为加密密钥的 128 位 MD5
+  摘要。
 
-The MinIO :mc:`mc` commandline tool S3-compatible SDKs include specific syntax
-for setting headers. Certain :mc:`mc` commands like :mc:`mc cp` include specific
-arguments for enabling SSE-S3 encryption:
+MinIO :mc:`mc` 命令行工具及兼容 S3 的 SDK 提供了设置这些请求头的特定语法。
+某些 :mc:`mc` 命令（例如 :mc:`mc cp`）包含用于启用 SSE-S3 加密的
+专用参数：
 
 .. code-block:: shell
    :class: copyable
@@ -160,14 +157,10 @@ arguments for enabling SSE-S3 encryption:
    mc cp SOURCE/BUCKET/mydata.json TARGET/BUCKET/mydata.json  \
    --encrypt-key "SOURCE/BUCKET/=c2VjcmV0ZW5jcnlwdGlvbmtleWNoYW5nZW1lMTIzNAo=,TARGET/BUCKET/=c2VjcmV0ZW5jcnlwdGlvbmtleWNoYW5nZW1lMTIzNAo="
 
-- Replace :mc-cmd:`SOURCE/BUCKET <mc encrypt set ALIAS>` with the 
-  :mc:`alias <mc alias>` of the MinIO deployment from which you are reading the
-  encrypted object and the full path to the
-  bucket or bucket prefix from which you want to read the SSE-C encrypted
-  object.
+- 将 :mc-cmd:`SOURCE/BUCKET <mc encrypt set ALIAS>` 替换为您要读取
+  加密对象所在的 MinIO 部署的 :mc:`alias <mc alias>`，
+  以及您要读取 SSE-C 加密对象的存储桶或存储桶前缀的完整路径。
 
-- Replace :mc-cmd:`TARGET/BUCKET <mc encrypt set ALIAS>` with the 
-  :mc:`alias <mc alias>` of the MinIO deployment from which you are writing the
-  encrypted object and the full path to the
-  bucket or bucket prefix to which you want to write the SSE-C encrypted
-  object.
+- 将 :mc-cmd:`TARGET/BUCKET <mc encrypt set ALIAS>` 替换为您要写入
+  加密对象的 MinIO 部署的 :mc:`alias <mc alias>`，
+  以及您要写入 SSE-C 加密对象的存储桶或存储桶前缀的完整路径。

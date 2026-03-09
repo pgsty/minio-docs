@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,27 +14,27 @@
 
 .. versionadded:: RELEASE.2023-05-26T23-31-54Z
 
-   :mc-cmd:`mc idp ldap policy` and its subcommands replace ``mc admin idp ldap policy``.
+   :mc-cmd:`mc idp ldap policy` 及其子命令替代 ``mc admin idp ldap policy``。
 
-Description
------------
+说明
+----
 
 .. start-mc-idp-ldap-policy-desc
 
-The :mc-cmd:`mc idp ldap policy` commands show the mapping relationships between policies and the associated groups or users. 
+:mc-cmd:`mc idp ldap policy` 命令用于显示策略与关联组或用户之间的映射关系。
 
 .. end-mc-idp-ldap-policy-desc
 
-The :mc-cmd:`mc idp ldap policy` commands are only supported against MinIO deployments.
+:mc-cmd:`mc idp ldap policy` 命令仅支持 MinIO 部署。
 
-The :mc-cmd:`mc idp ldap policy` command has the following subcommands:
+:mc-cmd:`mc idp ldap policy` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc-cmd:`mc idp ldap policy attach`
      - .. include:: /reference/minio-mc/mc-idp-ldap-policy-attach.rst

@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,98 +12,98 @@
 
 .. versionchanged:: RELEASE.2022-12-13T00-23-28Z
 
-   ``mc quota set`` replaced ``mc admin bucket quota --hard``.
+   ``mc quota set`` 替代了 ``mc admin bucket quota --hard``。
 
 .. versionchanged:: RELEASE.2024-07-31T15-58-33Z
 
-   ``mc quota set`` is deprecated.
+   ``mc quota set`` 已弃用。
 
-Description
------------
+说明
+----
 
 .. start-mc-quota-set-desc
 
-The :mc-cmd:`mc quota set` assigns a hard quota limit to a bucket beyond which MinIO does not allow writes.
+:mc-cmd:`mc quota set` 为存储桶分配硬配额限制，超过该限制后 MinIO 不再允许写入。
 
 .. end-mc-quota-set-desc
 
-Units of Measurement
-~~~~~~~~~~~~~~~~~~~~
+计量单位
+~~~~~~~~
 
-The :mc-cmd:`mc quota set --size` flag accepts the following **case-insensitive** suffixes to represent the unit of the specified size value:
+:mc-cmd:`mc quota set --size` 标志接受以下**不区分大小写**的后缀，用于表示指定大小值的单位：
 
 .. list-table::
    :header-rows: 1
    :widths: 20 80
    :width: 100%
 
-   * - Suffix
-     - Unit Size
+   * - 后缀
+     - 单位大小
 
    * - ``k``
-     - KB (Kilobyte, 1000 Bytes)
+     - KB（Kilobyte，1000 Bytes）
 
    * - ``m``
-     - MB (Megabyte, 1000 Kilobytes)
+     - MB（Megabyte，1000 Kilobytes）
 
    * - ``g``
-     - GB (Gigabyte, 1000 Megabytes)
+     - GB（Gigabyte，1000 Megabytes）
 
    * - ``t``
-     - TB (Terabyte, 1000 Gigabytes)
+     - TB（Terabyte，1000 Gigabytes）
 
    * - ``ki`` or ``kib``
-     - KiB (Kibibyte, 1024 Bites)
+     - KiB（Kibibyte，1024 Bites）
 
    * - ``mi`` or ``mib``
-     - MiB (Mebibyte, 1024 Kibibytes)
+     - MiB（Mebibyte，1024 Kibibytes）
 
    * - ``gi`` or ``gib``
-     - GiB (Gibibyte, 1024 Mebibytes)
+     - GiB（Gibibyte，1024 Mebibytes）
 
    * - ``ti`` or ``tib``
-     - TiB (Tebibyte, 1024 Gibibytes)
+     - TiB（Tebibyte，1024 Gibibytes）
 
-Omitting a suffix defaults to ``bytes``.
+如果省略后缀，则默认使用 ``bytes``。
 
-Examples
---------
+示例
+----
 
-Configure a Hard Quota on a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为存储桶配置硬配额
+~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc quota set` with the :mc-cmd:`~mc quota set --size` flag to specify a hard quota on a bucket. 
-Hard quotas prevent the bucket size from growing past the specified limit.
+将 :mc-cmd:`mc quota set` 与 :mc-cmd:`~mc quota set --size` 标志配合使用，可为存储桶指定硬配额。
+硬配额可防止存储桶大小增长到超出指定限制。
 
 .. code-block:: shell
    :class: copyable
 
    mc quota set TARGET/BUCKET --size LIMIT
 
-- Replace ``TARGET`` with the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment. 
-  Replace ``BUCKET`` with the name of the bucket on which to set the hard quota.
+- 将 ``TARGET`` 替换为已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+  将 ``BUCKET`` 替换为要设置硬配额的存储桶名称。
 
-- Replace ``LIMIT`` with the maximum size to which the bucket can grow as an integer and, as desired, a suffix. 
-  For example, to set a hard limit of 10 Terabytes, specify ``10t``.
+- 将 ``LIMIT`` 替换为存储桶可增长到的最大大小（整数），并可按需附加后缀。
+  例如，要设置 10 Terabytes 的硬限制，请指定 ``10t``。
 
-Syntax
-------
+语法
+----
 
-:mc-cmd:`mc quota set` has the following syntax:
+:mc-cmd:`mc quota set` 的语法如下：
 
 .. code-block:: shell
    :class: copyable
 
    mc quota set TARGET --size LIMIT
 
-:mc-cmd:`mc quota set` supports the following arguments:
+:mc-cmd:`mc quota set` 支持以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the bucket for which the command creates the quota. 
-   Specify the :mc-cmd:`alias <mc alias>` of the MinIO deployment as a prefix to the path. 
-   For example:
+   要为其创建配额的存储桶完整路径。
+   在路径前缀中指定 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+   例如：
 
    .. code-block:: shell
       :class: copyable
@@ -113,21 +113,21 @@ Syntax
 .. mc-cmd:: --size
    :required:
 
-   Sets a maximum limit to the bucket storage size. 
-   The MinIO server rejects any incoming ``PUT`` request whose contents would exceed the bucket's configured quota.
+   设置存储桶存储大小的最大限制。
+   MinIO 服务器会拒绝任何内容将超出存储桶已配置配额的传入 ``PUT`` 请求。
 
-   For example, a hard limit of ``10G`` would prevent adding any additional objects if the bucket reaches 10 gigabytes of size.
+   例如，若硬限制为 ``10G``，当存储桶达到 10 gigabytes 时，将无法再添加任何对象。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-   
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

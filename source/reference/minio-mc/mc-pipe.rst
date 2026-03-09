@@ -4,18 +4,18 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc pipe
 
-Syntax
-------
+语法
+----
 
 .. start-mc-pipe-desc
 
-The :mc:`mc pipe` command streams content from `STDIN <https://www.gnu.org/software/libc/manual/html_node/Standard-Streams.html>`__ to a target object.
+:mc:`mc pipe` 命令将内容从 `STDIN <https://www.gnu.org/software/libc/manual/html_node/Standard-Streams.html>`__ 流式传输到目标对象。
 
 .. end-mc-pipe-desc
 
@@ -23,7 +23,7 @@ The :mc:`mc pipe` command streams content from `STDIN <https://www.gnu.org/softw
 
    .. tab-item:: EXAMPLE
 
-      The following command writes contents of ``STDIN`` to an S3 compatible storage.
+      以下命令将 ``STDIN`` 的内容写入 S3 兼容存储。
 
       .. code-block:: shell
          :class: copyable
@@ -32,7 +32,7 @@ The :mc:`mc pipe` command streams content from `STDIN <https://www.gnu.org/softw
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -53,39 +53,39 @@ The :mc:`mc pipe` command streams content from `STDIN <https://www.gnu.org/softw
 
 .. versionchanged:: RELEASE.2023-01-11T03-14-16Z
 
-   ``mc pipe`` now supports concurrent uploads for better throughput of large streams.
+   ``mc pipe`` 现已支持并发上传，以提升大流式数据的吞吐量。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the :ref:`alias <minio-mc-alias>` or prefix where the command should run.
+   命令应运行的 :ref:`alias <minio-mc-alias>` 或前缀完整路径。
 
 .. mc-cmd:: --attr
    :optional:
 
-   Add custom metadata for the object.
+   为对象添加自定义元数据。
 
-   Specify key-value pairs as ``KEY=VALUE\;``, separating each pair with a back slash and semicolon (``\;``). 
-   For example, ``--attr key1=value1\;key2=value2\;key3=value3``.
+   将键值对指定为 ``KEY=VALUE\;``，每对之间用反斜杠加分号（``\;``）分隔。
+   例如：``--attr key1=value1\;key2=value2\;key3=value3``。
 
 .. mc-cmd:: --checksum
    :optional:
 
    .. versionadded:: RELEASE.2024-10-02T08-27-28Z
 
-   Add a checksum to an uploaded object. 
+   为上传的对象添加校验和。
    
-   Valid values are: 
+   有效值为：
    - ``MD5``
    - ``CRC32``
    - ``CRC32C``
    - ``SHA1``
    - ``SHA256``
 
-   The flag requires server trailing headers and works with AWS or MinIO targets.
+   该标志依赖服务器 trailing headers，并可用于 AWS 或 MinIO 目标。
 
 .. block include of enc-c , enc-s3, and enc-kms
 
@@ -97,83 +97,83 @@ Parameters
 .. mc-cmd:: --storage-class, --sc
    :optional:
 
-   Set the storage class for the new object at the :mc-cmd:`~mc pipe TARGET`. 
+   为 :mc-cmd:`~mc pipe TARGET` 处的新对象设置存储类别。
          
-   See :aws-docs:`Amazons documentation <AmazonS3/latest/dev/storage-class-intro.html>` for more information on S3 storage classes.
+   关于 S3 存储类别的更多信息，请参见 :aws-docs:`Amazon 文档 <AmazonS3/latest/dev/storage-class-intro.html>`。
 
 .. mc-cmd:: --tags
    :optional:
 
-   Applies one or more tags to the TARGET.
+   为 TARGET 应用一个或多个标签。
 
-   Specify an ampersand-separated list of key-value pairs as ``KEY1=VALUE1&KEY2=VALUE2``, where each pair represents one tag to assign to the objects.
+   将键值对列表指定为 ``KEY1=VALUE1&KEY2=VALUE2``，其中每一对表示分配给对象的一个标签。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Write Contents of ``STDIN`` to the Local Filesystem
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将 ``STDIN`` 内容写入本地文件系统
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command writes the contents of STDIN to the ``/tmp`` folder on the local filesystem.
+以下命令将 STDIN 的内容写入本地文件系统中的 ``/tmp`` 文件夹。
 
 .. code-block:: shell
    :class: copyable
 
    mc pipe /tmp/hello-world.go
 
-Copy an ISO Image to S3 Storage
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将 ISO 镜像复制到 S3 存储
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command first streams the contents of an iso image for Debian and then uses the stream to create the object at an S3 path.
+以下命令先流式读取 Debian 的 ISO 镜像内容，然后使用该数据流在 S3 路径创建对象。
 
 .. code-block:: shell
    :class: copyable
 
    cat debian-live-11.5.0-amd64-mate.iso | mc pipe s3/opensource-isos/debian-11-5.iso
 
-Stream MySQL Database Dump to S3
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将 MySQL 数据库转储流式传输到 S3
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command first streams a MySQL database and uses the stream to create a backup on S3 with :mc-cmd:`mc pipe`:
+以下命令先流式传输 MySQL 数据库，再通过 :mc-cmd:`mc pipe` 使用该数据流在 S3 上创建备份：
 
 .. code-block:: shell
    :class: copyable
 
    mysqldump -u root -p ******* accountsdb | mc pipe s3/sql-backups/backups/accountsdb-sep-28-2022.sql
 
-Write a File to a Reduced Redundancy Storage Class
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将文件写入 Reduced Redundancy 存储类别
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command takes the STDIN stream and creates an object on the Reduced Redundancy storage class on S3.
+以下命令读取 STDIN 数据流，并在 S3 的 Reduced Redundancy 存储类别中创建对象。
 
 .. code-block:: shell
    :class: copyable
 
     mc pipe --storage-class REDUCED_REDUNDANCY s3/personalbuck/meeting-notes.txt
 
-Copy a File to a MinIO Deployment with Metadata
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将文件连同元数据复制到 MinIO 部署
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command uploads an MP3 file to a MinIO deployment with an ALIAS of ``myminio`` and a ``music`` bucket.
-The object writes with some metadata for ``Cache-Control`` and ``Artist``.
+以下命令将 MP3 文件上传到 ALIAS 为 ``myminio``、存储桶为 ``music`` 的 MinIO 部署。
+写入对象时附带 ``Cache-Control`` 和 ``Artist`` 元数据。
 
 .. code-block:: shell
    :class: copyable
 
    cat music.mp3 | mc pipe --attr "Cache-Control=max-age=90000,min-fresh=9000;Artist=Unknown" myminio/music/guitar.mp3
 
-Set Tags on Uploaded Objects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为上传对象设置标签
+~~~~~~~~~~~~~~~~~
 
-The following command creates an object on a MinIO deployment with an ALIAS of ``myminio`` in bucket ``mybucket`` with two tags.
-MinIO supports adding up to 10 custom tags to an object.
+以下命令在 ALIAS 为 ``myminio`` 的 MinIO 部署中，于 ``mybucket`` 存储桶创建一个带两个标签的对象。
+MinIO 支持为对象最多添加 10 个自定义标签。
 
 .. code-block:: shell
    :class: copyable

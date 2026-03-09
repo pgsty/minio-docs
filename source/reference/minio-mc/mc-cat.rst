@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -19,33 +19,31 @@
 .. |versionid| replace:: :mc-cmd:`~mc cat --version-id`
 .. |alias| replace:: :mc-cmd:`~mc cat ALIAS`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-cat-desc
 
-The :mc:`mc cat` command concatenates the contents of a file or
-object to another file or object. You can also use the command to
-display the contents of the specified file or object to ``STDOUT``. 
-:mc:`~mc cat` has similar functionality to ``cat``. 
+:mc:`mc cat` 命令将文件或对象的内容连接到另一个文件或对象。
+你也可以使用该命令将指定文件或对象的内容输出到 ``STDOUT``。
+:mc:`~mc cat` 的功能与 ``cat`` 类似。
 
 .. end-mc-cat-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command concatenates the contents of an object on a 
-      MinIO deployment to ``STDOUT``:
+      以下命令将 MinIO 部署中某个对象的内容输出到 ``STDOUT``：
 
       .. code-block:: shell
          :class: copyable
 
          mc cat play/mybucket/myobject.txt
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc cat` command has the following syntax:
+      :mc:`mc cat` 命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -65,30 +63,27 @@ display the contents of the specified file or object to ``STDOUT``.
          :end-before: end-minio-syntax
 
 
-You can also use :mc:`mc cat` against a local filesystem to produce similar results to the ``cat`` commandline tool.
+你也可以将 :mc:`mc cat` 用于本地文件系统，以获得与 ``cat`` 命令行工具类似的结果。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of a MinIO deployment and the full
-   path to the object. For example:
+   MinIO 部署的 :ref:`alias <alias>` 以及对象的完整路径。例如：
 
    .. code-block:: shell
 
       mc cat myminio/mybucket/myobject.txt
 
-   You can specify multiple objects on the same or different MinIO
-   deployment. For example:
+   你可以指定同一或不同 MinIO 部署中的多个对象。例如：
 
    .. code-block:: shell
 
       mc cat myminio/mybucket/object.txt myminio/myotherbucket/object.txt
 
-   For an object on a local filesystem, specify the full path to that
-   object. For example:
+   对于本地文件系统上的对象，请指定该对象的完整路径。例如：
 
    .. code-block:: shell
 
@@ -103,17 +98,17 @@ Parameters
 .. mc-cmd:: --offset
    :optional:
 
-   Specify an integer that is the number of bytes from which the command offsets the output.
+   指定一个整数，表示命令输出的字节偏移位置。
 
-   Mutually exclusive with the :mc-cmd:`~mc cat --part-number` flag.
+   与 :mc-cmd:`~mc cat --part-number` 标志互斥。
 
 .. mc-cmd:: --part-number
    :optional:
 
-   Download a specific part number of a multi-part upload.
-   Specify the integer of the part number to download.
+   下载分段上传中的指定分段编号。
+   指定要下载的分段编号整数值。
 
-   Mutually exclusive with the :mc-cmd:`~mc cat --offset` and :mc-cmd:`~mc cat --tail` flags.
+   与 :mc-cmd:`~mc cat --offset` 和 :mc-cmd:`~mc cat --tail` 标志互斥。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -125,9 +120,9 @@ Parameters
 .. mc-cmd:: --tail
    :optional:
 
-   Specify an integer that is the number of bytes from which the command trims the output.
+   指定一个整数，表示命令从该字节数开始裁剪输出。
 
-   Mutually exclusive with the :mc-cmd:`~mc cat --part-number` flag.
+   与 :mc-cmd:`~mc cat --part-number` 标志互斥。
 
 .. mc-cmd:: --version-id, vid
    :optional:
@@ -139,107 +134,103 @@ Parameters
 .. mc-cmd:: --zip
    :optional:
 
-   Extracts the contents from a zip file on the source to the remote.
-   Requires a MinIO deployment as the source ``ALIAS``.
+   将源端 zip 文件中的内容提取到远端。
+   要求源 ``ALIAS`` 为 MinIO 部署。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-View an S3 Object
-~~~~~~~~~~~~~~~~~
+查看 S3 对象
+~~~~~~~~~~~~
 
-Use :mc:`mc cat` to return the object:
+使用 :mc:`mc cat` 返回对象：
 
 .. code-block:: shell
    :class: copyable
 
    mc cat ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc cat ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc cat ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc cat ALIAS>` with the path to the object on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc cat ALIAS>` 替换为对象在
+  S3 兼容主机上的路径。
 
-View an S3 Object at a Point-In-Time
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+按时间点查看 S3 对象
+~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc cat --rewind` to return the object at a specific
-point-in-time in the past:
+使用 :mc-cmd:`mc cat --rewind` 返回过去某个特定时间点的对象：
 
 .. code-block:: shell
    :class: copyable
 
    mc cat ALIAS/PATH --rewind DURATION
 
-- Replace :mc-cmd:`ALIAS <mc cat ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc cat ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc cat ALIAS>` with the path to the object on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc cat ALIAS>` 替换为对象在
+  S3 兼容主机上的路径。
 
-- Replace :mc-cmd:`DURATION <mc cat --rewind>` with the point-in-time in the past
-  at which the command returns the object. For example, specify ``30d`` to
-  return the version of the object 30 days prior to the current date.
+- 将 :mc-cmd:`DURATION <mc cat --rewind>` 替换为命令返回对象时对应的
+  过去时间点。例如，指定 ``30d`` 可返回当前日期前 30 天的对象版本。
 
 .. include:: /includes/facts-versioning.rst
    :start-after: start-versioning-admonition
    :end-before: end-versioning-admonition
 
-View an S3 Object with Specific Version
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+查看 S3 对象的指定版本
+~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc cat --version-id` to return a specific version of the 
-object:
+使用 :mc-cmd:`mc cat --version-id` 返回对象的特定版本：
 
 .. code-block:: shell
 
    mc cat ALIAS/PATH --version-id VERSION
 
-- Replace :mc-cmd:`ALIAS <mc cat ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc cat ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc cat ALIAS>` with the path to the object on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc cat ALIAS>` 替换为对象在
+  S3 兼容主机上的路径。
 
-- Replace :mc-cmd:`VERSION <mc cat --version-id>` with the specific version of the
-  object to return.
+- 将 :mc-cmd:`VERSION <mc cat --version-id>` 替换为要返回的对象特定版本。
 
 .. include:: /includes/facts-versioning.rst
    :start-after: start-versioning-admonition
    :end-before: end-versioning-admonition
 
-Download a particular part
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+下载特定分段
+~~~~~~~~~~~~
 
-Use :mc-cmd:`mc cat --part-number` to download a particular part of a multi-part upload:
+使用 :mc-cmd:`mc cat --part-number` 下载分段上传中的特定分段：
 
 .. code-block:: shell
    :class: copyable
 
    mc cat ALIAS/PATH --part-number=#
 
-- Replace :mc-cmd:`ALIAS <mc cat ALIAS>` with the :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc cat ALIAS>` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc cat ALIAS>` with the path to the object on the S3-compatible host.
+- 将 :mc-cmd:`PATH <mc cat ALIAS>` 替换为对象在 S3 兼容主机上的路径。
 
-- Replace ``#`` with the integer of the part number to download.
-  For example, to download part 3 of at 16-part multi-part file, use ``--part-number=3``.
+- 将 ``#`` 替换为要下载的分段编号整数值。
+  例如，要下载一个 16 段分段文件中的第 3 段，使用 ``--part-number=3``。
 
-You cannot use the ``--part-number`` flag if you are using either the ``--offset`` or the ``--tail`` flags.
+如果使用了 ``--offset`` 或 ``--tail`` 标志，则不能使用 ``--part-number`` 标志。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

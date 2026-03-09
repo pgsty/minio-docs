@@ -4,34 +4,34 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc share
 
 
-Description
------------
+说明
+----
 
 .. start-mc-share-desc
 
-Use the :mc:`mc share` commands to manage presigned URLs for downloading and uploading objects to a MinIO bucket.
+使用 :mc:`mc share` 命令管理预签名 URL，以便下载和上传 MinIO 存储桶中的对象。
 
 .. end-mc-share-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc share` includes the following subcommands:
+:mc:`mc share` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc share download`
      - .. include:: /reference/minio-mc/mc-share-download.rst

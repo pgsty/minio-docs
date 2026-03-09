@@ -1,17 +1,17 @@
 .. _minio-k8s-deploy-minio-tenant:
 .. _deploy-minio-tenant-redhat-openshift:
 
-=====================
-Deploy a MinIO Tenant
-=====================
+=========================
+部署一个 MinIO Tenant
+=========================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-This procedure documents deploying a MinIO Tenant using the MinIO Operator.
+本步骤说明如何使用 MinIO Operator 部署 MinIO Tenant。
 
 .. screenshot temporarily removed
 
@@ -22,200 +22,200 @@ This procedure documents deploying a MinIO Tenant using the MinIO Operator.
    :alt: MinIO Operator Console
 
 
-Deploying Single-Node topologies requires additional configurations not covered in this documentation.
-You can alternatively use a simple Kubernetes YAML object to describe a Single-Node topology for local testing and evaluation as necessary.
-MinIO does not recommend nor support single-node deployment topologies for production environments.
+部署 Single-Node 拓扑需要额外配置，而这些内容不在本文档覆盖范围内。
+如果只是用于本地测试或评估，你也可以根据需要使用简单的 Kubernetes YAML 对象来描述 Single-Node 拓扑。
+MinIO 不建议，也不支持在生产环境中使用单节点部署拓扑。
 
-This documentation assumes familiarity with all referenced Kubernetes concepts, utilities, and procedures. 
-While this documentation *may* provide guidance for configuring or deploying Kubernetes-related resources on a best-effort basis, it is not a replacement for the official :kube-docs:`Kubernetes Documentation <>`.
+本文档默认你已经熟悉所有被引用的 Kubernetes 概念、工具和操作流程。
+虽然本文档 *可能* 会以 best-effort 方式提供 Kubernetes 相关资源的配置或部署指导，但它不能替代官方 :kube-docs:`Kubernetes Documentation <>`。
 
 .. _minio-k8s-deploy-minio-tenant-security:
 
-Deploy a MinIO Tenant using Kustomize
--------------------------------------
+使用 Kustomize 部署 MinIO Tenant
+----------------------------------
 
-The following procedure uses ``kubectl -k`` to deploy a MinIO Tenant using the ``base`` Kustomization template in the :minio-git:`MinIO Operator Github repository <operator/tree/master/examples/kustomization/base>`.
+以下步骤使用 ``kubectl -k``，基于 :minio-git:`MinIO Operator Github 仓库 <operator/tree/master/examples/kustomization/base>` 中的 ``base`` Kustomization 模板来部署 MinIO Tenant。
 
-You can select a different base or pre-built template from the :minio-git:`repository <operator/tree/master/examples/kustomization/>` as your starting point, or build your own Kustomization resources using the :ref:`MinIO Custom Resource Documentation <minio-operator-crd>`.
+你也可以从该 :minio-git:`仓库 <operator/tree/master/examples/kustomization/>` 选择其他 base 或预构建模板作为起点，或者依据 :ref:`MinIO Custom Resource Documentation <minio-operator-crd>` 自行构建 Kustomization 资源。
 
 .. important::
 
-   If you use Kustomize to deploy a MinIO Tenant, you must use Kustomize to manage or upgrade that deployment.
-   Do not use ``kubectl krew``, a Helm Chart, or similar methods to manage or upgrade the MinIO Tenant.
+   如果你使用 Kustomize 部署 MinIO Tenant，就必须使用 Kustomize 来管理或升级该部署。
+   不要使用 ``kubectl krew``、Helm Chart 或类似方式来管理或升级该 MinIO Tenant。
 
-This procedure is not exhaustive of all possible configuration options available in the :ref:`Tenant CRD <minio-operator-crd>`.
-It provides a baseline from which you can modify and tailor the Tenant to your requirements.
+本步骤并未穷尽 :ref:`Tenant CRD <minio-operator-crd>` 中的所有可配置项。
+它只提供一个基线，你可以在此基础上按需修改和定制 Tenant。
 
 .. container:: procedure
 
-   #. Create a YAML object for the Tenant
+   #. 为 Tenant 创建 YAML 对象
 
-      Use the ``kubectl kustomize`` command to produce a YAML file containing all Kubernetes resources necessary to deploy the ``base`` Tenant:
+      使用 ``kubectl kustomize`` 命令生成一个 YAML 文件，其中包含部署 ``base`` Tenant 所需的全部 Kubernetes 资源：
 
       .. code-block:: shell
          :class: copyable
 
          kubectl kustomize https://github.com/minio/operator/examples/kustomization/base/ > tenant-base.yaml
 
-      The command creates a single YAML file with multiple objects separated by the ``---`` line.
-      Open the file in your preferred editor.
+      该命令会创建一个单独的 YAML 文件，多个对象之间使用 ``---`` 分隔。
+      请使用你偏好的编辑器打开此文件。
 
-      The following steps reference each object based on it's ``kind`` and ``metadata.name`` fields:
+      下文各步骤将根据对象的 ``kind`` 和 ``metadata.name`` 字段来引用这些对象：
 
-   #. Configure the Tenant topology
+   #. 配置 Tenant 拓扑
 
-      The ``kind: Tenant`` object describes the MinIO Tenant.
+      ``kind: Tenant`` 对象用于描述 MinIO Tenant。
 
-      The following fields share the ``spec.pools[0]`` prefix and control the number of servers, volumes per server, and storage class of all pods deployed in the Tenant:
+      以下字段都带有 ``spec.pools[0]`` 前缀，用于控制 Tenant 中所有 pod 的 server 数量、每个 server 的卷数量以及存储类：
       
       .. list-table::
          :header-rows: 1
          :widths: 30 70
 
-         * - Field
-           - Description
+         * - 字段
+           - 描述
 
          * - ``servers`` 
-           - The number of MinIO pods to deploy in the Server Pool.
+           - 要在 Server Pool 中部署的 MinIO pod 数量。
 
          * - ``volumesPerServer`` 
-           - The number of persistent volumes to attach to each MinIO pod (``servers``).
-             The Operator generates ``volumesPerServer x servers`` Persistant Volume Claims for the Tenant.
+           - 每个 MinIO pod（``servers``）要挂载的持久卷数量。
+             Operator 会为该 Tenant 生成 ``volumesPerServer x servers`` 个 Persistent Volume Claim。
 
          * - ``volumeClaimTemplate.spec.storageClassName`` 
-           - The Kubernetes storage class to associate with the generated Persistent Volume Claims.
+           - 与生成的 Persistent Volume Claim 关联的 Kubernetes 存储类。
 
-             If no storage class exists matching the specified value *or* if the specified storage class cannot meet the requested number of PVCs or storage capacity, the Tenant may fail to start.
+             如果不存在与指定值匹配的存储类，*或者* 指定的存储类无法满足所请求的 PVC 数量或存储容量，Tenant 可能无法启动。
 
          * - ``volumeClaimTemplate.spec.resources.requests.storage``
-           - The amount of storage to request for each generated PVC.
+           - 为每个生成的 PVC 请求的存储容量。
 
-   #. Configure Tenant Affinity or Anti-Affinity
+   #. 配置 Tenant Affinity 或 Anti-Affinity
 
-      The MinIO Operator supports the following Kubernetes Affinity and Anti-Affinity configurations:
+      MinIO Operator 支持以下 Kubernetes Affinity 和 Anti-Affinity 配置：
 
       - Node Affinity (``spec.pools[n].nodeAffinity``)
       - Pod Affinity (``spec.pools[n].podAffinity``)
       - Pod Anti-Affinity (``spec.pools[n].podAntiAffinity``)
 
-      MinIO recommends configuring Tenants with Pod Anti-Affinity to ensure that the Kubernetes schedule does not schedule multiple pods on the same worker node.
+      MinIO 建议为 Tenant 配置 Pod Anti-Affinity，以确保 Kubernetes 调度器不会将多个 pod 调度到同一个 worker node 上。
 
-      If you have specific worker nodes on which you want to deploy the tenant, pass those node labels or filters to the ``nodeAffinity`` field to constrain the scheduler to place pods on those nodes.
+      如果你希望将 Tenant 部署到特定 worker node 上，请将对应的 node label 或过滤条件传入 ``nodeAffinity`` 字段，以约束调度器仅在这些节点上放置 pod。
 
-   #. Configure Network Encryption
+   #. 配置网络加密
 
-      The MinIO Tenant CRD provides the following fields from which you can configure tenant TLS network encryption:
+      MinIO Tenant CRD 提供了以下字段，你可以通过它们配置 Tenant 的 TLS 网络加密：
 
       .. list-table::
          :header-rows: 1
          :widths: 30 70
 
-         * - Field
-           - Description
+         * - 字段
+           - 描述
 
          * - ``tenant.certificate.requestAutoCert``
-           - Enable or disable MinIO :ref:`automatic TLS certificate generation <minio-tls>`
+           - 启用或禁用 MinIO :ref:`自动 TLS 证书生成 <minio-tls>`
 
-             Defaults to ``true`` or enabled if omitted.
+             若省略该字段，默认值为 ``true``，即启用。
 
          * - ``tenant.certificate.certConfig``
-           - Customize the behavior of :ref:`automatic TLS <minio-tls>`, if enabled.
+           - 在启用的情况下，自定义 :ref:`自动 TLS <minio-tls>` 的行为。
 
          * - ``tenant.certificate.externalCertSecret``
-           - Enable TLS for multiple hostnames via Server Name Indication (SNI)
+           - 通过 Server Name Indication (SNI) 为多个主机名启用 TLS
          
-             Specify one or more Kubernetes secrets of type ``kubernetes.io/tls`` or ``cert-manager``.
+             指定一个或多个类型为 ``kubernetes.io/tls`` 或 ``cert-manager`` 的 Kubernetes secret。
 
          * - ``tenant.certificate.externalCACertSecret``
-           - Enable validation of client TLS certificates signed by unknown, third-party, or internal Certificate Authorities (CA).
+           - 启用对由未知、第三方或内部 Certificate Authorities (CA) 签发的客户端 TLS 证书的校验。
          
-             Specify one or more Kubernetes secrets of type ``kubernetes.io/tls`` containing the full chain of CA certificates for a given authority.
+             指定一个或多个类型为 ``kubernetes.io/tls`` 的 Kubernetes secret，其中包含某个 CA 的完整证书链。
 
-   #. Configure MinIO Environment Variables
+   #. 配置 MinIO 环境变量
 
-      You can set MinIO Server environment variables using the ``tenant.configuration`` field.
+      你可以使用 ``tenant.configuration`` 字段设置 MinIO Server 环境变量。
 
       .. list-table::
          :header-rows: 1
          :widths: 30 70
 
-         * - Field
-           - Description
+         * - 字段
+           - 描述
 
          * - ``tenant.configuration``
-           - Specify a Kubernetes opaque secret whose data payload ``config.env`` contains each MinIO environment variable you want to set.
+           - 指定一个 Kubernetes opaque secret，其数据负载 ``config.env`` 包含你希望设置的每一个 MinIO 环境变量。
 
-             The ``config.env`` data payload **must** be a base64-encoded string.
-             You can create a local file, set your environment variables, and then use ``cat LOCALFILE | base64`` to create the payload.
+             ``config.env`` 数据负载 **必须** 是一个 base64 编码字符串。
+             你可以先创建一个本地文件，在其中设置环境变量，再通过 ``cat LOCALFILE | base64`` 生成该负载。
 
-      The YAML includes an object ``kind: Secret`` with ``metadata.name: storage-configuration`` that sets the root username, password, erasure parity settings, and enables Tenant Console.
+      该 YAML 中包含一个 ``kind: Secret`` 且 ``metadata.name: storage-configuration`` 的对象，用于设置 root 用户名、密码、纠删码校验设置，以及启用 Tenant Console。
 
-      Modify this as needed to reflect your Tenant requirements.
+      请根据 Tenant 的实际需求修改这些值。
 
-   #. Review the Namespace
+   #. 检查命名空间
 
-      The YAML object ``kind: Namespace`` sets the default namespace for the Tenant to ``minio-tenant``.
+      YAML 对象 ``kind: Namespace`` 将 Tenant 的默认命名空间设置为 ``minio-tenant``。
 
-      You can change this value to create a different namespace for the Tenant.
-      You must change **all** ``metadata.namespace`` values in the YAML file to match the Namespace.
+      你可以修改该值，为 Tenant 创建不同的命名空间。
+      你必须同时修改 YAML 文件中 **所有** ``metadata.namespace`` 的值，使其与该命名空间保持一致。
 
-   #. Deploy the Tenant
+   #. 部署 Tenant
 
-      Use the ``kubectl apply -f`` command to deploy the Tenant.
+      使用 ``kubectl apply -f`` 命令部署 Tenant。
 
       .. code-block:: shell
          :class: copyable
 
          kubectl apply -f tenant-base.yaml
 
-      The command creates each of the resources specified in the YAML object at the configured namespace.
+      该命令会在配置好的命名空间中创建 YAML 对象里定义的每一项资源。
 
-      You can monitor the progress using the following command:
+      你可以使用以下命令监控进度：
 
       .. code-block:: shell
          :class: copyable
 
          watch kubectl get all -n minio-tenant
 
-   #. Expose the Tenant MinIO S3 API port
+   #. 暴露 Tenant 的 MinIO S3 API 端口
 
-      To test the MinIO Client :mc:`mc` from your local machine, forward the MinIO port and create an alias.
+      若要在本地机器上测试 MinIO Client :mc:`mc`，请转发 MinIO 端口并创建别名。
 
-      * Forward the Tenant's MinIO port:
+      * 转发 Tenant 的 MinIO 端口：
 
       .. code-block:: shell
          :class: copyable
 
          kubectl port-forward svc/MINIO_TENANT_NAME-hl 9000 -n MINIO_TENANT_NAMESPACE
 
-      * Create an alias for the Tenant service:
+      * 为 Tenant 服务创建别名：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set myminio https://localhost:9000 minio minio123 --insecure
 
-      You can use :mc:`mc mb` to create a bucket on the Tenant:
+      你可以使用 :mc:`mc mb` 在 Tenant 上创建存储桶：
       
       .. code-block:: shell
          :class: copyable
 
          mc mb myminio/mybucket --insecure
 
-      If you deployed your MinIO Tenant using TLS certificates minted by a trusted Certificate Authority (CA) you can omit the ``--insecure`` flag.
+      如果你为 MinIO Tenant 部署的是由受信任 Certificate Authority (CA) 签发的 TLS 证书，则可以省略 ``--insecure`` 参数。
       
-      See :ref:`create-tenant-connect-tenant` for specific instructions.
+      具体说明请参阅 :ref:`create-tenant-connect-tenant`。
 
 .. _create-tenant-connect-tenant:
 
-Connect to the Tenant
----------------------
+连接到 Tenant
+-------------
 
-The MinIO Operator creates services for the MinIO Tenant. 
+MinIO Operator 会为 MinIO Tenant 创建服务。
 
 
-Use the ``kubectl get svc -n NAMESPACE`` command to review the deployed services.
-For Kubernetes services which use a custom ``kubectl`` analog, you can substitute the name of that program.
+使用 ``kubectl get svc -n NAMESPACE`` 命令查看已部署的服务。
+如果你的 Kubernetes 环境使用自定义的 ``kubectl`` 替代程序，也可以替换为对应程序名。
 
 .. code-block:: shell
    :class: copyable
@@ -229,21 +229,21 @@ For Kubernetes services which use a custom ``kubectl`` analog, you can substitut
    TENANT-NAMESPACE-console           LoadBalancer   10.106.103.247   <pending>     9443:32095/TCP   2d3h
    TENANT-NAMESPACE-hl                ClusterIP      None             <none>        9000/TCP         2d3h
 
-- The ``minio`` service corresponds to the MinIO Tenant service. 
-  Applications should use this service for performing operations against the MinIO Tenant.
+- ``minio`` 服务对应 MinIO Tenant 服务。
+  应用程序应通过该服务对 MinIO Tenant 执行操作。
  
-- The ``*-console`` service corresponds to the :minio-git:`MinIO Console <console>`. 
-  Administrators should use this service for accessing the MinIO Console and performing administrative operations on the MinIO Tenant.
+- ``*-console`` 服务对应 :minio-git:`MinIO Console <console>`。
+  管理员应通过该服务访问 MinIO Console，并对 MinIO Tenant 执行管理操作。
 
-The remaining services support Tenant operations and are not intended for consumption by users or administrators.
+其余服务用于支撑 Tenant 内部操作，并不面向用户或管理员直接使用。
  
-By default each service is visible only within the Kubernetes cluster. 
-Applications deployed inside the cluster can access the services using the ``CLUSTER-IP``. 
+默认情况下，每个服务仅在 Kubernetes 集群内部可见。
+部署在集群内部的应用可以通过 ``CLUSTER-IP`` 访问这些服务。
 
-Applications external to the Kubernetes cluster can access the services using the ``EXTERNAL-IP``. 
-This value is only populated for Kubernetes clusters configured for Ingress or a similar network access service. 
-Kubernetes provides multiple options for configuring external access to services. 
+位于 Kubernetes 集群外部的应用可以通过 ``EXTERNAL-IP`` 访问这些服务。
+该值只有在 Kubernetes 集群配置了 Ingress 或类似网络访问服务时才会被填充。
+Kubernetes 提供了多种对 service 开放外部访问的方式。
 
-See the Kubernetes documentation on :kube-docs:`Publishing Services (ServiceTypes) <concepts/services-networking/service/#publishing-services-service-types>` and :kube-docs:`Ingress <concepts/services-networking/ingress/>` for more complete information on configuring external access to services.
+有关如何配置 service 的外部访问，请参阅 Kubernetes 文档中的 :kube-docs:`Publishing Services (ServiceTypes) <concepts/services-networking/service/#publishing-services-service-types>` 和 :kube-docs:`Ingress <concepts/services-networking/ingress/>`。
 
-For specific flavors of Kubernetes, such as OpenShift or Rancher, defer to the service documentation on the preferred or available methods of exposing Services to internal or external access.
+对于 OpenShift、Rancher 等特定 Kubernetes 发行版，请以其服务文档中关于对内或对外暴露 Service 的首选或可用方式为准。

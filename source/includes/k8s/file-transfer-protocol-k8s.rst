@@ -1,14 +1,14 @@
-#. Enable SFTP for the desired Tenant:
+#. 为目标 Tenant 启用 SFTP：
 
-   Use the following Kubectl command to edit the Tenant YAML configuration:
+   使用以下 Kubectl 命令编辑 Tenant YAML 配置：
 
    .. code-block:: yaml
 
          kubectl edit tenants/my-tenant -n my-tenant-ns
 
-   Replace ``my-tenant`` and ``my-tenant-ns`` with the desired Tenant and namespace.
+   将 ``my-tenant`` 和 ``my-tenant-ns`` 替换为目标 Tenant 和命名空间。
 
-      In the ``features:`` section, set the value of ``enableSFTP`` to ``true``:
+      在 ``features:`` 部分，将 ``enableSFTP`` 的值设置为 ``true``：
 
       .. code-block:: yaml
 
@@ -23,37 +23,37 @@
             features:
                enableSFTP: true
 
-      Kubectl restarts MinIO to apply the change.
+      Kubectl 会重启 MinIO 以应用更改。
 
-      You may also set ``enableSFTP`` in your `Helm chart <https://github.com/minio/operator/blob/8385948929bc95648d1be82d96f829c810519674/helm/tenant/values.yaml>`__ or `Kustomize configuration <https://github.com/minio/operator/blob/8385948929bc95648d1be82d96f829c810519674/examples/kustomization/base/tenant.yaml>`__ to enable SFTP for newly created Tenants.
+      你也可以在 `Helm chart <https://github.com/minio/operator/blob/8385948929bc95648d1be82d96f829c810519674/helm/tenant/values.yaml>`__ 或 `Kustomize 配置 <https://github.com/minio/operator/blob/8385948929bc95648d1be82d96f829c810519674/examples/kustomization/base/tenant.yaml>`__ 中设置 ``enableSFTP``，为新创建的 Tenant 启用 SFTP。
 	 
 
-#. If needed, configure ingress for the SFTP port according to your local policies.
+#. 如有需要，请根据本地策略为 SFTP 端口配置 ingress。
 
-#. Validate the configuration
+#. 验证配置
 
-   The following ``kubectl get`` command uses `yq <https://github.com/mikefarah/yq/#install>`__ to display the value of ``enableSFTP``, indicating whether SFTP is enabled:
+   以下 ``kubectl get`` 命令使用 `yq <https://github.com/mikefarah/yq/#install>`__ 显示 ``enableSFTP`` 的值，以确认是否已启用 SFTP：
 
    .. code-block:: console
       :class: copyable
 
       kubectl get tenants/my-tenant -n my-tenant-ns -o yaml | yq '.spec.features'
 
-   Replace ``my-tenant`` and ``my-tenant-ns`` with the desired Tenant and namespace.
+   将 ``my-tenant`` 和 ``my-tenant-ns`` 替换为目标 Tenant 和命名空间。
 
-   If SFTP is enabled, the output resembles the following:
+   如果已启用 SFTP，输出类似如下：
 
    .. code-block:: console
 
       enableSFTP: true
 
-#. Use your preferred SFTP client to connect to the MinIO deployment.
-   You must connect as a user whose :ref:`policies <minio-policy>` allow access to the desired buckets and objects.
+#. 使用你偏好的 SFTP 客户端连接到 MinIO 部署。
+   你必须以其 :ref:`策略 <minio-policy>` 允许访问目标存储桶和对象的用户身份进行连接。
 
-   The specifics of connecting to the MinIO deployment depend on your SFTP client.
-   Refer to the documentation for your client.
+   连接到 MinIO 部署的具体方式取决于所使用的 SFTP 客户端。
+   请参阅该客户端的文档。
 
-   The following example connects to the MinIO Tenant SFTP server forwarded to the local host system, and lists the contents of a bucket named ``runner``.
+   以下示例连接到转发到本地主机系统的 MinIO Tenant SFTP 服务器，并列出名为 ``runner`` 的存储桶内容。
 
          .. code-block:: console
 
@@ -63,18 +63,17 @@
             sftp> ls runner/
             chunkdocs  testdir
 
-The following ``kubectl get`` command uses `yq <https://github.com/mikefarah/yq/#install>`__ to display the value of ``enableSFTP``, indicating whether SFTP is enabled:
+以下 ``kubectl get`` 命令使用 `yq <https://github.com/mikefarah/yq/#install>`__ 显示 ``enableSFTP`` 的值，以确认是否已启用 SFTP：
 
 .. code-block:: console
    :class: copyable
 
    kubectl get tenants/my-tenant -n my-tenant-ns -o yaml | yq '.spec.features'
 
-Replace ``my-tenant`` and ``my-tenant-ns`` with the desired Tenant and namespace.
+将 ``my-tenant`` 和 ``my-tenant-ns`` 替换为目标 Tenant 和命名空间。
 
-If SFTP is enabled, the output resembles the following:
+如果已启用 SFTP，输出类似如下：
 
 .. code-block:: console
 
    enableSFTP: true
-

@@ -4,40 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. mc:: mc update
 
-Syntax
+语法
 ------
 
 .. start-mc-update-desc
 
-The :mc:`mc update` command automatically updates the :program:`mc` binary to
-the latest stable version.
+:mc:`mc update` 命令会自动将 :program:`mc` 二进制更新到最新稳定版本。
 
 .. end-mc-update-desc
 
-Running this command is equivalent to manually downloading the latest 
-stable binary and using it to replace the existing ``mc`` installation on the
-host machine.
+运行此命令等同于手动下载最新稳定版二进制文件，并使用该文件替换主机上
+现有的 ``mc`` 安装。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command updates the :program:`mc` binary on the local host:
+      以下命令会更新本地主机上的 :program:`mc` 二进制文件：
 
       .. code-block:: shell
          :class: copyable
 
          mc update
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -48,10 +46,10 @@ host machine.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Use :mc:`mc update` after updating the :program:`minio` server binary to
-ensure consistent behavior and compatibility.
+更新 :program:`minio` 服务器二进制后，请使用 :mc:`mc update`，
+以确保行为一致性和兼容性。
 
-Global Flags
+全局参数
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

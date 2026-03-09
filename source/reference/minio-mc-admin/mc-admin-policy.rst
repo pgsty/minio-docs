@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,41 +12,41 @@
 
 .. versionchanged:: mc RELEASE.2023-03-20T17-17-53Z
 
-   The following commands are deprecated:
+   以下命令已弃用：
    
-   - ``mc admin policy add`` use :mc:`mc admin policy create` instead
-   - ``mc admin policy set`` use :mc:`mc admin policy attach` instead
-   - ``mc admin policy unset`` use :mc:`mc admin policy detach` instead
-   - ``mc admin policy update`` use :mc:`~mc admin policy attach` or :mc:`~mc admin policy detach` instead
+   - ``mc admin policy add`` 请改用 :mc:`mc admin policy create`
+   - ``mc admin policy set`` 请改用 :mc:`mc admin policy attach`
+   - ``mc admin policy unset`` 请改用 :mc:`mc admin policy detach`
+   - ``mc admin policy update`` 请改用 :mc:`~mc admin policy attach` 或 :mc:`~mc admin policy detach`
 
-   The following command is added:
+   新增以下命令：
 
    - :mc-cmd:`mc admin policy entities`
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-policy-desc
 
-The :mc:`mc admin policy` commands manage policies for use with :ref:`MinIO Policy-Based Access Control <minio-policy>` (PBAC). 
-MinIO PBAC uses IAM-compatible policy JSON documents to define rules for accessing resources on a MinIO server.
+:mc:`mc admin policy` 命令用于管理可与 :ref:`MinIO Policy-Based Access Control <minio-policy>` (PBAC) 配合使用的策略。
+MinIO PBAC 使用与 IAM 兼容的策略 JSON 文档来定义访问 MinIO 服务器资源的规则。
 
 .. end-mc-admin-policy-desc
 
-For complete documentation on MinIO PBAC, including policy document JSON structure and syntax, see :ref:`minio-policy`. To manage policies for deployments that use LDAP authentication, see :mc:`mc idp ldap policy`.
+有关 MinIO PBAC 的完整文档（包括策略文档 JSON 结构与语法），请参阅 :ref:`minio-policy`。要管理使用 LDAP 认证的部署中的策略，请参阅 :mc:`mc idp ldap policy`。
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc admin policy` includes the following subcommands:
+:mc:`mc admin policy` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc admin policy attach`
      - .. include:: /reference/minio-mc-admin/mc-admin-policy-attach.rst

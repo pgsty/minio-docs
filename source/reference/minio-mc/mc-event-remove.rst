@@ -6,31 +6,31 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc event remove
 .. mc:: mc event rm
 
-Syntax
+语法
 ------
 
 .. start-mc-event-remove-desc
 
-The :mc:`mc event rm` command removes an event notification trigger from a bucket.
+:mc:`mc event rm` 命令用于从存储桶中移除事件通知触发器。
 
 .. end-mc-event-remove-desc
 
-The :mc:`mc event remove` command has equivalent functionality to :mc:`mc event rm`.
+:mc:`mc event remove` 命令与 :mc:`mc event rm` 功能等效。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command removes a configured event notifications for the
-      specified :ref:`bucket notification target <minio-bucket-notifications>`
-      for the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会在 ``myminio`` MinIO 部署的 ``mydata`` 存储桶上，
+      移除指定 :ref:`bucket notification target <minio-bucket-notifications>`
+      的已配置事件通知：
 
       .. code-block:: shell
          :class: copyable
@@ -39,7 +39,7 @@ The :mc:`mc event remove` command has equivalent functionality to :mc:`mc event 
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -61,14 +61,14 @@ The :mc:`mc event remove` command has equivalent functionality to :mc:`mc event 
 
    mc [GLOBALFLAGS] event remove [FLAGS] ALIAS ARN
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The S3 service :ref:`alias <alias>` and bucket from which the command removes the event notification. 
-   For example:
+   用于移除事件通知的 S3 服务 :ref:`alias <alias>` 和存储桶。
+   例如：
 
    .. code-block:: shell
 
@@ -77,35 +77,35 @@ Parameters
 .. mc-cmd:: ARN
    :required:
 
-   The :aws-docs:`Amazon Resource Name (ARN) <IAM/latest/UserGuide/reference-arns>` of the notification target.
+   通知目标的 :aws-docs:`Amazon Resource Name (ARN) <IAM/latest/UserGuide/reference-arns>`。
 
-   The MinIO server outputs an ARN at startup for each configured notification target. 
-   See :ref:`minio-bucket-notifications` for more information.
+   MinIO 服务器在启动时会为每个已配置的通知目标输出一个 ARN。
+   更多信息请参见 :ref:`minio-bucket-notifications`。
 
-   Retrieve the ARN by running :mc:`mc event ls` on the bucket.
+   可在存储桶上运行 :mc:`mc event ls` 获取 ARN。
 
 .. mc-cmd:: --event
    :optional:
 
-   The event type(s) specified when the event was added. 
-   The entries **must** match the values used when adding the event.
-   If no event matches the list of event types, the command returns a ``no notification configuration matched`` error.
+   添加事件时指定的事件类型。
+   这些条目**必须**与添加事件时使用的值一致。
+   如果没有事件与事件类型列表匹配，命令将返回 ``no notification configuration matched`` 错误。
 
-   Specify multiple events using a comma ``,`` delimiter. 
-   See :ref:`mc-event-supported-events` for supported event types.
+   使用逗号 ``,`` 分隔可指定多个事件。
+   支持的事件类型请参见 :ref:`mc-event-supported-events`。
 
-   Defaults to removing an event that triggers for all event types on the :mc-cmd:`~mc event rm ALIAS` bucket with the :mc-cmd:`~mc event rm ARN` notification target.
+   默认移除 :mc-cmd:`~mc event rm ALIAS` 存储桶中、与 :mc-cmd:`~mc event rm ARN` 通知目标关联且对所有事件类型触发的事件。
 
-   Retrieve the event types used by running :mc:`mc event ls` on the bucket.
-   Use the following table to convert event types in the command's output to the entry required for the :mc:`mc event rm` command:
+   可通过在存储桶上运行 :mc:`mc event ls` 获取所使用的事件类型。
+   使用下表将命令输出中的事件类型转换为 :mc:`mc event rm` 命令所需的条目：
 
    .. list-table::
       :header-rows: 1
       :widths: 50 50
       :width: 100%
    
-      * - Output of ``mv event ls``
-        - Event type to use
+      * - ``mv event ls`` 的输出
+        - 要使用的事件类型
    
       * - ``s3:objectAccessed``
         - ``get``
@@ -116,65 +116,65 @@ Parameters
       * - ``s3:objectRemoved``
         - ``delete``
    
-   For example, if the ``mc event ls`` returns the following:
+   例如，如果 ``mc event ls`` 返回如下内容：
 
    .. code-block:: shell
 
       arn:minio:sqs::mytest:webhook   s3:ObjectAccessed:*,s3:ObjectCreated:*   Filter: 
       
-   Use the following command to remove the event:
+   使用以下命令移除该事件：
 
    .. code-block:: shell
 
       mc event rm alias/bucket arn:minio:sqs::mytest:webhook --event get,put
 
-   The order of event types does not matter, only that you include the same ones that exist for the event.
+   事件类型的顺序无关紧要，只需包含与该事件中已有类型相同的条目即可。
 
 
 .. mc-cmd:: --force
    :optional:
 
-   Removes all events on the :mc-cmd:`~mc event rm ALIAS` bucket with the :mc-cmd:`~mc event rm ARN` notification target.
+   移除 :mc-cmd:`~mc event rm ALIAS` 存储桶中与 :mc-cmd:`~mc event rm ARN` 通知目标关联的所有事件。
 
 .. mc-cmd:: --prefix
    :optional:
 
-   The bucket prefix in which the command removes bucket notifications.
+   命令移除存储桶通知时使用的存储桶前缀。
 
-   For example, given a :mc-cmd:`~mc event rm ALIAS` of
-   ``play/mybucket`` and a :mc-cmd:`~mc event rm --prefix` of
-   ``photos``, the command only removes bucket notifications in
+   例如，若 :mc-cmd:`~mc event rm ALIAS` 为
+   ``play/mybucket``，且 :mc-cmd:`~mc event rm --prefix` 为
+   ``photos``，则命令仅移除
    ``play/mybucket/photos``.
 
 .. mc-cmd:: --suffix
    :optional:
 
-   The bucket suffix in which the command removes bucket notifications.
+   命令移除存储桶通知时使用的存储桶后缀。
 
-   For example, given a :mc-cmd:`~mc event rm ALIAS` of
-   ``play/mybucket`` and a :mc-cmd:`~mc event rm --suffix` of
-   ``.jpg``, the command only removes bucket notifications in
+   例如，若 :mc-cmd:`~mc event rm ALIAS` 为
+   ``play/mybucket``，且 :mc-cmd:`~mc event rm --suffix` 为
+   ``.jpg``，则命令仅移除
    ``play/mybucket/*.jpg``.
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Remove Event Notifications from a Bucket
+从存储桶中移除事件通知
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following command removes all event notification triggers on a bucket.
-      The command assumes the MinIO deployment has at least one configured
+      以下命令会移除某个存储桶上的所有事件通知触发器。
+      该命令假设 MinIO 部署中至少配置了一个
       :ref:`bucket notification target <minio-bucket-notifications>`:
 
       .. code-block:: shell
@@ -182,25 +182,25 @@ Remove Event Notifications from a Bucket
 
          mc event rm myminio/mydata arn:minio:sqs::primary:webhook
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc event rm ALIAS ARN
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO
-        deployment on which to add the bucket notification event. For example:
+      - 将 ``ALIAS`` 替换为要在其上添加存储桶通知事件的 MinIO
+        部署 :ref:`alias <alias>`。例如：
 
         ``myminio/mydata``
 
-      - Replace ``ARN`` with the notification target
+      - 将 ``ARN`` 替换为通知目标
         :mc-cmd:`ARN <mc event add ARN>`.
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

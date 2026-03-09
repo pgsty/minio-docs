@@ -4,35 +4,35 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc retention
 
 
-Description
------------
+描述
+----
 
 .. start-mc-retention-desc
 
-The :mc:`mc retention` command configures the :ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` settings for an object or object(s) in a bucket. 
-You can also set the default object lock settings for a bucket, where all objects without explicit object lock settings inherit the bucket default.
+:mc:`mc retention` 命令用于为存储桶中的一个或多个对象配置 :ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` 设置。
+你还可以为存储桶设置默认的对象锁设置；未显式配置对象锁设置的所有对象都会继承该存储桶默认值。
 
 .. end-mc-retention-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc retention` includes the following subcommands:
+:mc:`mc retention` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc retention clear`
      - .. include:: /reference/minio-mc/mc-retention-clear.rst

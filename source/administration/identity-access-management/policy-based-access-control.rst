@@ -1,85 +1,82 @@
 .. _minio-policy:
 
 =================
-Access Management
+访问管理
 =================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-Overview
---------
+概述
+----
 
-MinIO uses Policy-Based Access Control (PBAC) to define the authorized actions and resources to which an authenticated user has access. 
-Each policy describes one or more :ref:`actions <minio-policy-actions>` and :ref:`conditions <minio-policy-conditions>` that outline the permissions of a :ref:`user <minio-users>` or :ref:`group <minio-groups>` of users.
+MinIO 使用 Policy-Based Access Control (PBAC) 来定义已认证用户可访问的授权操作和资源。
+每个策略描述一条或多条 :ref:`actions <minio-policy-actions>` 与 :ref:`conditions <minio-policy-conditions>`，用于说明某个 :ref:`user <minio-users>` 或 :ref:`group <minio-groups>` 中用户的权限。
 
-MinIO PBAC is built for compatibility with AWS IAM policy syntax, structure, and behavior. 
-The MinIO documentation makes a best-effort to cover IAM-specific behavior and functionality. 
-Consider deferring to the :iam-docs:`IAM documentation <>` for more complete documentation on AWS IAM-specific topics.
+MinIO PBAC 在设计上兼容 AWS IAM 策略语法、结构和行为。
+MinIO 文档会尽力覆盖 IAM 特定行为和功能。
+若需要更完整的 AWS IAM 特定主题文档，请参考 :iam-docs:`IAM documentation <>`。
 
-The :mc:`mc admin policy` command supports creation and management of policies on the MinIO deployment. 
-See the command reference for examples of usage.
+:mc:`mc admin policy` 命令支持在 MinIO 部署上创建和管理策略。
+用法示例请参见命令参考。
 
-Tag-Based Policy Conditions
----------------------------
+基于标签的策略条件
+------------------
 
 .. versionchanged:: RELEASE.2022-10-02T19-29-29Z
 
-   Policies can use conditions to limit a user's access only to objects with a :ref:`specific tag <minio-object-tagging>`.
+   策略可以使用条件，将用户访问限制为仅能访问带有 :ref:`特定标签 <minio-object-tagging>` 的对象。
 
-   MinIO supports :s3-docs:`tag-based conditionals <tagging-and-policies.html>` for policies for :ref:`selected actions <minio-selected-conditional-actions>`.
-   Use the ``s3:ExistingObjectTag/<key>`` in the ``Condition`` statement of the policy.
+   对于 :ref:`选定操作 <minio-selected-conditional-actions>` 的策略，MinIO 支持 :s3-docs:`基于标签的条件 <tagging-and-policies.html>`。
+   在策略的 ``Condition`` 语句中使用 ``s3:ExistingObjectTag/<key>``。
 
 .. _minio-policy-built-in:
 
-Built-In Policies
------------------
+内置策略
+--------
 
-MinIO provides the following built-in policies for assigning to 
-:ref:`users <minio-users>` or :ref:`groups <minio-groups>`:
+MinIO 提供以下内置策略，可分配给
+:ref:`users <minio-users>` 或 :ref:`groups <minio-groups>`：
 
 .. userpolicy:: consoleAdmin
 
-   Grants complete access to all S3 and administrative API operations against
-   all resources on the MinIO deployment. Equivalent to the following set of
-   actions:
+   授予对 MinIO 部署上所有资源执行全部 S3 和管理 API 操作的完整访问权限。
+   等价于以下 action 集合：
 
    - :policy-action:`s3:*`
    - :policy-action:`admin:*`
 
 .. userpolicy:: readonly
 
-   Grants read-only permissions on any object on the MinIO deployment. The GET
-   action *must* apply to a specific object without requiring any listing.
-   Equivalent to the following set of actions:
+   授予对 MinIO 部署上任意对象的只读权限。
+   ``GET`` 操作 *必须* 作用于某个具体对象，且不要求具备任何列举权限。
+   等价于以下 action 集合：
 
    - :policy-action:`s3:GetBucketLocation`
    - :policy-action:`s3:GetObject`
 
-   For example, this policy specifically supports GET operations on objects at a
-   specific path (e.g. ``GET play/mybucket/object.file``), such as:
+   例如，该策略专门支持对特定路径下对象执行 ``GET`` 操作（例如 ``GET play/mybucket/object.file``），例如：
 
    - :mc:`mc cp`
    - :mc:`mc stat`
    - :mc:`mc head`
    - :mc:`mc cat`
 
-   The exclusion of listing permissions is intentional, as typical use cases
-   do not intend for a "read-only" role to have complete discoverability
-   (listing all buckets and objects) on the object storage resource.
+   有意排除列举权限，因为典型使用场景并不希望“只读”角色对对象存储资源具有完整可发现性
+   （列出所有存储桶和对象）。
 
 .. userpolicy:: readwrite
 
-   Grants read and write permissions for all buckets and objects on the
-   MinIO server. Equivalent to :policy-action:`s3:*`.
+   授予对 MinIO 服务器上所有存储桶和对象的读写权限。
+   等价于 :policy-action:`s3:*`。
 
 .. userpolicy:: diagnostics
 
-   Grants permission to perform diagnostic actions on the MinIO deployment. 
-   Specifically includes the following actions:
+   授予在 MinIO 部署上执行诊断操作的权限。
+   具体包括以下 action：
 
    - :policy-action:`admin:ServerTrace`
    - :policy-action:`admin:Profiling`
@@ -92,75 +89,68 @@ MinIO provides the following built-in policies for assigning to
 
 .. userpolicy:: writeonly
 
-   Grants write-only permissions to any namespace (bucket and path to object)
-   the MinIO deployment. The PUT action *must* apply to a specific object
-   location without requiring any listing. 
-   Equivalent to the :policy-action:`s3:PutObject` action.
+   授予对 MinIO 部署中任意命名空间（存储桶及对象路径）的只写权限。
+   ``PUT`` 操作 *必须* 作用于某个具体对象位置，且不要求具备任何列举权限。
+   等价于 :policy-action:`s3:PutObject` action。
 
-Use :mc:`mc admin policy attach` to associate a policy to a 
-user or group on a MinIO deployment.
+使用 :mc:`mc admin policy attach` 将策略关联到 MinIO 部署上的用户或组。
 
-For example, consider the following table of users. Each user is assigned
-a :ref:`built-in policy <minio-policy-built-in>` or
-a supported :ref:`action <minio-policy-actions>`. The table
-describes a subset of operations a client could perform if authenticated
-as that user:
+例如，考虑下表中的用户。每个用户都被分配了一个
+:ref:`内置策略 <minio-policy-built-in>` 或某个受支持的
+:ref:`action <minio-policy-actions>`。该表描述了客户端以对应用户身份完成认证后可执行的一部分操作：
 
 .. list-table::
    :header-rows: 1
    :widths: 20 40 40
    :width: 100%
 
-   * - User
-     - Policy
-     - Operations
+   * - 用户
+     - 策略
+     - 操作
 
    * - ``Operations``
-     - | :userpolicy:`readwrite` on ``finance`` bucket
-       | :userpolicy:`readonly` on ``audit`` bucket
-     
-     - | ``PUT`` and ``GET`` on ``finance`` bucket.
-       | ``GET`` on ``audit`` bucket
+     - | ``finance`` 存储桶上的 :userpolicy:`readwrite`
+       | ``audit`` 存储桶上的 :userpolicy:`readonly`
+
+     - | 对 ``finance`` 存储桶执行 ``PUT`` 和 ``GET``。
+       | 对 ``audit`` 存储桶执行 ``GET``
 
    * - ``Auditing``
-     - | :userpolicy:`readonly` on ``audit`` bucket
-     - ``GET`` on ``audit`` bucket
+     - | ``audit`` 存储桶上的 :userpolicy:`readonly`
+     - 对 ``audit`` 存储桶执行 ``GET``
 
    * - ``Admin``
      - :policy-action:`admin:*`
-     - All :mc:`mc admin` commands.
+     - 所有 :mc:`mc admin` 命令。
 
-Each user can access only those resources and operations which are *explicitly*
-granted by the built-in role. MinIO denies access to any other resource or
-action by default.
+每个用户只能访问内置角色 *显式* 授予的那些资源和操作。
+默认情况下，MinIO 会拒绝访问任何其他资源或 action。
 
 .. admonition:: ``Deny`` overrides ``Allow``
    :class: note
 
-   MinIO follows the IAM policy evaluation rules where a ``Deny`` rule overrides
-   ``Allow`` rule on the same action/resource. For example, if a user has an
-   explicitly assigned policy with an ``Allow`` rule for an action/resource
-   while one of its groups has an assigned policy with a ``Deny`` rule for that
-   action/resource, MinIO would apply only the ``Deny`` rule. 
+   MinIO 遵循 IAM 策略求值规则，即在同一操作/资源上，``Deny`` 规则会覆盖
+   ``Allow`` 规则。例如，如果某个用户被显式分配的策略对某个操作/资源包含
+   ``Allow`` 规则，而其所属某个组被分配的策略对同一操作/资源包含 ``Deny`` 规则，
+   则 MinIO 只会应用 ``Deny`` 规则。
 
-   For more information on IAM policy evaluation logic, see the IAM
-   documentation on 
-   :iam-docs:`Determining Whether a Request is Allowed or Denied Within an Account 
-   <reference_policies_evaluation-logic.html#policy-eval-denyallow>`.
+   有关 IAM 策略求值逻辑的更多信息，请参见 IAM 文档中的
+   :iam-docs:`Determining Whether a Request is Allowed or Denied Within an Account
+   <reference_policies_evaluation-logic.html#policy-eval-denyallow>`。
 
 .. _minio-policy-document:
 
-Policy Document Structure
--------------------------
+策略文档结构
+------------
 
-MinIO policy documents use the same schema as 
-:aws-docs:`AWS IAM Policy <IAM/latest/UserGuide/access.html>` documents.
+MinIO 策略文档使用与
+:aws-docs:`AWS IAM Policy <IAM/latest/UserGuide/access.html>` 文档相同的模式。
 
-The following sample document provides a template for creating custom policies for use with a MinIO deployment. 
-For more complete documentation on IAM policy elements, see the :aws-docs:`IAM JSON Policy Elements Reference <IAM/latest/UserGuide/reference_policies_elements.html>`.
+以下示例文档为在 MinIO 部署中创建自定义策略提供了模板。
+有关 IAM 策略元素的更完整文档，请参见 :aws-docs:`IAM JSON Policy Elements Reference <IAM/latest/UserGuide/reference_policies_elements.html>`。
 
-The maximum size for any single policy document is 20KiB.
-There is no limit to the number of policy documents that can be attached to a user or group.
+任意单个策略文档的最大大小为 20KiB。
+可附加到用户或组的策略文档数量没有限制。
 
 .. code-block:: javascript
    :class: copyable
@@ -183,490 +173,490 @@ There is no limit to the number of policy documents that can be attached to a us
       ]
    }
 
-- For the ``Statement.Action`` array, specify one or more :ref:`supported S3 API operations <minio-policy-actions>`. 
+- 对于 ``Statement.Action`` 数组，指定一个或多个 :ref:`受支持的 S3 API 操作 <minio-policy-actions>`。
 
-- For the ``Statement.Resource`` key, specify the bucket or bucket prefix to which to restrict the policy.
-  You can use ``*`` and ``?`` wildcard characters as per the :s3-docs:`S3 Resource Spec <s3-arn-format.html>`.
+- 对于 ``Statement.Resource`` 键，指定要对策略进行限制的存储桶或存储桶前缀。
+  可以按照 :s3-docs:`S3 Resource Spec <s3-arn-format.html>` 使用 ``*`` 和 ``?`` 通配符。
 
-  The ``*`` wildcard may result in unintended application of a policy to multiple buckets or prefixes based on the :ref:`pattern match <minio-wildcard-matching>`.
-  For example, ``arn:aws:s3:::data*`` would match the buckets ``data``, ``data_private``, and ``data_internal``.
-  Specifying only ``*`` as the resource key applies the policy to all buckets and prefixes on the deployment.
+  ``*`` 通配符可能会基于 :ref:`模式匹配 <minio-wildcard-matching>`，导致策略被意外应用到多个存储桶或前缀。
+  例如，``arn:aws:s3:::data*`` 会匹配存储桶 ``data``、``data_private`` 和 ``data_internal``。
+  如果资源键仅指定 ``*``，则该策略会应用到部署上的所有存储桶和前缀。
 
-- For the ``Statement.Condition`` key, you can specify one or more :ref:`supported Conditions <minio-policy-conditions>`.
+- 对于 ``Statement.Condition`` 键，可以指定一个或多个 :ref:`受支持的 Conditions <minio-policy-conditions>`。
 
 .. _minio-policy-actions:
 
-Supported S3 Policy Actions
----------------------------
+受支持的 S3 策略 Action
+-----------------------
 
-MinIO policy documents support a subset of IAM :iam-docs:`S3 Action keys <list_amazons3.html#amazons3-actions-as-permissions>`.
-This section also includes any :ref:`condition keys <minio-policy-conditions>` supported by a specific action beyond the common set of supported keys.
+MinIO 策略文档支持 IAM :iam-docs:`S3 Action keys <list_amazons3.html#amazons3-actions-as-permissions>` 的一个子集。
+本节还包括特定 action 在通用受支持键之外额外支持的任何 :ref:`condition keys <minio-policy-conditions>`。
 
-The following actions control access to common S3 operations. 
-The remaining subsections document actions for more advanced S3 operations:
+以下 action 用于控制常见 S3 操作的访问。
+其余小节记录更高级的 S3 操作所对应的 action：
 
 .. policy-action:: s3:*
-   
-   Selector for *all* MinIO S3 operations. 
-   Applying this action to a given resource allows the user to perform *any* S3 operation against that resource. 
+
+   选择器，用于匹配 *所有* MinIO S3 操作。
+   将该 action 应用于某个资源后，用户即可对该资源执行 *任意* S3 操作。
 
 .. policy-action:: s3:CreateBucket
-   
-   Controls access to the :s3-api:`CreateBucket <API_CreateBucket.html>` S3 API
-   operation.
+
+   控制对 :s3-api:`CreateBucket <API_CreateBucket.html>` S3 API
+   操作的访问。
 
 .. policy-action:: s3:DeleteBucket
-   
-   Controls access to the :s3-api:`DeleteBucket <API_DeleteBucket.html>` S3 API
-   operation.
+
+   控制对 :s3-api:`DeleteBucket <API_DeleteBucket.html>` S3 API
+   操作的访问。
 
 .. policy-action:: s3:ForceDeleteBucket
-   
-   Controls access to the :s3-api:`DeleteBucket <API_DeleteBucket.html>`
-   S3 API operation for operations with the ``x-minio-force-delete`` flag.
-   Required for removing non-empty buckets.
+
+   控制对带有 ``x-minio-force-delete`` 标志的
+   :s3-api:`DeleteBucket <API_DeleteBucket.html>` S3 API 操作的访问。
+   删除非空存储桶时需要此权限。
 
 .. policy-action:: s3:GetBucketLocation
-   
-   Controls access to the :s3-api:`GetBucketLocation <API_GetBucketLocation.html>` S3 API operation.
+
+   控制对 :s3-api:`GetBucketLocation <API_GetBucketLocation.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:ListAllMyBuckets
-   
-   Controls access to the :s3-api:`ListBuckets <API_ListBuckets.html>` S3 API operation.
+
+   控制对 :s3-api:`ListBuckets <API_ListBuckets.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:DeleteObject
-   
-   Controls access to the :s3-api:`DeleteObject <API_DeleteObject.html>` S3 API operation.
+
+   控制对 :s3-api:`DeleteObject <API_DeleteObject.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:GetObject
-   
-   Controls access to the :s3-api:`GetObject <API_GetObject.html>` S3 API operation.
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   控制对 :s3-api:`GetObject <API_GetObject.html>` S3 API 操作的访问。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:x-amz-server-side-encryption   
-      s3:x-amz-server-side-encryption-customer-algorithm   
-      s3:ExistingObjectTag/<key>   
-      s3:versionid   
+      s3:x-amz-server-side-encryption
+      s3:x-amz-server-side-encryption-customer-algorithm
+      s3:ExistingObjectTag/<key>
+      s3:versionid
 
 .. policy-action:: s3:GetObjectAttributes
 
-   Controls access to the :s3-api:`GetObjectAttributes <API_GetObjectAttributes.html>` S3 API operation.
+   控制对 :s3-api:`GetObjectAttributes <API_GetObjectAttributes.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:GetObjectVersionAttributes
 
-   Controls access to the :s3-api:`GetObjectAttributes <API_GetObjectAttributes.html>` S3 API operations on versioned objects.
+   控制对带版本对象执行 :s3-api:`GetObjectAttributes <API_GetObjectAttributes.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:RestoreObject
 
-   Controls access to the :s3-api:`RestoreObject <API_RestoreObject.html>` S3 API operation.
+   控制对 :s3-api:`RestoreObject <API_RestoreObject.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:ListBucket
-   
-   Controls access to the :s3-api:`ListObjectsV2 <API_ListObjectsV2.html>` S3 API operation.
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   控制对 :s3-api:`ListObjectsV2 <API_ListObjectsV2.html>` S3 API 操作的访问。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:prefix   
-      s3:delimiter   
-      s3:max-keys   
+      s3:prefix
+      s3:delimiter
+      s3:max-keys
 
 .. policy-action:: s3:PutObject
-   
-   Controls access to the :s3-api:`PutObject <API_PutObject.html>` S3 API operation.
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   控制对 :s3-api:`PutObject <API_PutObject.html>` S3 API 操作的访问。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:x-amz-copy-source    
-      s3:x-amz-server-side-encryption   
-      s3:x-amz-server-side-encryption-customer-algorithm   
-      s3:x-amz-metadata-directive   
-      s3:x-amz-storage-class   
-      s3:versionid   
-      s3:object-lock-retain-until-date   
-      s3:object-lock-mode   
-      s3:object-lock-legal-hold   
-      s3:RequestObjectTagKeys   
-      s3:RequestObjectTag/<key>   
+      s3:x-amz-copy-source
+      s3:x-amz-server-side-encryption
+      s3:x-amz-server-side-encryption-customer-algorithm
+      s3:x-amz-metadata-directive
+      s3:x-amz-storage-class
+      s3:versionid
+      s3:object-lock-retain-until-date
+      s3:object-lock-mode
+      s3:object-lock-legal-hold
+      s3:RequestObjectTagKeys
+      s3:RequestObjectTag/<key>
 
 .. policy-action:: s3:PutObjectTagging
 
-   Controls access to the :s3-api:`PutObjectTagging <API_PutObjectTagging.html>` S3 API operation.
+   控制对 :s3-api:`PutObjectTagging <API_PutObjectTagging.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
-      s3:RequestObjectTagKeys   
-      s3:RequestObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
+      s3:RequestObjectTagKeys
+      s3:RequestObjectTag/<key>
 
 .. policy-action:: s3:GetObjectTagging
 
-   Controls access to the :s3-api:`GetObjectTagging <API_GetObjectTagging.html>` S3 API operation.
+   控制对 :s3-api:`GetObjectTagging <API_GetObjectTagging.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-     s3:versionid   
-     s3:ExistingObjectTag/<key>   
+     s3:versionid
+     s3:ExistingObjectTag/<key>
 
 .. policy-action:: s3:DeleteObjectTagging
 
-   Controls access to the :s3-api:`DeleteObjectTagging <API_DeleteObjectTagging.html>` S3 API operation.
+   控制对 :s3-api:`DeleteObjectTagging <API_DeleteObjectTagging.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-     s3:versionid   
+     s3:versionid
      s3:ExistingObjectTag/<key>
 
-Bucket Configuration
-~~~~~~~~~~~~~~~~~~~~
+存储桶配置
+~~~~~~~~~~
 
 .. policy-action:: s3:GetBucketPolicy
-   
-   Controls access to the :s3-api:`GetBucketPolicy <API_GetBucketPolicy.html>` S3 API operation.
+
+   控制对 :s3-api:`GetBucketPolicy <API_GetBucketPolicy.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:PutBucketPolicy
-   
-   Controls access to the :s3-api:`PutBucketPolicy <API_PutBucketPolicy.html>`
-   S3 API operation.
+
+   控制对 :s3-api:`PutBucketPolicy <API_PutBucketPolicy.html>`
+   S3 API 操作的访问。
 
 .. policy-action:: s3:DeleteBucketPolicy
-   
-   Controls access to the :s3-api:`DeleteBucketPolicy <API_DeleteBucketPolicy.html>` S3 API operation.
+
+   控制对 :s3-api:`DeleteBucketPolicy <API_DeleteBucketPolicy.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:GetBucketTagging
-   
-   Controls access to the :s3-api:`GetBucketTagging <API_GetBucketTagging.html>` S3 API operation.
+
+   控制对 :s3-api:`GetBucketTagging <API_GetBucketTagging.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:PutBucketTagging
-   
-   Controls access to the :s3-api:`PutBucketTagging <API_PutBucketTagging.html>` S3 API operation.
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   控制对 :s3-api:`PutBucketTagging <API_PutBucketTagging.html>` S3 API 操作的访问。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:RequestObjectTagKeys   
+      s3:RequestObjectTagKeys
       s3:RequestObjectTag/<key>
 
 .. policy-action:: s3:GetBucketPolicyStatus
-   
-   Controls access to the :s3-api:`GetBucketPolicyStatus <API_GetBucketPolicyStatus.html>` S3 API operation.  
 
-Multipart Upload
-~~~~~~~~~~~~~~~~
+   控制对 :s3-api:`GetBucketPolicyStatus <API_GetBucketPolicyStatus.html>` S3 API 操作的访问。
+
+分段上传
+~~~~~~~~
 
 .. policy-action:: s3:AbortMultipartUpload
-   
-   Controls access to the :s3-api:`AbortMultipartUpload <API_AbortMultipartUpload.html>` S3 API operation.
+
+   控制对 :s3-api:`AbortMultipartUpload <API_AbortMultipartUpload.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:ListMultipartUploadParts
-   
-   Controls access to the :s3-api:`ListParts <API_ListParts.html>` S3 API
-   operation.
+
+   控制对 :s3-api:`ListParts <API_ListParts.html>` S3 API
+   操作的访问。
 
 .. policy-action:: s3:ListBucketMultipartUploads
-   
-   Controls access to the :s3-api:`ListMultipartUploads <API_ListMultipartUploads.html>` S3 API operation.
 
-Versioning and Retention
-~~~~~~~~~~~~~~~~~~~~~~~~
+   控制对 :s3-api:`ListMultipartUploads <API_ListMultipartUploads.html>` S3 API 操作的访问。
+
+版本控制与保留
+~~~~~~~~~~~~~~
 
 .. policy-action:: s3:PutBucketVersioning
-   
-   Controls access to the :s3-api:`PutBucketVersioning <API_PutBucketVersioning.html>` S3 API operation.
+
+   控制对 :s3-api:`PutBucketVersioning <API_PutBucketVersioning.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:GetBucketVersioning
-   
-   Controls access to the :s3-api:`GetBucketVersioning <API_GetBucketVersioning.html>` S3 API operation.
+
+   控制对 :s3-api:`GetBucketVersioning <API_GetBucketVersioning.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:DeleteObjectVersion
-   
-   Controls access to the :s3-api:`DeleteObjectVersion <API_DeleteObjectVersion.html>` S3 API operation.
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   控制对 :s3-api:`DeleteObjectVersion <API_DeleteObjectVersion.html>` S3 API 操作的访问。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
 
 
 .. policy-action:: s3:ListBucketVersions
 
-   Controls access to the :s3-api:`ListBucketVersions <API_ListBucketVersions.html>` S3 API operation.
+   控制对 :s3-api:`ListBucketVersions <API_ListBucketVersions.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:prefix   
-      s3:delimiter   
-      s3:max-keys   
- 
+      s3:prefix
+      s3:delimiter
+      s3:max-keys
+
 .. policy-action:: s3:PutObjectVersionTagging
 
-   Controls access to the :s3-api:`PutObjectVersionTagging <API_PutObjectVersionTagging.html>` S3 API operation.
+   控制对 :s3-api:`PutObjectVersionTagging <API_PutObjectVersionTagging.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
-      s3:RequestObjectTagKeys   
-      s3:RequestObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
+      s3:RequestObjectTagKeys
+      s3:RequestObjectTag/<key>
 
 .. policy-action:: s3:GetObjectVersionTagging
 
-   Controls access to the :s3-api:`GetObjectVersionTagging <API_GetObjectVersionTagging.html>` S3 API operation.
+   控制对 :s3-api:`GetObjectVersionTagging <API_GetObjectVersionTagging.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
+      s3:versionid
       s3:ExistingObjectTag/<key>
 
 .. policy-action:: s3:DeleteObjectVersionTagging
-   
-   Controls access to the :s3-api:`DeleteObjectVersionTagging <API_DeleteObjectVersionTagging.html>`  S3 API operation.
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   控制对 :s3-api:`DeleteObjectVersionTagging <API_DeleteObjectVersionTagging.html>`  S3 API 操作的访问。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
 
 
 .. policy-action:: s3:GetObjectVersion
-   
-   Controls access to the :s3-api:`GetObjectVersion <API_GetObjectVersion.html>`  S3 API operation.
+
+   控制对 :s3-api:`GetObjectVersion <API_GetObjectVersion.html>`  S3 API 操作的访问。
 
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
 
 .. policy-action:: s3:BypassGovernanceRetention
-   
-   Controls access to the following S3 API operations on objects locked under :mc-cmd:`GOVERNANCE <mc retention set MODE>` retention mode:
-  
-   - ``s3:PutObjectRetention`` 
-   - ``s3:PutObject`` 
-   - ``s3:DeleteObject`` 
-   
-   See the S3 documentation on :s3-docs:`s3:BypassGovernanceRetention <object-lock-managing.html#object-lock-managing-bypass>` for more information.
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   控制对处于 :mc-cmd:`GOVERNANCE <mc retention set MODE>` 保留模式下锁定对象的以下 S3 API 操作的访问：
+
+   - ``s3:PutObjectRetention``
+   - ``s3:PutObject``
+   - ``s3:DeleteObject``
+
+   更多信息请参见 S3 文档中的 :s3-docs:`s3:BypassGovernanceRetention <object-lock-managing.html#object-lock-managing-bypass>`。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:object-lock-remaining-retention-days   
-      s3:object-lock-retain-until-date   
-      s3:object-lock-mode   
-      s3:object-lock-legal-hold   
-      s3:RequestObjectTagKeys   
-      s3:RequestObjectTag/<key>   
+      s3:versionid
+      s3:object-lock-remaining-retention-days
+      s3:object-lock-retain-until-date
+      s3:object-lock-mode
+      s3:object-lock-legal-hold
+      s3:RequestObjectTagKeys
+      s3:RequestObjectTag/<key>
 
 .. policy-action:: s3:PutObjectRetention
-   
-   Controls access to the :s3-api:`PutObjectRetention <API_PutObjectRetention.html>`  S3 API operation.
 
-   Required for any ``PutObject`` operation that specifies :ref:`retention metadata <minio-object-locking>`.
+   控制对 :s3-api:`PutObjectRetention <API_PutObjectRetention.html>`  S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   对于任何指定了 :ref:`保留元数据 <minio-object-locking>` 的 ``PutObject`` 操作，都需要此权限。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:x-amz-server-side-encryption   
-      s3:x-amz-server-side-encryption-customer-algorithm   
-      s3:x-amz-object-lock-remaining-retention-days   
-      s3:x-amz-object-lock-retain-until-date   
-      s3:x-amz-object-lock-mode   
-      s3:versionid   
+      s3:x-amz-server-side-encryption
+      s3:x-amz-server-side-encryption-customer-algorithm
+      s3:x-amz-object-lock-remaining-retention-days
+      s3:x-amz-object-lock-retain-until-date
+      s3:x-amz-object-lock-mode
+      s3:versionid
 
 .. policy-action:: s3:GetObjectRetention
-   
-   Controls access to the :s3-api:`GetObjectRetention <API_GetObjectRetention.html>` S3 API operation.
 
-   Required for including :ref:`object locking metadata <minio-object-locking>` as part of the response to a ``GetObject`` or ``HeadObject`` operation.
+   控制对 :s3-api:`GetObjectRetention <API_GetObjectRetention.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   若要在 ``GetObject`` 或 ``HeadObject`` 操作的响应中包含 :ref:`对象锁定元数据 <minio-object-locking>`，则需要此权限。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:x-amz-server-side-encryption   
-      s3:x-amz-server-side-encryption-customer-algorithm   
+      s3:x-amz-server-side-encryption
+      s3:x-amz-server-side-encryption-customer-algorithm
       s3:versionid
 
 .. policy-action:: s3:GetObjectLegalHold
-   
-   Controls access to the :s3-api:`GetObjectLegalHold <API_GetObjectLegalHold.html>` S3 API operation.
 
-   Required for including :ref:`object locking metadata <minio-object-locking>` as part of the response to a ``GetObject`` or ``HeadObject`` operation.
+   控制对 :s3-api:`GetObjectLegalHold <API_GetObjectLegalHold.html>` S3 API 操作的访问。
+
+   若要在 ``GetObject`` 或 ``HeadObject`` 操作的响应中包含 :ref:`对象锁定元数据 <minio-object-locking>`，则需要此权限。
 
 .. policy-action:: s3:PutObjectLegalHold
-   
-   Controls access to the :s3-api:`PutObjectLegalHold <API_PutObjectLegalHold.html>` S3 API operation.
 
-   Required for any ``PutObject`` operation that specifies :ref:`legal hold metadata <minio-object-locking>`.
+   控制对 :s3-api:`PutObjectLegalHold <API_PutObjectLegalHold.html>` S3 API 操作的访问。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   对于任何指定了 :ref:`legal hold 元数据 <minio-object-locking>` 的 ``PutObject`` 操作，都需要此权限。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:x-amz-server-side-encryption   
-      s3:x-amz-server-side-encryption-customer-algorithm   
-      s3:object-lock-legal-hold   
-      s3:versionid   
+      s3:x-amz-server-side-encryption
+      s3:x-amz-server-side-encryption-customer-algorithm
+      s3:object-lock-legal-hold
+      s3:versionid
 
 .. policy-action:: s3:GetBucketObjectLockConfiguration
-   
-   Controls access to the :s3-api:`GetObjectLockConfiguration <API_GetObjectLockConfiguration.html>` S3 API operation.
+
+   控制对 :s3-api:`GetObjectLockConfiguration <API_GetObjectLockConfiguration.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:PutBucketObjectLockConfiguration
-   
-   Controls access to the :s3-api:`PutObjectLockConfiguration <API_PutObjectLockConfiguration.html>` S3 API operation.
 
-Bucket Notifications
-~~~~~~~~~~~~~~~~~~~~
+   控制对 :s3-api:`PutObjectLockConfiguration <API_PutObjectLockConfiguration.html>` S3 API 操作的访问。
+
+存储桶通知
+~~~~~~~~~~
 
 .. policy-action:: s3:GetBucketNotification
-   
-   Controls access to the :s3-api:`GetBucketNotification <API_GetBucketNotification.html>` S3 API operation.
+
+   控制对 :s3-api:`GetBucketNotification <API_GetBucketNotification.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:PutBucketNotification
-   
-   Controls access to the :s3-api:`PutBucketNotification <API_PutBucketNotification.html>` S3 API operation.
+
+   控制对 :s3-api:`PutBucketNotification <API_PutBucketNotification.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:ListenNotification
-  
-   MinIO Extension for controlling API operations related to MinIO Bucket Notifications. 
 
-   This action is **not** intended for use with other S3-compatible services.
+   用于控制与 MinIO Bucket Notifications 相关 API 操作的 MinIO 扩展。
+
+   此 action **不** 用于其他兼容 S3 的服务。
 
 .. policy-action:: s3:ListenBucketNotification
 
-   MinIO Extension for controlling API operations related to MinIO Bucket Notifications. 
+   用于控制与 MinIO Bucket Notifications 相关 API 操作的 MinIO 扩展。
 
-   This action is **not** intended for use with other S3-compatible services.
+   此 action **不** 用于其他兼容 S3 的服务。
 
-Object Lifecycle Management
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+对象生命周期管理
+~~~~~~~~~~~~~~~~
 
 .. policy-action:: s3:PutLifecycleConfiguration
-   
-   Controls access to the :s3-api:`PutLifecycleConfiguration <API_PutBucketLifecycleConfiguration.html>` S3 API operation.
+
+   控制对 :s3-api:`PutLifecycleConfiguration <API_PutBucketLifecycleConfiguration.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:GetLifecycleConfiguration
-   
-   Controls access to the :s3-api:`GetLifecycleConfiguration <API_GetBucketLifecycleConfiguration.html>` S3 API operation.
 
-Object Encryption
-~~~~~~~~~~~~~~~~~
+   控制对 :s3-api:`GetLifecycleConfiguration <API_GetBucketLifecycleConfiguration.html>` S3 API 操作的访问。
+
+对象加密
+~~~~~~~~
 
 .. policy-action:: s3:PutEncryptionConfiguration
-   
-   Controls access to the :s3-api:`PutEncryptionConfiguration <API_PutBucketEncryption.html>` S3 API operation.
+
+   控制对 :s3-api:`PutEncryptionConfiguration <API_PutBucketEncryption.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:GetEncryptionConfiguration
-   
-   Controls access to the :s3-api:`GetEncryptionConfiguration <API_GetBucketEncryption.html>` S3 API operation.
 
-Bucket Replication
-~~~~~~~~~~~~~~~~~~
+   控制对 :s3-api:`GetEncryptionConfiguration <API_GetBucketEncryption.html>` S3 API 操作的访问。
+
+存储桶复制
+~~~~~~~~~~
 
 .. policy-action:: s3:GetReplicationConfiguration
-   
-   Controls access to the :s3-api:`GetBucketReplication <API_GetBucketReplication.html>` S3 API operation.
+
+   控制对 :s3-api:`GetBucketReplication <API_GetBucketReplication.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:PutReplicationConfiguration
-   
-   Controls access to the :s3-api:`PutBucketReplication <PutBucketReplication.html>` S3 API operation.
+
+   控制对 :s3-api:`PutBucketReplication <PutBucketReplication.html>` S3 API 操作的访问。
 
 .. policy-action:: s3:ReplicateObject
 
-   MinIO Extension for controlling API operations related to :ref:`Server-Side Bucket Replication <minio-bucket-replication-serverside>`.
+   用于控制与 :ref:`服务器端存储桶复制 <minio-bucket-replication-serverside>` 相关 API 操作的 MinIO 扩展。
 
-   Required for MinIO server-side replication.
+   MinIO 服务器端复制需要此权限。
 
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-     s3:versionid   
-     s3:ExistingObjectTag/<key>   
+     s3:versionid
+     s3:ExistingObjectTag/<key>
 
 .. policy-action:: s3:ReplicateDelete
 
-   MinIO Extension for controlling API operations related to :ref:`Server-Side Bucket Replication <minio-bucket-replication-serverside>`.
+   用于控制与 :ref:`服务器端存储桶复制 <minio-bucket-replication-serverside>` 相关 API 操作的 MinIO 扩展。
 
-   Required for synchronizing :ref:`delete operations <minio-object-delete>` as part of MinIO server-side replication.
-   
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   作为 MinIO 服务器端复制的一部分，在同步 :ref:`删除操作 <minio-object-delete>` 时需要此权限。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
 
 .. policy-action:: s3:ReplicateTags
 
-   MinIO Extension for controlling API operations related to :ref:`Server-Side Bucket Replication <minio-bucket-replication-serverside>`.
+   用于控制与 :ref:`服务器端存储桶复制 <minio-bucket-replication-serverside>` 相关 API 操作的 MinIO 扩展。
 
-   Required for MinIO server-side replication.
-   
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   MinIO 服务器端复制需要此权限。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
 
 .. policy-action:: s3:GetObjectVersionForReplication
 
-   MinIO Extension for controlling API operations related to :ref:`Server-Side Bucket Replication <minio-bucket-replication-serverside>`.
+   用于控制与 :ref:`服务器端存储桶复制 <minio-bucket-replication-serverside>` 相关 API 操作的 MinIO 扩展。
 
-   Required for MinIO server-side replication.
-   
-   Supports the following additional :ref:`condition keys <minio-policy-conditions>`:
+   MinIO 服务器端复制需要此权限。
+
+   支持以下附加 :ref:`condition keys <minio-policy-conditions>`：
 
    .. code-block:: shell
 
-      s3:versionid   
-      s3:ExistingObjectTag/<key>   
+      s3:versionid
+      s3:ExistingObjectTag/<key>
 
 .. _minio-policy-conditions:
 .. _minio-selected-conditional-actions:
 
-Supported S3 Policy Condition Keys
-----------------------------------
+受支持的 S3 策略条件键
+----------------------
 
-MinIO policy documents support IAM :iam-docs:`conditional statements <reference_policies_elements_condition.html>`. 
+MinIO 策略文档支持 IAM :iam-docs:`条件语句 <reference_policies_elements_condition.html>`。
 
-Each condition element consists of :iam-docs:`operators <reference_policies_elements_condition_operators.html>` and condition keys. MinIO supports a subset of IAM condition keys. 
-For complete information on any listed condition key, see the :iam-docs:`IAM Condition Element Documentation <reference_policies_elements_condition.html>`
+每个条件元素都由 :iam-docs:`operators <reference_policies_elements_condition_operators.html>` 和条件键组成。MinIO 支持 IAM 条件键的一个子集。
+有关任何列出条件键的完整信息，请参见 :iam-docs:`IAM Condition Element Documentation <reference_policies_elements_condition.html>`
 
-MinIO supports the following condition keys for all supported 
-:ref:`actions <minio-policy-actions>`:
+对于所有受支持的
+:ref:`actions <minio-policy-actions>`，MinIO 支持以下条件键：
 
 - ``aws:Referer``
 - ``aws:SourceIp``
@@ -680,29 +670,29 @@ MinIO supports the following condition keys for all supported
 - ``x-amz-content-sha256``
 - ``s3:signatureAge``
 
-.. warning:: 
+.. warning::
 
-   The ``aws:Referer``, ``aws:SourceIp``, and ``aws.UserAgent`` keys may be easily spoofed and therefore pose a potential security risk.
-   MinIO recommends only using these condition keys to *deny* access as a secondary security measure.
-   
-   **Never** use these three keys to grant access by themselves.
+   ``aws:Referer``、``aws:SourceIp`` 和 ``aws.UserAgent`` 键很容易被伪造，因此存在潜在安全风险。
+   MinIO 建议仅将这些条件键作为辅助安全措施用于 *拒绝* 访问。
 
-For additional keys supported by a specific S3 action, see the reference documentation for that action.
+   **绝不要** 仅凭这三个键授予访问权限。
 
-MinIO Extended Condition Keys
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+对于特定 S3 action 支持的其他键，请参见该 action 的参考文档。
 
-MinIO extends the S3 standard condition keys with the following extended key:
+MinIO 扩展条件键
+~~~~~~~~~~~~~~~~
+
+MinIO 在 S3 标准条件键基础上扩展了以下键：
 
 ``sts:DurationSeconds``
 
    .. versionadded:: MinIO SERVER RELEASE.2024-02-06T21-36-22Z
 
-   Specify a time in seconds to limit the duration of *all* Security Token Service credentials generated by :ref:`minio-sts-assumerolewithwebidentity`.
+   指定一个以秒为单位的时间，用于限制由 :ref:`minio-sts-assumerolewithwebidentity` 生成的 *所有* Security Token Service 凭证的有效期。
 
-   This value overrides the ``DurationSeconds`` field specified to the client.
+   此值会覆盖客户端指定的 ``DurationSeconds`` 字段。
 
-   For example:
+   例如：
 
    .. code-block:: json
 
@@ -725,268 +715,264 @@ MinIO extends the S3 standard condition keys with the following extended key:
 
 .. _minio-policy-mc-admin-actions:
 
-``mc admin`` Policy Action Keys
--------------------------------
+``mc admin`` 策略 Action 键
+---------------------------
 
-MinIO supports the following actions for use with defining policies
-for :mc:`mc admin` operations. These actions are *only* valid for
-MinIO deployments and are *not* intended for use with other S3-compatible
-services:
+MinIO 支持以下 action，用于为 :mc:`mc admin` 操作定义策略。
+这些 action *仅* 对 MinIO 部署有效，*不* 用于其他兼容 S3 的服务：
 
 .. policy-action:: admin:*
 
-   Selector for all admin action keys.
+   所有 admin action 键的选择器。
 
 .. policy-action:: admin:Heal
 
-   Allows heal command
+   允许执行 heal 命令
 
 .. policy-action:: admin:StorageInfo
 
-   Allows listing server info
+   允许列出服务器信息
 
 .. policy-action:: admin:DataUsageInfo
 
-   Allows listing data usage info
+   允许列出数据使用信息
 
 .. policy-action:: admin:TopLocksInfo
 
-   Allows listing top locks
+   允许列出 top locks
 
 .. policy-action:: admin:Profiling
 
-   Allows profiling
+   允许 profiling
 
 .. policy-action:: admin:ServerTrace
 
-   Allows listing server trace
+   允许列出 server trace
 
 .. policy-action:: admin:ConsoleLog
 
-   Allows listing console logs on terminal
+   允许在终端列出 console log
 
 .. policy-action:: admin:KMSCreateKey
 
-   Allows creating a new KMS master key
-   
-   While this option is still supported, :policy-action:`kms:CreateKey` is preferred.
+   允许创建新的 KMS 主密钥
+
+   虽然此选项仍受支持，但更推荐使用 :policy-action:`kms:CreateKey`。
 
 .. policy-action:: admin:KMSKeyStatus
 
-   Allows getting KMS key status
+   允许获取 KMS 密钥状态
 
-   While this option is still supported, :policy-action:`kms:KeyStatus` is preferred.
+   虽然此选项仍受支持，但更推荐使用 :policy-action:`kms:KeyStatus`。
 
 .. policy-action:: admin:ServerInfo
 
-   Allows listing server info
+   允许列出服务器信息
 
 .. policy-action:: admin:OBDInfo
 
-   Allows obtaining cluster on-board diagnostics
+   允许获取集群 on-board diagnostics
 
 .. policy-action:: admin:ServerUpdate
 
-   Allows MinIO binary update
+   允许更新 MinIO 二进制文件
 
 .. policy-action:: admin:ServiceRestart
 
-   Allows restart of MinIO service.
+   允许重启 MinIO 服务。
 
 .. policy-action:: admin:ServiceStop
 
-   Allows stopping MinIO service.
+   允许停止 MinIO 服务。
 
 .. policy-action:: admin:ConfigUpdate
 
-   Allows MinIO config management
+   允许管理 MinIO 配置
 
 .. policy-action:: admin:CreateUser
 
-   Allows creating MinIO user
+   允许创建 MinIO 用户
 
 .. policy-action:: admin:DeleteUser
 
-   Allows deleting MinIO user
+   允许删除 MinIO 用户
 
 .. policy-action:: admin:ListUsers
 
-   Allows list users permission
+   允许列出用户
 
 .. policy-action:: admin:EnableUser
 
-   Allows enable user permission
+   允许启用用户
 
 .. policy-action:: admin:DisableUser
 
-   Allows disable user permission
+   允许禁用用户
 
 .. policy-action:: admin:GetUser
 
-   Allows GET permission on user info
+   允许对用户信息执行 GET
 
 .. policy-action:: admin:AddUserToGroup
 
-   Allows adding user to group permission
+   允许将用户添加到组
 
 .. policy-action:: admin:RemoveUserFromGroup
 
-   Allows removing user to group permission
+   允许将用户从组中移除
 
 .. policy-action:: admin:GetGroup
 
-   Allows getting group info
+   允许获取组信息
 
 .. policy-action:: admin:ListGroups
 
-   Allows list groups permission
+   允许列出组
 
 .. policy-action:: admin:EnableGroup
 
-   Allows enable group permission
+   允许启用组
 
 .. policy-action:: admin:DisableGroup
 
-   Allows disable group permission
+   允许禁用组
 
 .. policy-action:: admin:CreatePolicy
 
-   Allows create policy permission
+   允许创建策略
 
 .. policy-action:: admin:DeletePolicy
 
-   Allows delete policy permission
+   允许删除策略
 
 .. policy-action:: admin:GetPolicy
 
-   Allows get policy permission
+   允许获取策略
 
 .. policy-action:: admin:AttachUserOrGroupPolicy
 
-   Allows attaching a policy to a user/group
+   允许将策略附加到用户/组
 
 .. policy-action:: admin:ListUserPolicies
 
-   Allows listing user policies
+   允许列出用户策略
 
 .. policy-action:: admin:CreateServiceAccount
 
-   Allows creating MinIO Access Key
+   允许创建 MinIO Access Key
 
 .. policy-action:: admin:UpdateServiceAccount
 
-   Allows updating MinIO Access Key
+   允许更新 MinIO Access Key
 
 .. policy-action:: admin:RemoveServiceAccount
 
-   Allows deleting MinIO Access Key
+   允许删除 MinIO Access Key
 
 .. policy-action:: admin:ListServiceAccounts
 
-   Allows listing MinIO Access Key
+   允许列出 MinIO Access Key
 
 .. policy-action:: admin:SetBucketQuota
 
-   Allows setting bucket quota
+   允许设置存储桶配额
 
 .. policy-action:: admin:GetBucketQuota
 
-   Allows getting bucket quota
+   允许获取存储桶配额
 
 .. policy-action:: admin:SetBucketTarget
 
-   Allows setting bucket target
+   允许设置存储桶目标
 
 .. policy-action:: admin:GetBucketTarget
 
-   Allows getting bucket targets
+   允许获取存储桶目标
 
 .. policy-action:: admin:SetTier
 
-   Allows creating and modifying remote storage tiers using the 
-   :mc:`mc ilm tier` commands.
+   允许使用 :mc:`mc ilm tier` 命令创建和修改远程存储层。
 
 .. policy-action:: admin:ListTier
 
-   Allows listing configured remote storage tiers using the
-   :mc:`mc ilm tier` commands.
+   允许使用 :mc:`mc ilm tier` 命令列出已配置的远程存储层。
 
 .. policy-action:: admin:BandwidthMonitor
 
-   Allows retrieving metrics related to current bandwidth consumption.
+   允许获取与当前带宽消耗相关的指标。
 
 .. policy-action:: admin:Prometheus
 
-   Allows access to MinIO :ref:`metrics <minio-metrics-and-alerts>`. 
-   Only required if MinIO requires authentication for scraping metrics.
+   允许访问 MinIO :ref:`metrics <minio-metrics-and-alerts>`。
+   仅当 MinIO 要求采集指标时进行认证才需要此权限。
 
 .. policy-action:: admin:ListBatchJobs
 
-   Allows access to list the active batch jobs.
+   允许访问并列出活动中的批处理作业。
 
 .. policy-action:: admin:DescribeBatchJob
 
-   Allows access to the see the definition details of a running batch job.
+   允许访问并查看正在运行的批处理作业的定义详情。
 
 .. policy-action:: admin:StartBatchJob
 
-   Allows user to begin a batch job run.
+   允许用户启动批处理作业运行。
 
 .. policy-action:: admin:CancelBatchJob
 
-   Allows user to stop a batch job currently in process.
-   
+   允许用户停止当前正在执行的批处理作业。
+
 .. policy-action:: admin:Rebalance
 
-   Allows access to start, query, or stop a rebalancing of objects across pools with varying free storage space.
+   允许访问并启动、查询或停止跨不同可用存储空间池的对象重平衡。
 
-KMS policy action keys
-----------------------
+KMS 策略 action 键
+------------------
 
-MinIO supports restricting key management service (KMS) actions by policy.
+MinIO 支持通过策略限制密钥管理服务 (KMS) action。
 
-You can restrict KMS activities in a policy with any of the following KMS actions:
+可以在策略中使用以下任一 KMS action 来限制 KMS 活动：
 
 .. policy-action:: kms:Status
 
-   Check the status of KMS.
+   检查 KMS 状态。
 
 .. policy-action:: kms:Metrics
 
-   Obtain Prometheus-formatted metrics.
+   获取 Prometheus 格式指标。
 
 .. policy-action:: kms:API
 
-   List supported API endpoints.
+   列出受支持的 API 端点。
 
 .. policy-action:: kms:Version
 
-   Retrieve the KMS version.
+   获取 KMS 版本。
 
 .. policy-action:: kms:CreateKey
 
-   Create a new KMS key.
+   创建新的 KMS 密钥。
 
 .. policy-action:: kms:ListKeys
 
-   Retrieve a list of existing KMS keys.
+   获取现有 KMS 密钥列表。
 
 .. policy-action:: kms:KeyStatus
 
-   Retrieve the status of a specified KMS key.
+   获取指定 KMS 密钥的状态。
 
-To select all of the available kms policy actions, use ``kms:*``.
+若要选择所有可用的 kms 策略 action，可使用 ``kms:*``。
 
 .. versionchanged:: RELEASE.2024-07-16T23-46-41Z
 
-   KMS actions can be restricted by resource or a resource prefix.
-   The wildcard character ``*`` can be used to apply the KMS action policy to all resources that match the prefix.
+   KMS action 可以按资源或资源前缀进行限制。
+   可以使用通配符 ``*`` 将 KMS action 策略应用到所有匹配该前缀的资源。
 
-   For example, the following policy document allows a user to list keys, create new keys, and check the status of keys for any resource that begins with ``keys-abc-`` or ``myuser-``.
+   例如，以下策略文档允许用户列出密钥、创建新密钥，并检查任何以 ``keys-abc-`` 或 ``myuser-`` 开头资源上的密钥状态。
 
    .. code-block:: shell
       :class: copyable
-   
+
       {
           "Version": "2012-10-17",
           "Statement": [
@@ -1005,11 +991,11 @@ To select all of the available kms policy actions, use ``kms:*``.
           ]
       }
 
-``mc admin`` Policy Condition Keys
-----------------------------------
+``mc admin`` 策略条件键
+-----------------------
 
-MinIO supports the following conditions for use with defining policies for
-:mc:`mc admin` :ref:`actions <minio-policy-mc-admin-actions>`.
+MinIO 支持以下条件，用于为
+:mc:`mc admin` :ref:`actions <minio-policy-mc-admin-actions>` 定义策略。
 
 - ``aws:Referer``
 - ``aws:SourceIp``
@@ -1018,16 +1004,16 @@ MinIO supports the following conditions for use with defining policies for
 - ``aws:CurrentTime``
 - ``aws:EpochTime``
 
-For complete information on any listed condition key, see the :iam-docs:`IAM Condition Element Documentation <reference_policies_elements_condition.html>`.
+有关任何列出条件键的完整信息，请参见 :iam-docs:`IAM Condition Element Documentation <reference_policies_elements_condition.html>`。
 
-Policy Variables
-----------------
+策略变量
+--------
 
-MinIO supports using policy variables for automatically substituting context from the authenticated user and/or the operation into the user's assigned policy or policies.
-Use the ``${POLICYVARIABLE}`` format to specify the variable to the policy as part of the ``Condition`` or ``Resource`` definition.
-MinIO policy variables function similarly to :iam-docs:`AWS IAM policy elements: Variables and tags <reference_policies_variables.html>`.
+MinIO 支持使用策略变量，将来自已认证用户和/或操作的上下文自动替换到分配给该用户的一个或多个策略中。
+使用 ``${POLICYVARIABLE}`` 格式在策略的 ``Condition`` 或 ``Resource`` 定义中指定变量。
+MinIO 策略变量的工作方式类似于 :iam-docs:`AWS IAM policy elements: Variables and tags <reference_policies_variables.html>`。
 
-Each MinIO :ref:`identity provider <minio-authentication-and-identity-management>` supports its own set of policy variables:
+每种 MinIO :ref:`identity provider <minio-authentication-and-identity-management>` 都支持其各自的一组策略变量：
 
 - :ref:`minio-policy-variables-internal`
 - :ref:`minio-policy-variables-oidc`
@@ -1035,29 +1021,29 @@ Each MinIO :ref:`identity provider <minio-authentication-and-identity-management
 
 .. _minio-policy-variables-internal:
 
-MinIO Policy Variables
-~~~~~~~~~~~~~~~~~~~~~~
+MinIO 策略变量
+~~~~~~~~~~~~~~
 
-The following table contains a list of recommended policy variables for use in authorizing :ref:`MinIO-managed users <minio-internal-idp>`:
+下表列出了用于授权 :ref:`MinIO-managed users <minio-internal-idp>` 的推荐策略变量：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
    :width: 100%
 
-   * - Variable
-     - Description
+   * - 变量
+     - 说明
 
    * - :iam-docs:`aws:referrer <reference_policies_condition-keys.html#condition-keys-referer>`
-     - The referrer in the HTTP header for the authenticated API call.
+     - 已认证 API 调用的 HTTP 头中的 referrer。
 
    * - :iam-docs:`aws:SourceIp <reference_policies_condition-keys.html#condition-keys-sourceip>`
-     - The source IP in the HTTP header for the authenticated API call.
+     - 已认证 API 调用的 HTTP 头中的源 IP。
 
    * - :iam-docs:`aws:username <reference_policies_condition-keys.html#condition-keys-username>`
-     - The name of the user associated with the authenticated API call.
+     - 与已认证 API 调用关联的用户名。
 
-For example, the following policy uses variables to substitute the authenticated user's username as part of the ``Resource`` field such that the user can only access those prefixes which match their username:
+例如，以下策略使用变量将已认证用户的用户名替换到 ``Resource`` 字段中，使该用户只能访问与其用户名匹配的那些前缀：
 
 .. code-block:: json
 
@@ -1081,13 +1067,13 @@ For example, the following policy uses variables to substitute the authenticated
       ]
    }
 
-MinIO replaces the ``${aws:username}`` variable in the ``Resource`` field with the username.
-MinIO then evaluates the policy and grants or revokes access to the requested API and resource.
+MinIO 会将 ``Resource`` 字段中的 ``${aws:username}`` 变量替换为用户名。
+随后 MinIO 对策略进行求值，并授予或撤销对所请求 API 和资源的访问。
 
 .. _minio-policy-variables-oidc:
 
-OpenID Policy Variables
-~~~~~~~~~~~~~~~~~~~~~~~
+OpenID 策略变量
+~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-minio-oidc.rst
    :start-after: start-minio-oidc-policy-variables
@@ -1095,30 +1081,30 @@ OpenID Policy Variables
 
 .. _minio-policy-variables-ad-ldap:
 
-Active Directory / LDAP Policy Variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Active Directory / LDAP 策略变量
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following table contains a list of supported policy variables for use in authorizing :ref:`AD/LDAP users <minio-external-identity-management-ad-ldap>`:
+下表列出了用于授权 :ref:`AD/LDAP users <minio-external-identity-management-ad-ldap>` 的受支持策略变量：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
    :width: 100%
 
-   * - Variable
-     - Description
+   * - 变量
+     - 说明
 
    * - ``ldap:username``
-     - The simple username (``name``) for the authenticated user.
-         This is distinct from the user's DistinguishedName or CommonName.
+     - 已认证用户的简单用户名（``name``）。
+         这不同于用户的 DistinguishedName 或 CommonName。
 
    * - ``ldap:user``
-     - The Distinguished Name used by the authenticated user.
+     - 已认证用户使用的 Distinguished Name。
 
    * - ``ldap:groups``
-     - The Group Distinguished Name for the authenticated user.
+     - 已认证用户的组 Distinguished Name。
 
-For example, the following policy uses variables to substitute the authenticated user's ``name`` as part of the ``Resource`` field such that the user can only access those prefixes which match their name:
+例如，以下策略使用变量将已认证用户的 ``name`` 替换到 ``Resource`` 字段中，使该用户只能访问与其名称匹配的那些前缀：
 
 .. code-block:: json
 
@@ -1142,5 +1128,5 @@ For example, the following policy uses variables to substitute the authenticated
       ]
    }
 
-MinIO replaces the ``${ldap:username}`` variable in the ``Resource`` field with the value of the authenticated user's ``name``.
-MinIO then evaluates the policy and grants or revokes access to the requested API and resource.
+MinIO 会将 ``Resource`` 字段中的 ``${ldap:username}`` 变量替换为已认证用户的 ``name`` 值。
+随后 MinIO 对策略进行求值，并授予或撤销对所请求 API 和资源的访问。

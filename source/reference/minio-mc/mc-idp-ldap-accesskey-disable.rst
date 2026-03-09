@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,29 +14,29 @@
 .. mc:: mc idp ldap accesskey disable
 
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-accesskey-disable-desc
 
-:mc:`mc idp ldap accesskey disable` disables the specified :ref:`access key <minio-id-access-keys>` on the MinIO deployment.
+:mc:`mc idp ldap accesskey disable` 会在 MinIO 部署上禁用指定的 :ref:`access key <minio-id-access-keys>`。
 
 .. end-mc-idp-ldap-accesskey-disable-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-         The following example disables the access key ``mykey`` on the ``minio`` deployment:
+         以下示例在 ``minio`` 部署上禁用访问密钥 ``mykey``：
 
       .. code-block:: shell
          :class: copyable
 
          mc idp ldap accesskey disable minio mykey
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -46,23 +46,23 @@ Description
                                           KEY
 
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment configured for AD/LDAP integration.
-      - Replace ``KEY`` with the access key to disable.
+      - 将 ``ALIAS`` 替换为已配置 AD/LDAP 集成的 MinIO 部署的 :ref:`alias <alias>`。
+      - 将 ``KEY`` 替换为要禁用的访问密钥。
         
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment configured for AD/LDAP.
+   已配置 AD/LDAP 的 MinIO 部署的 :ref:`alias <alias>`。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -71,31 +71,31 @@ Parameters
 .. mc-cmd:: KEY
    :required:
 
-   The configured access key to disable.
+   要禁用的已配置访问密钥。
 
-Example
-~~~~~~~
+示例
+~~~~
 
-Disable the access key ``mykey`` from the ``minio`` deployment.
+禁用 ``minio`` 部署中的访问密钥 ``mykey``。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey disable minio/ mykey
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

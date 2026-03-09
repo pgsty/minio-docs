@@ -6,37 +6,32 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The MinIO Security Token Service (STS) ``AssumeRoleWithLDAPIdentity`` API 
-endpoint generates temporary access credentials using Active Directory
-or LDAP user credentials. This page documents the MinIO 
-server ``AssumeRoleWithLDAPIdentity`` endpoint. For instructions on 
-implementing STS using an S3-compatible SDK, defer to the documentation
-for that SDK.
+MinIO Security Token Service (STS) ``AssumeRoleWithLDAPIdentity`` API
+端点使用 Active Directory 或 LDAP 用户凭据生成临时访问凭据。本文档介绍 MinIO
+服务端 ``AssumeRoleWithLDAPIdentity`` 端点。有关如何使用兼容 S3 的 SDK
+实现 STS，请参考对应 SDK 的文档。
 
-The MinIO STS ``AssumeRoleWithLDAPIdentity`` API endpoint is modeled
-after the
+MinIO STS ``AssumeRoleWithLDAPIdentity`` API 端点以
 AWS :aws-docs:`AssumeRoleWithWebIdentity 
-<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html>` 
-endpoint and shares certain request/response elements. This page
-documents the MinIO-specific syntax and links out to the AWS reference for
-all shared elements.
+<STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html>`
+端点为模型，并共享部分请求/响应元素。本文档介绍 MinIO 特有的语法，并为
+所有共享元素提供指向 AWS 参考文档的链接。
 
-Request Endpoint
-----------------
+请求端点
+--------
 
-The ``AssumeRoleWithLDAPIdentity`` endpoint has the following form:
+``AssumeRoleWithLDAPIdentity`` 端点格式如下：
 
 .. code-block:: shell
 
    POST https://minio.example.net?Action=AssumeRoleWithLDAPIdentity[&ARGS]
 
-The following example uses all supported arguments. Replace the
-``minio.example.net`` hostname with the appropriate URL for your MinIO 
-cluster:
+以下示例使用了所有受支持参数。请将 ``minio.example.net`` 主机名替换为你的 MinIO
+集群对应的 URL：
 
 .. code-block:: shell
 
@@ -46,99 +41,88 @@ cluster:
    &Version=2011-06-15
    &Policy={}
 
-Request Query Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~
+请求查询参数
+~~~~~~~~~~~~
 
-This endpoint supports the following query parameters:
+该端点支持以下查询参数：
 
 .. list-table::
    :header-rows: 1
    :widths: 20 20 60
    :width: 100%
 
-   * - Parameter
-     - Type
-     - Description
+   * - 参数
+     - 类型
+     - 说明
 
    * - ``LDAPUsername``
      - string
-     - *Required*
+     - *必需*
 
-       Specify the username of the AD/LDAP user as whom you want to
-       authenticate.
+       指定要进行认证的 AD/LDAP 用户名。
 
    * - ``LDAPPassword``
      - string
-     - *Required*
+     - *必需*
 
-       Specify the password for the ``LDAPUsername``.
+       指定 ``LDAPUsername`` 对应的密码。
 
    * - ``Version``
      - string
-     - *Required*
+     - *必需*
 
-       Specify ``2011-06-15``.
+       指定 ``2011-06-15``。
 
    * - ``DurationSeconds``
      - integer
-     - *Optional*
+     - *可选*
      
-       Specify the number of seconds after which the temporary credentials
-       expire. Defaults to ``3600``.
+       指定临时凭据在多少秒后过期。默认值为 ``3600``。
        
-       - The minimum value is ``900`` or 15 minutes.
-       - The maximum value is ``604800`` or 7 days.
+       - 最小值为 ``900``（15 分钟）。
+       - 最大值为 ``604800``（7 天）。
 
-       If ``DurationSeconds`` is omitted, MinIO checks the JWT token for an
-       ``exp`` claim before using the default duration. See
+       如果省略 ``DurationSeconds``，MinIO 在使用默认时长前会先检查 JWT token
+       中是否包含 ``exp`` claim。有关 JSON web token 过期时间的更多信息，请参见
        `RFC 7519 4.1.4: Expiration Time Claim 
-       <https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.4>`__ 
-       for more information on JSON web token expiration.
+       <https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.4>`__。
 
    * - ``Policy``
      - string
-     - *Optional*
+     - *可选*
 
-       Specify the URL-encoded JSON-formatted :ref:`policy <minio-policy>` to
-       use as an inline session policy.
+       指定 URL 编码的 JSON 格式 :ref:`policy <minio-policy>`，作为内联会话策略使用。
 
-       - The minimum string length is ``1``.
-       - The maximum string length is ``2048``.
+       - 最小字符串长度为 ``1``。
+       - 最大字符串长度为 ``2048``。
         
-       The resulting permissions for the temporary credentials are the
-       intersection between the :ref:`policy
-       <minio-external-identity-management-ad-ldap-access-control>` matching the Distinguished
-       Name (DN) of the ``LDAPUsername`` and the specified inline policy.
-       Applications can only perform those operations for which they are
-       explicitly authorized.
+       临时凭据的最终权限是以下两者的交集：与 ``LDAPUsername`` 的 Distinguished
+       Name (DN) 匹配的 :ref:`policy
+       <minio-external-identity-management-ad-ldap-access-control>`，以及指定的内联策略。
+       应用只能执行其被明确授权的操作。
 
-       The inline policy can specify a subset of permissions allowed by the
-       policy specified in the DN policy. Applications can never assume
-       more privileges than those specified in the DN policy.
+       内联策略可以指定 DN 策略允许权限的子集。应用可获取的权限绝不会超过 DN
+       策略中定义的权限。
 
-       Omit to use only the DN policy.
+       省略该参数则仅使用 DN 策略。
 
-       See :ref:`minio-access-management` for more information on MinIO
-       authentication and authorization.
+       有关 MinIO 认证与授权的更多信息，请参见 :ref:`minio-access-management`。
 
-Response Elements
------------------
+响应元素
+--------
 
-The XML response for this API endpoint is similar to the AWS
+此 API 端点的 XML 响应与 AWS 的
 :aws-docs:`AssumeRoleWithLDAPIdentity response
 <STS/latest/APIReference/API_AssumeRoleWithLDAPIdentity.html#API_AssumeRoleWithLDAPIdentity_ResponseElements>`.
-Specifically, MinIO returns an ``AssumeRoleWithLDAPIdentityResult`` object,
-where the ``AssumedRoleUser.Credentials`` object contains the temporary
-credentials generated by MinIO:
+类似。具体而言，MinIO 返回 ``AssumeRoleWithLDAPIdentityResult`` 对象，其中
+``AssumedRoleUser.Credentials`` 对象包含 MinIO 生成的临时凭据：
 
-- ``AccessKeyId`` - The access key applications use for authentication.
-- ``SecretKeyId`` - The secret key applications use for authentication.
-- ``Expiration`` - The :rfc:`RFC3339 <3339>`  date and time after which the credentials expire.
-- ``SessionToken`` - The session token applications use for authentication. Some
-  SDKs may require this field when using temporary credentials.
+- ``AccessKeyId`` - 应用用于认证的访问密钥。
+- ``SecretKeyId`` - 应用用于认证的密钥。
+- ``Expiration`` - 凭据过期时间，采用 :rfc:`RFC3339 <3339>` 日期时间格式。
+- ``SessionToken`` - 应用用于认证的会话令牌。某些 SDK 在使用临时凭据时可能需要此字段。
 
-The following example is similar to the response returned by the MinIO STS
-``AssumeRoleWithLDAPIdentity`` endpoint:
+以下示例与 MinIO STS ``AssumeRoleWithLDAPIdentity`` 端点返回的响应类似：
 
 .. code-block:: xml
 
@@ -159,11 +143,9 @@ The following example is similar to the response returned by the MinIO STS
    <ResponseMetadata/>
    </AssumeRoleWithLDAPIdentityResponse>
 
-Error Elements
---------------
+错误元素
+--------
 
-The XML error response for this API endpoint is similar to the AWS
+此 API 端点的 XML 错误响应与 AWS 的
 :aws-docs:`AssumeRoleWithLDAPIdentity response
 <STS/latest/APIReference/API_AssumeRoleWithLDAPIdentity.html#API_AssumeRoleWithLDAPIdentity_Errors>`.
-
-

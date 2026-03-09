@@ -1,96 +1,96 @@
-# MinIO Documentation
+# MinIO 文档
 
 > [!IMPORTANT]
-> **This is a community-maintained fork of [minio/docs](https://github.com/minio/docs), maintained by [Pigsty](https://pigsty.io).**
-> This project is **not** affiliated with, endorsed by, or sponsored by MinIO, Inc.
-> "MinIO" is a trademark of MinIO, Inc., used here solely to identify the upstream project.
+> **这是由社区维护的 [minio/docs](https://github.com/minio/docs) 分支，由 [Pigsty](https://pigsty.io) 维护。**
+> 本项目与 MinIO, Inc. **无关联**，也未获得 MinIO, Inc. 的认可或赞助。
+> “MinIO”是 MinIO, Inc. 的商标，在此仅用于标识上游项目。
 >
-> Changes from upstream are minimal:
-> - Restored the removed [Console](https://minio.pigsty.io/administration/minio-console.html) documentation
-> - Fixed dead links pointing to the decommissioned `docs.min.io`
+> 与上游相比的改动很少：
+> - 恢复了被移除的 [Console](https://minio.pigsty.io/administration/minio-console.html) 文档
+> - 修复了指向已下线 `docs.min.io` 的失效链接
 >
-> Hosted at [minio.pigsty.io](https://minio.pigsty.io). Distributed under the original [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) license.
+> 托管地址：[minio.pigsty.io](https://minio.pigsty.io)。按原始 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) 许可分发。
 
-## Build Instructions
+## 构建说明
 
-MinIO uses [Sphinx](https://www.sphinx-doc.org/en/master/index.html) to generate static HTML pages using ReSTructured Text (rST).
+MinIO 使用 [Sphinx](https://www.sphinx-doc.org/en/master/index.html)，基于 ReSTructured Text (rST) 生成静态 HTML 页面。
 
-### Prerequisites
+### 前置条件
 
-- Any GNU/Linux Operating System, or macOS 12.3 or later.
+- 任意 GNU/Linux 操作系统，或 macOS 12.3 及以上版本。
 - python 3.10.x and python-pip
 - python3.10-venv
 - sphinx 6.2.1
-- nodejs 14.5.0 or later
-- npm 16.19.1 or later
-- `git` or a git-compatible client
+- nodejs 14.5.0 或更高版本
+- npm 16.19.1 或更高版本
+- `git` 或兼容 git 的客户端
 
-### Build
+### 构建
 
-> NOTE: following instructions do work on macOS for testing purposes, however for production builds GNU/Linux is recommended.
+> NOTE: 以下步骤在 macOS 上可用于测试，但生产构建建议使用 GNU/Linux。
 
-1. Clone docs repository locally.
+1. 在本地克隆 docs 仓库。
 
 ```
 git clone https://github.com/pgsty/minio-docs && cd minio-docs/
 ```
 
-2. Create a new Python virtual environment.
+2. 创建新的 Python 虚拟环境。
 
 ```
 python3 -m venv venv && source venv/bin/activate
 ```
 
-3. Install all the python and nodejs dependencies
+3. 安装全部 python 和 nodejs 依赖
 
 ```
 pip install -r requirements.txt && npm install && npm run build
 ```
 
-4. Build
+4. 构建
 
 ```
 make SYNC_SDK=true mindocs
 ```
 
-`SYNC_SDK=true` pulls down SDK-related dependencies from MinIO's community S3 libraries.
-You can omit `SYNC_SDK` on subsequent builds.
+`SYNC_SDK=true` 会从 MinIO 社区的 S3 库拉取与 SDK 相关的依赖。
+后续构建时可以省略 `SYNC_SDK`。
 
-5. View the generated documentation at http://localhost:8000.
+5. 在 http://localhost:8000 查看生成的文档。
 
 ```
 python -m http.server --directory build/YOUR_BRANCH/<PLATFORM>/html
 ```
 
-# Syncing Operator CRD Docs
+# 同步 Operator CRD 文档
 
-For importing the Operator CRD Docs specifically, you must have:
+如果要专门导入 Operator CRD 文档，你必须安装：
 
 - pandoc (latest stable)
 - asciidoc (latest stable)
 
-In addition to all other prerequisites.
+以及前文列出的所有其他前置条件。
 
-Run
+运行
 
 ```
 make sync-operator-crd
 ```
 
-This script does three things:
+该脚本会执行三件事：
 
-- Downloads and converts the `tenant-crd.adoc` from the MinIO Operator Github repository
-- Downloads the Operator Helm `values.yaml` from the Operator Github repository
-- Downloads the Tenant Helm `values.yaml` from the Operator Github repository
+- 从 MinIO Operator Github 仓库下载并转换 `tenant-crd.adoc`
+- 从 Operator Github 仓库下载 Operator Helm `values.yaml`
+- 从 Operator Github 仓库下载 Tenant Helm `values.yaml`
 
-For the the `tenant-crd.adoc` , it converts the asciidoc to XML, then to markdown.
-Finally, it does some `sed` find/replace to tidy up the file for Sphinx ingest.
+对于 `tenant-crd.adoc`，它会先将 asciidoc 转换为 XML，再转换为 markdown。
+最后会执行一些 `sed` 查找/替换，以便整理文件供 Sphinx 导入。
 
-You can run this when we have a new Operator release being documented, assuming there are changes to the CRD as part of that release.
-It should make it somewhat easier to periodically sync these docs instead of pulling them down every single build, when we do not expect or need to doc changes in latest stable.
+当有新的 Operator 发布需要写入文档，且该版本包含 CRD 变更时，可以运行该脚本。
+在最新稳定版本预期没有或不需要文档变更时，这可以让我们更容易按周期同步这些文档，而不是在每次构建时都重新拉取。
 
-# License
+# 许可证
 
-This project is licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/legalcode). See [CONTRIBUTING.md](https://github.com/minio/docs/tree/master/CONTRIBUTING.md) guide for more information on contributing to the MinIO Documentation project.
+本项目采用 [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/legalcode) 许可。关于如何为 MinIO Documentation 项目贡献内容的更多信息，请参见 [CONTRIBUTING.md](https://github.com/minio/docs/tree/master/CONTRIBUTING.md) 指南。
 
-> NOTE: This work was previously licensed under AGPL3.0. You can find all AGPL3.0 licensed code at commit:[73772c7f8485809446cc890188a89ece1afb93f6](https://github.com/minio/docs/tree/73772c7f8485809446cc890188a89ece1afb93f6)
+> NOTE: 本项目此前采用 AGPL3.0 许可。你可以在该提交中找到所有 AGPL3.0 许可代码：commit:[73772c7f8485809446cc890188a89ece1afb93f6](https://github.com/minio/docs/tree/73772c7f8485809446cc890188a89ece1afb93f6)

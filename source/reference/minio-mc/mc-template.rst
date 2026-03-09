@@ -2,8 +2,8 @@
 
 ..
 
-  Use this file as a template for adding new MinIO `mc` commands and
-  subcommands.
+  使用此文件作为添加新的 MinIO `mc` 命令和
+  子命令的模板。
 
 .. _minio-mc-COMMAND:
 
@@ -13,18 +13,18 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc COMMAND
 
-Syntax
+语法
 ------
 
 .. start-mc-COMMAND-desc
 
-The :mc:`mc COMMAND` command DESCRIPTION
+:mc:`mc COMMAND` 命令说明
 
 .. end-mc-COMMAND-desc
 
@@ -32,49 +32,49 @@ The :mc:`mc COMMAND` command DESCRIPTION
 
    mc [GLOBALFLAGS] COMMAND FLAGS [FLAGS] ARGUMENTS [ARGUMENTS]
 
-Parameters
+参数
 ~~~~~~~~~~
 
 ..
 
-  Document all arguments here:
+  在此记录所有参数：
 
 .. mc-cmd:: ARGUMENT
 
-   *Required|Optional* Describe the argument here
+   *Required|Optional* 在此描述该参数
 
 
 ..
 
-  Document all flags here
+  在此记录所有标志
 
 .. mc-cmd:: FLAG
 
-   *Required|Optional* Describe the flag here
+   *Required|Optional* 在此描述该标志
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
 .. 
 
-  Document all examples here
+  在此记录所有示例
 
-  Use action-based titles:
+  使用基于动作的标题：
 
-  Enable | Configure | Modify | Deploy | Set
+  启用 | 配置 | 修改 | 部署 | 设置
 
-Behavior
+行为
 --------
 
 .. 
 
-  Document all behaviors here
+  在此记录所有行为
 
-  Be descriptive to improve searchability / SEO
+  使用描述性表述以提升可搜索性 / SEO

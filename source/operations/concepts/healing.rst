@@ -1,89 +1,89 @@
 .. _minio-concepts-healing:
 
 ==============
-Object Healing
+对象自愈
 ==============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-What is healing?
+什么是自愈？
 ----------------
 
-Healing is MinIO's ability to restore an object that has been damaged, corrupted, or partially lost.
-The loss can come from multiple types of corruptions or loss, such as but not limited to:
+自愈是 MinIO 恢复受损、损坏或部分丢失对象的能力。
+这类丢失或损坏可能来自多种情况，包括但不限于：
 
-- drive-level errors or failure
-- OS or filesystem errors or failure
+- 驱动器级错误或故障
+- 操作系统或文件系统错误或故障
 - :ref:`bit rot <minio-ec-bitrot>`
 
-Healing and Erasure Coding
+自愈与纠删码
 --------------------------
 
-The ability of MinIO to restore a damaged object relates directly to the following:
+MinIO 恢复受损对象的能力，直接取决于以下因素：
 
-- total number of drives in the :ref:`erasure set <minio-erasure-coding>` where the object exists
-- number of drives available with intact parts of the object
-- :ref:`parity setting <minio-ec-parity>` for the erasure set
+- 对象所在 :ref:`纠删码集合 <minio-erasure-coding>` 的驱动器总数
+- 保留对象完整分片的可用驱动器数量
+- 该纠删码集合的 :ref:`校验设置 <minio-ec-parity>`
 
-  :term:`Parity` refers to the number of dedicated recovery shards MinIO creates when writing the object.
-  For example, an erasure set may have eight total drives and use three drives during a write for parity.
-  In this scenario, MinIO splits an object into 5 data shards and create 3 parity shards.
-  MinIO distributes these eight shards across the drives in the erasure set.
-  No one drive contains only parity shards or only data shards.
-  Instead, MinIO writes shards for each object in a randomized way to distribute reads evenly across drives.
+  :term:`Parity` 指 MinIO 在写入对象时创建的专用恢复分片数量。
+  例如，一个纠删码集合可能总共有 8 块驱动器，其中 3 块用于校验。
+  在这种情况下，MinIO 会把对象拆分为 5 个数据分片和 3 个校验分片。
+  MinIO 会将这 8 个分片分布到纠删码集合中的各块驱动器上。
+  不会有某一块驱动器只包含校验分片或只包含数据分片。
+  相反，MinIO 会以随机化方式写入每个对象的分片，以便将读取均匀分散到各块驱动器上。
 
-  When MinIO needs to provide the object, it looks for the data shards for the object.
-  If any of the data shards are missing or damaged, MinIO uses one or more of the parity shards to restore the object.
-  When looking for the parity shards, if any of the parity shards are missing or damaged, MinIO restores those as well, provided there are sufficient other shards to serve the object.
-  For this scenario, up to three of data shard parts can be lost or damaged and MinIO can still successfully restore and serve the object. 
+  当 MinIO 需要返回该对象时，它会查找对象对应的数据分片。
+  如果某些数据分片丢失或损坏，MinIO 会使用一个或多个校验分片来恢复对象。
+  如果在查找校验分片时发现某些校验分片也丢失或损坏，只要仍有足够的其他分片可供返回对象，MinIO 也会一并恢复这些校验分片。
+  在上述场景中，即使最多有 3 个数据分片丢失或损坏，MinIO 仍然可以成功恢复并返回该对象。
 
-  The number of drives available with intact data or parity shards of the object must meet or exceed the number of drives used for data shards in the erasure set.
-  In the scenario above, five drives with intact shards must be online and available for MinIO to successfully serve the object.
+  保留对象完整数据分片或校验分片的可用驱动器数量，必须大于或等于该纠删码集合中用于数据分片的驱动器数量。
+  在上述场景中，至少需要 5 块保留完整分片的驱动器在线且可用，MinIO 才能成功返回该对象。
 
-When does MinIO heal an object?
+MinIO 何时对对象执行自愈？
 -------------------------------
 
-MinIO has a robust system for healing objects.
+MinIO 提供了一套健壮的对象自愈机制。
 
-Healing during ``GET`` requests
+在 ``GET`` 请求期间自愈
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO automatically checks the consistency of an object's data shards each time you request an object with a ``GET`` or ``HEAD`` operation.
-For versioned buckets, MinIO also checks for consistency during ``PUT`` operation.
+每当你通过 ``GET`` 或 ``HEAD`` 请求对象时，MinIO 都会自动检查该对象数据分片的一致性。
+对于启用了版本控制的存储桶，MinIO 在 ``PUT`` 操作期间也会执行一致性检查。
 
-If all of the data shards are found intact, MinIO serves the object from the data shards without inspecting the corresponding parity shards.
+如果所有数据分片都完好无损，MinIO 会直接从数据分片返回对象，而不会检查对应的校验分片。
 
-If the object has missing or damaged data shards, MinIO uses the available parity shards to heal the object before serving it as part of the operation.
-There **must** be an intact parity shard available for each lost or damaged data shard, otherwise the object cannot be recovered.
-If any parity shards are lost or damaged, MinIO restores the parity shard, provided there are sufficient other parity shards to serve the object.
+如果对象存在丢失或损坏的数据分片，MinIO 会先使用可用的校验分片对对象执行自愈，然后再作为本次操作的一部分返回。
+每个丢失或损坏的数据分片都**必须**有一个完好的校验分片可用，否则对象无法恢复。
+如果某些校验分片丢失或损坏，只要仍有足够的其他校验分片可用于返回对象，MinIO 也会恢复这些校验分片。
 
-Healing with the object scanner
+通过对象扫描器自愈
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO uses an :ref:`object scanner <minio-concepts-scanner>` to perform a number of tasks related to objects.
-One of these tasks checks the integrity of objects and, if found damaged or corrupted, heals them.
+MinIO 使用 :ref:`对象扫描器 <minio-concepts-scanner>` 执行多项与对象相关的任务。
+其中一项任务就是检查对象完整性，并在发现损坏或损毁时执行自愈。
 
-On each scanning pass, MinIO uses a hash of the object name to select one out of every 1,024 objects to check.
+在每一轮扫描中，MinIO 会根据对象名称的哈希值，从每 1,024 个对象中选择 1 个进行检查。
 
-If any object is found to have lost shards, MinIO heals the object from available shards.
-By default, MinIO does *not* check for :term:`bit rot` corruption using the scanner.
-This can be an expensive operation to perform and the risk of bit rot across multiple disks is low.
+如果发现对象存在分片丢失，MinIO 会使用可用分片对对象执行自愈。
+默认情况下，MinIO *不会* 使用扫描器检查 :term:`bit rot` 损坏。
+这类操作的成本较高，而多个磁盘同时发生 bit rot 的概率较低。
 
-Healing by manual request
+通过手动请求自愈
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Administrators can use :mc:`mc admin heal` to initiate a full system healing.
-The procedure is very resource intensive and not typically needed.
+管理员可以使用 :mc:`mc admin heal` 发起一次全系统自愈。
+该过程会大量消耗资源，通常并非必需。
 
-Consult with MinIO Engineers before manually starting a healing process on a deployment.
+在部署上手动启动自愈流程之前，请先与 MinIO 工程师沟通。
 
-Healing metrics
+自愈指标
 ---------------
 
-MinIO provides several `healing metrics <https://minio.pigsty.io/operations/monitoring/metrics-v2.html#healing-metrics>`__ to monitor the status of healing processes on a deployment.
+MinIO 提供了若干 `自愈指标 <https://minio.pigsty.io/operations/monitoring/metrics-v2.html#healing-metrics>`__，用于监控部署中的自愈过程状态。
 
-Refer to the :ref:`minio-metrics-and-alerts` for more information on available endpoints and configuration.
+有关可用 endpoint 和配置的更多信息，请参阅 :ref:`minio-metrics-and-alerts`。

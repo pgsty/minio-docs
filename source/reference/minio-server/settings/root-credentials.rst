@@ -1,19 +1,19 @@
 .. _minio-server-envvar-root:
 
 ====================
-Root Access Settings
+Root 访问设置
 ====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page covers settings that control root (superuser) access for the MinIO process. 
-The root user has complete access and permissions to perform operations on the MinIO deployment.
+本页介绍用于控制 MinIO 进程 root（超级用户）访问权限的设置。
+root 用户具有完整访问权限，可在 MinIO 部署上执行操作。
 
-Root User and Root Password are required even if you use the :kes-docs:`MinIO Key Encryption Service <>` or other key management utility.
+即使使用 :kes-docs:`MinIO Key Encryption Service <>` 或其他密钥管理工具，也必须配置 Root User 和 Root Password。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -28,63 +28,63 @@ Root User
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_ROOT_USER
 
-         The access key for the :ref:`root <minio-users-root>` user.
+         :ref:`root <minio-users-root>` 用户的访问密钥。
 
       .. warning::
    
-         If :envvar:`MINIO_ROOT_USER` is unset, :mc:`minio` defaults to ``minioadmin``.
+         如果未设置 :envvar:`MINIO_ROOT_USER`，:mc:`minio` 默认使用 ``minioadmin``。
    
-         **NEVER** use the default credentials in production environments.
-         MinIO strongly recommends specifying a unique, long, and random :envvar:`MINIO_ROOT_USER` value for all environments.
+         在生产环境中**绝不要**使用默认凭证。
+         MinIO 强烈建议在所有环境中为 :envvar:`MINIO_ROOT_USER` 指定唯一、足够长且随机的值。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
 Root Password
 -------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :selected:
 
       .. envvar:: MINIO_ROOT_PASSWORD
 
-         The secret key for the :ref:`root <minio-users-root>` user.
+         :ref:`root <minio-users-root>` 用户的密钥。
 
       .. warning::
 
-         If :envvar:`MINIO_ROOT_PASSWORD` is unset, :mc:`minio` defaults to ``minioadmin``.
+         如果未设置 :envvar:`MINIO_ROOT_PASSWORD`，:mc:`minio` 默认使用 ``minioadmin``。
 
-         **NEVER** use the default credentials in production environments.
-         MinIO strongly recommends specifying a unique, long, and random :envvar:`MINIO_ROOT_PASSWORD` value for all environments.
+         在生产环境中**绝不要**使用默认凭证。
+         MinIO 强烈建议在所有环境中为 :envvar:`MINIO_ROOT_PASSWORD` 指定唯一、足够长且随机的值。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
 .. _minio-disable-root-access:
 
-Root Access
+Root 访问
 -----------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_API_ROOT_ACCESS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
   
       .. mc-conf:: api root-access
@@ -92,23 +92,23 @@ Root Access
 
 .. versionadded:: MinIO Server RELEASE.2023-05-04T21-44-30Z
 
-Specify ``on`` to enable and ``off`` to disable the :ref:`root <minio-users-root>` user account.
-Disabling the root service account also disables all service accounts associated with root, excluding those used by site replication.
-Defaults to ``on``.
+设置为 ``on`` 可启用 :ref:`root <minio-users-root>` 用户账号，设置为 ``off`` 可禁用该账号。
+禁用 root 服务账号时，也会禁用所有与 root 关联的服务账号，但用于站点复制的账号除外。
+默认值为 ``on``。
 
 .. important::
 
-   If you disable root API access with this setting, you **must** still set a root user and a root password for internal use.
+   如果通过此设置禁用 root API 访问，你**仍然必须**为内部使用设置 root user 和 root password。
 
-Ensure you have at least one other admin user, such as one with the :userpolicy:`consoleAdmin` policy, before disabling the root account.
-If you do not have another admin user, disabling the root account locks administrative access to the deployment.
+在禁用 root 账号之前，请确保至少存在一个其他管理员用户，例如具备 :userpolicy:`consoleAdmin` 策略的用户。
+如果没有其他管理员用户，禁用 root 账号会导致该部署的管理访问被锁定。
 
-You can use this variable to temporarily override the configuration setting and re-enable root access to the deployment.
+你可以使用此变量临时覆盖配置项，重新启用对部署的 root 访问。
 
-To reset after an unintentional lock, set :envvar:`MINIO_API_ROOT_ACCESS` ``on`` to override this setting and temporarily re-enable the root account.
-You can then change this setting to ``on`` *or* make the necessary user/policy changes to ensure normal administrative access through other non-root accounts.
+如果发生意外锁定，要进行重置，请将 :envvar:`MINIO_API_ROOT_ACCESS` 设为 ``on`` 以覆盖此设置，并临时重新启用 root 账号。
+随后你可以将此设置改为 ``on``，*或* 完成必要的用户/策略调整，以确保可通过其他非 root 账号进行正常管理访问。
 
-Unique Root Credentials
+唯一 Root 凭证
 -----------------------
 
 .. include:: /includes/common/common-deploy.rst

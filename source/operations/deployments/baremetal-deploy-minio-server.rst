@@ -1,16 +1,16 @@
 .. _deploy-minio-standalone:
 
-========================
-Install the MinIO Server
-========================
+====================
+安装 MinIO Server
+====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports deploying onto baremetal infrastructure - physical machines or virtualized hosts - running Linux, MacOS, and Windows.
+MinIO 支持部署到裸机基础设施上，包括运行 Linux、MacOS 和 Windows 的物理机或虚拟化主机。
 
 .. toctree::
    :titlesonly:

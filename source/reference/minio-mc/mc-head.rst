@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -18,36 +18,33 @@
 .. |versionid| replace:: :mc-cmd:`~mc head --version-id`
 .. |alias| replace:: :mc-cmd:`~mc head ALIAS`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-head-desc
 
-The :mc:`mc head` command displays the first ``n`` lines of an object,
-where ``n`` is an argument specified to the command.
+:mc:`mc head` 命令显示对象的前 ``n`` 行，
+其中 ``n`` 是传递给该命令的参数。
 
 .. end-mc-head-desc
 
-:mc:`mc head` does not perform any transformation or formatting of object
-contents to facilitate readability. You can also use :mc:`mc head` against
-the local filesystem to produce similar results to the ``head`` commandline 
-tool.
+:mc:`mc head` 不会对对象内容执行任何转换或格式化来提升可读性。
+你也可以将 :mc:`mc head` 用于本地文件系统，以获得与 ``head`` 命令行工具类似的结果。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command returns the first 10 lines of an object in the
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令返回 ``myminio`` MinIO 部署中 ``mydata`` 存储桶内某个对象的前 10 行：
 
       .. code-block:: shell
          :class: copyable
 
          mc head myminio/mydata/myobject.txt
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -63,30 +60,29 @@ tool.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The object or objects to print. 
-   
-   For an object on MinIO, specify the :ref:`alias <alias>` and the full path to
-   that object (e.g. bucket and path to object). For example:
+   要输出的一个或多个对象。
+
+   对于 MinIO 上的对象，请指定 :ref:`alias <alias>` 和该对象的完整路径
+   （例如存储桶和对象路径）。例如：
 
    .. code-block:: none
 
       mc head play/mybucket/object.txt
 
-   You can specify multiple objects on the same or different MinIO
-   deployments. For example:
+   你可以在同一个或不同的 MinIO 部署上指定多个对象。例如：
 
    .. code-block:: none
 
       mc head ~/mydata/object.txt myminio/mydata/object.txt
 
-   For an object on a local filesystem, specify the full path to that object.
-   For example:
+   对于本地文件系统上的对象，请指定该对象的完整路径。
+   例如：
 
    .. code-block:: none
 
@@ -95,9 +91,9 @@ Parameters
 .. mc-cmd:: --lines, n
    :optional:
 
-   The number of lines to print.
+   要输出的行数。
 
-   Defaults to ``10``.
+   默认为 ``10``。
 
 .. block include of enc-c
 
@@ -120,88 +116,81 @@ Parameters
       :end-before: end-version-id-desc
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-View Partial Contents of an Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+查看对象的部分内容
+~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc head` to return the first 10 lines of an object:
+使用 :mc:`mc head` 返回对象的前 10 行：
 
 .. code-block:: shell
    :class: copyable
 
    mc head ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc head ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc head ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc head ALIAS>` with the path to the object on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc head ALIAS>` 替换为该对象在 S3 兼容主机上的路径。
 
-View Partial Contents of an Object at a Point in Time
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+查看对象在某个时间点的部分内容
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc head --rewind` to return the first 10 lines of the
-object at a specific point-in-time in the past:
+使用 :mc-cmd:`mc head --rewind` 返回对象在过去特定时间点的前 10 行：
 
 .. code-block:: shell
    :class: copyable
 
    mc head ALIAS/PATH --rewind DURATION
 
-- Replace :mc-cmd:`ALIAS <mc head ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc head ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc head ALIAS>` with the path to the object on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc head ALIAS>` 替换为该对象在 S3 兼容主机上的路径。
 
-- Replace :mc-cmd:`DURATION <mc head --rewind>` with the point-in-time in the past
-  at which the command returns the object. For example, specify ``30d`` to
-  return the version of the object 30 days prior to the current date.
+- 将 :mc-cmd:`DURATION <mc head --rewind>` 替换为过去的某个时间点，
+  命令会返回该时间点对应的对象。例如，指定 ``30d`` 可返回当前日期前 30 天的对象版本。
 
 .. include:: /includes/facts-versioning.rst
    :start-after: start-versioning-admonition
    :end-before: end-versioning-admonition
 
-View Partial Contents of an Object with Specific Version
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+查看对象指定版本的部分内容
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc head --version-id` to return the first 10 lines of the
-object at a specific point-in-time in the past:
+使用 :mc-cmd:`mc head --version-id` 返回对象特定版本的前 10 行：
 
 .. code-block:: shell
    :class: copyable
 
    mc head ALIAS/PATH --version-id VERSION
 
-- Replace :mc-cmd:`ALIAS <mc head ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc head ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc head ALIAS>` with the path to the object on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc head ALIAS>` 替换为该对象在 S3 兼容主机上的路径。
 
-- Replace :mc-cmd:`VERSION <mc head --version-id>` with the version of the object.
-  For example, specify ``30d`` to return the version of the object 30 days prior
-  to the current date.
+- 将 :mc-cmd:`VERSION <mc head --version-id>` 替换为对象版本。
+  例如，指定 ``30d`` 可返回当前日期前 30 天的对象版本。
 
 .. include:: /includes/facts-versioning.rst
    :start-after: start-versioning-admonition
    :end-before: end-versioning-admonition
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

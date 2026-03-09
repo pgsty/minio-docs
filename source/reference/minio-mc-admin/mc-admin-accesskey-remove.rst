@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,35 +14,35 @@
 .. mc:: mc admin accesskey rm
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-accesskey-remove-desc
 
-The :mc:`mc admin accesskey rm` command removes an access key associated to a user on the deployment.
+:mc:`mc admin accesskey rm` 命令用于删除部署中与某个用户关联的访问密钥。
 
 .. end-mc-admin-accesskey-remove-desc
 
-The :mc:`mc admin accesskey remove` command has equivalent functionality to :mc:`mc admin accesskey rm`.
+:mc:`mc admin accesskey remove` 命令与 :mc:`mc admin accesskey rm` 的功能等效。
    
 .. warning::
 
-   Applications can no longer authenticate using the access key after its removal.
+   删除后，应用程序将无法再使用该访问密钥进行身份验证。
    
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes the specified access key:
+      以下命令会删除指定的访问密钥：
   
       .. code-block:: shell  
          :class: copyable 
   
          mc admin accesskey rm myminio myuserserviceaccount  
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      命令语法如下：
   
       .. code-block:: shell  
          :class: copyable 
@@ -56,33 +56,33 @@ The :mc:`mc admin accesskey remove` command has equivalent functionality to :mc:
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: ACCESSKEYTOREMOVE
    :required:
 
-   The access key to remove.
+   要删除的访问密钥。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

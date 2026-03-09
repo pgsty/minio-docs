@@ -4,33 +4,33 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin prometheus
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-prometheus-desc
 
-The :mc:`mc admin prometheus` command and its subcommands provide access to MinIO Prometheus metrics.
+:mc:`mc admin prometheus` 命令及其子命令用于访问 MinIO Prometheus 指标。
 
 .. end-mc-admin-prometheus-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc admin prometheus` includes the following subcommands:
+:mc:`mc admin prometheus` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc admin prometheus generate`
      - .. include:: /reference/minio-mc-admin/mc-admin-prometheus-generate.rst

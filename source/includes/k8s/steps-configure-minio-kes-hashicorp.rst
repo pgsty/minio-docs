@@ -1,13 +1,14 @@
-#. Review the Tenant CRD
+#. 查看 Tenant CRD
 
-   Review the :ref:`Tenant CRD <minio-operator-crd>` ``TenantSpec.kes`` object, the ``TenantSpec.configuration`` object, and the :minio-docs:`KES Configuration reference</kes/tutorials/configuration>`.
+   查看 :ref:`Tenant CRD <minio-operator-crd>` 中的 ``TenantSpec.kes`` 对象、
+   ``TenantSpec.configuration`` 对象，以及 :minio-docs:`KES Configuration 参考</kes/tutorials/configuration>`。
 
-   You must prepare all necessary configurations associated to your external Key Management Service of choice before proceeding.
+   在继续之前，你必须先准备好所选外部 Key Management Service 所需的全部配置。
 
-#. Create or Modify your Tenant YAML to set the values of ``KesConfig`` as necessary:
+#. 创建或修改 Tenant YAML，按需设置 ``KesConfig`` 的值：
 
-   You must modify your Tenant YAML or ``Kustomize`` templates to reflect the necessary KES configuration.
-   The following example is taken from the :minio-git:`MinIO Operator Kustomize examples </operator/blob/master/examples/kustomization/tenant-kes-encryption/tenant.yaml>`
+   你必须修改 Tenant YAML 或 ``Kustomize`` 模板，以反映所需的 KES 配置。
+   以下示例摘自 :minio-git:`MinIO Operator Kustomize 示例 </operator/blob/master/examples/kustomization/tenant-kes-encryption/tenant.yaml>`
 
    .. code-block:: yaml
 
@@ -19,22 +20,23 @@
             name: kes-configuration
          imagePullPolicy: "IfNotPresent"
 
-   The ``kes-configuration`` secret must reference a Kubernetes Opaque Secret which contains a ``stringData`` object with the full KES configuration as ``server-config.yaml``.
-   The ``keystore`` field must contain the full configuration associated with your preferred Key Management System.
+   ``kes-configuration`` secret 必须引用一个 Kubernetes Opaque Secret，
+   其中的 ``stringData`` 对象需要以 ``server-config.yaml`` 的形式包含完整 KES 配置。
+   ``keystore`` 字段必须包含你所选 Key Management System 的完整配置。
 
-   Reference :minio-git:`the Kustomize example <operator/blob/master/examples/kustomization/tenant-kes-encryption/kes-configuration-secret.yaml>` for additional guidance.
+   更多说明请参阅 :minio-git:`该 Kustomize 示例 <operator/blob/master/examples/kustomization/tenant-kes-encryption/kes-configuration-secret.yaml>`。
 
-#. Create or Modify your Tenant YAML to set the values of ``TenantSpec.configuration`` as necessary.
+#. 创建或修改 Tenant YAML，按需设置 ``TenantSpec.configuration`` 的值。
 
    TODO
 
-#. Generate a New Encryption Key
+#. 生成新的加密密钥
 
    .. include:: /includes/k8s/common-minio-kes.rst
       :start-after: start-kes-generate-key-desc
       :end-before: end-kes-generate-key-desc
 
-#. Enable SSE-KMS for a Bucket
+#. 为存储桶启用 SSE-KMS
 
    .. include:: /includes/k8s/common-minio-kes.rst
       :start-after: start-kes-enable-sse-kms-desc

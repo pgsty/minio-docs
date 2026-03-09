@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,23 +12,23 @@
 
 .. versionadded:: mc RELEASE.2024-02-24T01-33-20Z
 
-Syntax
-------
+语法
+----
 
 .. start-mc-get-desc
 
-The :mc:`mc get` command downloads an object from a target S3 deployment to the local file system.
+:mc:`mc get` 命令将对象从目标 S3 部署下载到本地文件系统。
 
 .. end-mc-get-desc
 
-``mc get`` provides a simplified interface for downloading files compared to :mc:`mc cp` or :mc:`mc mirror`.
-``mc get`` uses a one-way download function that trades efficiency for the power and complexity of the other commands.
+与 :mc:`mc cp` 或 :mc:`mc mirror` 相比，``mc get`` 为下载文件提供了更简化的接口。
+``mc get`` 使用单向下载功能，以牺牲效率为代价，换取相较其他命令更低的功能复杂度。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following downloads the file ``logo.png`` from an s3 source to the local file system at path ``~/images/collateral/``.
+      以下命令将文件 ``logo.png`` 从 s3 源下载到本地文件系统路径 ``~/images/collateral/``。
 
       .. code-block:: shell
          :class: copyable
@@ -36,9 +36,9 @@ The :mc:`mc get` command downloads an object from a target S3 deployment to the 
          mc get minio/marketing/logo.png ~/images/collateral
 
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -53,18 +53,18 @@ The :mc:`mc get` command downloads an object from a target S3 deployment to the 
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: SOURCE
    :required:
 
-   The full path to the :ref:`alias <minio-mc-alias>`, bucket, prefix (if used), and object to download.
+   要下载对象的完整路径，包含 :ref:`alias <minio-mc-alias>`、存储桶、prefix（如使用）和对象名。
 
 .. mc-cmd:: TARGET
    :required:
 
-   The destination path on the local file system where the command should place the downloaded file.
+   本地文件系统上的目标路径，命令会将下载的文件放置到该路径。
 
 .. block include of enc-c
 
@@ -75,33 +75,33 @@ Parameters
 .. mc-cmd:: --version-id, --vid
    :optional:
    
-   Retrieve a specific version of the object.
-   Pass the version ID of the object to retrieve.
+   检索对象的特定版本。
+   传入要检索对象的版本 ID。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Retrieve an object from MinIO to the local file system
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从 MinIO 检索对象到本地文件系统
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command retrieves the file ``myobject.csv`` from the bucket ``mybucket`` at the alias ``myminio`` and places it on the local file system at the path ``/my/local/folder``.
+以下命令从别名 ``myminio`` 下的存储桶 ``mybucket`` 检索文件 ``myobject.csv``，并将其放置到本地文件系统路径 ``/my/local/folder``。
 
 .. code-block:: shell
    :class: copyable
 
    mc get myminio/mybucket/myobject.csv /my/local/folder 
 
-Retrieve an encrypted object from MinIO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从 MinIO 检索加密对象
+~~~~~~~~~~~~~~~~~~~~~
 
-The following command retrieves an encrypted file and places it at a local folder path.
+以下命令检索一个加密文件，并将其放置到本地文件夹路径。
 
 .. code-block:: shell
    :class: copyable

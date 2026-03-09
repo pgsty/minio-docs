@@ -1,44 +1,44 @@
 .. _minio-security-checklist:
 
-==================
-Security Checklist
-==================
+============
+安全检查清单
+============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-Use the following checklist when planning the security configuration for a production, distributed MinIO deployment.
+在为生产级分布式 MinIO 部署规划安全配置时，请使用以下检查清单。
 
-Required Steps
---------------
+必做步骤
+--------
 
 .. list-table::
    :widths: auto
    :width: 100%
 
    * - :octicon:`circle`
-     - Define group policies either on MinIO or the selected 3rd party Identity Provider (LDAP/Active Directory or OpenID)
+     - 在 MinIO 或所选的第三方身份提供商（LDAP/Active Directory 或 OpenID）中定义组策略
 
    * - :octicon:`circle`
-     - Define individual access policies on MinIO or the selected 3rd party Identity Provider
+     - 在 MinIO 或所选的第三方身份提供商上定义单个访问策略
 
    * - :octicon:`circle`
-     - (For Kubernetes deployments only) Configure the tenant(s) to use the selected 3rd party Identity Provider
+     - （仅 Kubernetes 部署）将租户配置为使用所选的第三方身份提供商
 
    * - :octicon:`circle`
-     - Grant firewall access for TCP traffic to the MinIO Server S3 API Listen Port (Default: ``9000``).
+     - 在防火墙中放行到 MinIO Server S3 API 监听端口的 TCP 流量（默认：``9000``）。
 
    * - :octicon:`circle`
-     - Grant firewall access for TCP traffic to the :ref:`MinIO Server Console Listen Port <minio-console-port-assignment>` (Recommended Default: ``9090``).
+     - 在防火墙中放行到 :ref:`MinIO Server Console 监听端口 <minio-console-port-assignment>` 的 TCP 流量（推荐默认值：``9090``）。
 
 
-:ref:`Encryption-at-Rest <minio-sse>`
--------------------------------------
+:ref:`静态数据加密 <minio-sse>`
+------------------------------------------------------------
 
-MinIO supports the following external KMS providers through Key Encryption Service (KES):
+MinIO 通过 Key Encryption Service (KES) 支持以下外部 KMS 提供方：
 
 - :ref:`HashiCorp Vault Root KMS <minio-sse-vault>`
 - :ref:`AWS Root KMS <minio-sse-aws>`
@@ -50,51 +50,51 @@ MinIO supports the following external KMS providers through Key Encryption Servi
    :width: 100%
 
    * - :octicon:`circle`
-     - Download and install the MinIO Key Encryption Service (KES)
+     - 下载并安装 MinIO Key Encryption Service (KES)
 
    * - :octicon:`circle`
-     - Enable TLS
+     - 启用 TLS
 
    * - :octicon:`circle`
-     - Generate private and public keys for KES
+     - 为 KES 生成私钥和公钥
 
    * - :octicon:`circle`
-     - Generate private and public keys for MinIO
+     - 为 MinIO 生成私钥和公钥
 
    * - :octicon:`circle`
-     - Create a KES configuration file and start the service
+     - 创建 KES 配置文件并启动服务
 
    * - :octicon:`circle`
-     - Generate an external key for the key management service (KMS)
+     - 为密钥管理服务（KMS）生成外部密钥
 
    * - :octicon:`circle`
-     - Connect MinIO to the KES
+     - 将 MinIO 连接到 KES
 
    * - :octicon:`circle`
-     - Enable server side encryption
+     - 启用服务端加密
 
 
-:ref:`Encryption-in-Transit ("In flight") <minio-tls>`
-------------------------------------------------------
+:ref:`传输中加密（"In flight"） <minio-tls>`
+--------------------------------------------------------------------
 
 .. list-table::
    :widths: auto
    :width: 100%
 
    * - :octicon:`circle`
-     - :ref:`Enable TLS <minio-tls>`
+     - :ref:`启用 TLS <minio-tls>`
 
    * - :octicon:`circle`
-     - Add separate certificates and keys for each internal and external domain that accesses MinIO
+     - 为每个访问 MinIO 的内部和外部域名分别添加证书和密钥
 
    * - :octicon:`circle`
-     - Generate public and private TLS keys using a supported cipher for TLS 1.3 or TLS 1.2
+     - 使用 TLS 1.3 或 TLS 1.2 支持的 cipher 生成 TLS 私钥和公钥
 
    * - :octicon:`circle`
-     - Configure trusted Certificate Authority (CA) store(s)
+     - 配置受信任的 Certificate Authority (CA) 存储
 
    * - :octicon:`circle`
-     - Expose your Kubernetes service, such as with NGINX
+     - 暴露 Kubernetes Service，例如使用 NGINX
 
    * - :octicon:`circle`
-     - (Optional) Validate certificates, such as with https://www.sslchecker.com/certdecoder
+     - （可选）验证证书，例如使用 https://www.sslchecker.com/certdecoder

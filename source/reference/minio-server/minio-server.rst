@@ -4,7 +4,7 @@ MinIO Server
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -13,149 +13,149 @@ MinIO Server
 MinIO Server
 ------------
 
-The :mc:`minio server` command starts the MinIO server process:
+:mc:`minio server` 命令用于启动 MinIO server 进程：
 
 .. code-block:: shell
    :class: copyable
 
    minio server /mnt/disk{1...4}
 
-For examples of deploying :mc:`minio server` on a bare metal environment, see :ref:`minio-installation`.
+有关在裸金属环境中部署 :mc:`minio server` 的示例，请参阅 :ref:`minio-installation`。
 
-For examples of deploying :mc:`minio server` on a Kubernetes environment, see :ref:`Deploying a MinIO Tenant <minio-k8s-deploy-minio-tenant>`.
+有关在 Kubernetes 环境中部署 :mc:`minio server` 的示例，请参阅 :ref:`Deploying a MinIO Tenant <minio-k8s-deploy-minio-tenant>`。
 
 
 .. _minio-server-parameters:
 
-Syntax
-~~~~~~
+语法
+~~~~
 
 .. mc:: minio server
 
-Starts the ``minio`` server process.
+启动 ``minio`` server 进程。
 
-The command has the following syntax:
+该命令语法如下：
 
 .. code-block:: shell
    :class: copyable
 
    minio server [FLAGS] HOSTNAME/DIRECTORIES [HOSTNAME/DIRECTORIES..]
 
-The command accepts the following arguments:
+该命令接受以下参数：
 
 .. mc-cmd:: HOSTNAME
 
-   The hostname of a :mc:`minio server` process.
+   :mc:`minio server` 进程的主机名。
 
-   For standalone deployments, this field is *optional*. 
-   You can start a standalone :mc:`~minio server` process with only the :mc-cmd:`~minio server DIRECTORIES` argument.
+   对于单机部署，此字段为 *可选*。
+   仅使用 :mc-cmd:`~minio server DIRECTORIES` 参数即可启动一个单机 :mc:`~minio server` 进程。
 
-   For distributed deployments, specify the hostname of each :mc:`minio server` in the deployment. 
-   The group of :mc:`minio server` processes represent a single :ref:`Server Pool <minio-intro-server-pool>`.
+   对于分布式部署，请指定部署中每个 :mc:`minio server` 的主机名。
+   这一组 :mc:`minio server` 进程共同表示一个 :ref:`Server Pool <minio-intro-server-pool>`。
 
-   :mc-cmd:`~minio server HOSTNAME` supports MinIO expansion notation ``{x...y}`` to denote a sequential series of hostnames. 
-   MinIO *requires* sequential hostnames to identify each :mc:`minio server` process in the set.
+   :mc-cmd:`~minio server HOSTNAME` 支持 MinIO 扩展记法 ``{x...y}``，用于表示按顺序排列的一组主机名。
+   MinIO *要求* 使用连续主机名，以识别该集合中的每个 :mc:`minio server` 进程。
 
-   For example, ``https://minio{1...4}.example.net`` expands to:
+   例如，``https://minio{1...4}.example.net`` 会扩展为：
 
    - ``https://minio1.example.net``
    - ``https://minio2.example.net``
    - ``https://minio3.example.net``
    - ``https://minio4.example.net``
 
-   You must run the :mc:`minio server` command with the *same* combination of :mc-cmd:`~minio server HOSTNAME` and :mc-cmd:`~minio server DIRECTORIES` on   each host in the Server Pool.
+   你必须在 Server Pool 中每台主机上，使用 *相同* 的 :mc-cmd:`~minio server HOSTNAME` 和 :mc-cmd:`~minio server DIRECTORIES` 组合来运行 :mc:`minio server` 命令。
 
-   Each additional ``HOSTNAME/DIRECTORIES`` pair denotes an additional Server Set for the purpose of horizontal expansion of the MinIO deployment. 
-   For more information on Server Pools, see :ref:`Server Pool <minio-intro-server-pool>`.
+   每增加一个 ``HOSTNAME/DIRECTORIES`` 对，就表示增加一个 Server Set，以用于 MinIO 部署的水平扩展。
+   有关 Server Pools 的更多信息，请参阅 :ref:`Server Pool <minio-intro-server-pool>`。
 
 .. mc-cmd:: DIRECTORIES
    :required:
 
-   The directories or drives the :mc:`minio server` process uses as the storage backend.
+   :mc:`minio server` 进程用作存储后端的目录或驱动器。
 
-   :mc-cmd:`~minio server DIRECTORIES` supports MinIO expansion notation ``{x...y}`` to denote a sequential series of folders or drives. 
-   For example, ``/mnt/disk{1...4}`` expands to:
+   :mc-cmd:`~minio server DIRECTORIES` 支持 MinIO 扩展记法 ``{x...y}``，用于表示按顺序排列的一组文件夹或驱动器。
+   例如，``/mnt/disk{1...4}`` 会扩展为：
 
    - ``/mnt/disk1``
    - ``/mnt/disk2``
    - ``/mnt/disk3``
    - ``/mnt/disk4``
 
-   The :mc-cmd:`~minio server DIRECTORIES` path(s) *must* be empty when first starting the :mc:`minio <minio server>` process.
+   首次启动 :mc:`minio <minio server>` 进程时，:mc-cmd:`~minio server DIRECTORIES` 路径 *必须* 为空。
 
-   The :mc:`minio server` process requires *at least* 4 drives or directories to enable :ref:`erasure coding <minio-erasure-coding>`.
+   :mc:`minio server` 进程至少需要 4 个驱动器或目录才能启用 :ref:`erasure coding <minio-erasure-coding>`。
 
    .. important::
 
-      MinIO recommends locally-attached drives, where the :mc-cmd:`~minio server DIRECTORIES` path points to each drive on the host machine. 
-      MinIO recommends *against* using network-attached storage, as network latency reduces performance of those drives compared to locally-attached storage.
+      MinIO 建议使用本地直连驱动器，即 :mc-cmd:`~minio server DIRECTORIES` 路径应指向主机上的各个驱动器。
+      MinIO *不建议* 使用网络附加存储，因为与本地直连存储相比，网络延迟会降低这些驱动器的性能。
 
-      For development or evaluation, you can specify multiple logical directories or partitions on a single physical volume to enable erasure coding on the deployment.
+      在开发或评估场景中，你可以在单个物理卷上指定多个逻辑目录或分区，以便在部署中启用纠删码。
 
-      For production environments, MinIO does **not recommend** using multiple logical directories or partitions on a single physical disk. 
-      While MinIO supports those configurations, the potential cost savings come at the risk of decreased reliability.
+      对于生产环境，MinIO **不建议** 在单个物理磁盘上使用多个逻辑目录或分区。
+      虽然 MinIO 支持这些配置，但潜在的成本节省伴随着可靠性下降的风险。
 
 
 .. mc-cmd:: --address
    :optional:
 
-   Binds the :mc:`minio <minio server>` server process to a specific network address and port number. 
-   Specify the address and port as ``ADDRESS:PORT``, where ``ADDRESS`` is an IP address or hostname and ``PORT`` is a valid and open port on the host system.
-   MinIO supports both IPv4 and IPv6 addressing, provided that the specified addresses are routable and resolveable. 
+   将 :mc:`minio <minio server>` server 进程绑定到特定网络地址和端口号。
+   将地址和端口指定为 ``ADDRESS:PORT``，其中 ``ADDRESS`` 是 IP 地址或主机名，``PORT`` 是主机系统上有效且开放的端口。
+   MinIO 同时支持 IPv4 和 IPv6 寻址，前提是指定地址可路由且可解析。
 
-   To change the port number for all IP addresses or hostnames configured on the host machine, specify only ``:PORT`` where ``PORT`` is a valid and open port on the host.
+   若要为主机上配置的所有 IP 地址或主机名修改端口号，仅指定 ``:PORT`` 即可，其中 ``PORT`` 是主机上有效且开放的端口。
 
    .. versionchanged:: RELEASE.2023-01-02T09-40-09Z
-   
-      You can configure your hosts file to have MinIO only listen on specific IPs.
-      For example, if the machine's `/etc/hosts` file contains the following:
+
+      你可以通过配置 hosts 文件，让 MinIO 仅监听特定 IP。
+      例如，如果机器的 `/etc/hosts` 文件包含以下内容：
 
       .. code-block:: shell
 
          127.0.1.1       minioip
          127.0.1.2       minioip
 
-      A command like the following would listen for API calls on port ``9000`` on both configured IP addresses.
+      类似下面的命令会在两个已配置 IP 地址的 ``9000`` 端口上监听 API 调用。
 
       .. code-block:: shell
 
          minio server --address "minioip:9000" ~/miniodirectory
 
-   If omitted, :mc:`minio <minio server>` binds to port ``9000`` on all configured IPv4 addresses, IPv6 addresses, and hostnames on the host machine.
+   若省略该参数，:mc:`minio <minio server>` 会绑定到主机上所有已配置 IPv4 地址、IPv6 地址和主机名的 ``9000`` 端口。
 
 .. mc-cmd:: --console-address
    :optional:
 
-   Specifies a static port for the embedded MinIO Console.
+   为内置 MinIO Console 指定静态端口。
 
-   Omit to direct MinIO to generate a dynamic port at server startup. 
-   The MinIO server outputs the port to the system log.
+   省略时，MinIO 会在 server 启动时生成动态端口。
+   MinIO server 会将该端口输出到系统日志。
 
 .. mc-cmd:: --ftp
    :optional:
-   
-   Enable and configure a File Transfer Protocol (``FTP``) or File Transfer Protocol over SSL/TLS (``FTPS``) server.
-   Use this flag multiple times to specify an address port, a passive port range of addresses, or a TLS certificate and key as key-value pairs.
 
-   Valid keys:
+   启用并配置 File Transfer Protocol（``FTP``）或 File Transfer Protocol over SSL/TLS（``FTPS``）服务器。
+   多次使用该 flag 可按键值对指定地址端口、被动端口范围或 TLS 证书与密钥。
 
-   - ``address``, which takes a single port to use for the server, typically ``8021``
-   
-   - *(Optional)* ``passive-port-range``, which restricts the range of potential ports the server can use to transfer data, such as when tight firewall rules limit the port the FTP server can request for the connection
-   
-   - *(Optional)* ``tls-private-key``, which takes the path to the user's private key for accessing the MinIO deployment by TLS
-     
-     Use with ``tls-public-cert``.
-   
-   - *(Optional)* ``tls-public-cert``, which takes the path to the certificate for accessing the MinIO deployment by TLS
-     
-     Use with ``tls-private-key``.
+   有效键如下：
 
-   For MinIO deployments with TLS enabled, omit ``tls-private-key`` and ``tls-public-key`` to direct MinIO to use the default TLS keys for the MinIO deployment. 
-   See :ref:`minio-tls` for more information.
-   You only need to specify a certificate and private key to a different set of TLS certificate and key than the MinIO default (for example, to use a different domain).
+   - ``address``，用于指定服务器使用的单个端口，通常为 ``8021``
 
-   For example:
+   - *(Optional)* ``passive-port-range``，用于限制服务器可用于传输数据的端口范围，例如防火墙规则较严格、限制 FTP 服务器可为连接请求端口时
+
+   - *(Optional)* ``tls-private-key``，用于指定用户私钥路径，以便通过 TLS 访问 MinIO 部署
+
+     与 ``tls-public-cert`` 配合使用。
+
+   - *(Optional)* ``tls-public-cert``，用于指定证书路径，以便通过 TLS 访问 MinIO 部署
+
+     与 ``tls-private-key`` 配合使用。
+
+   对于已启用 TLS 的 MinIO 部署，省略 ``tls-private-key`` 和 ``tls-public-key``，可让 MinIO 使用部署默认 TLS 密钥。
+   更多信息请参阅 :ref:`minio-tls`。
+   仅当你要使用与 MinIO 默认值不同的一组 TLS 证书和密钥时，才需要指定证书与私钥（例如使用不同域名）。
+
+   例如：
 
    .. code-block:: shell
       :class: copyable
@@ -170,36 +170,36 @@ The command accepts the following arguments:
 .. mc-cmd:: --sftp
    :optional:
 
-   Enable and configure a SSH File Transfer Protocol (``SFTP``) server.
-   Use multiple times to specify each desired key-value pair.
+   启用并配置 SSH File Transfer Protocol（``SFTP``）服务器。
+   可多次使用以指定所需的每个键值对。
 
-   The following table lists valid keys.
+   下表列出有效键。
 
    .. list-table::
       :header-rows: 1
       :widths: 30 30 40
       :width: 100%
-   
-      * - Key
-        - Description
-        - Valid values
-   
+
+      * - 键
+        - 说明
+        - 有效值
+
       * - ``address``
-        - Port to use for connecting to SFTP.
-        - Any valid port number, typically ``8022``.
-   
+        - 用于连接到 SFTP 的端口。
+        - 任意有效端口号，通常为 ``8022``。
+
       * - ``ssh-private-key``
-        - Path to the user's private key file.
-        - Absolute path or relative path from current location to the key file to use.
- 
+        - 用户私钥文件路径。
+        - 用于密钥文件的绝对路径，或相对于当前位置的相对路径。
+
       * - ``trusted-user-ca-key``
-        - Specifies a file containing public key of a certificate authority that is trusted to sign user certificates for authentication.
-          The file must contain a `user principals list <https://man.openbsd.org/ssh-keygen#CERTIFICATES>`__, and the list must include the user(s) that can authenticate with the key. 
-        - Absolute path or relative path from current location to the user's trusted certificate authority public key file.
+        - 指定一个文件，其中包含受信任证书颁发机构的公钥，该机构可对用于身份验证的用户证书签名。
+          文件必须包含 `user principals list <https://man.openbsd.org/ssh-keygen#CERTIFICATES>`__，且列表必须包含可使用该密钥进行身份验证的用户。
+        - 用户受信任证书颁发机构公钥文件的绝对路径，或相对于当前位置的相对路径。
 
       * - ``pub-key-algos``
-        - Comma-separated list of the public key algorithms to support.
-        - 
+        - 以逗号分隔的公钥算法列表。
+        -
           .. code-block:: text
 
              ssh-ed25519
@@ -214,10 +214,10 @@ The command accepts the following arguments:
              ssh-dss
 
       * - ``kex-algos``
-        - Comma-separated list in priority order of the key-exchange algorithms to support.
-        - 
+        - 按优先级顺序排列的、以逗号分隔的密钥交换算法列表。
+        -
           .. code-block:: text
-          
+
              curve25519-sha256
              curve25519-sha256@libssh.org
              ecdh-sha2-nistp256
@@ -229,8 +229,8 @@ The command accepts the following arguments:
              diffie-hellman-group1-sha1
 
       * - ``cipher-algos``
-        - Comma-separated list of cipher algorithms to support
-        - 
+        - 以逗号分隔的支持的加密算法列表
+        -
           .. code-block:: text
 
             aes128-ctr
@@ -246,9 +246,9 @@ The command accepts the following arguments:
             3des-cbc
 
       * - ``mac-algos``
-        - Comma-separated list in preference order of MAC algorithms to support. 
-          Based on `RFC 4253 section 6.4 <https://www.rfc-editor.org/rfc/rfc4253>`__ with the exception of ``hmac-md5`` variants, which are end of life.
-        - 
+        - 按优先级顺序排列的、以逗号分隔的 MAC 算法列表。
+          基于 `RFC 4253 section 6.4 <https://www.rfc-editor.org/rfc/rfc4253>`__，但 ``hmac-md5`` 变体除外（已终止生命周期）。
+        -
           .. code-block:: text
 
              hmac-sha2-256-etm@openssh.com
@@ -259,10 +259,10 @@ The command accepts the following arguments:
              hmac-sha1-96
 
       * - ``disable-password-auth``
-        - Disable password authentication.
+        - 禁用密码认证。
         - ``true``
 
-   For example:
+   例如：
 
    .. code-block:: shell
       :class: copyable
@@ -275,10 +275,10 @@ The command accepts the following arguments:
 .. mc-cmd:: --certs-dir, -S
    :optional:
 
-   Specifies the path to the folder containing certificates the :mc:`minio` process uses for configuring TLS/SSL connectivity.
-   
-   The contents of the specified folder must follow that of the :ref:`default path structure <minio-tls-user-generated>`.
-   For example, the path contents of ``--certs-dir /etc/minio`` should resemble the following:
+   指定包含证书的文件夹路径，:mc:`minio` 进程使用该路径中的证书配置 TLS/SSL 连接。
+
+   指定文件夹的内容必须符合 :ref:`default path structure <minio-tls-user-generated>`。
+   例如，``--certs-dir /etc/minio`` 的路径内容应类似如下：
 
    .. code-block:: shell
 
@@ -291,61 +291,61 @@ The command accepts the following arguments:
         CAs/
           full-chain-ca.crt
 
-   Omit to use the default directory paths:
+   省略时使用默认目录路径：
 
    - Linux/macOS: ``${HOME}/.minio/certs``
    - Windows: ``%%USERPROFILE%%\.minio\certs``.
 
-   See :ref:`minio-TLS` for more information on TLS/SSL connectivity.
+   有关 TLS/SSL 连接的更多信息，请参阅 :ref:`minio-TLS`。
 
    .. important::
 
-      :minio-release:`MinIO Server RELEASE.2023-12-09T18-17-51Z <RELEASE.2023-12-09T18-17-51Z>` removes the deprecated ``--config-dir | -C`` parameter.
-      Deployments using this flag may start without TLS enabled.
-      Replace those parameters with ``--certs-dir | -S`` and restart to re-enable TLS.
+      :minio-release:`MinIO Server RELEASE.2023-12-09T18-17-51Z <RELEASE.2023-12-09T18-17-51Z>` 移除了已弃用参数 ``--config-dir | -C``。
+      使用该 flag 的部署可能会在未启用 TLS 的情况下启动。
+      请将这些参数替换为 ``--certs-dir | -S`` 并重启，以重新启用 TLS。
 
 .. mc-cmd:: --quiet
    :optional:
 
-   Disables startup information.
+   禁用启动信息输出。
 
 .. mc-cmd:: --anonymous
    :optional:
 
-   Hides sensitive information from logging.
+   在日志中隐藏敏感信息。
 
 .. mc-cmd:: --json
    :optional:
 
-   Outputs server logs and startup information in ``JSON`` format.
+   以 ``JSON`` 格式输出 server 日志和启动信息。
 
 .. note::
 
-   You can define any of the ``minio`` parameters above by setting them in the :envvar:`MINIO_OPTS` environment variable.
-   This variable takes as its value a single string that contains any of the above parameters and their values that you want to set when starting the MinIO Server.
+   你可以通过在 :envvar:`MINIO_OPTS` 环境变量中设置上述任意 ``minio`` 参数来定义它们。
+   该变量的值是一个字符串，包含你希望在启动 MinIO Server 时设置的上述参数及其对应取值。
 
-Settings
---------
+设置
+----
 
-You can perform other customizations to the MinIO Server process by defining additional :ref:`Configuration Values <minio-server-configuration-options>` or :ref:`Environment Variables <minio-server-environment-variables>`.
+你可以通过定义额外的 :ref:`Configuration Values <minio-server-configuration-options>` 或 :ref:`Environment Variables <minio-server-environment-variables>`，对 MinIO Server 进程执行其他自定义配置。
 
-Many configuration values and environment variables define the same value.
-If you set both a configuration value and the matching environment variable, MinIO uses the value from the environment variable.
+许多配置值和环境变量定义的是同一个值。
+如果同时设置配置值及其对应环境变量，MinIO 使用环境变量中的值。
 
-   
+
 .. toctree::
    :titlesonly:
    :hidden:
-   
+
    /reference/minio-server/settings
    /reference/minio-server/settings/core
-   /reference/minio-server/settings/root-credentials 
+   /reference/minio-server/settings/root-credentials
    /reference/minio-server/settings/storage-class
-   /reference/minio-server/settings/console 
-   /reference/minio-server/settings/metrics-and-logging 
-   /reference/minio-server/settings/notifications 
-   /reference/minio-server/settings/iam 
-   /reference/minio-server/settings/ilm 
-   /reference/minio-server/settings/kes 
+   /reference/minio-server/settings/console
+   /reference/minio-server/settings/metrics-and-logging
+   /reference/minio-server/settings/notifications
+   /reference/minio-server/settings/iam
+   /reference/minio-server/settings/ilm
+   /reference/minio-server/settings/kes
    /reference/minio-server/settings/object-lambda
    /reference/minio-server/settings/deprecated

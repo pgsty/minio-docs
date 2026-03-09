@@ -4,25 +4,25 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin scanner info
 .. mc:: mc admin scanner status
 
-Description
+描述
 -----------
 
 .. start-mc-admin-scanner-status-desc
 
-The :mc-cmd:`mc admin scanner status` command displays a real-time summary of :ref:`scanner <minio-concepts-scanner>` information for a MinIO Server.
+:mc-cmd:`mc admin scanner status` 命令会显示 MinIO Server 的 :ref:`scanner <minio-concepts-scanner>` 信息的实时摘要。
 
 .. end-mc-admin-scanner-status-desc
 
-This command has an alias of ``mc admin scanner info``.
+该命令的别名为 ``mc admin scanner info``。
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -31,16 +31,16 @@ This command has an alias of ``mc admin scanner info``.
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following example returns information about the current state of the scanner process.
+      以下示例返回扫描器进程当前状态的信息。
 
       .. code-block:: shell
          :class: copyable
 
          mc admin scanner status myminio
 
-      The command returns results similar to the following:
+      该命令返回的结果类似如下：
 
       .. code-block:: shell
          
@@ -61,9 +61,9 @@ This command has an alias of ``mc admin scanner info``.
          Verify Deleted:        0 folders; Avg: 0ms                          	
          Yield:                 18ms total; Avg: 6ms/obj     
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -79,54 +79,53 @@ This command has an alias of ``mc admin scanner info``.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment for which to display :ref:`scanner <minio-concepts-scanner>` API operations.
+   用于显示 :ref:`scanner <minio-concepts-scanner>` API 操作的 MinIO 部署 :ref:`alias <alias>`。
 
 .. mc-cmd:: --bucket
    :optional:
 
-   Filter scanner statistics to the specified bucket.
+   将 scanner 统计信息过滤到指定存储桶。
 
 .. mc-cmd:: --interval
    :optional:
 
-   The number of seconds to wait between status request refreshes.
-   If not specified, the status refreshes every 3 seconds.
+   两次状态请求刷新之间等待的秒数。
+   如果未指定，状态每 3 秒刷新一次。
 
 .. mc-cmd:: --max-paths
    :optional:
 
-   The maximum number of active paths to show.
-   Use ``-1`` for an unlimited number of paths.
+   要显示的活跃路径的最大数量。
+   使用 ``-1`` 表示不限制路径数量。
 
-   Limiting the number of paths shown can reduce the scrolling of the console window when there are a large number of drives being scanned.
+   当被扫描的驱动器数量较大时，限制显示路径数量可以减少控制台窗口滚动。
    
-   If not specified, the results return for an unlimited number of active paths.
+   如果未指定，结果将返回不限制数量的活跃路径。
 
 .. mc-cmd:: -n
    :optional:
 
-   The number of status requests to return before automatically exiting.
-   Use ``0`` to return an unlimited number of status results.
+   在自动退出前返回的状态请求数量。
+   使用 ``0`` 表示返回不限数量的状态结果。
 
-   If not specified, the results continuously refresh at the specified interval until manually exited.
+   如果未指定，结果会按指定间隔持续刷新，直到手动退出。
 
 .. mc-cmd:: --nodes
    :optional:
 
-   Returns scanner status information for the specified node(s).
-   Specify multiple nodes as a comma-separated list.
+   返回指定节点的 scanner 状态信息。
+   使用逗号分隔列表指定多个节点。
 
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
-

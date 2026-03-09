@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,34 +14,34 @@
 
 .. versionchanged:: MinIO RELEASE.2022-10-08T20-11-00Z or later
 
-Syntax
-------
+语法
+----
 
 .. start-mc-batch-status-desc
 
-The :mc:`mc batch status` command outputs summaries of job events on a MinIO server.
+:mc:`mc batch status` 命令会输出 MinIO 服务器上作业事件的汇总信息。
 
 .. versionchanged:: mc RELEASE.2024-07-03T20-17-25Z
 
-   Batch status displays summaries for active, in-progress jobs or any batch job completed in the previous three (3) days.
+   Batch status 会显示活动且正在进行的作业，或前 3（三）天内已完成的任意批处理作业的汇总信息。
 
 .. end-mc-batch-status-desc
 
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command outputs the status of the specified job with JobID ``KwSysDpxcBU9FNhGkn2dCf`` currently in progress on the ``myminio`` alias.
+      以下命令会输出 ``myminio`` alias 上当前正在运行、JobID 为 ``KwSysDpxcBU9FNhGkn2dCf`` 的指定作业状态。
 
       .. code-block:: shell
          :class: copyable
 
          mc batch status myminio "KwSysDpxcBU9FNhGkn2dCf"
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -53,45 +53,45 @@ The :mc:`mc batch status` command outputs summaries of job events on a MinIO ser
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
    
-   The :ref:`alias <alias>` for which to display batch job statuses. 
+   要显示批处理作业状态的 :ref:`alias <alias>`。
 
 .. mc-cmd:: JOBID
    :optional:
 
-   The unique identifier of a job to summarize.
-   To find the ID of a job, use :mc:`mc batch list`.
+   要汇总的作业的唯一标识符。
+   要查找作业 ID，请使用 :mc:`mc batch list`。
    
-   If not specified, the command returns a summary for the current active batch job.
+   如果未指定，则该命令返回当前活动的批处理作业的汇总信息。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Example
--------
+示例
+----
 
-Summarize the Events of an Active Replicate Job
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+汇总活动复制作业的事件
+~~~~~~~~~~~~~~~~~~~~~~
 
-The following command provides the real-time summary of an active job on the deployment at :mc:`alias <mc alias>` ``myminio``:
+以下命令会为 :mc:`alias <mc alias>` ``myminio`` 对应部署上的活动作业提供实时汇总：
 
 .. code-block:: shell
    :class: copyable
 
    mc batch status myminio "KwSysDpxcBU9FNhGkn2dCf"
 
-- Replace ``myminio`` with the :mc:`alias <mc alias>` of the MinIO deployment that should run the job.
+- 将 ``myminio`` 替换为应运行该作业的 MinIO 部署的 :mc:`alias <mc alias>`。
 
-The output of the above command is similar to the following:
+上述命令的输出如下所示：
 
 .. code-block:: shell
 
@@ -106,8 +106,8 @@ The output of the above command is similar to the following:
  
 
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -16,35 +16,35 @@
 
 .. important::
 
-   This command has been replaced and will be deprecated in a future MinIO Client release.
+   此命令已被替代，并将在未来的 MinIO Client 版本中弃用。
 
-   As of MinIO Client RELEASE.2024-10-08T09-37-26Z, use the :mc:`mc admin accesskey ls` command to list access keys for built-in MinIO IDP users.
+   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey ls` 命令列出 MinIO 内置 IDP 用户的访问密钥。
 
-   For access keys for AD/LDAP users, use the :mc:`mc idp ldap accesskey ls` command.
+   对于 AD/LDAP 用户的访问密钥，请使用 :mc:`mc idp ldap accesskey ls` 命令。
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-svcacct-list-desc
 
-The :mc:`mc admin user svcacct ls` command lists all access keys associated to the specified user.
+:mc:`mc admin user svcacct ls` 命令列出与指定用户关联的所有访问密钥。
 
 .. end-mc-admin-svcacct-list-desc
 
-The alias :mc:`mc admin user svcacct list` has equivalent functionality to :mc:`mc admin user svcacct ls`.
+:mc:`mc admin user svcacct list` 别名与 :mc:`mc admin user svcacct ls` 具有等效功能。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command lists all access keys associated to the user with username ``admin1``:
+      以下命令列出用户名为 ``admin1`` 的用户关联的所有访问密钥：
 
       .. code-block:: shell  
          :class: copyable 
 
          mc admin user svcacct ls myminio admin1
 
-      The output resembles the following:
+      输出如下所示：
    
       .. code-block:: shell
 
@@ -56,11 +56,11 @@ The alias :mc:`mc admin user svcacct list` has equivalent functionality to :mc:`
 
       .. versionadded:: RELEASE.2023-05-26T23-31-54Z
 
-        The list of access keys includes the expiry date, or ``no-expiry`` for keys that do not expire.
+        访问密钥列表包含到期时间；对于永不过期的密钥，显示 ``no-expiry``。
 	 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      命令语法如下： 
   
       .. code-block:: shell  
          :class: copyable 
@@ -74,33 +74,33 @@ The alias :mc:`mc admin user svcacct list` has equivalent functionality to :mc:`
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: USER
    :required:
 
-   The username of the user to display access keys for.
+   要列出其访问密钥的用户名。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

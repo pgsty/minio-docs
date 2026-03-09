@@ -1,20 +1,20 @@
 .. _minio-server-limits:
 
 =====================
-Thresholds and Limits
+阈值与限制
 =====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page reflects limits and thresholds that apply to MinIO.
+本页列出了适用于 MinIO 的阈值与限制。
 
-Refer to the :ref:`hardware <minio-hardware-checklist>` and :ref:`software <minio-software-checklists>` for related recommendations and requirements.
+有关相关建议和要求，请参阅 :ref:`hardware <minio-hardware-checklist>` 和 :ref:`software <minio-software-checklists>`。
 
-S3 API Limits
+S3 API 限制
 -------------
 
 .. list-table::
@@ -22,47 +22,47 @@ S3 API Limits
    :widths: 60 40
    :width: 90%
 
-   * - Item
-     - Specification 
+   * - 项目
+     - 规格
 
-   * - Maximum object size
+   * - 最大对象大小
      - 50 TiB
 
-   * - Minimum object size
+   * - 最小对象大小
      - 0 B
 
-   * - Maximum object size per PUT operation
-     - | 5 TiB for non-multipart upload
-       | 50 TiB for multipart upload
+   * - 单次 PUT 操作的最大对象大小
+     - | 非 multipart upload 为 5 TiB
+       | multipart upload 为 50 TiB
 
-   * - Maximum number of parts per upload
+   * - 每次上传的最大分片数
      - 10,000
 
-   * - Part size range
-     - 5 MiB to 5 GiB. Last part can be 0 B to 5 GiB
+   * - 分片大小范围
+     - 5 MiB 到 5 GiB。最后一个分片可为 0 B 到 5 GiB
 
-   * - Maximum number of parts returned per list parts request
+   * - 每次 list parts 请求返回的最大分片数
      - 10,000
 
-   * - Maximum number of objects returned per list objects request
+   * - 每次 list objects 请求返回的最大对象数
      - 1,000
 
-   * - Maximum number of multipart uploads returned per list multipart uploads request
+   * - 每次 list multipart uploads 请求返回的最大 multipart upload 数
      - 1,000
 
-   * - Maximum length for bucket names
+   * - 存储桶名称最大长度
      - 63
 
-   * - Maximum length for object names
+   * - 对象名称最大长度
      - 1024
 
-   * - Maximum length for each ``/`` separated segment of an object name
+   * - 对象名称中每个以 ``/`` 分隔段的最大长度
      - 255
 
-   * - Maximum number of object versions for a unique object
-     - 10000 (Configurable)
+   * - 单个唯一对象允许的最大版本数
+     - 10000（可配置）
 
-Erasure Code Limits
+纠删码限制
 -------------------
 
 .. list-table::
@@ -70,55 +70,55 @@ Erasure Code Limits
    :widths: 60 40
    :width: 90%
 
-   * - Item
-     - Specification 
+   * - 项目
+     - 规格
 
-   * - Maximum number of servers per cluster
-     - no limit
+   * - 每个集群的最大服务器数
+     - 无限制
 
-   * - Minimum number of servers
+   * - 最小服务器数
      - 1
 
-   * - Minimum number of drives per server when server count is 1
-     - 1 (for |SNSD| deployments, which do not provide additional reliability or availability)
+   * - 当服务器数为 1 时，每台服务器的最少驱动器数
+     - 1（适用于 |SNSD| 部署，此类部署不提供额外可靠性或可用性）
 
-   * - Minimum number of drives per server when server count is 2 or more
+   * - 当服务器数为 2 或更多时，每台服务器的最少驱动器数
      - 1
 
-   * - Maximum number of drives per server
-     - no limit
+   * - 每台服务器的最大驱动器数
+     - 无限制
 
-   * - Read quorum
+   * - 读仲裁
      - :math:`N/2`
 
-   * - Write quorum
+   * - 写仲裁
      - :math:`(N/2)+1`
 
-Object Name Limitations
+对象名称限制
 -----------------------
 
-Filesystem and Operating System Restrictions
+文件系统和操作系统限制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Object Names in MinIO are restricted primarily by the local operating system and filesystem.
-Windows and some other operating systems restrict file systems with certain special characters, such as ``^``, ``*``, ``|``, ``\``, ``/``, ``&``, ``"``, or ``;``.
+MinIO 中的对象名称主要受本地操作系统和文件系统限制。
+Windows 和某些其他操作系统会限制包含特定特殊字符的文件系统名称，例如 ``^``、``*``、``|``、``\``、``/``、``&``、``"`` 或 ``;``。
 
-This list is not exhaustive and may not apply to your operating system and filesystem combination.
+此列表并不完整，也不一定适用于你的操作系统和文件系统组合。
 
-On Unix-like operating systems, objects with a path name of ``.``, ``..``, or ``/`` return an error of ``file access denied``.
+在类 Unix 操作系统上，路径名为 ``.``、``..`` 或 ``/`` 的对象会返回 ``file access denied`` 错误。
 
-Consult your operating system vendor or filesystem documentation for a comprehensive list for your situation.
+请查阅你的操作系统供应商或文件系统文档，以获得适用于当前环境的完整列表。
 
-MinIO recommends using a Linux operating system with an XFS based filesystem for production workloads.
+MinIO 建议生产工作负载使用基于 XFS 文件系统的 Linux 操作系统。
 
-Conflicting Objects
+冲突对象
 ~~~~~~~~~~~~~~~~~~~
 
-Applications must assign non-conflicting, unique keys for all objects.
-This includes avoiding creating objects where the name can collide with that of a parent or sibling object.
-MinIO returns an empty set for LIST operations at the location of the collision.
+应用必须为所有对象分配不冲突的唯一键。
+这包括避免创建与父对象或同级对象名称发生冲突的对象。
+当名称发生冲突时，MinIO 在该位置的 LIST 操作会返回空结果集。
 
-For example, the following operations create a namespace conflicts
+例如，以下操作会创建命名空间冲突：
 
 .. code-block::
    
@@ -130,4 +130,4 @@ For example, the following operations create a namespace conflicts
    PUT data/invoices/2024/january
    PUT data/invoices/2024/january/vendors.csv <- collides with existing object
 
-While you can perform GET or HEAD operations against these objects, the name collision causes LIST operations to return an empty result set at the ``/invoices/2024/january`` path.
+虽然你仍然可以对这些对象执行 GET 或 HEAD 操作，但名称冲突会导致在 ``/invoices/2024/january`` 路径上的 LIST 操作返回空结果集。

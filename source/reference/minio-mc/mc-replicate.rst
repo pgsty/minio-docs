@@ -4,38 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc replicate
 
 
-Description
------------
+说明
+----
 
 .. start-mc-replicate-desc
 
-The :mc:`mc replicate <mc replicate add>` command configures and manages the :ref:`Server-Side Bucket Replication <minio-bucket-replication-serverside>` for a MinIO deployment, including :ref:`active-active replication configurations <minio-bucket-replication-serverside-twoway>` and :ref:`resynchronization <minio-replication-behavior-resync>`.
+:mc:`mc replicate <mc replicate add>` 命令用于为 MinIO 部署配置和管理 :ref:`服务端存储桶复制 <minio-bucket-replication-serverside>`，包括 :ref:`双活复制配置 <minio-bucket-replication-serverside-twoway>` 和 :ref:`重新同步 <minio-replication-behavior-resync>`。
 
 .. end-mc-replicate-desc
 
 .. note::
 
-   For multi-site replication, see :mc:`mc admin replicate`.
+   对于多站点复制，请参见 :mc:`mc admin replicate`。
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc replicate` includes the following subcommands:
+:mc:`mc replicate` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc replicate add`
      - .. include:: /reference/minio-mc/mc-replicate-add.rst

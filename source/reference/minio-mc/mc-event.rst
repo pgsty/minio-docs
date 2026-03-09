@@ -4,39 +4,39 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc event
 
 
-Description
------------
+描述
+----
 
 .. start-mc-event-desc
 
-The :mc:`mc event` command supports adding, removing, and listing bucket event notifications.
+:mc:`mc event` 命令支持添加、删除和列出存储桶事件通知。
 
 .. end-mc-event-desc
 
-MinIO automatically sends triggered events to the configured notification targets. 
-MinIO supports notification targets like AMQP (RabbitMQ), Redis, ElasticSearch, NATS and PostgreSQL. 
-See :ref:`MinIO Bucket Notifications <minio-bucket-notifications>` for more information.
+MinIO 会自动将触发的事件发送到已配置的通知目标。
+MinIO 支持 AMQP (RabbitMQ)、Redis、ElasticSearch、NATS 和 PostgreSQL 等通知目标。
+有关更多信息，请参阅 :ref:`MinIO Bucket Notifications <minio-bucket-notifications>`。
 
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc event` includes the following subcommands:
+:mc:`mc event` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc event add`
      - .. include:: /reference/minio-mc/mc-event-add.rst

@@ -8,24 +8,24 @@
 
 .. mc:: mc admin cluster iam export
 
-Description
------------
+描述
+----
 
 .. versionadded:: RELEASE.2022-06-26T18-51-48Z
 
 .. start-mc-admin-cluster-iam-export-desc
 
-The :mc:`mc admin cluster iam export` command exports :ref:`IAM <minio-authentication-and-identity-management>` metadata for use with the :mc:`mc admin cluster iam import` command.
+:mc:`mc admin cluster iam export` 命令导出 :ref:`IAM <minio-authentication-and-identity-management>` 元数据，以供 :mc:`mc admin cluster iam import` 命令使用。
 
 .. end-mc-admin-cluster-iam-export-desc
 
-The command saves the output as ``ALIAS-iam-metadata.zip``, where ``ALIAS`` is the :mc:`alias <mc admin cluster iam export ALIAS>` of the MinIO deployment.
+该命令将输出保存为 ``ALIAS-iam-metadata.zip``，其中 ``ALIAS`` 是 MinIO 部署的 :mc:`alias <mc admin cluster iam export ALIAS>`。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command exports all IAM metadata for the ``myminio`` deployment.
+      以下命令导出 ``myminio`` 部署的全部 IAM 元数据。
   
       .. code-block:: shell  
          :class: copyable 
@@ -34,7 +34,7 @@ The command saves the output as ``ALIAS-iam-metadata.zip``, where ``ALIAS`` is t
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax: 
+      命令语法如下：
   
       .. code-block:: shell  
          :class: copyable 
@@ -46,51 +46,51 @@ The command saves the output as ``ALIAS-iam-metadata.zip``, where ``ALIAS`` is t
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Starting with :mc-release:`RELEASE.2023-05-04T18-10-16Z`, :mc:`mc admin cluster iam export` adds support for aliases ending with a trailing forward slash ``ALIAS/``.
-Prior to this release, the command would fail when provided a trailing forward slash.
+从 :mc-release:`RELEASE.2023-05-04T18-10-16Z` 开始，:mc:`mc admin cluster iam export` 支持以尾随正斜杠结尾的别名 ``ALIAS/``。
+在此版本之前，提供尾随正斜杠会导致命令执行失败。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment to export IAM metadata for.
+   要导出 IAM 元数据的 MinIO 部署 :ref:`alias <alias>`。
 
 
 .. mc-cmd:: --output, --o
    :optional:
 
-   Specify a custom file and path to use when exporting the IAM data.
+   指定导出 IAM 数据时使用的自定义文件名和路径。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Download all IAM metadata for a cluster to a ZIP file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+将集群的全部 IAM 元数据下载到 ZIP 文件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command downloads all IAM metadata for the cluster at alias ``myminio``, then stores the metadata to a ZIP file.
+以下命令下载别名为 ``myminio`` 的集群全部 IAM 元数据，并将其保存到 ZIP 文件中。
 
 .. code-block:: shell
 
    mc admin cluster iam export myminio
 
-The ZIP file is named ``<alias>-iam-info.zip`` where ``<alias>`` is the alias of the cluster.
-For the above example, the file is named ``myminio-iam-info.zip``.
+ZIP 文件命名为 ``<alias>-iam-info.zip``，其中 ``<alias>`` 是集群别名。
+在上述示例中，文件名为 ``myminio-iam-info.zip``。
 
-The file is placed in the current active directory path.
+该文件位于当前活动目录中。
 
-Download all IAM metadata for a cluster and specify the name and path of the ZIP file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+下载集群的全部 IAM 元数据并指定 ZIP 文件名称和路径
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command downloads all IAM metadata for the cluster at alias ``myminio``, then stores the metadata to a ZIP file at ``/tmp/myminio-iam.zip``.
+以下命令下载别名为 ``myminio`` 的集群全部 IAM 元数据，并将其保存为 ``/tmp/myminio-iam.zip`` ZIP 文件。
 
 .. code-block:: shell
 

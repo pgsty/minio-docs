@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,24 +12,24 @@
 
 .. versionadded:: mc RELEASE.2024-02-24T01-33-20Z
 
-Syntax
-------
+语法
+----
 
 .. start-mc-put-desc
 
-The :mc:`mc put` uploads an object from the local file system to a bucket on a target S3 deployment.
+:mc:`mc put` 将对象从本地文件系统上传到目标 S3 部署中的存储桶。
 
 .. end-mc-put-desc
 
-``mc put`` provides a simplified interface for uploading files compared to :mc:`mc cp` or :mc:`mc mirror`.
-``mc put`` uses a one-way upload function that trades efficiency for the power and complexity of the other commands.
+与 :mc:`mc cp` 或 :mc:`mc mirror` 相比，``mc put`` 为文件上传提供了更简化的接口。
+``mc put`` 使用单向上传机制，以牺牲效率为代价换取相较其他命令更低的复杂度。
 
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following uploads the file ``logo.png`` from the local file system at path ``~/images/collateral/`` to a bucket called ``marketing`` on the MinIO deployment with the alias of ``minio``.
+      以下示例将本地文件系统路径 ``~/images/collateral/`` 下的文件 ``logo.png`` 上传到别名为 ``minio`` 的 MinIO 部署中名为 ``marketing`` 的存储桶。
 
       .. code-block:: shell
          :class: copyable
@@ -37,9 +37,9 @@ The :mc:`mc put` uploads an object from the local file system to a bucket on a t
          mc put ~/images/collateral/logo.png minio/marketing
 
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -60,20 +60,20 @@ The :mc:`mc put` uploads an object from the local file system to a bucket on a t
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the :ref:`alias <minio-mc-alias>` or prefix where the command should run.
-   The TARGET *must* contain an :ref:`alias <alias>` and ``bucket`` name.
+   命令应执行位置的 :ref:`alias <minio-mc-alias>` 或前缀的完整路径。
+   TARGET *必须* 包含 :ref:`alias <alias>` 和 ``bucket`` 名称。
 
-   The TARGET may also contain the following optional components:
-   - PREFIX where the object should upload to
-   - OBJECT-NAME to use in place of the file names
+   TARGET 还可以包含以下可选组成部分：
+   - 对象应上传到的 PREFIX
+   - 用于替代文件名的 OBJECT-NAME
 
-   Valid TARGETs could take any of the following forms:
+   有效的 TARGET 可以采用以下任一形式：
    - ``ALIAS/BUCKET``
    - ``ALIAS/BUCKET/PREFIX``
    - ``ALIAS/BUCKET/OBJECT-NAME``
@@ -84,23 +84,23 @@ Parameters
 
    .. versionadded:: RELEASE.2024-10-02T08-27-28Z
 
-   Add a checksum to an uploaded object. 
-   
-   Valid values are: 
+   为上传对象添加校验和。
+
+   可选值包括：
    - ``MD5``
    - ``CRC32``
    - ``CRC32C``
    - ``SHA1``
    - ``SHA256``
 
-   The flag requires server trailing headers and works with AWS or MinIO targets.
+   该标志需要服务器支持 trailing headers，并可用于 AWS 或 MinIO 目标。
 
 .. mc-cmd:: --disable-multipart
    :optional:
 
    .. versionadded:: RELEASE.2024-10-02T08-27-28Z
-   
-   Disables multipart uploads and directs ``mc`` to send the object in a single ``PUT`` operation.
+
+   禁用分段上传，并指示 ``mc`` 通过单次 ``PUT`` 操作发送对象。
 
 .. block include of enc-c , enc-s3, and enc-kms
 
@@ -112,50 +112,50 @@ Parameters
 .. mc-cmd:: --parallel, --P
    :optional:
 
-   For multi-part uploads, specify the number of parts of the object to upload in parallel.
+   对于分段上传，指定对象分段并行上传的数量。
 
-   If not defined, defaults to a value of ``4``.
+   如未定义，默认值为 ``4``。
 
 .. mc-cmd:: --part-size, -s
    :optional:
 
-   Specify the size to use for each part of a multi-part upload.
+   指定分段上传中每个分段使用的大小。
 
-   If not defined, defaults to a value of ``16MiB``.
+   如未定义，默认值为 ``16MiB``。
 
 .. mc-cmd:: --storage-class, -sc
    :optional:
 
-   Set the storage class for the uploaded object.
+   为上传对象设置存储类。
 
-   See :ref:`Standard Storage Class <minio-ec-storage-class-standard>` for more about storage classes.
+   有关存储类的更多信息，请参见 :ref:`Standard Storage Class <minio-ec-storage-class-standard>`。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Upload a File and Specify the Object Name
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+上传文件并指定对象名称
+~~~~~~~~~~~~~~~~~~~~~~
 
-The following command uploads the file ``logo.png`` from the local file system to the ``business`` bucket on the ``minio`` deployment, uploading it on the destination as ``company-logo.png``.
+以下命令将本地文件系统中的文件 ``logo.png`` 上传到 ``minio`` 部署的 ``business`` 存储桶，并在目标端命名为 ``company-logo.png``。
 
 .. code-block:: shell
    :class: copyable
 
    mc put images/collateral/logo.png minio/business/company-logo.png
 
-Upload a Multipart Object in Parallel with a Specified Part Size
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+按指定分段大小并行上传分段对象
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command uploads a file in chunks of 20MiB each and uploads 8 parts of the file in parallel.
-8 parts are uploaded in succession until all parts of the object have uploaded.
+以下命令以每段 20MiB 的分块方式上传文件，并行上传其中 8 个分段。
+系统会持续按批次上传 8 个分段，直到对象的所有分段均上传完成。
 
 .. code-block:: shell
    :class: copyable

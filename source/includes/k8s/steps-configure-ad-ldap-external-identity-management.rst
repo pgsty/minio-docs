@@ -1,10 +1,12 @@
-#. Access the Operator Console
+#. 访问 Operator Console
 
-   Temporarily forward traffic between the local host machine and the MinIO Operator Console and retrieve the JWT token for your Operator deployment.
-   For instructions, see :ref:`Configure access to the Operator Console service <minio-k8s-deploy-operator-access-console>`.
+   临时在本地主机与 MinIO Operator Console 之间转发流量，
+   并获取 Operator 部署的 JWT token。
+   具体步骤请参阅
+   :ref:`配置对 Operator Console 服务的访问 <minio-k8s-deploy-operator-access-console>`。
 
-   Open your browser to the temporary URL and enter the JWT Token into the login page. 
-   You should see the :guilabel:`Tenants` page:
+   在浏览器中打开临时 URL，并在登录页面输入 JWT Token。
+   你应该会看到 :guilabel:`Tenants` 页面：
 
    .. image:: /images/k8s/operator-dashboard.png
       :align: center
@@ -12,15 +14,19 @@
       :class: no-scaled-link
       :alt: MinIO Operator Console
 
-   To deploy a new MinIO Tenant with AD/LDAP external identity management, select the :guilabel:`+ Create Tenant` button.
+   如果要部署启用 AD/LDAP 外部身份管理的新 MinIO Tenant，
+   请选择 :guilabel:`+ Create Tenant` 按钮。
 
-   To configure an existing MinIO Tenant with AD/LDAP external identity management select that Tenant from the displayed list.
-   The following steps reference the necessary sections and configuration settings for existing Tenants.
+   如果要为现有 MinIO Tenant 配置 AD/LDAP 外部身份管理，
+   请从显示列表中选择该 Tenant。
+   以下步骤将说明现有 Tenant 所需的配置区段和设置项。
 
-#. Complete the :guilabel:`Identity Provider` Section
+#. 完成 :guilabel:`Identity Provider` 区段
 
-   To enable external identity management with an Active Directory / LDAP provider, select the :guilabel:`Identity Provider` section.
-   You can then change the radio button to :guilabel:`Active Directory` to display the configuration settings.
+   如需启用基于 Active Directory / LDAP 提供方的外部身份管理，
+   请选择 :guilabel:`Identity Provider` 区段。
+   然后将单选按钮切换为 :guilabel:`Active Directory`，
+   以显示相关配置项。
 
    .. image:: /images/k8s/operator-create-tenant-identity-provider-adldap.png
       :align: center
@@ -28,40 +34,44 @@
       :class: no-scaled-link
       :alt: MinIO Operator Console - Create a Tenant - External Identity Provider Section - Active Directory / LDAP
 
-   An asterisk ``*`` marks required fields.
-   The following table provides general guidance for those fields:
+   星号 ``*`` 表示必填字段。
+   下表给出了这些字段的一般说明：
 
    .. list-table::
       :header-rows: 1
       :widths: 40 60
       :width: 100%
 
-      * - Field
-        - Description
+      * - 字段
+        - 说明
 
       * - LDAP Server Address
-        - The hostname of the Active Directory or LDAP server.
+        - Active Directory 或 LDAP 服务器的主机名。
 
       * - Lookup Bind DN
-        - The Distinguished Name MinIO uses to authenticate and query the AD/LDAP server.
+        - MinIO 用于向 AD/LDAP 服务器认证并执行查询的 Distinguished Name。
 
-          See :ref:`minio-external-identity-management-ad-ldap-lookup-bind` for more information.
+          更多信息请参阅 :ref:`minio-external-identity-management-ad-ldap-lookup-bind`。
 
       * - List of user DNs (Distinguished Names) to be Tenant Administrators
-        - Specify a user :abbr:`DNs (Distinguished Names)` which MinIO assigns a :ref:`policy <minio-policy>` with administrative permissions for the Tenant.
-          You can specify multiple :abbr:`DNs (Distinguished Names)` by selecting the plus :octicon:`plus-circle` icon.
-          You can delete a DN by selecting the trash can :octicon:`trash` icon for that DN.
+        - 指定用户 :abbr:`DNs (Distinguished Names)`，
+          MinIO 会为这些用户分配具有 Tenant 管理权限的 :ref:`policy <minio-policy>`。
+          你可以通过选择加号 :octicon:`plus-circle` 图标来指定多个 :abbr:`DNs (Distinguished Names)`。
+          也可以通过选择对应 DN 的垃圾桶 :octicon:`trash` 图标删除该 DN。
 
-   Once you complete the section, you can finish any other required sections of :ref:`Tenant Deployment <minio-k8s-deploy-minio-tenant>`.
+   完成该区段后，你可以继续填写
+   :ref:`Tenant Deployment <minio-k8s-deploy-minio-tenant>` 的其他必需区段。
 
-#. Assign Policies to AD/LDAP Users
+#. 为 AD/LDAP 用户分配 Policy
 
-   MinIO by default assigns no :ref:`policies <minio-policy>` to AD/LDAP users or groups.
-   You must explicitly assign MinIO policies to a given user or group Distinguished Name (DN) to grant that user or group access to the MinIO deployment.
+   MinIO 默认不会为 AD/LDAP 用户或组分配任何 :ref:`policy <minio-policy>`。
+   你必须显式将 MinIO policy 分配给指定用户或组的 Distinguished Name (DN)，
+   才能授予该用户或组访问 MinIO 部署的权限。
 
-   The following example assumes an existing :ref:`alias <alias>` configured for the MinIO Tenant.
+   以下示例假定你已经为 MinIO Tenant 配置好了 :ref:`alias <alias>`。
 
-   Use the :mc:`mc idp ldap policy attach` command to assign a user or group DN to an existing MinIO Policy:
+   使用 :mc:`mc idp ldap policy attach` 命令，
+   将用户或组 DN 绑定到现有 MinIO Policy：
 
    .. code-block:: shell
      :class: copyable
@@ -69,14 +79,19 @@
      mc idp ldap policy attach minio-tenant POLICY --user='uid=primary,cn=applications,dc=domain,dc=com'
      mc idp ldap policy attach minio-tenant POLICY --group='cn=applications,ou=groups,dc=domain,dc=com'
 
-   Replace ``POLICY`` with the name of the MinIO policy to assign to the user or group DN.
+   将 ``POLICY`` 替换为要分配给该用户或组 DN 的 MinIO policy 名称。
 
-   See :ref:`minio-external-identity-management-ad-ldap-access-control` for more information on access control with AD/LDAP users and groups.
+   关于 AD/LDAP 用户和组的访问控制，请参阅
+   :ref:`minio-external-identity-management-ad-ldap-access-control`。
 
-#. Generate S3-Compatible Temporary Credentials using AD/LDAP Credentials
+#. 使用 AD/LDAP 凭证生成 S3 兼容临时凭证
 
-   Applications can use an AD/LDAP user credential to generate temporary S3-compatible credentials as-needed using the :ref:`minio-sts-assumerolewithldapidentity` Security Token Service (STS) API endpoint. 
-   MinIO provides an example Go application :minio-git:`ldap.go <minio/blob/master/docs/sts/ldap.go>` with an example of managing this workflow.
+   应用程序可以按需使用 AD/LDAP 用户凭证，
+   通过 :ref:`minio-sts-assumerolewithldapidentity`
+   Security Token Service (STS) API 端点生成 S3 兼容临时凭证。
+   MinIO 提供了示例 Go 应用程序
+   :minio-git:`ldap.go <minio/blob/master/docs/sts/ldap.go>`，
+   用于演示该工作流。
 
    .. code-block:: shell
 
@@ -86,17 +101,19 @@
      &Version=2011-06-15
      &Policy={}
 
-   - Replace ``minio.example.net`` with the hostname or URL for the MinIO Tenant service.
+   - 将 ``minio.example.net`` 替换为 MinIO Tenant 服务的主机名或 URL。
 
-   - Replace the ``LDAPUsername`` with the username of the AD/LDAP user.
+   - 将 ``LDAPUsername`` 替换为 AD/LDAP 用户名。
 
-   - Replace the ``LDAPPassword`` with the password of the AD/LDAP user.
+   - 将 ``LDAPPassword`` 替换为 AD/LDAP 用户密码。
 
-   - Replace the ``Policy`` with an inline URL-encoded JSON :ref:`policy <minio-policy>` that further restricts the permissions associated to the temporary credentials. 
+   - 将 ``Policy`` 替换为内联、经过 URL 编码的 JSON :ref:`policy <minio-policy>`，
+     以进一步限制这些临时凭证关联的权限。
 
-     Omit to use the :ref:`policy whose name matches <minio-external-identity-management-ad-ldap-access-control>` the Distinguished Name (DN) of the AD/LDAP user. 
+     如果省略，则会使用名称与 AD/LDAP 用户 Distinguished Name (DN)
+     :ref:`匹配的 policy <minio-external-identity-management-ad-ldap-access-control>`。
 
-   The API response consists of an XML document containing the access key, secret key, session token, and expiration date. 
-   Applications can use the access key and secret key to access and perform operations on MinIO.
+   API 响应为 XML 文档，其中包含 access key、secret key、session token 和过期时间。
+   应用程序可使用 access key 和 secret key 访问 MinIO 并执行操作。
 
-   See the :ref:`minio-sts-assumerolewithldapidentity` for reference documentation.
+   参考文档请参阅 :ref:`minio-sts-assumerolewithldapidentity`。

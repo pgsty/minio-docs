@@ -2,17 +2,17 @@
 .. _minio-server-config-bucket-notification-nsq:
 
 =========================
-NSQ Notification Settings
+NSQ 通知设置
 =========================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for configuring an NSQ service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
-See :ref:`minio-bucket-notifications-publish-nsq` for a tutorial on using these settings.
+本页面记录了将 NSQ 服务配置为 :ref:`存储桶通知 <minio-bucket-notifications>` 目标时所使用的设置。
+有关如何使用这些设置的教程，请参阅 :ref:`minio-bucket-notifications-publish-nsq`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -22,15 +22,15 @@ See :ref:`minio-bucket-notifications-publish-nsq` for a tutorial on using these 
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Multiple NSQ Targets
---------------------
+多个 NSQ 目标
+-------------
 
-You can specify multiple NSQ service endpoints by appending a unique identifier ``_ID`` to the end of the top level key for each set of related NSQ settings.
-For example, the following commands set two distinct NSQ service endpoints as ``PRIMARY`` and ``SECONDARY`` respectively:
+你可以通过在每组相关 NSQ 设置的顶层键末尾附加唯一标识符 ``_ID``，指定多个 NSQ 服务端点。
+例如，以下命令分别将两个不同的 NSQ 服务端点设置为 ``PRIMARY`` 和 ``SECONDARY``：
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -44,7 +44,7 @@ For example, the following commands set two distinct NSQ service endpoints as ``
          export MINIO_NOTIFY_NSQ_NSQD_ADDRESS_SECONDARY="https://user:password@nsq-endpoint.example.net:9200"
          export MINIO_NOTIFY_NSQ_TOPIC_SECONDARY="bucketevents"
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置项
       :sync: config
 
       .. code-block:: shell
@@ -59,37 +59,37 @@ For example, the following commands set two distinct NSQ service endpoints as ``
             topic="<string>" \
             [ARGUMENT="VALUE"] ... \
 
-Settings
---------
+设置
+----
 
-Enable
-~~~~~~
+启用
+~~~~
 
-*Required*
+*必填*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
       
       .. envvar:: MINIO_NOTIFY_NSQ_ENABLE
 
-      Specify ``on`` to enable publishing bucket notifications to an NSQ endpoint.
+      指定 ``on`` 以启用将存储桶通知发布到 NSQ 端点。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_nsq
 
-      The top-level configuration key for defining an NSQ server/broker endpoint for use with :ref:`MinIO bucket notifications <minio-bucket-notifications>`.
+      用于定义 NSQ server/broker 端点的顶层配置键，供 :ref:`MinIO 存储桶通知 <minio-bucket-notifications>` 使用。
    
-      Use :mc-cmd:`mc admin config set` to set or update an NSQ server/broker endpoint. 
-      The following arguments are *required* for each endpoint: 
+      使用 :mc-cmd:`mc admin config set` 设置或更新 NSQ server/broker 端点。
+      每个端点都*必须*包含以下参数：
       
       - :mc-conf:`~notify_nsq.nsqd_address`
       - :mc-conf:`~notify_nsq.topic`
    
-      Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+      其他可选参数以空白字符（``" "``）分隔的列表形式指定。
 
       .. code-block:: shell
          :class: copyable
@@ -99,26 +99,26 @@ Enable
             topic="<string>"                                     \
             [ARGUMENT="VALUE"] ...
 
-NSQ Daemon Server Address
-~~~~~~~~~~~~~~~~~~~~~~~~~
+NSQ Daemon 服务器地址
+~~~~~~~~~~~~~~~~~~~~~
 
-*Required*
+*必填*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_NSQ_NSQD_ADDRESS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_nsq nsqd_address
          :delimiter: " "
 
-Specify the NSQ server address where the NSQ Daemon runs. 
-For example:
+指定 NSQ Daemon 运行所在的 NSQ 服务器地址。
+例如：
 
 ``https://nsq-endpoint.example.net:4150``
 
@@ -126,129 +126,129 @@ For example:
    :start-after: start-notify-target-online-desc
    :end-before: end-notify-target-online-desc
 
-Topic
-~~~~~
+主题
+~~~~
 
-*Required*
+*必填*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_NSQ_TOPIC
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_nsq topic
          :delimiter: " "
 
-Specify the name of the NSQ topic MinIO uses when publishing events to the broker.
+指定 MinIO 向 broker 发布事件时使用的 NSQ topic 名称。
 
 TLS
 ~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
    
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_NSQ_TLS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_nsq tls
          :delimiter: " "
 
-Specify ``on`` to enable TLS connectivity to the NSQ service broker.
+指定 ``on`` 以启用到 NSQ service broker 的 TLS 连接。
 
-TLS Skip Verify
-~~~~~~~~~~~~~~~
+TLS 跳过校验
+~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_NSQ_TLS_SKIP_VERIFY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_nsq tls_skip_verify
          :delimiter: " "
 
-Enables or disables TLS verification of the NSQ service broker TLS certificates.
+启用或禁用对 NSQ service broker TLS 证书的 TLS 校验。
 
-- Specify ``on`` to disable TLS verification (Default).
-- Specify ``off`` to enable TLS verification.
+- 指定 ``on`` 可禁用 TLS 校验（默认）。
+- 指定 ``off`` 可启用 TLS 校验。
 
-Queue Directory
-~~~~~~~~~~~~~~~
+队列目录
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_NSQ_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
    
       .. mc-conf:: notify_nsq queue_dir
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径以启用 MinIO 对未投递消息的持久化事件存储，例如 ``/opt/minio/events``。
 
-MinIO stores undelivered events in the specified store while the NSQ server/broker is offline and replays the stored events when connectivity resumes.
+当 NSQ server/broker 离线时，MinIO 会将未投递事件存储在指定存储中，并在连接恢复后重放这些已存储事件。
 
 
-Queue Limit
-~~~~~~~~~~~
+队列上限
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
       
       .. envvar:: MINIO_NOTIFY_NSQ_QUEUE_LIMIT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_nsq queue_limit
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. 
-Defaults to ``100000``.
+指定未投递消息的最大上限。
+默认值为 ``100000``。
 
-Comment
-~~~~~~~
+备注
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_NSQ_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_nsq comment
          :delimiter: " "
 
-Specify a comment to associate with the NSQ configuration.
+指定与 NSQ 配置关联的备注。

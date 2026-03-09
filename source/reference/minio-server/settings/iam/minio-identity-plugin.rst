@@ -1,17 +1,17 @@
 .. _minio-server-envvar-external-identity-management-plugin:
 
 =========================================
-MinIO Identity Management Plugin Settings
+MinIO 身份管理插件设置
 =========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for enabling external identity management using the MinIO Identity Management Plugin. 
-See :ref:`minio-external-identity-management-plugin` for a tutorial on using these settings.
+本页介绍如何通过 MinIO Identity Management Plugin 启用外部身份管理的相关设置。
+有关如何使用这些设置的教程，请参阅 :ref:`minio-external-identity-management-plugin`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -21,15 +21,15 @@ See :ref:`minio-external-identity-management-plugin` for a tutorial on using the
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Examples
---------
+示例
+----
 
-When setting up the MinIO Identity Management Plugin, you must define at a minimum all of the *required* settings.
-The examples here represent the minimum required settings.
+配置 MinIO Identity Management Plugin 时，至少必须定义所有*必需*设置。
+以下示例展示了最小必需配置。
 
 .. tab-set::
    
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -37,14 +37,14 @@ The examples here represent the minimum required settings.
          MINIO_IDENTITY_PLUGIN_URL="https://authservice.example.net:8080/auth"
          MINIO_IDENTITY_PLUGIN_ROLE_POLICY="ConsoleUser"
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_plugin
 
-      Use :mc:`mc admin config set` to create or update the identity plugin configuration. 
-      The ``identity_plugin url`` argument is required. 
-      Specify additional optional arguments as a whitespace (" ")-delimited list.
+      使用 :mc:`mc admin config set` 创建或更新身份管理插件配置。
+      ``identity_plugin url`` 参数为必填项。
+      其他可选参数以空白字符（" "）分隔的列表形式指定。
 
       .. code-block:: shell
 
@@ -53,22 +53,22 @@ The examples here represent the minimum required settings.
             role_policy="consoleAdmin"                        \
             [ARGUMENT=VALUE] ... 
 
-Settings
---------
+设置
+----
 
 URL
 ~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_PLUGIN_URL
    
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_plugin url
@@ -78,19 +78,19 @@ URL
    :start-after: start-minio-identity-management-plugin-url
    :end-before: end-minio-identity-management-plugin-url
 
-Role Policy
-~~~~~~~~~~~
+角色策略
+~~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_PLUGIN_ROLE_POLICY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_plugin role_policy
@@ -100,42 +100,42 @@ Role Policy
    :start-after: start-minio-identity-management-role-policy
    :end-before: end-minio-identity-management-role-policy
 
-Enable
-~~~~~~
+启用
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       
-      This setting does not have an environment variable option.
+      此设置不提供环境变量选项。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :selected:
 
       .. mc-conf:: identity_plugin enabled
          :delimiter: " "
 
-Set to ``false`` to disable the identity provider configuration.
+设置为 ``false`` 以禁用身份提供方配置。
 
-Applications cannot generate STS credentials or otherwise authenticate to MinIO using the configured provider if set to ``false``.
+如果设置为 ``false``，应用程序将无法生成 STS 凭证，也无法通过已配置的提供方对 MinIO 进行身份验证。
 
-Defaults to ``true`` or "enabled".
+默认为 ``true`` 或 "enabled"。
 
-Token
-~~~~~
+令牌
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_PLUGIN_TOKEN
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_plugin token
@@ -145,19 +145,19 @@ Token
    :start-after: start-minio-identity-management-auth-token
    :end-before: end-minio-identity-management-auth-token
 
-Role ID
+角色 ID
 ~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_PLUGIN_ROLE_ID
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_plugin role_id
@@ -167,19 +167,19 @@ Role ID
    :start-after: start-minio-identity-management-role-id
    :end-before: end-minio-identity-management-role-id
 
-Comment
-~~~~~~~
+注释
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_PLUGIN_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_plugin comment

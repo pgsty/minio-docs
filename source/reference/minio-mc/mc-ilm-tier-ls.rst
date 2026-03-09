@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -17,27 +17,27 @@
 
    :mc:`mc ilm tier ls` replaces ``mc admin tier ls``.
 
-Description
------------
+描述
+----
 
 .. start-mc-ilm-tier-ls-desc
 
-The :mc:`mc ilm tier ls` command shows the remote tiers configured on a deployment. 
+:mc:`mc ilm tier ls` 命令显示某个部署上已配置的远程层级。
 
 .. end-mc-ilm-tier-ls-desc
 
-The :mc:`mc ilm tier list` command has equivalent functionality to :mc:`mc ilm tier ls`.
+:mc:`mc ilm tier list` 命令与 :mc:`mc ilm tier ls` 功能等效。
 
-Syntax
-------
+语法
+----
 
-The command has the following syntax:
+该命令的语法如下：
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following example outputs a list of the existing remote tiers on the ``myminio`` deployment.
+      以下示例输出 ``myminio`` 部署上现有远程层级的列表。
       
       .. code-block:: shell
          :class: copyable
@@ -45,41 +45,41 @@ The command has the following syntax:
           mc ilm tier ls myminio
 
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
    
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm tier ls TARGET TIER_NAME 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
-The command accepts the following argument:
+该命令接受以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which the desired tier exists.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，且目标层级存在于该部署上。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
 
-Required Permissions
---------------------
+所需权限
+--------
 
-For permissions required for reviewing a tier, refer to the :ref:`required permissions <minio-mc-ilm-tier-permissions>` on the parent command.
+有关查看层级所需的权限，请参阅父命令中的 :ref:`required permissions <minio-mc-ilm-tier-permissions>`。

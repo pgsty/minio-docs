@@ -6,38 +6,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin user add
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-user-add-desc
 
-The :mc:`mc admin user add` command adds a new :ref:`MinIO user <minio-internal-idp>` to the target MinIO deployment.
+:mc:`mc admin user add` 命令会在目标 MinIO 部署中添加一个新的 :ref:`MinIO 用户 <minio-internal-idp>`。
 
 .. end-mc-admin-user-add-desc
 
-To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :mc:`AD/LDAP <mc idp ldap>`.
+要管理外部身份提供商用户，请参见 :mc:`OIDC <mc idp openid>` 或 :mc:`AD/LDAP <mc idp ldap>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command creates a new user ``newuser`` on the ``myminio`` MinIO deployment:
+      以下命令会在 ``myminio`` MinIO 部署上创建一个新用户 ``newuser``：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin user add myminio newuser newusersecret
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -52,80 +52,80 @@ To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :m
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ACCESSKEY
    :required:
 
-   The access key that uniquely identifies the new user, similar to a username.
+   用于唯一标识新用户的访问密钥，类似于用户名。
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which to create the new user.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，用于在该部署上创建新用户。
 
 .. mc-cmd:: SECRETKEY
    :required:
 
-   The secret key for the new user. Consider the following guidance when creating a secret key:
+   新用户的 secret key。创建 secret key 时请参考以下建议：
    
-   - The key should be *unique*
-   - The key should be *long* (Greater than 12 characters)
-   - The key should be *complex* (A mixture of characters, numerals, and symbols)
+   - 密钥应为*唯一*值
+   - 密钥应足够*长*（超过 12 个字符）
+   - 密钥应具备*复杂性*（混合使用字符、数字和符号）
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Example
--------
+示例
+----
 
-Create a New User
-~~~~~~~~~~~~~~~~~
+创建新用户
+~~~~~~~~~~
 
-Use :mc-cmd:`mc admin user add` to create a user on a MinIO deployment:
+使用 :mc-cmd:`mc admin user add` 在 MinIO 部署上创建用户：
 
 .. code-block:: shell
    :class: copyable
 
       mc admin user add ALIAS ACCESSKEY SECRETKEY
 
-- Replace :mc-cmd:`ALIAS <mc admin user add ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user add ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`ACCESSKEY <mc admin user add ACCESSKEY>` with the access key for the user.
+- 将 :mc-cmd:`ACCESSKEY <mc admin user add ACCESSKEY>` 替换为该用户的 access key。
 
-- Replace :mc-cmd:`SECRETKEY <mc admin user add SECRETKEY>` with the secret key for the user.
-  MinIO *does not* provide any method for retrieving the secret key once set.
+- 将 :mc-cmd:`SECRETKEY <mc admin user add SECRETKEY>` 替换为该用户的 secret key。
+  MinIO *不*提供任何在设置后检索 secret key 的方法。
 
-Specify a unique, random, and long string for both the ``ACCESSKEY`` and ``SECRETKEY``.
-Your organization may have specific internal or regulatory requirements around generating values for use with access or secret keys.
+请为 ``ACCESSKEY`` 和 ``SECRETKEY`` 都指定唯一、随机且足够长的字符串。
+组织在生成用于 access key 或 secret key 的值时，可能存在特定的内部或监管要求。
 
 
-Behavior
---------
+行为
+----
 
-New Users Have No Default Policies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+新用户默认没有策略
+~~~~~~~~~~~~~~~~~~
 
-Newly created users have *no* policies by default and therefore cannot perform any operations on the MinIO deployment.
-To configure a user's assigned policies, you can do either or both of the following:
+新创建的用户默认*没有*任何策略，因此无法在 MinIO 部署上执行任何操作。
+要配置用户的已分配策略，你可以执行以下一项或两项操作：
 
-- Use :mc-cmd:`mc admin policy attach` to associate one or more policies to the user.
+- 使用 :mc-cmd:`mc admin policy attach` 将一个或多个策略关联到用户。
 
-- Use :mc-cmd:`mc admin group add` to associate the user to the group.
-  Users inherit any policies assigned to the group.
+- 使用 :mc-cmd:`mc admin group add` 将用户关联到组。
+  用户会继承分配给该组的所有策略。
 
-For more information on MinIO users and groups, see :ref:`minio-users` and :ref:`minio-groups`.
-For more information on MinIO policies, see :ref:`MinIO Policy Based Access Control <minio-policy>`.
+有关 MinIO 用户和组的更多信息，请参见 :ref:`minio-users` 和 :ref:`minio-groups`。
+有关 MinIO 策略的更多信息，请参见 :ref:`MinIO Policy Based Access Control <minio-policy>`。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

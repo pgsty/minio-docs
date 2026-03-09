@@ -1,8 +1,8 @@
 .. start-requires-operator-plugin
 
-Ensure your target Kubernetes cluster has a valid and working installation of the MinIO Kubernetes Operator.
-This documentation assumes the latest stable Operator, version |operator-version-stable|.
+请确保目标 Kubernetes 集群中已安装有效且可正常工作的
+MinIO Kubernetes Operator。
+本文档假定使用的是最新稳定版 Operator，即 |operator-version-stable|。
 
 .. end-requires-operator-plugin
-
 

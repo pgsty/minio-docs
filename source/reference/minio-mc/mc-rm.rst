@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -16,42 +16,41 @@
 .. |versionid| replace:: :mc-cmd:`~mc rm --version-id`
 .. |alias| replace:: :mc-cmd:`~mc rm ALIAS`
 
-Syntax
+语法
 ------
 
 .. start-mc-rm-desc
 
-The :mc:`mc rm` command :ref:`removes objects <minio-object-delete>` from a bucket on a MinIO deployment. 
-To completely remove a bucket, use :mc:`mc rb` instead.
+:mc:`mc rm` 命令用于从 MinIO 部署的存储桶中 :ref:`删除对象 <minio-object-delete>`。
+如需彻底删除存储桶，请改用 :mc:`mc rb`。
 
 .. end-mc-rm-desc
 
-You can also use :mc:`mc rm` against the local filesystem to produce similar
-results to the ``rm`` commandline tool.
+你也可以对本地文件系统使用 :mc:`mc rm`，以获得与 ``rm`` 命令行工具类似的结果。
 
-For more information on how MinIO performs ``DELETE`` actions on objects, see :ref:`minio-object-delete`.
+有关 MinIO 如何对对象执行 ``DELETE`` 操作的更多信息，请参见 :ref:`minio-object-delete`。
 
 .. important::
 
-   :mc:`mc rm` supports removing multiple objects *or* files in a single
-   command. Consider using the :mc-cmd:`~mc rm --dry-run`
-   option to validate that the operation targets only the desired objects/files.
+   :mc:`mc rm` 支持在一条命令中删除多个对象 *或* 文件。
+   建议使用 :mc-cmd:`~mc rm --dry-run`
+   选项验证操作仅作用于预期的对象/文件。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes multiple objects from the 
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令从 ``myminio`` MinIO 部署的 ``mydata``
+      存储桶中删除多个对象：
 
       .. code-block:: shell
          :class: copyable
 
          mc rm --recursive myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -76,33 +75,33 @@ For more information on how MinIO performs ``DELETE`` actions on objects, see :r
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-      :mc-cmd:`mc rm --force` is required by multiple parameters.
-      :mc-cmd:`mc rm --version-id` is mutually exclusive with multiple
-      parameters. See the reference documentation for more information.
+      :mc-cmd:`mc rm --force` 是多个参数的必需项。
+      :mc-cmd:`mc rm --version-id` 与多个
+      参数互斥。更多信息请参见参考文档。
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
-   
-   The :ref:`alias <alias>` of a MinIO deployment and the full path to
-   the object to remove. For example:
+
+   MinIO 部署的 :ref:`alias <alias>`，以及要删除对象的完整路径。
+   例如：
 
    .. code-block:: shell
 
       mc rm play/mybucket/object.txt
 
-   You can specify multiple objects on the same or different MinIO deployments.
-   For example:
+   你可以在同一个或不同的 MinIO 部署上指定多个对象。
+   例如：
 
    .. code-block:: shell
 
       mc rm play/mybucket/object.txt play/mybucket/otherobject.txt
 
-   If specifying the path to a bucket or bucket prefix, you **must** also
-   specify the :mc-cmd:`~mc rm --recursive` and 
-   :mc-cmd:`~mc rm --force` arguments. For example:
+   如果指定的是存储桶或存储桶前缀路径，**必须** 同时
+   指定 :mc-cmd:`~mc rm --recursive` 和
+   :mc-cmd:`~mc rm --force` 参数。例如：
 
    .. code-block:: shell
 
@@ -110,12 +109,11 @@ Parameters
 
       mc rm --recursive --force play/mybucket/myprefix/
 
-   Consider first running the command with the
-   :mc-cmd:`~mc rm --dry-run` flag to validate the scope of the
-   recursive delete operation.
+   建议先使用
+   :mc-cmd:`~mc rm --dry-run` 标志运行命令，验证
+   递归删除操作的范围。
 
-   For removing a file from a local filesystem, specify the full path to that
-   file:
+   若要从本地文件系统删除文件，请指定该文件的完整路径：
 
    .. code-block:: shell
 
@@ -123,41 +121,40 @@ Parameters
 
 .. mc-cmd:: --bypass
    :optional:
-   
-   Allows removing an object held under 
-   :ref:`GOVERNANCE <minio-object-locking-governance>` object locking. 
+
+   允许删除受 :ref:`GOVERNANCE <minio-object-locking-governance>`
+   对象锁保护的对象。
 
 .. mc-cmd:: --dangerous
    :optional:
-   
-   Allows running :mc:`mc rm` when the :mc-cmd:`~mc rm ALIAS`
-   specifies the root (all buckets) on the MinIO deployment.
 
-   When combined with :mc-cmd:`~mc rm --versions`, this flag
-   directs :mc:`mc rm` to permanently remove all objects *and* versions from
-   the ``ALIAS`` target.
+   当 :mc-cmd:`~mc rm ALIAS` 指定 MinIO 部署的根路径（所有存储桶）时，
+   允许执行 :mc:`mc rm`。
 
-   Consider first running the command with the :mc-cmd:`~mc rm --dry-run` to
-   validate the scope of the site-wide delete operation.
+   与 :mc-cmd:`~mc rm --versions` 结合使用时，
+   此标志会指示 :mc:`mc rm` 永久删除 ``ALIAS`` 目标中的所有对象
+   *以及* 所有版本。
+
+   建议先使用 :mc-cmd:`~mc rm --dry-run` 运行命令，
+   验证站点范围删除操作的范围。
 
    .. warning::
 
-      Running :mc-cmd:`mc rm --dangerous` with the
-      :mc-cmd:`~mc rm --versions` flag is irreversible. Exercise all 
-      possible due diligence in ensuring the command applies to only the desired
-      ``ALIAS`` targets prior to execution.
+      搭配 :mc-cmd:`~mc rm --versions` 标志运行
+      :mc-cmd:`mc rm --dangerous` 是不可逆操作。执行前请尽可能
+      审慎核查，确保命令只应用于预期的 ``ALIAS`` 目标。
 
 .. mc-cmd:: --dry-run
    :optional:
 
-   Outputs the results of a command without actually removing any files.
-   Use this flag to test that your command configuration removes only the objects you wish to remove.
+   输出命令结果，但不会实际删除任何文件。
+   使用此标志可测试命令配置是否仅删除你希望删除的对象。
 
 .. mc-cmd:: --force
    :optional:
 
-   Allows running :mc:`mc rm` with any of the following arguments:
-   
+   允许 :mc:`mc rm` 与以下任一参数一起运行：
+
    - :mc-cmd:`~mc rm --recursive`
    - :mc-cmd:`~mc rm --versions`
    - :mc-cmd:`~mc rm --stdin`
@@ -165,56 +162,56 @@ Parameters
 .. mc-cmd:: --incomplete, I
    :optional:
 
-   Remove incomplete uploads for the specified object.
+   删除指定对象的不完整上传。
 
-   If any :mc-cmd:`~mc rm ALIAS` specifies a bucket, 
-   you **must** also specify :mc-cmd:`~mc rm --recursive`
-   and :mc-cmd:`~mc rm --force`.
+   如果任一 :mc-cmd:`~mc rm ALIAS` 指定了存储桶，
+   则 **必须** 同时指定 :mc-cmd:`~mc rm --recursive`
+   和 :mc-cmd:`~mc rm --force`。
 
 .. mc-cmd:: --newer-than
    :optional:
 
-   Remove object(s) newer than the specified number of days. Specify
-   a string in ``#d#hh#mm#ss`` format. For example: ``--newer-than 1d2hh3mm4ss``
+   删除新于指定时长的对象。请使用 ``#d#hh#mm#ss``
+   格式的字符串。例如：``--newer-than 1d2hh3mm4ss``
 
-   Defaults to ``0`` (all objects).
+   默认为 ``0``（所有对象）。
 
 .. mc-cmd:: --non-current
    :optional:
 
-   Removes all :ref:`non-current <minio-bucket-versioning-delete>`
-   object versions from the specified :mc-cmd:`~mc rm ALIAS`.
+   从指定的 :mc-cmd:`~mc rm ALIAS` 中删除所有
+   :ref:`非当前 <minio-bucket-versioning-delete>` 对象版本。
 
-   This option has no effect on buckets without 
-   :ref:`versioning <minio-bucket-versioning>` enabled.
+   对未启用 :ref:`版本控制 <minio-bucket-versioning>`
+   的存储桶，此选项无效。
 
 .. mc-cmd:: --older-than
    :optional:
 
-   Remove object(s) older than the specified time limit. Specify a
-   string in ``#d#h#m#s`` format. For example: ``--older-than 1d2h3m4s``.
-      
-   Defaults to ``0`` (all objects).
+   删除早于指定时间限制的对象。请使用
+   ``#d#h#m#s`` 格式的字符串。例如：``--older-than 1d2h3m4s``。
+
+   默认为 ``0``（所有对象）。
 
 .. mc-cmd:: --recursive, r
    :optional:
-   
-   Recursively remove the contents of each :mc-cmd:`~mc rm ALIAS`
-   bucket or bucket prefix.
 
-   If specifying :mc-cmd:`~mc rm --recursive`, you **must** also
-   specify :mc-cmd:`~mc rm --force`.
+   递归删除每个 :mc-cmd:`~mc rm ALIAS`
+   存储桶或存储桶前缀的内容。
 
-   For buckets with :ref:`versioning <minio-bucket-versioning>` enabled,
-   this option by default produces a delete marker for each removed object.
-   Include the :mc-cmd:`~mc rm --versions` flag to recursively remove
-   all objects *and* object versions from the bucket.
+   如果指定 :mc-cmd:`~mc rm --recursive`，则 **必须** 同时
+   指定 :mc-cmd:`~mc rm --force`。
 
-   Consider first running the command with the 
-   :mc-cmd:`~mc rm --dry-run` flag to validate the scope of the
-   recursive delete operation.
+   对启用了 :ref:`版本控制 <minio-bucket-versioning>` 的存储桶，
+   此选项默认会为每个被删除对象生成一个删除标记。
+   添加 :mc-cmd:`~mc rm --versions` 标志可递归删除存储桶中的
+   所有对象 *以及* 对象版本。
 
-   Mutually exclusive with :mc-cmd:`mc rm --version-id`
+   建议先使用
+   :mc-cmd:`~mc rm --dry-run` 标志运行命令，验证
+   递归删除操作的范围。
+
+   与 :mc-cmd:`mc rm --version-id` 互斥
 
 .. mc-cmd:: --rewind
    :optional:
@@ -224,20 +221,20 @@ Parameters
       :end-before: end-rewind-desc
 
 .. mc-cmd:: --stdin
-   :optional:   
+   :optional:
 
-   Read object names or buckets from ``STDIN``.
+   从 ``STDIN`` 读取对象名称或存储桶。
 
 .. mc-cmd:: --versions
-   :optional:   
+   :optional:
 
    .. include:: /includes/facts-versioning.rst
       :start-after: start-versions-desc
       :end-before: end-versions-desc
 
-   Use :mc-cmd:`~mc rm --versions` and 
-   :mc-cmd:`~mc rm --rewind` together to remove all object
-   versions which existed at a specific point in time.
+   将 :mc-cmd:`~mc rm --versions` 与
+   :mc-cmd:`~mc rm --rewind` 一起使用，可删除某一特定时间点
+   存在的对象的所有版本。
 
 .. mc-cmd:: --version-id, vid
    :optional:
@@ -246,23 +243,23 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-   Mutually exclusive with any of the following flags:
-   
+   与以下任一标志互斥：
+
    - :mc-cmd:`~mc rm --versions`
    - :mc-cmd:`~mc rm --rewind`
    - :mc-cmd:`~mc rm --recursive`
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Remove a Single Object
+删除单个对象
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
@@ -270,91 +267,89 @@ Remove a Single Object
 
    mc rm ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc rm ALIAS>` with the :mc:`alias <mc alias>` of
-  a configured S3-compatible service.
+- 将 :mc-cmd:`ALIAS <mc rm ALIAS>` 替换为已配置的
+  S3 兼容服务的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc rm ALIAS>` with the path to the object.
+- 将 :mc-cmd:`PATH <mc rm ALIAS>` 替换为对象路径。
 
 
-Recursively Remove a Bucket's Contents
+递归删除存储桶内容
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc rm` with the
-:mc-cmd:`~mc rm --recursive` and :mc-cmd:`~mc rm --force` options
-to recursively remove a bucket's contents.
+将 :mc:`mc rm` 与
+:mc-cmd:`~mc rm --recursive` 和 :mc-cmd:`~mc rm --force` 选项结合使用，
+可递归删除存储桶内容。
 
 .. code-block:: shell
    :class: copyable
 
    mc rm --recursive --force ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc rm ALIAS>` with the :mc:`alias <mc alias>` of
-  a configured S3-compatible service.
+- 将 :mc-cmd:`ALIAS <mc rm ALIAS>` 替换为已配置的
+  S3 兼容服务的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc rm ALIAS>` with the path to the bucket.
+- 将 :mc-cmd:`PATH <mc rm ALIAS>` 替换为存储桶路径。
 
-This operation does *not* remove the bucket. Use :mc:`mc rb` to remove the
-bucket along with all contents and associated configurations.
+此操作 *不会* 删除存储桶本身。请使用 :mc:`mc rb` 删除存储桶
+及其全部内容和关联配置。
 
-Remove All Incomplete Upload Files for an Object
+删除对象的所有不完整上传文件
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc rm` with the :mc-cmd:`~mc rm --incomplete` option to remove
-incomplete upload files for an object. 
+将 :mc:`mc rm` 与 :mc-cmd:`~mc rm --incomplete` 选项结合使用，
+可删除某个对象的不完整上传文件。
 
 .. code-block:: shell
    :class: copyable
 
    mc rm --incomplete --recursive --force ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc rm ALIAS>` with the :mc:`alias <mc alias>` of
-  a configured S3-compatible service.
+- 将 :mc-cmd:`ALIAS <mc rm ALIAS>` 替换为已配置的
+  S3 兼容服务的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc rm ALIAS>` with the path to the object.
+- 将 :mc-cmd:`PATH <mc rm ALIAS>` 替换为对象路径。
 
 
-Roll Object Back To Previous Version
+将对象回滚到先前版本
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc rm` with :mc-cmd:`~mc rm --versions` and 
-:mc-cmd:`~mc rm --newer-than` to
-remove all object versions newer than the specified duration of time. This
-effectively "rolls back" the object to its state at that time.
+将 :mc:`mc rm` 与 :mc-cmd:`~mc rm --versions` 和
+:mc-cmd:`~mc rm --newer-than` 结合使用，可删除新于指定时长的
+所有对象版本。这会有效地将对象“回滚”到该时间点的状态。
 
 .. important::
 
-   Removing specific versions of an object is a *destructive* action. You cannot
-   restore the deleted object versions.
+   删除对象的特定版本属于 *破坏性* 操作。你无法恢复
+   已删除的对象版本。
 
 .. code-block:: shell
    :class: moveable
 
    mc rm ALIAS/PATH --versions --newer-than DURATION
 
-- Replace :mc-cmd:`ALIAS <mc rm ALIAS>` with the :mc:`alias <mc alias>` of
-  a configured S3-compatible service.
+- 将 :mc-cmd:`ALIAS <mc rm ALIAS>` 替换为已配置的
+  S3 兼容服务的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc rm ALIAS>` with the path to the object. For 
-  example, ``/mybucket/myobject``.
+- 将 :mc-cmd:`PATH <mc rm ALIAS>` 替换为对象路径。
+  例如：``/mybucket/myobject``。
 
-- Replace :mc-cmd:`DURATION <mc rm --newer-than>` with the number of days in the
-  past from the current host time from which the operation begins removing
-  versions of the object. For example, to remove all versions of the object
-  created in the last 30 days, specify ``"30d"``.
+- 将 :mc-cmd:`DURATION <mc rm --newer-than>` 替换为相对于当前主机时间的过去时长，
+  操作将从该时间点开始删除对象版本。例如，要删除过去 30 天内
+  创建的所有对象版本，请指定 ``"30d"``。
 
-Behavior
+行为
 --------
 
-Deleting Bucket Contents
+删除存储桶内容
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Using :mc:`mc rm` to remove all contents in a bucket does not delete the bucket
-itself. Any configurations associated to the bucket remain in place, such as
-:mc-cmd:`default object lock settings <mc retention set --default>`.
+使用 :mc:`mc rm` 删除存储桶中的全部内容时，不会删除存储桶本身。
+与该存储桶关联的配置会保留，例如
+:mc-cmd:`default object lock settings <mc retention set --default>`。
 
-To completely remove a bucket, use :mc:`mc rb` instead of :mc:`mc rm`.
+如需彻底删除存储桶，请使用 :mc:`mc rb`，而不是 :mc:`mc rm`。
 
-MinIO Trims Empty Prefixes on Object Removal
+MinIO 在删除对象时会清理空前缀
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-admonitions.rst
@@ -365,30 +360,30 @@ MinIO Trims Empty Prefixes on Object Removal
    :start-after: start-remove-api-trims-prefixes-fs
    :end-before: end-remove-api-trims-prefixes-fs
 
-Delete Operations in Versioned Buckets
+版本化存储桶中的删除操作
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO supports keeping multiple :ref:`versions <minio-bucket-versioning>` of an
-object in a single bucket. :ref:`Deleting <minio-bucket-versioning-delete>` an
-object in a versioned bucket results in a special ``DeleteMarker`` tombstone
-that marks an object as deleted while retaining all previous versions of that
-object.
+MinIO 支持在单个存储桶中保留对象的多个
+:ref:`版本 <minio-bucket-versioning>`。
+在版本化存储桶中 :ref:`删除 <minio-bucket-versioning-delete>` 对象时，
+会生成一种特殊的 ``DeleteMarker`` 墓碑记录，将对象标记为已删除，
+同时保留该对象的所有先前版本。
 
-- To remove a specific object version from a bucket, use
+- 要从存储桶中删除对象的特定版本，请使用
   :mc-cmd:`mc rm --version-id`
 
-- To remove all versions of an object from a bucket, use
+- 要从存储桶中删除对象的所有版本，请使用
   :mc-cmd:`mc rm --versions`
 
-- To remove all non-current versions of an object from a bucket, use
+- 要从存储桶中删除对象的所有非当前版本，请使用
   :mc-cmd:`mc rm --non-current`
 
 .. versionchanged:: mc RELEASE.2023-03-20T17-17-53Z
 
-   The output shows the modification time of versioned files.
-   When used with ``--dry-run``, this can help confirm that you selected the correct object(s) for removal.
+   输出会显示版本化文件的修改时间。
+   与 ``--dry-run`` 搭配使用时，这有助于确认你选择了正确的删除对象。
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

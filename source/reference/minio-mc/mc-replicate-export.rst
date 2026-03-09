@@ -6,38 +6,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc replicate export
 
-Syntax
-------
+语法
+----
 
 .. start-mc-replicate-export-desc
 
-The :mc:`mc replicate export` command exports the JSON-formatted
-:ref:`replication rules <minio-bucket-replication-serverside>` for a 
-MinIO bucket to ``STDOUT``.
+:mc:`mc replicate export` 命令将 MinIO 存储桶的 JSON 格式
+:ref:`复制规则 <minio-bucket-replication-serverside>` 导出到 ``STDOUT``。
 
 .. end-mc-replicate-export-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command exports the replication configuration for the
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令导出 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的复制配置：
 
       .. code-block:: shell
          :class: copyable
 
          mc replicate export myminio/mydata > mydata-replication.json
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -48,50 +46,49 @@ MinIO bucket to ``STDOUT``.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* the :ref:`alias <alias>` of the MinIO deployment and full path to
-   the bucket or bucket prefix for which to export the replication rules. For
-   example:
+   *必填* MinIO 部署的 :ref:`alias <alias>`，以及要导出复制规则的存储桶或
+   存储桶前缀的完整路径。例如：
 
    .. code-block:: none
 
       mc replicate export myminio/mybucket
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Export Existing Replication Rules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+导出现有复制规则
+~~~~~~~~~~~~~~~~
 
-Use :mc:`mc replicate export` to export bucket replication rules:
+使用 :mc:`mc replicate export` 导出存储桶复制规则：
 
 .. code-block:: shell
    :class: copyable
 
    mc replicate export ALIAS/PATH > bucket-replication-rules.json
 
-- Replace :mc-cmd:`ALIAS <mc replicate export ALIAS>` with the 
-  :mc:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc replicate export ALIAS>` 替换为 MinIO 部署的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc replicate export ALIAS>` with the path to the 
-  bucket or bucket prefix.
+- 将 :mc-cmd:`PATH <mc replicate export ALIAS>` 替换为存储桶或存储桶前缀的
+  路径。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

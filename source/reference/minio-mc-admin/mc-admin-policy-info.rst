@@ -4,36 +4,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin policy info
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-policy-info-desc
 
-Returns the specified policy in JSON format if it exists on the target MinIO deployment. 
+如果目标 MinIO 部署上存在指定策略，则以 JSON 格式返回该策略。
 
 .. end-mc-admin-policy-info-desc
 
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command displays the contents of the ``writeonly`` policy on the :term:`alias` ``myminio``.
+      以下命令显示 :term:`alias` ``myminio`` 上 ``writeonly`` 策略的内容。
 
       .. code-block:: shell
          :class: copyable
 
           mc admin policy info myminio writeonly  
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -45,55 +45,55 @@ Returns the specified policy in JSON format if it exists on the target MinIO dep
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
-The :mc-cmd:`mc admin policy info` command accepts the following arguments:
+:mc-cmd:`mc admin policy info` 命令接受以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment from which to display the specified policy.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，用于显示指定策略。
 
 .. mc-cmd:: POLICYNAME
    :required:
 
-   The name of the policy whose details you want to display. 
+   要显示其详细信息的策略名称。
 
 .. mc-cmd:: --policy-file
    :optional:
 
-   Specifly the path of a file to write the contents of the specified policy JSON.
-   If the path already exists, the command overwrites the existing file with the contents of the specified file.
+   指定一个文件路径，用于写入指定策略的 JSON 内容。
+   如果该路径已存在，命令会用指定策略的内容覆盖已有文件。
       
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Display the contents of the ``writeonly`` policy on the :term:`alias` ``myminio``.
+显示 :term:`alias` ``myminio`` 上 ``writeonly`` 策略的内容。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy info myminio writeonly
 
-Show information on a given policy and write the policy JSON content to /tmp/policy.json.
+显示指定策略的信息，并将策略 JSON 内容写入 /tmp/policy.json。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy info myminio writeonly --policy-file /tmp/policy.json
 
-Output
-~~~~~~
+输出
+~~~~
 
-The command returns output that resembles the following:
+该命令返回的输出类似如下：
 
 .. code-block:: json
 

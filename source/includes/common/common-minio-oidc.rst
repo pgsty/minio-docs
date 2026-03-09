@@ -1,87 +1,90 @@
 .. start-minio-oidc-policy-variables
 
-The following table contains a list of supported policy variables for use in authorizing :ref:`OIDC-managed users <minio-external-identity-management-openid>`.
+下表列出了用于授权 :ref:`OIDC 管理用户 <minio-external-identity-management-openid>`
+的受支持策略变量。
 
-Each variable corresponds to a claim returned as part of the authenticated user's JWT token:
+每个变量都对应认证用户 JWT token 中返回的一项 claim：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
    :width: 100%
 
-   * - Variable
-     - Description
+   * - 变量
+     - 说明
 
    * - ``jwt:sub``
-     - Returns the ``sub`` claim for the user.
+     - 返回用户的 ``sub`` claim。
 
    * - ``jwt:iss``
-     - Returns the Issuer Identifier claim from the ID token.
+     - 返回 ID token 中的 Issuer Identifier claim。
 
    * - ``jwt:aud``
-     - Returns the Audience claim from the ID token.
+     - 返回 ID token 中的 Audience claim。
 
    * - ``jwt:jti``
-     - Returns the JWT ID claim from the client authentication information.
+     - 返回客户端认证信息中的 JWT ID claim。
 
    * - ``jwt:upn``
-     - Returns the User Principal Name claim from the client authentication information.
+     - 返回客户端认证信息中的 User Principal Name claim。
 
    * - ``jwt:name``
-     - Returns the ``name`` claim for the user.
+     - 返回用户的 ``name`` claim。
 
    * - ``jwt:groups``
-     - Returns the ``groups`` claim for the user.
+     - 返回用户的 ``groups`` claim。
 
    * - ``jwt:given_name``
-     - Returns the ``given_name`` claim for the user.
+     - 返回用户的 ``given_name`` claim。
 
    * - ``jwt:family_name``
-     - Returns the ``family_name`` claim for the user.
+     - 返回用户的 ``family_name`` claim。
 
    * - ``jwt:middle_name``
-     - Returns the ``middle_name`` claim for the user.
+     - 返回用户的 ``middle_name`` claim。
 
    * - ``jwt:nickname``
-     - Returns the ``nickname`` claim for the user.
+     - 返回用户的 ``nickname`` claim。
 
    * - ``jwt:preferred_username``
-     - Returns the ``preferred_username`` claim for the user.
+     - 返回用户的 ``preferred_username`` claim。
 
    * - ``jwt:profile``
-     - Returns the ``profile`` claim for the user.
+     - 返回用户的 ``profile`` claim。
 
    * - ``jwt:picture``
-     - Returns the ``picture`` claim for the user.
+     - 返回用户的 ``picture`` claim。
 
    * - ``jwt:website``
-     - Returns the ``website`` claim for the user.
+     - 返回用户的 ``website`` claim。
 
    * - ``jwt:email``
-     - Returns the ``email`` claim for the user.
+     - 返回用户的 ``email`` claim。
 
    * - ``jwt:gender``
-     - Returns the ``gender`` claim for the user.
+     - 返回用户的 ``gender`` claim。
 
    * - ``jwt:birthdate``
-     - Returns the ``birthdate`` claim for the user.
+     - 返回用户的 ``birthdate`` claim。
 
    * - ``jwt:phone_number``
-     - Returns the ``phone_number`` claim for the user.
+     - 返回用户的 ``phone_number`` claim。
 
    * - ``jwt:address``
-     - Returns the ``address`` claim for the user.
+     - 返回用户的 ``address`` claim。
 
    * - ``jwt:scope``
-     - Returns the ``scope`` claim for the user.
+     - 返回用户的 ``scope`` claim。
 
    * - ``jwt:client_id``
-     - Returns the ``client_id`` claim for the user.
+     - 返回用户的 ``client_id`` claim。
 
-See the `OpenID Connect Core 1.0 <https://openid.net/specs/openid-connect-core-1_0.html>`__ document for more information on these scopes.
-Your OIDC provider of choice may have more specific documentation.
+关于这些 scope 的更多信息，请参阅
+`OpenID Connect Core 1.0 <https://openid.net/specs/openid-connect-core-1_0.html>`__ 文档。
+你所选的 OIDC 提供方也可能有更具体的补充文档。
 
-For example, the following policy uses variables to substitute the authenticated user's ``preferred_username`` as part of the ``Resource`` field such that the user can only access those prefixes which match their username:
+例如，以下策略使用变量将认证用户的 ``preferred_username`` 替换到 ``Resource`` 字段中，
+使该用户只能访问与其用户名匹配的前缀：
 
 .. code-block:: json
 
@@ -105,8 +108,8 @@ For example, the following policy uses variables to substitute the authenticated
       ]
    }
 
-MinIO replaces the ``${jwt:preferred_username}`` variable in the ``Resource`` field with the value of the ``preferred_username`` in the JWT token.
-MinIO then evaluates the policy and grants or revokes access to the requested API and resource.
+MinIO 会将 ``Resource`` 字段中的 ``${jwt:preferred_username}`` 变量，
+替换为 JWT token 中 ``preferred_username`` 的值。
+随后，MinIO 会评估该策略，并对请求的 API 和资源授予或撤销访问权限。
 
 .. end-minio-oidc-policy-variables
-

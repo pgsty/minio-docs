@@ -2,32 +2,33 @@
 
 .. |OS| replace:: Docker or Podman
 
-This procedure deploys a :ref:`Single-Node Single-Drive <minio-installation-comparison>` MinIO server onto |OS| for early development and evaluation of MinIO Object Storage and its S3-compatible API layer. 
+本流程会在 |OS| 上部署一个 :ref:`Single-Node Single-Drive <minio-installation-comparison>` MinIO server，
+用于 MinIO 对象存储及其 S3 兼容 API 层的早期开发和评估。
 
-For instructions on deploying to production environments, see :ref:`deploy-minio-distributed`.
+如需面向生产环境的部署说明，请参阅 :ref:`deploy-minio-distributed`。
 
-Prerequisites
--------------
+前提条件
+--------
 
-- `Podman <https://podman.io/getting-started/installation.html>`_ or `Docker <https://docs.docker.com/get-docker/>`_ installed.
-- Read, write, and delete access to the folder or drive used for the persistent volume.
+- 已安装 `Podman <https://podman.io/getting-started/installation.html>`_ 或 `Docker <https://docs.docker.com/get-docker/>`_。
+- 对用于持久卷的文件夹或驱动器具有读、写和删除权限。
 
-Procedure
----------
+流程
+----
    
-#. Start the container
+#. 启动容器
    
-   Select a container type to view instructions to create the container.
-   Instructions are available for either GNU/Linux and MacOS or for Windows.
+   选择容器类型以查看创建容器的说明。
+   GNU/Linux、MacOS 和 Windows 都提供了对应指引。
 
-   .. dropdown:: Podman (Rootfull or Rootless)
+   .. dropdown:: Podman (Rootfull 或 Rootless)
       :name: podman-root-rootless
    
-      These steps work for both rootfull and rootless containers.
+      以下步骤同时适用于 rootfull 和 rootless 容器。
 
       .. tab-set::
    
-         .. tab-item:: GNU/Linux or MacOS
+         .. tab-item:: GNU/Linux 或 MacOS
    
             .. code-block:: shell
                :class: copyable
@@ -42,17 +43,19 @@ Procedure
                   -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
                   quay.io/minio/minio server /data --console-address ":9001"
    
-            The example above works this way:
+            上述示例的工作方式如下：
    
-            - ``podman run`` starts the container.
-              The process is attached to the terminal session and ends when exiting the terminal.
-            - ``-p`` binds a local port to a container port.
-            - ``-v`` sets a file path as a persistent volume location for the container to use.
-              When MinIO writes data to ``/data``, that data mirrors to the local path ``~/minio/data``, allowing it to persist between container restarts.
-              You can set any file path to which the user has read, write, and delete permissions to use.
-            - ``-e`` sets the environment variables :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD`, respectively.
-              These set the :ref:`root user credentials <minio-users-root>`.
-              Change the example values to use for your container.
+            - ``podman run`` 用于启动容器。
+              该进程会附着在当前终端会话上，退出终端时进程也会结束。
+            - ``-p`` 将本地端口绑定到容器端口。
+            - ``-v`` 为容器指定一个文件路径作为持久卷位置。
+              当 MinIO 向 ``/data`` 写入数据时，这些数据会映射到本地路径 ``~/minio/data``，
+              因而可以在容器重启后保留。
+              你可以改用任意用户具有读、写和删除权限的文件路径。
+            - ``-e`` 分别设置环境变量 :envvar:`MINIO_ROOT_USER`
+              和 :envvar:`MINIO_ROOT_PASSWORD`。
+              它们用于设置 :ref:`root user credentials <minio-users-root>`。
+              请将示例值替换为你自己的容器配置值。
    
          .. tab-item:: Windows
    
@@ -67,23 +70,25 @@ Procedure
                   -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
                   quay.io/minio/minio server /data --console-address ":9001"
    
-            The example above works this way:
+            上述示例的工作方式如下：
    
-            - ``podman run`` starts the container.
-            - ``-p`` binds a local port to a container port.
-            - ``-v`` sets a file path as a persistent volume location for the container to use.
-              When MinIO writes data to ``/data``, that data mirrors to the local path ``D:\minio\data``, allowing it to persist between container restarts.
-              You can set any file path to which the user has read, write, and delete permissions to use.
-            - ``-e`` sets the environment variables :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD`, respectively.
-              These set the :ref:`root user credentials <minio-users-root>`.
-              Change the example values to use for your container.
+            - ``podman run`` 用于启动容器。
+            - ``-p`` 将本地端口绑定到容器端口。
+            - ``-v`` 为容器指定一个文件路径作为持久卷位置。
+              当 MinIO 向 ``/data`` 写入数据时，这些数据会映射到本地路径 ``D:\minio\data``，
+              因而可以在容器重启后保留。
+              你可以改用任意用户具有读、写和删除权限的文件路径。
+            - ``-e`` 分别设置环境变量 :envvar:`MINIO_ROOT_USER`
+              和 :envvar:`MINIO_ROOT_PASSWORD`。
+              它们用于设置 :ref:`root user credentials <minio-users-root>`。
+              请将示例值替换为你自己的容器配置值。
    
    .. dropdown:: Docker (Rootfull)
       :name: docker-rootfull
    
       .. tab-set::
    
-         .. tab-item:: GNU/Linux or MacOS
+         .. tab-item:: GNU/Linux 或 MacOS
    
             .. code-block:: shell
                :class: copyable
@@ -99,18 +104,20 @@ Procedure
                   -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
                   quay.io/minio/minio server /data --console-address ":9001"
          
-            The example above works this way:
+            上述示例的工作方式如下：
    
-            - ``mkdir`` creates a new local directory at ``~/minio/data`` in your home directory.
-            - ``docker run`` starts the MinIO container.
-            - ``-p`` binds a local port to a container port.
-            - ``-name`` creates a name for the container.
-            - ``-v`` sets a file path as a persistent volume location for the container to use.
-              When MinIO writes data to ``/data``, that data mirrors to the local path ``~/minio/data``, allowing it to persist between container restarts.
-              You can replace ``~/minio/data`` with another local file location to which the user has read, write, and delete access.
-            - ``-e`` sets the environment variables :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD`, respectively.
-              These set the :ref:`root user credentials <minio-users-root>`.
-              Change the example values to use for your container.
+            - ``mkdir`` 会在你的家目录中创建本地目录 ``~/minio/data``。
+            - ``docker run`` 用于启动 MinIO 容器。
+            - ``-p`` 将本地端口绑定到容器端口。
+            - ``-name`` 为容器创建名称。
+            - ``-v`` 为容器指定一个文件路径作为持久卷位置。
+              当 MinIO 向 ``/data`` 写入数据时，这些数据会映射到本地路径 ``~/minio/data``，
+              因而可以在容器重启后保留。
+              你可以将 ``~/minio/data`` 替换为任意其他本地文件位置，只要用户对此位置具有读、写和删除权限。
+            - ``-e`` 分别设置环境变量 :envvar:`MINIO_ROOT_USER`
+              和 :envvar:`MINIO_ROOT_PASSWORD`。
+              它们用于设置 :ref:`root user credentials <minio-users-root>`。
+              请将示例值替换为你自己的容器配置值。
                  
          .. tab-item:: Windows
    
@@ -126,23 +133,25 @@ Procedure
                   -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
                   quay.io/minio/minio server /data --console-address ":9001"
                
-            The example above works this way:
+            上述示例的工作方式如下：
    
-            - ``docker run`` starts the MinIO container.
-            - ``-p`` binds a local port to a container port.
-            - ``-v`` sets a file path as a persistent volume location for the container to use.
-              When MinIO writes data to ``/data``, that data mirrors to the local path ``D:\minio\data``, allowing it to persist between container restarts.
-              You can replace ``D:\minio\data`` with another local file location to which the user has read, write, and delete access.
-            - ``-e`` sets the environment variables :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD`, respectively.
-              These set the :ref:`root user credentials <minio-users-root>`.
-              Change the example values to use for your container.
+            - ``docker run`` 用于启动 MinIO 容器。
+            - ``-p`` 将本地端口绑定到容器端口。
+            - ``-v`` 为容器指定一个文件路径作为持久卷位置。
+              当 MinIO 向 ``/data`` 写入数据时，这些数据会映射到本地路径 ``D:\minio\data``，
+              因而可以在容器重启后保留。
+              你可以将 ``D:\minio\data`` 替换为任意其他本地文件位置，只要用户对此位置具有读、写和删除权限。
+            - ``-e`` 分别设置环境变量 :envvar:`MINIO_ROOT_USER`
+              和 :envvar:`MINIO_ROOT_PASSWORD`。
+              它们用于设置 :ref:`root user credentials <minio-users-root>`。
+              请将示例值替换为你自己的容器配置值。
             
    .. dropdown:: Docker (Rootless)
       :name: docker-rootless
    
       .. tab-set::
    
-         .. tab-item:: GNU/Linux or MacOS
+         .. tab-item:: GNU/Linux 或 MacOS
    
             .. code-block:: shell
                :class: copyable
@@ -159,25 +168,27 @@ Procedure
                   -v ${HOME}/minio/data:/data \
                   quay.io/minio/minio server /data --console-address ":9001"
          
-            The example above works this way:
+            上述示例的工作方式如下：
    
-            - ``mkdir`` creates a new local directory at ``~/minio/data`` in your home directory.
-            - ``docker run`` starts the MinIO container.
-            - ``-p`` binds a local port to a container port.
-            - ``-user`` sets the username for the container to the policies for the current user and user group.
-            - ``-name`` creates a name for the container.
-            - ``-v`` sets a file path as a persistent volume location for the container to use.
-              When MinIO writes data to ``/data``, that data actually writes to the local path ``~/minio/data`` where it can persist between container restarts.
-              You can replace ``${HOME}/minio/data`` with another location in the user's home directory to which the user has read, write, and delete access.
-            - ``-e`` sets the environment variables :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD`, respectively.
-              These set the :ref:`root user credentials <minio-users-root>`.
-              Change the example values to use for your container.
+            - ``mkdir`` 会在你的家目录中创建本地目录 ``~/minio/data``。
+            - ``docker run`` 用于启动 MinIO 容器。
+            - ``-p`` 将本地端口绑定到容器端口。
+            - ``-user`` 将容器中的用户名设置为当前用户及其用户组对应的策略。
+            - ``-name`` 为容器创建名称。
+            - ``-v`` 为容器指定一个文件路径作为持久卷位置。
+              当 MinIO 向 ``/data`` 写入数据时，这些数据实际上会写入本地路径 ``~/minio/data``，
+              因而可以在容器重启后保留。
+              你可以将 ``${HOME}/minio/data`` 替换为用户家目录中的其他位置，只要用户对此位置具有读、写和删除权限。
+            - ``-e`` 分别设置环境变量 :envvar:`MINIO_ROOT_USER`
+              和 :envvar:`MINIO_ROOT_PASSWORD`。
+              它们用于设置 :ref:`root user credentials <minio-users-root>`。
+              请将示例值替换为你自己的容器配置值。
                  
          .. tab-item:: Windows
 
-            Prerequisite:
+            前提条件：
 
-            - Windows `Group Managed Service Account <https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/manage-serviceaccounts>`_ already defined.
+            - 已定义 Windows `Group Managed Service Account <https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/manage-serviceaccounts>`_。
    
             .. code-block:: shell
                :class: copyable
@@ -192,41 +203,50 @@ Procedure
                   -v D:\data:/data \
                   quay.io/minio/minio server /data --console-address ":9001"
    
-            The example above works this way:
+            上述示例的工作方式如下：
    
-            - ``docker run`` starts the MinIO container.
-            - ``-p`` binds a local port to a container port.
-            - ``-name`` creates a name for the container.
-            - ``--security-opt`` grants access to the container via a ``credentialspec`` file for a `Group Managed Service Account (gMSA) <https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/gmsa-run-container>`_ 
-            - ``-v`` sets a file path as a persistent volume location for the container to use.
-              When MinIO writes data to ``/data``, that data actually writes to the local path ``D:\data`` where it can persist between container restarts.
-              You can replace ``D:\data`` with another local file location to which the user has read, write, and delete access.
-            - ``-e`` sets the environment variables :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD`, respectively.
-              These set the :ref:`root user credentials <minio-users-root>`.
-              Change the example values to use for your container.
+            - ``docker run`` 用于启动 MinIO 容器。
+            - ``-p`` 将本地端口绑定到容器端口。
+            - ``-name`` 为容器创建名称。
+            - ``--security-opt`` 通过 ``credentialspec`` 文件为容器授予
+              `Group Managed Service Account (gMSA) <https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/gmsa-run-container>`_
+              访问能力。
+            - ``-v`` 为容器指定一个文件路径作为持久卷位置。
+              当 MinIO 向 ``/data`` 写入数据时，这些数据实际上会写入本地路径 ``D:\data``，
+              因而可以在容器重启后保留。
+              你可以将 ``D:\data`` 替换为任意其他本地文件位置，只要用户对此位置具有读、写和删除权限。
+            - ``-e`` 分别设置环境变量 :envvar:`MINIO_ROOT_USER`
+              和 :envvar:`MINIO_ROOT_PASSWORD`。
+              它们用于设置 :ref:`root user credentials <minio-users-root>`。
+              请将示例值替换为你自己的容器配置值。
 
-#. Connect your Browser to the MinIO Server
+#. 将浏览器连接到 MinIO Server
 
-   Access the :ref:`minio-console` by going to a browser and going to ``http://127.0.0.1:9000`` or one of the Console addresses specified in the :mc:`minio server` command's output.
-   For example, :guilabel:`Console: http://192.0.2.10:9001 http://127.0.0.1:9001` in the example output indicates two possible addresses to use for connecting to the Console.
+   打开浏览器并访问 ``http://127.0.0.1:9000``，
+   或者访问 :mc:`minio server` 命令输出中列出的任一 Console 地址，即可进入 :ref:`minio-console`。
+   例如，示例输出中的 :guilabel:`Console: http://192.0.2.10:9001 http://127.0.0.1:9001`
+   就表示有两个可用于连接 Console 的地址。
 
-   While port ``9000`` is used for connecting to the API, MinIO automatically redirects browser access to the MinIO Console.
+   虽然端口 ``9000`` 用于连接 API，
+   但 MinIO 会自动将浏览器访问重定向到 MinIO Console。
 
-   Log in to the Console with the credentials you defined in the :envvar:`MINIO_ROOT_USER` and :envvar:`MINIO_ROOT_PASSWORD` environment variables.
-   Each MinIO server includes its own embedded MinIO Console.
+   使用你在 :envvar:`MINIO_ROOT_USER` 和 :envvar:`MINIO_ROOT_PASSWORD`
+   环境变量中定义的凭证登录 Console。
+   每个 MinIO server 都内置自己的 MinIO Console。
 
-#. `(Optional)` Install the MinIO Client
+#. `(Optional)` 安装 MinIO Client
 
-   The :ref:`MinIO Client <minio-client>` allows you to work with your MinIO volume from the commandline.
+   :ref:`MinIO Client <minio-client>` 允许你在命令行中操作 MinIO 存储卷。
 
-   Select your operating system for instructions.
+   请选择对应操作系统查看说明。
 
    .. dropdown:: GNU/Linux
 
-      The :ref:`MinIO Client <minio-client>` allows you to work with your MinIO server from the commandline.
+      :ref:`MinIO Client <minio-client>` 允许你在命令行中操作 MinIO server。
 
-      Download the :mc:`mc` client and install it to a location on your system ``PATH`` such as 
-      ``/usr/local/bin``. You can alternatively run the binary from the download location.
+      下载 :mc:`mc` 客户端，并将其安装到系统 ``PATH`` 中的某个位置，
+      例如 ``/usr/local/bin``。
+      你也可以直接在下载目录运行该二进制文件。
 
       .. code-block:: shell
          :class: copyable
@@ -235,8 +255,8 @@ Procedure
          chmod +x mc
          sudo mv mc /usr/local/bin/mc
    
-      Use :mc:`mc alias set` to create a new alias associated to your local deployment.
-      You can run :mc:`mc` commands against this alias:
+      使用 :mc:`mc alias set` 创建与本地部署关联的新别名。
+      之后你就可以针对该别名执行 :mc:`mc` 命令：
 
       .. code-block:: shell
          :class: copyable
@@ -244,26 +264,27 @@ Procedure
          mc alias set local http://127.0.0.1:9000 {MINIO_ROOT_USER} {MINIO_ROOT_PASSWORD}
          mc admin info local
 
-      Replace ``{MINIO_ROOT_USER}`` and ``{MINIO_ROOT_PASSWORD}`` with the credentials you defined for the container with the ``-e`` flags.
+      将 ``{MINIO_ROOT_USER}`` 和 ``{MINIO_ROOT_PASSWORD}``
+      替换为你通过 ``-e`` 参数为容器定义的凭证。
       
-      The :mc:`mc alias set` takes four arguments:
+      :mc:`mc alias set` 需要四个参数：
    
-      - The name of the alias
-      - The hostname or IP address and port of the MinIO server
-      - The Access Key for a MinIO :ref:`user <minio-users>`
-      - The Secret Key for a MinIO :ref:`user <minio-users>`
+      - 别名名称
+      - MinIO server 的主机名或 IP 地址及端口
+      - MinIO :ref:`user <minio-users>` 的 Access Key
+      - MinIO :ref:`user <minio-users>` 的 Secret Key
 
-      For additional details about this command, see :ref:`alias`.
+      关于该命令的更多细节，请参阅 :ref:`alias`。
 
    .. dropdown:: MacOS
-
-      The :ref:`MinIO Client <minio-client>` allows you to work with your MinIO volume from the commandline.
+      
+      :ref:`MinIO Client <minio-client>` 允许你在命令行中操作 MinIO 存储卷。
       
       .. tab-set::
       
          .. tab-item:: Homebrew
       
-            Run the following command to install the latest stable MinIO Client package using `Homebrew <https://brew.sh>`_.
+            运行以下命令，使用 `Homebrew <https://brew.sh>`_ 安装最新稳定版 MinIO Client 软件包。
       
             .. code-block:: shell
                :class: copyable
@@ -272,7 +293,7 @@ Procedure
 
          .. tab-item:: Binary (arm64)
       
-            Run the following commands to install the latest stable MinIO Client package using a binary package for Apple chips.
+            运行以下命令，使用适用于 Apple 芯片的二进制软件包安装最新稳定版 MinIO Client。
 
             .. code-block:: shell
                :class: copyable
@@ -283,7 +304,7 @@ Procedure
 
          .. tab-item:: Binary (amd64)
                        
-            Run the following commands to install the latest stable MinIO Client package using a binary package for Intel chips.
+            运行以下命令，使用适用于 Intel 芯片的二进制软件包安装最新稳定版 MinIO Client。
 
             .. code-block:: shell
                :class: copyable
@@ -292,7 +313,7 @@ Procedure
                chmod +x mc
                sudo mv mc /usr/local/bin/mc
       
-      Use :mc:`mc alias set` to quickly authenticate and connect to the MinIO deployment.
+      使用 :mc:`mc alias set` 快速完成认证并连接到 MinIO 部署。
       
       .. code-block:: shell
          :class: copyable
@@ -300,32 +321,33 @@ Procedure
          mc alias set local http://127.0.0.1:9000 {MINIO_ROOT_USER} {MINIO_ROOT_PASSWORD}
          mc admin info local
       
-      Replace ``{MINIO_ROOT_USER}`` and ``{MINIO_ROOT_PASSWORD}`` with the credentials you defined for the container with the ``-e`` flags.
+      将 ``{MINIO_ROOT_USER}`` 和 ``{MINIO_ROOT_PASSWORD}``
+      替换为你通过 ``-e`` 参数为容器定义的凭证。
 
-      The :mc:`mc alias set` takes four arguments:
+      :mc:`mc alias set` 需要四个参数：
    
-      - The name of the alias
-      - The hostname or IP address and port of the MinIO server
-      - The Access Key for a MinIO :ref:`user <minio-users>`
-      - The Secret Key for a MinIO :ref:`user <minio-users>`
+      - 别名名称
+      - MinIO server 的主机名或 IP 地址及端口
+      - MinIO :ref:`user <minio-users>` 的 Access Key
+      - MinIO :ref:`user <minio-users>` 的 Secret Key
 
-      For additional details about this command, see :ref:`alias`.
+      关于该命令的更多细节，请参阅 :ref:`alias`。
       
    .. dropdown:: Windows
    
-      Download the standalone MinIO server for Windows from the following link:
+      通过以下链接下载适用于 Windows 的独立 MinIO Client：
    
       https://dl.min.io/client/mc/release/windows-amd64/mc.exe
    
-      Double click on the file to run it.
-      Or, run the following in the Command Prompt or PowerShell.
+      双击文件即可运行。
+      或者在 Command Prompt 或 PowerShell 中运行以下命令。
       
       .. code-block::
          :class: copyable
    
          \path\to\mc.exe --help
          
-      Use :mc:`mc alias set` to quickly authenticate and connect to the MinIO deployment.
+      使用 :mc:`mc alias set` 快速完成认证并连接到 MinIO 部署。
    
       .. code-block:: shell
          :class: copyable
@@ -333,23 +355,24 @@ Procedure
          mc.exe alias set local http://127.0.0.1:9000 {MINIO_ROOT_USER} {MINIO_ROOT_PASSWORD}
          mc.exe admin info local
    
-      Replace ``{MINIO_ROOT_USER}`` and ``{MINIO_ROOT_PASSWORD}`` with the credentials you defined for the container with the ``-e`` flags.
+      将 ``{MINIO_ROOT_USER}`` 和 ``{MINIO_ROOT_PASSWORD}``
+      替换为你通过 ``-e`` 参数为容器定义的凭证。
       
-      The :mc:`mc alias set` takes four arguments:
+      :mc:`mc alias set` 需要四个参数：
    
-      - The name of the alias
-      - The hostname or IP address and port of the MinIO server
-      - The Access Key for a MinIO :ref:`user <minio-users>`
-      - The Secret Key for a MinIO :ref:`user <minio-users>`
+      - 别名名称
+      - MinIO server 的主机名或 IP 地址及端口
+      - MinIO :ref:`user <minio-users>` 的 Access Key
+      - MinIO :ref:`user <minio-users>` 的 Secret Key
 
-      For additional details about this command, see :ref:`alias`.
+      关于该命令的更多细节，请参阅 :ref:`alias`。
 
 .. rst-class:: section-next-steps
 
-Next Steps
-----------
+后续步骤
+--------
 
-- :ref:`Connect your applications to MinIO <minio-drivers>`
-- :ref:`Configure Object Retention <minio-object-retention>`
-- :ref:`Configure Security <minio-authentication-and-identity-management>`
-- :ref:`Deploy MinIO in a Distributed Environment <deploy-minio-distributed>`
+- :ref:`将应用连接到 MinIO <minio-drivers>`
+- :ref:`配置对象保留 <minio-object-retention>`
+- :ref:`配置安全能力 <minio-authentication-and-identity-management>`
+- :ref:`在分布式环境中部署 MinIO <deploy-minio-distributed>`

@@ -6,36 +6,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc version enable
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-version-enable-desc
 
-The :mc:`mc version enable` command enables versioning on the specified bucket.
+:mc:`mc version enable` 命令用于为指定存储桶启用版本控制。
 
 .. end-mc-version-enable-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command enables versioning for the ``mybucket`` bucket on the ``myminio`` MinIO deployment:
+      以下命令为 ``myminio`` MinIO 部署中的 ``mybucket`` 存储桶启用版本控制：
 
       .. code-block:: shell
          :class: copyable
 
           mc version enable myminio/mybucket
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -49,13 +49,13 @@ The :mc:`mc version enable` command enables versioning on the specified bucket.
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of a MinIO deployment and the full path to the bucket for which to enable versioning. For example:
+   MinIO 部署的 :ref:`alias <alias>` 与要启用版本控制的存储桶完整路径。例如：
 
    .. code-block:: shell
 
@@ -64,16 +64,16 @@ Parameters
 .. mc-cmd:: --exclude-folders
    :optional:
 
-   Disable versioning on all folders (objects whose name ends with ``/``) in the specified bucket.
+   在指定存储桶中，对所有文件夹（名称以 ``/`` 结尾的对象）禁用版本控制。
 
 .. mc-cmd:: --excluded-prefixes
    :optional:
 
-   Disable versioning on objects matching a list of prefixes, up to 10.
-   The list of prefixes match all objects containing the specified strings in their prefix or name, similar to a regular expression of the form ``prefix*``.
-   To match objects by prefix only, use ``prefix/*``.
+   对匹配前缀列表的对象禁用版本控制，最多支持 10 个前缀。
+   前缀列表会匹配前缀或名称中包含指定字符串的所有对象，类似 ``prefix*`` 形式的正则表达式。
+   如果仅按前缀匹配对象，请使用 ``prefix/*``。
 
-   For example, the following command excludes any objects containing ``_test`` or ``_temp`` in their prefix or name from versioning:
+   例如，以下命令将前缀或名称中包含 ``_test`` 或 ``_temp`` 的对象排除在版本控制之外：
 
    .. code-block:: shell
       :class: copyable
@@ -81,43 +81,43 @@ Parameters
       mc version enable --excluded-prefixes "_test, _temp" myminio/mybucket
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Example
--------
+示例
+----
 
-Enable Bucket Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~
+启用存储桶版本控制
+~~~~~~~~~~~~~~~~
 
-Use :mc:`mc version enable` to enable versioning for a bucket:
+使用 :mc:`mc version enable` 为存储桶启用版本控制：
 
 .. code-block:: shell
    :class: copyable
 
    mc version enable ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc version enable ALIAS>` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc version enable ALIAS>` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc version enable ALIAS>` with the bucket on which to enable versioning.
-
-
-Behavior
---------
-
-Bucket Versioning with Existing Data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Enabling bucket versioning on a bucket with existing data immediately creates a ``NULL`` value version ID for each unversioned object.
+- 将 :mc-cmd:`PATH <mc version enable ALIAS>` 替换为要启用版本控制的存储桶。
 
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+行为
+----
+
+现有数据的存储桶版本控制
+~~~~~~~~~~~~~~~~~~~~~~
+
+在包含现有数据的存储桶上启用版本控制后，会立即为每个未版本化对象创建值为 ``NULL`` 的版本 ID。
+
+
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

@@ -1,6 +1,6 @@
 .. start-create-bucket-replication-rule-cli-desc
 
-Use the :mc:`mc replicate add` command to add a new replication rule to each MinIO deployment.
+使用 :mc:`mc replicate add` 命令，为每个 MinIO 部署添加新的复制规则。
 
 .. code-block:: shell
    :class: copyable
@@ -9,40 +9,42 @@ Use the :mc:`mc replicate add` command to add a new replication rule to each Min
       --remote-bucket 'https://USER:PASSWORD@HOSTNAME:PORT/BUCKET' \
       --replicate "delete,delete-marker,existing-objects"
 
-- Replace ``ALIAS`` with the :ref:`alias <alias>` of the origin MinIO deployment.  
-  The name *must* match the bucket specified when creating the remote target in the previous step.
+- 将 ``ALIAS`` 替换为源 MinIO 部署的 :ref:`别名 <alias>`。
+  该名称 *必须* 与上一步创建远端目标时指定的存储桶名称一致。
 
-- Replace ``BUCKET`` with the name of the bucket to replicate from on the origin deployment. 
+- 将 ``BUCKET`` 替换为源部署上要作为复制源的存储桶名称。
 
-- Replace the ``--remote-bucket`` to specify the remote MinIO deployment and bucket to which the ``ALIAS/BUCKET`` replicates.
+- 使用 ``--remote-bucket`` 指定 ``ALIAS/BUCKET`` 要复制到的远端 MinIO 部署和存储桶。
 
-  The ``USER:PASSWORD`` must correspond to a user on the remote deployment with the :ref:`necessary replication permissions <minio-bucket-replication-serverside-twoway-permissions>`.
+  ``USER:PASSWORD`` 必须对应远端部署上具有
+  :ref:`所需复制权限 <minio-bucket-replication-serverside-twoway-permissions>` 的用户。
 
-  The ``HOSTNAME:PORT`` must resolve to a reachable MinIO instance on the remote deployment.
-  The ``BUCKET`` must exist and otherwise meet all other :ref:`replication requirements <minio-bucket-replication-requirements>`.
+  ``HOSTNAME:PORT`` 必须能解析到远端部署上可访问的 MinIO 实例。
+  ``BUCKET`` 必须已存在，并满足其他所有
+  :ref:`复制要求 <minio-bucket-replication-requirements>`。
 
-- The ``--replicate "delete,delete-marker,existing-objects"`` flag enables the following replication features:
+- ``--replicate "delete,delete-marker,existing-objects"`` 标志会启用以下复制功能：
   
-  - :ref:`Replication of Deletes <minio-replication-behavior-delete>` 
-  - :ref:`Replication of existing Objects <minio-replication-behavior-existing-objects>`
+  - :ref:`删除复制 <minio-replication-behavior-delete>`
+  - :ref:`现有对象复制 <minio-replication-behavior-existing-objects>`
   
-  See :mc-cmd:`mc replicate add --replicate` for more complete documentation. 
-  Omit any field to disable replication of that component.
+  有关更完整的文档，请参阅 :mc-cmd:`mc replicate add --replicate`。
+  省略任意字段即可禁用对应组件的复制。
 
-Specify any other supported optional arguments for :mc:`mc replicate add`.
+可按需为 :mc:`mc replicate add` 指定其他受支持的可选参数。
 
 .. end-create-bucket-replication-rule-cli-desc
 
 .. start-validate-bucket-replication-cli-desc
 
-Use :mc:`mc cp` to copy a new object to the replicated bucket on one of the deployments. 
+在其中一个部署上，使用 :mc:`mc cp` 将新对象复制到已启用复制的存储桶中。
 
 .. code-block:: shell
    :class: copyable
 
    mc cp ~/foo.txt ALIAS/BUCKET
 
-Use :mc:`mc ls` to verify the object exists on the destination bucket:
+使用 :mc:`mc ls` 验证目标存储桶中存在该对象：
 
 .. code-block:: shell
    :class: copyable

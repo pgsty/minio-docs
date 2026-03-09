@@ -1,121 +1,95 @@
-# How To Contribute
+# 如何贡献
 
 ## Pull Requests
 
-1. [Fork our repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo) to your own account.
+1. [Fork our repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo) 到你自己的账户。
 
-2. Create a new branch for your work. Try to choose a specific branch name. If you are working on something related to an existing issue, please use the format `DOCS-<ISSUE>` for the branch name.
+2. 为你的工作创建一个新分支。请尽量使用明确的分支名。如果你的工作与某个现有 issue 相关，请使用 `DOCS-<ISSUE>` 作为分支名格式。
 
-3. When you have completed your work, push your branch to your fork and create a new Pull Request. 
+3. 完成工作后，将分支推送到你的 fork，并创建一个新的 Pull Request。
 
-4. As part of ongoing reviews, just do normal commits with *no* rebase between commits. This keeps the commit tree clean.
+4. 在持续评审过程中，请按常规方式提交 commit，commit 之间*不要*执行 rebase。这样可以保持 commit 树清晰。
 
-5. If your pull is approved, we will request that you squash your work into one commit (`git rebase -i HEAD~n` where `n` is the number of commits in the branch).
+5. 如果你的 Pull Request 被批准，我们会要求你将工作 squash 为一个 commit（`git rebase -i HEAD~n`，其中 `n` 是该分支上的 commit 数量）。
 
-6. Once your approved pull is down to one squashed commit, do a `git pull --rebase` and resolve any remaining merge conflicts
+6. 当你已将获批的 Pull Request 压缩为一个 squash commit 后，执行 `git pull --rebase` 并解决所有剩余的合并冲突。
 
-7. Push back up to your branch. you might need to `git push -f` after squash + rebase
+7. 将更改再次推送到你的分支。完成 squash + rebase 后，你可能需要执行 `git push -f`
 
-8. We will merge when we are able. 
+8. 我们会在条件允许时进行合并。
 
-We appreciate your contributions, and ask for your patience during reviews. 
+感谢你的贡献，也请你在评审期间保持耐心。
 
 ## Issues
 
-When creating a new issue, please consider the following:
+创建新 issue 时，请考虑以下事项：
 
-- Search to see if your issue already exists. We will close duplicate or closely related issues as such. 
+- 先搜索确认你的 issue 是否已存在。对于重复或高度相关的 issue，我们会按重复 issue 处理并关闭。
 
-- Provide links to the page or pages in question. If you ran into issues during a tutorial, tell us more about your deployment environment and specific error messages you saw. 
+- 提供相关页面链接。如果你在教程过程中遇到问题，请补充你的部署环境以及你看到的具体错误信息。
 
-- Keep it simple - the larger or more complex a request, the less likely it can be addressed in the short-term. We reserve the right to close feature requests if we cannot action them in a reasonable time frame. 
+- 保持简洁。请求越大或越复杂，短期内被处理的可能性越低。如果我们无法在合理时间内处理某个功能请求，我们保留关闭该请求的权利。
 
-## Not a Support Channel
+## 不是支持渠道
 
-If you need support for your MinIO deployment, please check out our 
-[community Slack Channel](https://slack.min.io/). 
+如果你需要 MinIO 部署支持，请查看我们的
+[community Slack Channel](https://slack.min.io/)。
 
-We provide help with documentation-related issues on a best effort basis. Users who require help on a strict time frame can join the [MinIO Subscription Network (SUBNET)](https://min.io/pricing).
+我们会尽力协助处理与文档相关的问题。对于有严格时效要求的用户，可以加入 [MinIO Subscription Network (SUBNET)](https://min.io/pricing)。
 
 
 # Contributors License Agreement
 
-This work is licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/legalcode). All contributions to this work must be made under the same license.
+本作品采用 [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/legalcode) 许可。对本作品的所有贡献都必须基于同一许可。
 
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to make participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, sex characteristics, gender identity and expression,
-level of experience, education, socio-economic status, nationality, personal
-appearance, race, religion, or sexual identity and orientation.
+为了营造开放且友好的环境，我们作为贡献者和维护者承诺：无论年龄、体型、残障、族裔、性别特征、性别认同与表达、经验水平、教育程度、社会经济地位、国籍、个人外貌、种族、宗教或性取向，每个人都能在我们的项目和社区中获得免受骚扰的参与体验。
 
 ## Our Standards
 
-Examples of behavior that contributes to creating a positive environment
-include:
+有助于营造积极环境的行为示例包括：
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+* 使用欢迎且包容的语言
+* 尊重不同观点和经验
+* 以恰当方式接受建设性批评
+* 关注对社区最有利的事情
+* 对其他社区成员保持同理心
 
-Examples of unacceptable behavior by participants include:
+参与者不可接受的行为示例包括：
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
-  advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+* 使用性暗示语言或图像，以及不受欢迎的性关注或性挑逗
+* 挑衅行为、侮辱/贬损性评论，以及人身或政治攻击
+* 公开或私下骚扰
+* 未经明确许可发布他人的隐私信息，例如实体地址或电子地址
+* 在职业场景中可被合理视为不当的其他行为
 
 ## Our Responsibilities
 
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
+项目维护者有责任明确可接受行为的标准，并应当针对任何不可接受行为的实例采取适当且公平的纠正措施。
 
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
+项目维护者有权并有责任移除、编辑或拒绝与本行为准则不一致的评论、commit、代码、wiki 编辑、issue 及其他贡献；对于其认定为不当、威胁性、冒犯性或有害的其他行为，项目维护者也可以临时或永久禁止相关贡献者。
 
 ## Scope
 
-This Code of Conduct applies within all project spaces, and it also applies when
-an individual is representing the project or its community in public spaces.
-Examples of representing a project or community include using an official
-project e-mail address, posting via an official social media account, or acting
-as an appointed representative at an online or offline event. Representation of
-a project may be further defined and clarified by project maintainers.
+本行为准则适用于所有项目空间，也适用于个人在公共空间中代表项目或其社区的场景。
+代表项目或社区的行为示例包括：使用官方项目电子邮件地址、通过官方社交媒体账户发帖，或作为指定代表参加线上或线下活动。项目维护者可进一步定义并澄清“代表项目”的具体范围。
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at docs@min.io. All
-complaints will be reviewed and investigated and will result in a response that
-is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
-Further details of specific enforcement policies may be posted separately.
+如遇辱骂、骚扰或其他不可接受行为，可联系项目团队 `docs@min.io` 举报。所有投诉都会被审查和调查，并根据具体情况给予必要且适当的响应。项目团队有义务对事件举报人的身份信息保密。
+更多具体的执行政策细则可能会另行发布。
 
-Project maintainers who do not follow or enforce the Code of Conduct in good
-faith may face temporary or permanent repercussions as determined by other
-members of the project's leadership.
+未能本着诚信遵守或执行本行为准则的项目维护者，可能会面临由项目其他领导成员决定的临时或永久后果。
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
+本行为准则改编自 [Contributor Covenant][homepage] 1.4 版，
+原文地址：https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
 
 [homepage]: https://www.contributor-covenant.org
 
-For answers to common questions about this code of conduct, see
+关于本行为准则常见问题的解答，请参见
 https://www.contributor-covenant.org/faq
-

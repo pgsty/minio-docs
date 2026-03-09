@@ -1,20 +1,20 @@
 .. _minio-server-envvar-metrics-logging:
 
 ============================
-Metrics and Logging Settings
+指标与日志设置
 ============================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page covers settings that control behavior related to MinIO metrics and logging. 
-See :ref:`minio-metrics-and-alerts` for more information.
+本页面介绍用于控制 MinIO 指标与日志相关行为的设置。
+更多信息请参见 :ref:`minio-metrics-and-alerts`。
 
-These settings configure publishing regular :mc:`minio server` logs and audit logs to an HTTP webhook. 
-See :ref:`minio-logging` for more complete documentation.
+这些设置用于将常规 :mc:`minio server` 日志和审计日志发布到 HTTP webhook。
+更完整的文档请参见 :ref:`minio-logging`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -28,63 +28,63 @@ See :ref:`minio-logging` for more complete documentation.
 - :ref:`minio-server-envvar-logging-audit`
 - :ref:`minio-server-envvar-logging-audit-kafka`
 
-Prometheus Authentication
+Prometheus 认证
 -------------------------
 
-This setting controls how MinIO authenticates to Prometheus.
+此设置控制 MinIO 如何向 Prometheus 进行认证。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :selected:
 
       .. envvar:: MINIO_PROMETHEUS_AUTH_TYPE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
       .. include:: /includes/common-mc-admin-config.rst
          :start-after: start-minio-settings-no-config-option
          :end-before: end-minio-settings-no-config-option
 
-Specifies the authentication mode for the Prometheus :ref:`scraping endpoints <minio-metrics-and-alerts>`.
+指定 Prometheus :ref:`抓取端点 <minio-metrics-and-alerts>` 的认证模式。
 
-- ``jwt`` - *Default* MinIO requires that the scraping client specify a JWT token for authenticating requests. 
-   Use :mc-cmd:`mc admin prometheus generate` to generate the necessary JWT bearer tokens.
+- ``jwt`` - *默认* MinIO 要求抓取客户端提供 JWT token 以认证请求。
+   使用 :mc-cmd:`mc admin prometheus generate` 生成所需的 JWT bearer token。
 
-- ``public`` MinIO does not require that scraping clients authenticate their requests.
+- ``public`` MinIO 不要求抓取客户端对其请求进行认证。
 
 .. _minio-server-envvar-logging-regular:
 .. _minio-server-config-logging-regular:
 
-Server Logs
+服务器日志
 -----------
 
-The following section documents settings for configuring MinIO to publish :mc:`minio server` logs to an HTTP webhook endpoint. 
-See :ref:`minio-logging-publish-server-logs` for more complete documentation and tutorials on using these settings.
+以下部分介绍将 :mc:`minio server` 日志发布到 HTTP webhook 端点的 MinIO 配置设置。
+有关这些设置的更完整文档和使用教程，请参见 :ref:`minio-logging-publish-server-logs`。
 
-Defining Multiple Endpoints
+定义多个端点
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can specify multiple webhook endpoints as log targets by appending a unique identifier ``_ID`` for each set of related logging environment variables. 
-For example, the following settings define two distinct server logs webhook endpoints:
+你可以通过为每组相关日志环境变量追加唯一标识符 ``_ID``，将多个 webhook 端点指定为日志目标。
+例如，以下设置定义了两个不同的服务器日志 webhook 端点：
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
-   
+
       .. code-block:: shell
          :class: copyable
-      
+
          export MINIO_LOGGER_WEBHOOK_ENABLE_PRIMARY="on"
          export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_PRIMARY="TOKEN"
          export MINIO_LOGGER_WEBHOOK_ENDPOINT_PRIMARY="http://webhook-1.example.net"
-      
+
          export MINIO_LOGGER_WEBHOOK_ENABLE_SECONDARY="on"
          export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_SECONDARY="TOKEN"
          export MINIO_LOGGER_WEBHOOK_ENDPOINT_SECONDARY="http://webhook-2.example.net"
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. code-block:: shell
@@ -96,7 +96,7 @@ For example, the following settings define two distinct server logs webhook endp
          mc admin config set logger_webhook:secondary \
             endpoint="http://webhook-02.example.net" [ARGUMENTS=VALUE ...]
 
-Settings
+设置
 ~~~~~~~~
 
 Enable
@@ -104,316 +104,312 @@ Enable
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :selected:
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_ENABLE
 
-      Specify ``"on"`` to enable publishing :mc:`minio server` logs to the HTTP webhook endpoint.
-      
-      Requires specifying :envvar:`MINIO_LOGGER_WEBHOOK_ENDPOINT`.
-   
-   .. tab-item:: Configuration Setting
+      指定 ``"on"`` 以启用将 :mc:`minio server` 日志发布到 HTTP webhook 端点。
+
+      需要同时指定 :envvar:`MINIO_LOGGER_WEBHOOK_ENDPOINT`。
+
+   .. tab-item:: 配置项
 
       .. mc-conf:: logger_webhook
-      
-      The top level key for the configuration settings to configure logging to an HTTP webhook endpoint.
+
+      用于配置将日志发送到 HTTP webhook 端点的顶层配置键。
 
 
-Endpoint
+端点
 ++++++++
 
-*Required*
+*必填*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_ENDPOINT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook endpoint
          :delimiter: " "
 
-The HTTP endpoint of the webhook. 
+webhook 的 HTTP 端点。
 
-Auth Token
+认证 Token
 ++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_AUTH_TOKEN
 
-      An authentication token of the appropriate type for the endpoint.
-      Omit for endpoints which do not require authentication.
-   
-      To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-      Depending on the endpoint, you may need to include additional information.
-   
-      For example: for a Bearer token, prepend ``Bearer``:
-   
-      .. code-block:: shell
-         :class: copyable
-   
-         export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_myendpoint="Bearer 1a2b3c4f5e"
-   
-      Modify the value according to the endpoint requirements.
-      A custom authentication format could resemble the following:
-   
-      .. code-block:: shell
-         :class: copyable
-   
-         export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_xyz="ServiceXYZ 1a2b3c4f5e"
-   
-      Consult the documentation for the desired service for more details.
-   
-      This environment variable corresponds with the :mc-conf:`logger_webhook auth_token <logger_webhook.auth_token>` configuration setting.
+      端点所需类型的认证 token。
+      对于不需要认证的端点可省略。
 
-   .. tab-item:: Configuration Setting
+      为支持多种 token 类型，MinIO 会使用*完全按原样指定*的值构造请求认证头。
+      具体端点可能要求你附加额外信息。
+
+      例如：对于 Bearer token，请添加前缀 ``Bearer``：
+
+      .. code-block:: shell
+         :class: copyable
+
+         export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_myendpoint="Bearer 1a2b3c4f5e"
+
+      请根据端点要求调整该值。
+      自定义认证格式可能类似如下：
+
+      .. code-block:: shell
+         :class: copyable
+
+         export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_xyz="ServiceXYZ 1a2b3c4f5e"
+
+      详情请参阅目标服务的文档。
+
+      该环境变量对应 :mc-conf:`logger_webhook auth_token <logger_webhook.auth_token>` 配置项。
+
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook auth_token
          :delimiter: " "
-   
-         An authentication token of the appropriate type for the endpoint.
-         Omit for endpoints which do not require authentication.
-   
-         To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-         Depending on the endpoint, you may need to include additional information.
-   
-         For example: for a Bearer token, prepend ``Bearer``:
-   
+
+         端点所需类型的认证 token。
+         对于不需要认证的端点可省略。
+
+         为支持多种 token 类型，MinIO 会使用*完全按原样指定*的值构造请求认证头。
+         具体端点可能要求你附加额外信息。
+
+         例如：对于 Bearer token，请添加前缀 ``Bearer``：
+
          .. code-block:: shell
             :class: copyable
-   
+
                mc admin config set myminio logger_webhook   \
                   endpoint="https://webhook-1.example.net"  \
                   auth_token="Bearer 1a2b3c4f5e"
-   
-         Modify the value according to the endpoint requirements.
-         A custom authentication format could resemble the following:
-   
+
+         请根据端点要求调整该值。
+         自定义认证格式可能类似如下：
+
          .. code-block:: shell
             :class: copyable
-   
-               mc admin config set myminio logger_webhook   \
-   	            endpoint="https://webhook-1.example.net"  \
-                  auth_token="ServiceXYZ 1a2b3c4f5e"
-   
-         Consult the documentation for the desired service for more details.
 
-Batch Size
+               mc admin config set myminio logger_webhook   \
+                  endpoint="https://webhook-1.example.net"  \
+                  auth_token="ServiceXYZ 1a2b3c4f5e"
+
+         详情请参阅目标服务的文档。
+
+批大小
 ++++++++++
 
 .. versionadded:: MinIO Server RELEASE.2024-03-10T02-53-48Z
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_BATCH_SIZE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook batch_size
          :delimiter: " "
 
-Collect and send the specified number of events to the webhook as a batch.
-If not set, MinIO sends one event per request.
+按批次收集并发送指定数量的事件到 webhook。
+如果未设置，MinIO 每个请求发送一个事件。
 
-Client Certificate
+客户端证书
 ++++++++++++++++++
 
-*Optional*
+*可选*
 
-Requires also setting the *Client Key*.
+还需要同时设置 *Client Key*。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_CLIENT_CERT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook client_cert
          :delimiter: " "
 
-The path to the mTLS certificate to use for authenticating to the webhook logger.
-   
-Client Key
+用于向 webhook logger 认证的 mTLS 证书路径。
+
+客户端密钥
 ++++++++++
 
-*Optional*
+*可选*
 
-Required if you define the *Client Certificate*.
+如果定义了 *Client Certificate*，则为必填。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_CLIENT_KEY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook client_key
          :delimiter: " "
 
-The path to the mTLS certificate key to use to authenticate with the webhook logger service.
+用于向 webhook logger 服务认证的 mTLS 证书密钥路径。
 
-Proxy
+代理
 +++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_PROXY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook proxy
          :delimiter: " "
 
-      .. versionadded:: MinIO RELEASE.2023-02-22T18-23-45Z 
+      .. versionadded:: MinIO RELEASE.2023-02-22T18-23-45Z
 
-Define a proxy to use for the webhook logger when communicating from MinIO to external webhooks.
+定义在 MinIO 与外部 webhook 通信时供 webhook logger 使用的代理。
 
-Queue Directory
+队列目录
 +++++++++++++++
 
-*Optional*
+*可选*
 
 .. versionadded:: RELEASE.2023-05-18T00-05-36Z
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_LOGGER_WEBHOOK_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook queue_dir
          :delimiter: " "
 
-Specify the directory path, such as ``/opt/minio/events``, to enable MinIO's persistent event store for undelivered messages.
-The MinIO process must have read, write, and list access on the specified directory.
+指定目录路径（例如 ``/opt/minio/events``）以启用 MinIO 对未投递消息的持久事件存储。
+MinIO 进程必须对指定目录具有读取、写入和列举权限。
 
-MinIO stores undelivered events in the specified store while the webhook service is offline and replays the stored events when connectivity resumes.
- 
-Queue Size
+当 webhook 服务离线时，MinIO 会将未投递事件存储到指定存储中，并在连接恢复后回放这些事件。
+
+队列大小
 ++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
-      
+
       .. envvar:: MINIO_LOGGER_WEBHOOK_QUEUE_SIZE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: logger_webhook queue_size
          :delimiter: " "
 
-An integer value to use for the queue size for logger webhook targets.
+用于 logger webhook 目标队列大小的整数值。
 
 .. _minio-server-envvar-logging-audit:
 .. _minio-server-config-logging-audit:
 
-Webhook Audit Logs
+Webhook 审计日志
 ------------------
 
-The following section documents environment variables for configuring MinIO to publish audit logs to an HTTP webhook endpoint. 
-See :ref:`minio-logging-publish-audit-logs` for more complete documentation and tutorials on using these environment variables.
+以下部分介绍用于将审计日志发布到 HTTP webhook 端点的 MinIO 环境变量。
+有关这些环境变量的更完整文档和使用教程，请参见 :ref:`minio-logging-publish-audit-logs`。
 
-Multiple Targets
+多个目标
 ~~~~~~~~~~~~~~~~
 
-You can specify multiple webhook endpoints as audit log targets by appending a unique identifier ``_ID`` for each set of related logging settings. 
+你可以通过为每组相关日志设置追加唯一标识符 ``_ID``，将多个 webhook 端点指定为审计日志目标。
 
-For example, the following commands set two distinct audit log webhook endpoints:
+例如，以下命令设置了两个不同的审计日志 webhook 端点：
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
          :class: copyable
-      
+
          export MINIO_AUDIT_WEBHOOK_ENABLE_PRIMARY="on"
          export MINIO_AUDIT_WEBHOOK_AUTH_TOKEN_PRIMARY="TOKEN"
          export MINIO_AUDIT_WEBHOOK_ENDPOINT_PRIMARY="http://webhook-1.example.net"
          export MINIO_AUDIT_WEBHOOK_CLIENT_CERT_SECONDARY="/tmp/cert.pem"
          export MINIO_AUDIT_WEBHOOK_CLIENT_KEY_SECONDARY="/tmp/key.pem"
-      
+
          export MINIO_AUDIT_WEBHOOK_ENABLE_SECONDARY="on"
          export MINIO_AUDIT_WEBHOOK_AUTH_TOKEN_SECONDARY="TOKEN"
          export MINIO_AUDIT_WEBHOOK_ENDPOINT_SECONDARY="http://webhook-1.example.net"
          export MINIO_AUDIT_WEBHOOK_CLIENT_CERT_SECONDARY="/tmp/cert.pem"
          export MINIO_AUDIT_WEBHOOK_CLIENT_KEY_SECONDARY="/tmp/key.pem"
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook
-      
-         The top-level configuration key for defining an HTTP webhook target for
-         publishing :ref:`MinIO audit logs <minio-logging>`. 
-      
-         Use :mc-cmd:`mc admin config set` to set or update an HTTP webhook target.
-         Specify additional optional arguments as a whitespace (``" "``)-delimited 
-         list.
-      
+
+         用于定义 HTTP webhook 目标并发布 :ref:`MinIO audit logs <minio-logging>` 的顶层配置键。
+
+         使用 :mc-cmd:`mc admin config set` 设置或更新 HTTP webhook 目标。
+         以空格（``" "``）分隔列表的形式指定其他可选参数。
+
          .. code-block:: shell
             :class: copyable
-      
+
             mc admin config set audit_webhook \
                endpoint="http://webhook.example.net" [ARGUMENTS=VALUE ...]
-      
-         You can specify multiple HTTP webhook targets by appending 
-         ``[:name]`` to the top-level key. For example, the following commands
-         set two distinct HTTP webhook targets as ``primary`` and ``secondary``
-         respectively:
-      
+
+         你可以通过在顶层键后追加 ``[:name]`` 来指定多个 HTTP webhook 目标。
+         例如，以下命令分别将两个不同的 HTTP webhook 目标设置为 ``primary`` 和 ``secondary``：
+
          .. code-block:: shell
             :class: copyable
-      
+
             mc admin config set audit_webhook:primary \
                endpoint="http://webhook-01.example.net" [ARGUMENTS=VALUE ...]
-      
-      
+
+
             mc admin config set audit_webhook:secondary \
                endpoint="http://webhook-02.example.net" [ARGUMENTS=VALUE ...]
 
-Settings
+设置
 ~~~~~~~~
 
 Enable
@@ -421,86 +417,86 @@ Enable
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :selected:
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_ENABLE
-      
-         Specify ``"on"`` to enable publishing audit logs to the HTTP webhook endpoint.
-      
-         Requires specifying :envvar:`MINIO_AUDIT_WEBHOOK_ENDPOINT`.
-      
-   .. tab-item:: Configuration Setting
 
-      Configure an audit webhook to enable it.
-      There is *not* a separate ``enable`` configuration setting.
+         指定 ``"on"`` 以启用向 HTTP webhook 端点发布审计日志。
 
-Endpoint
+         需要同时指定 :envvar:`MINIO_AUDIT_WEBHOOK_ENDPOINT`。
+
+   .. tab-item:: 配置项
+
+      配置一个 audit webhook 即表示启用该目标。
+      不存在单独的 ``enable`` 配置项。
+
+端点
 ++++++++
 
-*Required*
+*必填*
 
-.. tab-set:: 
-   
-   .. tab-item:: Environment Variable
+.. tab-set::
+
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_ENDPOINT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook endpoint
          :delimiter: " "
 
-The HTTP endpoint of the webhook.
+webhook 的 HTTP 端点。
 
-Auth Token
+认证 Token
 ++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_AUTH_TOKEN
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook auth_token
          :delimiter: " "
 
-An authentication token of the appropriate type for the endpoint.
-Omit for endpoints which do not require authentication.
+端点所需类型的认证 token。
+对于不需要认证的端点可省略。
 
-To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-Depending on the endpoint, you may need to include additional information.
+为支持多种 token 类型，MinIO 会使用*完全按原样指定*的值构造请求认证头。
+具体端点可能要求你附加额外信息。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
-      For example, for a Bearer token, prepend ``Bearer``:
+      例如，对于 Bearer token，请添加前缀 ``Bearer``：
 
       .. code-block:: shell
          :class: copyable
 
          export MINIO_AUDIT_WEBHOOK_AUTH_TOKEN_myendpoint="Bearer 1a2b3c4f5e"
 
-      Modify the value according to the endpoint requirements.
-      
-      A custom authentication format could resemble the following:
+      请根据端点要求调整该值。
+
+      自定义认证格式可能类似如下：
 
       .. code-block:: shell
          :class: copyable
 
          export MINIO_AUDIT_WEBHOOK_AUTH_TOKEN_xyz="ServiceXYZ 1a2b3c4f5e"
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. code-block:: shell
@@ -510,9 +506,9 @@ Depending on the endpoint, you may need to include additional information.
                   endpoint="http://webhook.example.net"  \
                   auth_token="Bearer 1a2b3c4f5e"
 
-      Modify the value according to the endpoint requirements.
+      请根据端点要求调整该值。
 
-      A command for a custom authentication format could resemble the following:
+      自定义认证格式的命令可能类似如下：
 
       .. code-block:: shell
          :class: copyable
@@ -521,96 +517,96 @@ Depending on the endpoint, you may need to include additional information.
                   endpoint="http://webhook.example.net"  \
                   auth_token="ServiceXYZ 1a2b3c4f5e"
 
-Consult the documentation for the desired service for more details.
+详情请参阅目标服务的文档。
 
-Batch Size
+批大小
 ++++++++++
 
 .. versionadded:: MinIO Server RELEASE.2024-03-10T02-53-48Z
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_BATCH_SIZE
 
-  
-   .. tab-item:: Configuration Setting
+
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook batch_size
          :delimiter: " "
 
-Collect and send the specified number of events to the webhook as a batch.
-If not set, MinIO sends one event per request.
+按批次收集并发送指定数量的事件到 webhook。
+如果未设置，MinIO 每个请求发送一个事件。
 
-Client Certificate
+客户端证书
 ++++++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_CLIENT_CERT
 
-      Requires also specifying :envvar:`MINIO_AUDIT_WEBHOOK_CLIENT_KEY`.
-   
-   .. tab-item:: Configuration Setting
+      还需要同时指定 :envvar:`MINIO_AUDIT_WEBHOOK_CLIENT_KEY`。
+
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook client_cert
          :delimiter: " "
 
-      Requires also specifying :mc-conf:`~audit_webhook.client_key`.
+      还需要同时指定 :mc-conf:`~audit_webhook.client_key`。
 
-The x.509 client certificate to present to the HTTP webhook. 
-Omit for webhooks which do not require clients to present a known TLS certificate.
+提交给 HTTP webhook 的 x.509 客户端证书。
+对于不要求客户端提供已知 TLS 证书的 webhook 可省略。
 
-Client Key
+客户端密钥
 ++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_CLIENT_KEY
 
-      Requires also specifying :envvar:`MINIO_AUDIT_WEBHOOK_CLIENT_CERT`.
+      还需要同时指定 :envvar:`MINIO_AUDIT_WEBHOOK_CLIENT_CERT`。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook client_key
          :delimiter: " "
 
-      Requires specifying :mc-conf:`~audit_webhook.client_cert`.
+      需要指定 :mc-conf:`~audit_webhook.client_cert`。
 
-The x.509 private key to present to the HTTP webhook. 
-Omit for webhooks which do not require clients to present a known TLS certificate.
+提交给 HTTP webhook 的 x.509 私钥。
+对于不要求客户端提供已知 TLS 证书的 webhook 可省略。
 
 
-Queue Directory
+队列目录
 +++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook queue_dir
@@ -618,47 +614,47 @@ Queue Directory
 
 .. versionadded:: RELEASE.2023-05-18T00-05-36Z
 
-Specify the directory path, such as ``/opt/minio/events``, to enable MinIO's persistent event store for undelivered messages.
-The MinIO process must have read, write, and list access on the specified directory.
+指定目录路径（例如 ``/opt/minio/events``）以启用 MinIO 对未投递消息的持久事件存储。
+MinIO 进程必须对指定目录具有读取、写入和列举权限。
 
-MinIO stores undelivered events in the specified store while the webhook service is offline and replays the stored events when connectivity resumes.
+当 webhook 服务离线时，MinIO 会将未投递事件存储到指定存储中，并在连接恢复后回放这些事件。
 
-Queue Size
+队列大小
 ++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_WEBHOOK_QUEUE_SIZE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_webhook queue_size
          :delimiter: " "
 
-An integer value to use for the queue size for audit webhook targets.
-The default is ``100000`` events.
+用于 audit webhook 目标队列大小的整数值。
+默认值为 ``100000`` 个事件。
 
 .. _minio-server-envvar-logging-audit-kafka:
 .. _minio-server-config-logging-kafka-audit:
 
-Kafka Audit Logs
+Kafka 审计日志
 ----------------
 
-The following section documents environment variables for configuring MinIO to publish audit logs to a Kafka broker.
+以下部分介绍用于将审计日志发布到 Kafka broker 的 MinIO 环境变量。
 
 
 .. mc-conf:: audit_kafka
 
-   The top-level configuration key for defining a Kafka broker target for publishing :ref:`MinIO audit logs <minio-logging>`.
+   用于定义 Kafka broker 目标并发布 :ref:`MinIO audit logs <minio-logging>` 的顶层配置键。
 
-   Use :mc-cmd:`mc admin config set` to set or update a Kafka audit target.
-   Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+   使用 :mc-cmd:`mc admin config set` 设置或更新 Kafka 审计目标。
+   以空格（``" "``）分隔列表的形式指定其他可选参数。
 
    .. code-block:: shell
       :class: copyable
@@ -667,215 +663,215 @@ The following section documents environment variables for configuring MinIO to p
          brokers="https://kafka-endpoint.example.net:9092" [ARGUMENTS=VALUE ...]
 
 
-Settings
+设置
 ~~~~~~~~
 
 Enable
 ++++++
 
-*Required*
+*必填*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :selected:
 
       .. envvar:: MINIO_AUDIT_KAFKA_ENABLE
-   
-      Set to ``"on"`` to enable the target.
 
-      Set to ``"off"`` to disable the target.
+      设置为 ``"on"`` 以启用该目标。
 
-   .. tab-item:: Configuration Setting
-      
-      There is not a configuration setting for this value.
-      Use the environment variable to disable a configured audit webhook target.
+      设置为 ``"off"`` 以禁用该目标。
+
+   .. tab-item:: 配置项
+
+      该值没有对应的配置项。
+      使用环境变量可禁用已配置的 audit webhook 目标。
 
 Brokers
 +++++++
 
-*Required*
+*必填*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_BROKERS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka brokers
          :delimiter: " "
 
-A comma-separated list of Kafka broker addresses:
+Kafka broker 地址的逗号分隔列表：
 
 .. code-block:: shell
 
    brokers="https://kafka-1.example.net:9092,https://kafka-2.example.net:9092"
 
-At least one broker must be online and reachable by the MinIO server to initialize and send audit log events.
-MinIO checks each specified broker in order of specification.
+至少必须有一个 broker 在线且 MinIO server 可达，才能初始化并发送审计日志事件。
+MinIO 会按指定顺序检查每个 broker。
 
 Topic
 +++++
 
-*Required*
+*必填*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_TOPIC
-   
-   .. tab-item:: Configuration Setting
+
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka topic
          :delimiter: " "
 
-The name of the Kafka topic to associate to MinIO audit log events.
+与 MinIO 审计日志事件关联的 Kafka topic 名称。
 
 TLS
 +++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
-      .. envvar:: MINIO_AUDIT_KAFKA_TLS  
+      .. envvar:: MINIO_AUDIT_KAFKA_TLS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka tls
          :delimiter: " "
 
-Set to ``"on"`` to enable TLS connectivity to the specified Kafka brokers.
+设置为 ``"on"`` 以启用到指定 Kafka brokers 的 TLS 连接。
 
-Defaults to ``"off"``.
+默认值为 ``"off"``。
 
 TLS Skip Verify
 +++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_TLS_SKIP_VERIFY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka tls_skip_verify
          :delimiter: " "
 
-Set to ``"on"`` to direct MinIO to skip verification of the Kafka broker TLS certificates.
+设置为 ``"on"`` 以指示 MinIO 跳过对 Kafka broker TLS 证书的校验。
 
-You can use this option for enabling connectivity to Kafka brokers using TLS certificates signed by unknown parties, such as self-signed or corporate-internal Certificate Authorities (CA).
+你可以使用该选项连接使用未知签发方 TLS 证书的 Kafka brokers，例如自签名证书或企业内部 CA（Certificate Authorities）签发的证书。
 
-MinIO by default uses the system trust store *and* the contents of the MinIO :ref:`CA directory <minio-tls>` for verifying remote client TLS certificates.
+默认情况下，MinIO 会同时使用系统信任库*以及* MinIO :ref:`CA directory <minio-tls>` 中的内容来校验远端客户端 TLS 证书。
 
-Defaults to ``"off"`` for strict verification of TLS certificates.
+默认值为 ``"off"``，即严格校验 TLS 证书。
 
 SASL
 ++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_SASL
 
-      Requires specifying :envvar:`MINIO_AUDIT_KAFKA_SASL_USERNAME` and :envvar:`MINIO_AUDIT_KAFKA_SASL_PASSWORD`.
+      需要指定 :envvar:`MINIO_AUDIT_KAFKA_SASL_USERNAME` 和 :envvar:`MINIO_AUDIT_KAFKA_SASL_PASSWORD`。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
-   
+
       .. mc-conf:: audit_kafka sasl
          :delimiter: " "
 
-      Requires specifying :mc-conf:`~audit_kafka.sasl_username` and :mc-conf:`~audit_kafka.sasl_password`.
+      需要指定 :mc-conf:`~audit_kafka.sasl_username` 和 :mc-conf:`~audit_kafka.sasl_password`。
 
-Set to ``"on"`` to direct MinIO to use SASL to authenticate against the Kafka brokers.
+设置为 ``"on"`` 以指示 MinIO 使用 SASL 对 Kafka brokers 进行认证。
 
 SASL Username
 +++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_SASL_USERNAME
 
-      Requires specifying :envvar:`MINIO_AUDIT_KAFKA_SASL` and :envvar:`MINIO_AUDIT_KAFKA_SASL_PASSWORD`.
+      需要指定 :envvar:`MINIO_AUDIT_KAFKA_SASL` 和 :envvar:`MINIO_AUDIT_KAFKA_SASL_PASSWORD`。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka sasl_username
          :delimiter: " "
 
-      Requires specifying :mc-conf:`~audit_kafka.sasl` and :mc-conf:`~audit_kafka.sasl_password`.
+      需要指定 :mc-conf:`~audit_kafka.sasl` 和 :mc-conf:`~audit_kafka.sasl_password`。
 
-The SASL username MinIO uses for authentication against the Kafka brokers.
+MinIO 用于对 Kafka brokers 进行认证的 SASL 用户名。
 
 SASL Password
 +++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_SASL_PASSWORD
 
-      Requires specifying :envvar:`MINIO_AUDIT_KAFKA_SASL` and :envvar:`MINIO_AUDIT_KAFKA_SASL_USERNAME`.
+      需要指定 :envvar:`MINIO_AUDIT_KAFKA_SASL` 和 :envvar:`MINIO_AUDIT_KAFKA_SASL_USERNAME`。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka sasl_password
          :delimiter: " "
 
-      Requires specifying :mc-conf:`~audit_kafka.sasl` and :mc-conf:`~audit_kafka.sasl_username`.
+      需要指定 :mc-conf:`~audit_kafka.sasl` 和 :mc-conf:`~audit_kafka.sasl_username`。
 
-The SASL password MinIO uses for authentication against the Kafka brokers.
+MinIO 用于对 Kafka brokers 进行认证的 SASL 密码。
 
 SASL Mechanism
 ++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_SASL_MECHANISM
 
       .. important::
 
-         The ``PLAIN`` authentication mechanism sends credentials in plain text over the network.
-         Use :envvar:`MINIO_AUDIT_KAFKA_TLS` or to enable TLS connectivity to the Kafka brokers and ensure secure transmission of SASL credentials.
+         ``PLAIN`` 认证机制会以明文形式在网络中传输凭据。
+         使用 :envvar:`MINIO_AUDIT_KAFKA_TLS` 以启用到 Kafka brokers 的 TLS 连接，并确保 SASL 凭据安全传输。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka sasl_mechanism
@@ -883,158 +879,158 @@ SASL Mechanism
 
       .. important::
 
-         The ``PLAIN`` authentication mechanism sends credentials in plain text over the network.
-         Use :mc-conf:`~audit_kafka.tls` to enable TLS connectivity to the Kafka brokers and ensure secure transmission of SASL credentials.
+         ``PLAIN`` 认证机制会以明文形式在网络中传输凭据。
+         使用 :mc-conf:`~audit_kafka.tls` 以启用到 Kafka brokers 的 TLS 连接，并确保 SASL 凭据安全传输。
 
-The SASL mechanism MinIO uses for authentication against the Kafka brokers.
+MinIO 用于对 Kafka brokers 进行认证的 SASL 机制。
 
-Defaults to ``plain``.
+默认值为 ``plain``。
 
 TLS  Client Auth
 ++++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_TLS_CLIENT_AUTH
 
-      Requires specifying :envvar:`MINIO_AUDIT_KAFKA_CLIENT_TLS_CERT` and :envvar:`MINIO_AUDIT_KAFKA_CLIENT_TLS_KEY`.
+      需要指定 :envvar:`MINIO_AUDIT_KAFKA_CLIENT_TLS_CERT` 和 :envvar:`MINIO_AUDIT_KAFKA_CLIENT_TLS_KEY`。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka tls_client_auth
          :delimiter: " "
 
-      Requires specifying :mc-conf:`~audit_kafka.client_tls_cert` and :mc-conf:`~audit_kafka.client_tls_key`.
+      需要指定 :mc-conf:`~audit_kafka.client_tls_cert` 和 :mc-conf:`~audit_kafka.client_tls_key`。
 
-Set to ``"on"`` to direct MinIO to use mTLS to authenticate against the Kafka brokers.
+设置为 ``"on"`` 以指示 MinIO 使用 mTLS 对 Kafka brokers 进行认证。
 
 Client TLS Certificate
 ++++++++++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_CLIENT_TLS_CERT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka client_tls_cert
          :delimiter: " "
 
-The path to the TLS client certificate to use for mTLS authentication.
+用于 mTLS 认证的 TLS 客户端证书路径。
 
 Client TLS Key
 ++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_CLIENT_TLS_KEY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
-   
+
       .. mc-conf:: audit_kafka client_tls_key
          :delimiter: " "
 
-The path to the TLS client private key to use for mTLS authentication.
+用于 mTLS 认证的 TLS 客户端私钥路径。
 
 Version
 +++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_VERSION
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka version
          :delimiter: " "
 
-The version of the Kafka broker MinIO expects at the specified endpoints.
+MinIO 在指定端点期望的 Kafka broker 版本。
 
-MinIO returns an error if the Kakfa broker version does not match those specified to this setting.
+如果 Kafka broker 版本与此设置指定的不匹配，MinIO 会返回错误。
 
 Comment
 +++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
-   
+
       .. mc-conf:: audit_kafka comment
          :delimiter: " "
 
-A comment to associate with the configuration.
+与该配置关联的注释。
 
-Queue Directory
+队列目录
 +++++++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka queue_dir
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径（例如 ``/opt/minio/events``）以启用 MinIO 对未投递消息的持久事件存储。
 
-MinIO stores undelivered events in the specified store while the Kafka service is offline and replays the stored events when connectivity resumes.
+当 Kafka 服务离线时，MinIO 会将未投递事件存储到指定存储中，并在连接恢复后回放这些事件。
 
-Queue Size
+队列大小
 ++++++++++
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_AUDIT_KAFKA_QUEUE_SIZE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: audit_kafka queue_size
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. 
-Defaults to ``100000``.
+指定未投递消息的最大上限。
+默认值为 ``100000``。

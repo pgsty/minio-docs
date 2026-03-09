@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,35 +14,35 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z 
 
-   ``mc replicate add`` replaces the ``mc admin bucket remote add`` command.
+   ``mc replicate add`` 替代了 ``mc admin bucket remote add`` 命令。
 
-   MinIO automatically creates remote targets based on a given file path or resource location (such as an IP or DNS address).
-   Users defining a remote target no longer need to determine an ARN for the remote bucket.
+   MinIO 会根据给定的文件路径或资源位置（例如 IP 或 DNS 地址）自动创建远程目标。
+   定义远程目标的用户不再需要为远程存储桶确定 ARN。
 
-Syntax
+语法
 ------
 
 .. start-mc-replicate-add-desc
 
-The :mc:`mc replicate add` command creates a new :ref:`server-side replication
-<minio-bucket-replication-serverside>` rule for a bucket on a MinIO deployment.
+:mc:`mc replicate add` 命令会为 MinIO 部署中的存储桶创建一条新的 :ref:`服务端复制
+<minio-bucket-replication-serverside>` 规则。
 
 .. end-mc-replicate-add-desc
 
-The remote bucket **must** be on a MinIO deployment running the same version of MinIO as the local deployment.
+远程存储桶**必须**位于与本地部署运行相同 MinIO 版本的 MinIO 部署上。
 
 .. note::
 
-   Where :mc:`mc mirror` only synchronizes the current version of an object, ``mc replicate`` synchronizes all versions, version information, and metadata for the objects.
+   :mc:`mc mirror` 仅同步对象的当前版本，而 ``mc replicate`` 会同步对象的所有版本、版本信息和元数据。
 
-The MinIO deployment automatically begins synchronizing new objects to the remote MinIO deployment after creating the rule. 
-You can optionally configure synchronization of existing objects, delete operations, and fully-deleted objects.
+创建规则后，MinIO 部署会自动开始将新对象同步到远程 MinIO 部署。
+你也可以选择配置对现有对象、删除操作和已完全删除对象的同步。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command adds a new replication rule for the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令为 ``myminio`` MinIO 部署上的 ``mydata`` 存储桶添加一条新的复制规则：
 
       .. code-block:: shell
          :class: copyable
@@ -52,15 +52,15 @@ You can optionally configure synchronization of existing objects, delete operati
             --replicate "delete,delete-marker,existing-objects"               \
             myminio/mydata
 
-      The replication rule synchronizes versioned delete operations, delete markers, and existing objects to the remote MinIO deployment.
+      该复制规则会将带版本的删除操作、删除标记和现有对象同步到远程 MinIO 部署。
 
       .. versionchanged:: mc RELEASE.2024-03-03T00-13-08Z
 
-         You can use a configured ALIAS to the ``--remote-bucket`` flag.
+         你可以在 ``--remote-bucket`` 参数中使用已配置的 ALIAS。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -87,14 +87,14 @@ You can optionally configure synchronization of existing objects, delete operati
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment and full path to the bucket or bucket prefix on which to create the replication rule. 
-   For example:
+   MinIO 部署的 :ref:`alias <alias>`，以及要在其上创建复制规则的存储桶或存储桶前缀的完整路径。
+   例如：
 
    .. code-block:: none
 
@@ -105,18 +105,18 @@ Parameters
 
    .. versionchanged:: mc RELEASE.2024-03-03T00-13-08Z
 
-      The ``--remote-bucket`` supports specifying an existing :ref:`alias <alias>`.
+      ``--remote-bucket`` 支持指定已有的 :ref:`alias <alias>`。
 
-   Specify the credentials, destination deployment, and bucket of the remote location. 
-   Value may be an IP address, URL, or :ref:`alias <alias>`/bucket.
+   指定远程位置的凭证、目标部署和存储桶。
+   该值可以是 IP 地址、URL 或 :ref:`alias <alias>`/bucket。
 
-   For example, a URL based target might look like the following:
+   例如，基于 URL 的目标可能如下所示：
 
    .. code-block::
 
       https://user:secret@myminio.cloudprovider.tld:9001/bucket
 
-   An alias based target might look like the following:
+   基于 alias 的目标可能如下所示：
 
    .. code-block::
 
@@ -125,186 +125,186 @@ Parameters
 .. mc-cmd:: --bandwidth
    :optional:
 
-   Limit bandwidth rates to no more than the specified rate in KiB/s, MiB/s, or GiB/s.
-   Valid units include: 
+   将带宽速率限制为不超过指定值，单位可为 KiB/s、MiB/s 或 GiB/s。
+   有效单位包括：
    
-   - ``B`` for bytes
-   - ``K`` for kilobytes
-   - ``G`` for gigabytes
-   - ``T`` for terabytes
-   - ``Ki`` for kibibytes
-   - ``Gi`` for gibibytes
-   - ``Ti`` for tebibytes
+   - ``B`` 表示 bytes
+   - ``K`` 表示 kilobytes
+   - ``G`` 表示 gigabytes
+   - ``T`` 表示 terabytes
+   - ``Ki`` 表示 kibibytes
+   - ``Gi`` 表示 gibibytes
+   - ``Ti`` 表示 tebibytes
 
-   For example, to limit bandwidth rates to no more than 1 GiB/s, use the following:
+   例如，要将带宽速率限制为不超过 1 GiB/s，可使用以下参数：
 
    .. code-block::
 
       --limit-upload 1Gi
 
-   If not specified, MinIO does not limit the bandwidth rate.
+   若未指定，MinIO 不会限制带宽速率。
 
     
 .. mc-cmd:: --disable
    :optional:
 
-   Creates the replication rule in the "disabled" state. 
-   MinIO does not begin replicating objects using the rule until it is enabled using :mc:`mc replicate update`.
+   以“disabled”状态创建复制规则。
+   在使用 :mc:`mc replicate update` 将其启用之前，MinIO 不会按该规则开始复制对象。
 
-   Objects created while replication is disabled are not immediately eligible for replication after enabling the rule.
-   You must explicitly enable replication of existing objects by including ``"existing-objects"`` to the list of replication features specified to :mc-cmd:`mc replicate update --replicate`. 
-   See :ref:`minio-replication-behavior-existing-objects` for more information.
+   在复制禁用期间创建的对象，在启用规则后不会立即具备复制资格。
+   你必须在传给 :mc-cmd:`mc replicate update --replicate` 的复制功能列表中包含 ``"existing-objects"``，以显式启用现有对象复制。
+   更多信息请参见 :ref:`minio-replication-behavior-existing-objects`。
 
 .. mc-cmd:: --disable-proxy
    :optional:
 
-   When defining active-active replication between buckets, do not proxy.
+   在定义存储桶之间的 active-active 复制时，不使用代理。
 
-   By default, MinIO proxies.
+   默认情况下，MinIO 使用代理。
 
 .. mc-cmd:: --healthcheck-seconds
    :optional:
 
-   The length of time in seconds between checks on the health of the remote bucket.
+   两次远程存储桶健康检查之间的时间间隔（秒）。
 
-   If not specified, MinIO uses an interval of 60 seconds.
+   若未指定，MinIO 使用 60 秒间隔。
 
 .. mc-cmd:: --id
    :optional:
 
-   Specify a unique ID for the replication rule. 
-   MinIO automatically generates an ID if one is not specified.
+   为复制规则指定唯一 ID。
+   如果未指定，MinIO 会自动生成一个 ID。
 
 .. mc-cmd:: --limit-download
    :optional:
 
-   Limit download rates to no more than a specified rate in KiB/s, MiB/s, or GiB/s.
-   Valid units include: 
+   将下载速率限制为不超过指定值，单位可为 KiB/s、MiB/s 或 GiB/s。
+   有效单位包括：
    
-   - ``B`` for bytes
-   - ``K`` for kilobytes
-   - ``G`` for gigabytes
-   - ``T`` for terabytes
-   - ``Ki`` for kibibytes
-   - ``Gi`` for gibibytes
-   - ``Ti`` for tebibytes
+   - ``B`` 表示 bytes
+   - ``K`` 表示 kilobytes
+   - ``G`` 表示 gigabytes
+   - ``T`` 表示 terabytes
+   - ``Ki`` 表示 kibibytes
+   - ``Gi`` 表示 gibibytes
+   - ``Ti`` 表示 tebibytes
 
-   For example, to limit download rates to no more than 1 GiB/s, use the following:
+   例如，要将下载速率限制为不超过 1 GiB/s，可使用以下参数：
 
    .. code-block::
 
       --limit-download 1G
 
-   If not specified, MinIO uses an unlimited download rate.
+   若未指定，MinIO 使用不限速的下载速率。
 
 .. mc-cmd:: --limit-upload
    :optional:
 
-   Limit upload rates to no more than the specified rate in KiB/s, MiB/s, or GiB/s.
-   Valid units include: 
+   将上传速率限制为不超过指定值，单位可为 KiB/s、MiB/s 或 GiB/s。
+   有效单位包括：
    
-   - ``B`` for bytes
-   - ``K`` for kilobytes
-   - ``G`` for gigabytes
-   - ``T`` for terabytes
-   - ``Ki`` for kibibytes
-   - ``Gi`` for gibibytes
-   - ``Ti`` for tebibytes
+   - ``B`` 表示 bytes
+   - ``K`` 表示 kilobytes
+   - ``G`` 表示 gigabytes
+   - ``T`` 表示 terabytes
+   - ``Ki`` 表示 kibibytes
+   - ``Gi`` 表示 gibibytes
+   - ``Ti`` 表示 tebibytes
 
-   For example, to limit upload rates to no more than 1 GiB/s, use the following:
+   例如，要将上传速率限制为不超过 1 GiB/s，可使用以下参数：
 
    .. code-block::
 
       --limit-upload 1G
 
-   If not specified, MinIO uses an unlimited upload rate.
+   若未指定，MinIO 使用不限速的上传速率。
 
 
 .. mc-cmd:: --path
    :optional:
 
-   Enable path-style lookup support for the remote bucket.
+   为远程存储桶启用 path-style 查找支持。
 
-   Valid values include:
+   有效值包括：
 
-   - ``on`` - use a path lookup to find the remote bucket
-   - ``off`` - use a resource locator style (such as a domain or IP address) lookup to find the remote bucket
-   - ``auto`` - ask MinIO to identify the correct type of lookup to use to find the remote bucket
+   - ``on`` - 使用路径查找来定位远程存储桶
+   - ``off`` - 使用资源定位符风格（如域名或 IP 地址）查找来定位远程存储桶
+   - ``auto`` - 由 MinIO 自动识别用于定位远程存储桶的正确查找类型
 
-   When not defined, MinIO uses the ``auto`` value.
+   未定义时，MinIO 使用 ``auto`` 值。
 
 .. mc-cmd:: --priority
    :optional:
 
-   Specify the integer priority of the replication rule. 
-   The value *must* be unique among all other rules on the source bucket. 
-   Higher values imply a *higher* priority than all other rules.
+   指定复制规则的整数优先级。
+   该值*必须*在源存储桶的所有其他规则中保持唯一。
+   值越高表示优先级*越高*。
 
-   The default value is ``0``. 
+   默认值为 ``0``。
 
 .. mc-cmd:: --region
    :optional:
 
-   The region of the destination bucket to replicate contents to.
+   要将内容复制到的目标存储桶区域。
 
 .. mc-cmd:: --replicate
    :optional:
 
-   Specify a comma-separated list of the following values to enable extended replication features. 
+   指定一个由逗号分隔的值列表，以启用扩展复制功能。
 
-   - ``delete`` - Directs MinIO to replicate :ref:`DELETE operations <minio-object-delete>` to the destination bucket.
+   - ``delete`` - 指示 MinIO 将 :ref:`DELETE 操作 <minio-object-delete>` 复制到目标存储桶。
 
-   - ``delete-marker`` - Directs MinIO to replicate delete markers to the destination bucket. 
+   - ``delete-marker`` - 指示 MinIO 将删除标记复制到目标存储桶。
 
-   - ``existing-objects`` - Directs MinIO to replicate objects created before replication was enabled *or* while replication was suspended.
+   - ``existing-objects`` - 指示 MinIO 复制在启用复制前创建的对象，或在复制暂停期间创建的对象。
 
-   - ``metadata-sync`` - Directs MinIO to replicate metadata for each object.
-     For active-active replication situations only.
+   - ``metadata-sync`` - 指示 MinIO 为每个对象复制元数据。
+     仅适用于 active-active 复制场景。
 
-     Omitting this value directs MinIO to stop replicating metadata-only changes back to the source. 
+     省略此值会使 MinIO 停止将仅元数据变更回传到源端。
 
-   If not specified, MinIO syncs all options.
+   若未指定，MinIO 会同步所有选项。
 
 .. mc-cmd:: --storage-class
    :optional:
 
-   Specify the MinIO :ref:`storage class <minio-ec-storage-class>` to apply to replicated objects. 
+   指定应用到复制对象上的 MinIO :ref:`storage class <minio-ec-storage-class>`。
 
 .. mc-cmd:: --sync
    :optional:
 
-   Enable synchronous replication for this remote target.
+   为该远程目标启用同步复制。
 
-   By default, MinIO uses asynchronous replication.
+   默认情况下，MinIO 使用异步复制。
 
 .. mc-cmd:: --tags
    :optional:
 
-   Specify one or more ampersand ``&`` separated key-value pair tags which MinIO uses for filtering objects to replicate. 
-   For example:
+   指定一个或多个以和号 ``&`` 分隔的键值对标签，MinIO 用其筛选要复制的对象。
+   例如：
 
    .. code-block:: shell
 
       mc replicate add --tags "TAG1=VALUE&TAG2=VALUE&TAG3=VALUE" ALIAS
 
-   MinIO applies the replication rule to any object whose tag set
-   contains the specified replication tags.
+   MinIO 会将复制规则应用到标签集合
+   包含指定复制标签的任何对象。
 
 
-Global Flags
+全局参数
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Configure Bucket Replication
+配置存储桶复制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following :mc:`mc replicate add` command creates a replication configuration that synchronizes all new objects, existing objects, delete operations, and delete markers to the remote target:
+以下 :mc:`mc replicate add` 命令会创建一个复制配置，将所有新对象、现有对象、删除操作和删除标记同步到远程目标：
 
 .. code-block:: shell
    :class: copyable
@@ -313,18 +313,18 @@ The following :mc:`mc replicate add` command creates a replication configuration
       --remote-bucket https://user:secret@minio.mysite.tld/remotebucket \
       --replicate "delete,delete-marker,existing-objects"
 
-- Replace ``myminio/mybucket`` with the :mc-cmd:`~mc replicate add ALIAS` and full bucket path for which to create the replication configuration.
+- 将 ``myminio/mybucket`` 替换为 :mc-cmd:`~mc replicate add ALIAS` 及要创建复制配置的完整存储桶路径。
 
-- Replace the :mc-cmd:`~mc replicate add --remote-bucket` value with the URL or path of the remote target. 
-  If using a file path format location, use the ``--path on`` option.
+- 将 :mc-cmd:`~mc replicate add --remote-bucket` 的值替换为远程目标的 URL 或路径。
+  如果使用文件路径格式的位置，请使用 ``--path on`` 选项。
 
-- The :mc-cmd:`~mc replicate add --replicate` flag directs MinIO to replicate all delete operations, delete markers, and existing objects to the remote. 
-  See :ref:`minio-replication-behavior-delete` and :ref:`minio-replication-behavior-existing-objects` for more information on replication behavior.
+- :mc-cmd:`~mc replicate add --replicate` 参数会指示 MinIO 将所有删除操作、删除标记和现有对象复制到远程端。
+  关于复制行为的更多信息，请参见 :ref:`minio-replication-behavior-delete` 和 :ref:`minio-replication-behavior-existing-objects`。
 
-Configure Bucket Replication for Historical Data Record
+为历史数据记录配置存储桶复制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following :mc:`mc replicate add` command creates a new bucket replication configuration that synchronizes all new and existing objects to the remote target:
+以下 :mc:`mc replicate add` 命令会创建一个新的存储桶复制配置，将所有新对象和现有对象同步到远程目标：
 
 .. code-block:: shell
    :class: copyable
@@ -333,140 +333,140 @@ The following :mc:`mc replicate add` command creates a new bucket replication co
       --remote-bucket https://user:secret@minio.mysite.tld/remotebucket \
       --replicate "existing-objects"
 
-- Replace ``myminio/mybucket`` with the :mc-cmd:`~mc replicate add ALIAS` and full bucket path for which to create the replication configuration.
+- 将 ``myminio/mybucket`` 替换为 :mc-cmd:`~mc replicate add ALIAS` 及要创建复制配置的完整存储桶路径。
 
-- Replace the :mc-cmd:`~mc replicate add --remote-bucket` value with the location of the remote target. 
-  If using a file path format location, use the ``--path on`` option.
+- 将 :mc-cmd:`~mc replicate add --remote-bucket` 的值替换为远程目标的位置。
+  如果使用文件路径格式的位置，请使用 ``--path on`` 选项。
 
-- The :mc-cmd:`~mc replicate add --replicate` flag directs MinIO to replicate all existing objects to the remote. 
-  See :ref:`minio-replication-behavior-existing-objects` for more information on replication behavior.
+- :mc-cmd:`~mc replicate add --replicate` 参数会指示 MinIO 将所有现有对象复制到远程端。
+  关于复制行为的更多信息，请参见 :ref:`minio-replication-behavior-existing-objects`。
 
-The resulting remote copy represents a historical record of objects on the remote, where delete operations on the source have no effect on the remote copy.
+生成的远程副本表示远程端对象的历史记录，源端的删除操作不会影响该远程副本。
 
-Behavior
+行为
 --------
 
-Server-Side Replication Requires MinIO Source and Destination
+服务端复制要求源端和目标端均为 MinIO
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO server-side replication only works between MinIO deployments. 
-Both the source and destination deployments *must* run MinIO. 
+MinIO 服务端复制仅适用于 MinIO 部署之间。
+源端和目标端部署都*必须*运行 MinIO。
 
-To configure replication between arbitrary S3-compatible services, use :mc:`mc mirror`.
+若要在任意兼容 S3 的服务之间配置复制，请使用 :mc:`mc mirror`。
 
-Enable Versioning on Source and Destination Buckets
+在源存储桶和目标存储桶上启用版本控制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO relies on the immutability protections provided by versioning to synchronize objects between the source and replication target.
+MinIO 依赖版本控制提供的不可变性保护，在源端与复制目标之间同步对象。
 
-Use the :mc:`mc version enable` command to enable versioning on *both* the source and destination bucket before starting this procedure:
+在开始此流程前，使用 :mc:`mc version enable` 命令在源存储桶和目标存储桶*两端*启用版本控制：
 
 .. code-block:: shell
    :class: copyable
 
    mc version enable ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc version enable ALIAS>` with the :mc:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc version enable ALIAS>` 替换为 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc version enable ALIAS>` with the bucket on which to enable versioning.
+- 将 :mc-cmd:`PATH <mc version enable ALIAS>` 替换为要启用版本控制的存储桶。
 
-Required Permissions
+所需权限
 ~~~~~~~~~~~~~~~~~~~~
 
-MinIO strongly recommends creating users specifically for supporting bucket replication operations. 
-See :mc:`mc admin user` and :mc:`mc admin policy` for more complete documentation on adding users and policies to a MinIO deployment.
+MinIO 强烈建议专门创建用于支持存储桶复制操作的用户。
+关于向 MinIO 部署添加用户和策略的更完整文档，请参见 :mc:`mc admin user` 和 :mc:`mc admin policy`。
 
 .. tab-set::
 
-   .. tab-item:: Replication Admin
+   .. tab-item:: 复制管理员
 
-      The following policy provides permissions for configuring and enabling replication on a deployment. 
+      以下策略提供在部署上配置并启用复制所需的权限。
 
       .. literalinclude:: /extra/examples/ReplicationAdminPolicy.json
          :class: copyable
          :language: json
 
-      - The ``"EnableRemoteBucketConfiguration"`` statement grants permission for creating a remote target for supporting replication.
+      - ``"EnableRemoteBucketConfiguration"`` 语句授予创建远程目标以支持复制的权限。
 
-      - The ``"EnableReplicationRuleConfiguration"`` statement grants permission for creating replication rules on a bucket. 
-        The ``"arn:aws:s3:::*`` resource applies the replication permissions to *any* bucket on the source deployment. 
-        You can restrict the user policy to specific buckets as-needed.
+      - ``"EnableReplicationRuleConfiguration"`` 语句授予在存储桶上创建复制规则的权限。
+        ``"arn:aws:s3:::*`` 资源将复制权限应用到源部署上的*任意*存储桶。
+        你可以按需将用户策略限制到特定存储桶。
 
-      Use the :mc-cmd:`mc admin policy create` to add this policy to each deployment acting as a replication source. 
-      Use :mc-cmd:`mc admin user add` to create a user on the deployment and :mc-cmd:`mc admin policy attach` to associate the policy to that new user.
+      使用 :mc-cmd:`mc admin policy create` 将该策略添加到每个作为复制源的部署。
+      使用 :mc-cmd:`mc admin user add` 在部署上创建用户，并使用 :mc-cmd:`mc admin policy attach` 将策略关联到该新用户。
 
-   .. tab-item:: Replication Remote User
+   .. tab-item:: 复制远程用户
 
-      The following policy provides permissions for enabling synchronization of replicated data *into* the deployment. 
+      以下策略提供将复制数据同步*到*该部署所需的权限。
 
       .. literalinclude:: /extra/examples/ReplicationRemoteUserPolicy.json
          :class: copyable
          :language: json
 
-      - The ``"EnableReplicationOnBucket"`` statement grants permission for a remote target to retrieve bucket-level configuration for supporting replication operations on *all* buckets in the MinIO deployment. 
-        To restrict the policy to specific buckets, specify those buckets as an element in the ``Resource`` array similar to ``"arn:aws:s3:::bucketName"``.
+      - ``"EnableReplicationOnBucket"`` 语句授予远程目标检索存储桶级配置的权限，以支持在 MinIO 部署中*所有*存储桶上的复制操作。
+        若要将策略限制到特定存储桶，请在 ``Resource`` 数组中按 ``"arn:aws:s3:::bucketName"`` 形式指定这些存储桶。
 
-      - The ``"EnableReplicatingDataIntoBucket"`` statement grants permission for a remote target to synchronize data into *any* bucket in the MinIO deployment. 
-        To restrict the policy to specific buckets, specify those buckets as an element in the ``Resource`` array similar to ``"arn:aws:s3:::bucketName/*"``.
+      - ``"EnableReplicatingDataIntoBucket"`` 语句授予远程目标将数据同步到 MinIO 部署中*任意*存储桶的权限。
+        若要将策略限制到特定存储桶，请在 ``Resource`` 数组中按 ``"arn:aws:s3:::bucketName/*"`` 形式指定这些存储桶。
 
-      Use the :mc-cmd:`mc admin policy create` to add this policy to each deployment acting as a replication target. 
-      Use :mc-cmd:`mc admin user add` to create a user on the deployment and :mc-cmd:`mc admin policy attach` to associate the policy to that new user.
+      使用 :mc-cmd:`mc admin policy create` 将该策略添加到每个作为复制目标的部署。
+      使用 :mc-cmd:`mc admin user add` 在部署上创建用户，并使用 :mc-cmd:`mc admin policy attach` 将策略关联到该新用户。
 
-Replication of Existing Objects
+现有对象复制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting with :mc:`mc` :minio-git:`RELEASE.2021-06-13T17-48-22Z <mc/releases/tag/RELEASE.2021-06-13T17-48-22Z>` and :mc:`minio` :minio-git:`RELEASE.2021-06-07T21-40-51Z <minio/releases/tag/RELEASE.2021-06-07T21-40-51Z>`, MinIO supports automatically replicating existing objects in a bucket. 
-MinIO existing object replication implements functionality similar to `AWS Replicating existing objects between S3 buckets <https://aws.amazon.com/blogs/storage/replicating-existing-objects-between-s3-buckets/>`__ without the overhead of contacting technical support. 
+从 :mc:`mc` :minio-git:`RELEASE.2021-06-13T17-48-22Z <mc/releases/tag/RELEASE.2021-06-13T17-48-22Z>` 和 :mc:`minio` :minio-git:`RELEASE.2021-06-07T21-40-51Z <minio/releases/tag/RELEASE.2021-06-07T21-40-51Z>` 开始，MinIO 支持自动复制存储桶中的现有对象。
+MinIO 的现有对象复制实现了类似 `AWS Replicating existing objects between S3 buckets <https://aws.amazon.com/blogs/storage/replicating-existing-objects-between-s3-buckets/>`__ 的能力，而无需联系技术支持的额外开销。
 
-- To enable replication of existing objects when creating a new replication rule, include ``"existing-objects"`` to the list of replication features specified to :mc-cmd:`mc replicate add --replicate`.
+- 若要在创建新复制规则时启用现有对象复制，请在传给 :mc-cmd:`mc replicate add --replicate` 的复制功能列表中包含 ``"existing-objects"``。
 
-- To enable replication of existing objects for an existing replication rule, add ``"existing-objects"`` to the list of existing replication features using :mc-cmd:`mc replicate add --replicate`. 
-  You must specify *all* desired replication features when editing the replication rule. 
+- 若要为已有复制规则启用现有对象复制，请使用 :mc-cmd:`mc replicate add --replicate` 将 ``"existing-objects"`` 添加到现有复制功能列表中。
+  编辑复制规则时，你必须指定*所有*期望的复制功能。
 
-See :ref:`minio-replication-behavior-existing-objects` for more complete documentation on this behavior.
+有关此行为的更完整文档，请参见 :ref:`minio-replication-behavior-existing-objects`。
 
-Synchronization of Metadata Changes
+元数据变更同步
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO supports :ref:`two-way active-active <minio-bucket-replication-serverside-twoway>` replication configurations, where MinIO synchronizes new and modified objects between a bucket on two MinIO deployments. 
-Starting with :mc:`mc` :minio-git:`RELEASE.2021-05-18T03-39-44Z <mc/releases/tag/RELEASE.2021-05-18T03-39-44Z>`, MinIO by default synchronizes metadata-only changes to a replicated object back to the "source" deployment. 
-Prior to the this update, MinIO did not support synchronizing metadata-only changes to a replicated object.
+MinIO 支持 :ref:`双向 active-active <minio-bucket-replication-serverside-twoway>` 复制配置，即在两个 MinIO 部署上的存储桶之间同步新增和修改后的对象。
+从 :mc:`mc` :minio-git:`RELEASE.2021-05-18T03-39-44Z <mc/releases/tag/RELEASE.2021-05-18T03-39-44Z>` 开始，MinIO 默认会将复制对象的仅元数据变更同步回“源”部署。
+在该更新之前，MinIO 不支持同步复制对象的仅元数据变更。
 
-With metadata synchronization enabled, MinIO resets the object :ref:`replication status <minio-replication-process>` to indicate replication eligibility. 
-Specifically, when an application performs a metadata-only update to an object with the ``REPLICA`` status, MinIO marks the object as ``PENDING`` and eligible for replication.
+启用元数据同步后，MinIO 会重置对象的 :ref:`复制状态 <minio-replication-process>` 以表明其具备复制资格。
+具体而言，当应用对状态为 ``REPLICA`` 的对象执行仅元数据更新时，MinIO 会将对象标记为 ``PENDING`` 并使其具备复制资格。
 
-To disable metadata synchronization, use the :mc-cmd:`mc replicate update --replicate` command and omit ``replica-metadata-sync`` from the replication feature list. 
+若要禁用元数据同步，请使用 :mc-cmd:`mc replicate update --replicate` 命令，并在复制功能列表中省略 ``replica-metadata-sync``。
 
-Replication of Delete Operations
+删除操作复制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO supports replicating delete operations onto the target bucket. 
-Specifically, MinIO can replicate both :s3-docs:`Delete Markers <versioning-workflows.html>` *and* the deletion of specific versioned objects:
+MinIO 支持将删除操作复制到目标存储桶。
+具体来说，MinIO 可以同时复制 :s3-docs:`Delete Markers <versioning-workflows.html>` *以及* 特定版本对象的删除：
 
-- For delete operations on an object, MinIO replication also creates the delete marker on the target bucket. 
+- 对对象执行删除操作时，MinIO 复制也会在目标存储桶创建删除标记。
 
-- For delete operations on versions of an object, MinIO replication also deletes those versions on the target bucket.
+- 对对象版本执行删除操作时，MinIO 复制也会删除目标存储桶中的对应版本。
 
-MinIO does *not* replicate objects deleted due to :ref:`lifecycle management expiration rules <minio-lifecycle-management-expiration>`. 
-MinIO only replicates explicit client-driven delete operations.
+对于因 :ref:`生命周期管理过期规则 <minio-lifecycle-management-expiration>` 被删除的对象，MinIO *不会*进行复制。
+MinIO 仅复制由客户端显式触发的删除操作。
 
-MinIO requires explicitly enabling replication of delete operations using the :mc-cmd:`mc replicate add --replicate` flag. 
-This procedure includes the required flags for enabling replication of delete operations and delete markers.
-See :ref:`minio-replication-behavior-delete` for more complete documentation on this behavior.
+MinIO 要求使用 :mc-cmd:`mc replicate add --replicate` 参数显式启用删除操作复制。
+本流程包含启用删除操作和删除标记复制所需的参数。
+有关此行为的更完整文档，请参见 :ref:`minio-replication-behavior-delete`。
 
-Replication of Encrypted Objects
+加密对象复制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO supports replicating objects encrypted with automatic Server-Side Encryption (SSE-S3). 
-Both the source and destination buckets *must* have automatic SSE-S3 enabled for MinIO to replicate an encrypted object.
+MinIO 支持复制使用自动 Server-Side Encryption (SSE-S3) 加密的对象。
+要复制加密对象，源存储桶和目标存储桶都*必须*启用自动 SSE-S3。
 
-As part of the replication process, MinIO *decrypts* the object on the source bucket and transmits the unencrypted object. 
-The destination MinIO deployment then re-encrypts the object using the destination bucket SSE-S3 configuration.
-MinIO *strongly recommends* :ref:`enabling TLS <minio-TLS>` on both source and destination deployments to ensure the safety of objects during transmission.
+作为复制流程的一部分，MinIO 会在源存储桶上*解密*对象，并传输未加密对象。
+目标 MinIO 部署随后会使用目标存储桶的 SSE-S3 配置重新加密该对象。
+MinIO *强烈建议*在源端和目标端部署上都 :ref:`启用 TLS <minio-TLS>`，以确保对象在传输过程中的安全。
 
-MinIO does *not* support replicating client-side encrypted objects (SSE-C).
+MinIO *不*支持复制客户端侧加密对象（SSE-C）。
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

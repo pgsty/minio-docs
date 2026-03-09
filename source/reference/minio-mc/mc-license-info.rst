@@ -4,25 +4,25 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. mc:: mc license info
 
-Description
------------
+描述
+----
 
 .. start-mc-license-info-desc
 
-The :mc-cmd:`mc license info` command displays information about the MinIO deployment's license status.
-Specifically, whether the deployment uses the AGPLv3 Open Source license of the `MinIO Commercial License <https://min.io/product/subnet?ref=docs>`__.
+:mc-cmd:`mc license info` 命令用于显示 MinIO 部署的许可证状态信息。
+具体来说，用于确认该部署使用的是 AGPLv3 开源许可证，还是 `MinIO Commercial License <https://min.io/product/subnet?ref=docs>`__。
 
 .. end-mc-license-info-desc
 
-You must register your deployment with MinIO |SUBNET| to activate your commercial license.
+你必须在 MinIO |SUBNET| 中注册部署，才能激活商业许可证。
 
-For example, the command returns the following information for an unregistered deployment:
+例如，对于未注册的部署，该命令会返回以下信息：
 
 .. code-block:: shell
 
@@ -33,26 +33,26 @@ For example, the command returns the following information for an unregistered d
 
    Applications must otherwise comply with all the GNU AGPLv3 License & Trademark obligations.
 
-Use :mc-cmd:`mc license register` to associate your deployment with your SUBNET account.
-If you are not already signed up for SUBNET, see the `Registration <https://min.io/pricing?ref=docs>`__ page.
+使用 :mc-cmd:`mc license register` 将你的部署关联到 SUBNET 账户。
+如果你尚未注册 SUBNET，请参阅 `Registration <https://min.io/pricing?ref=docs>`__ 页面。
 
-Examples
---------
+示例
+----
 
-Display the Current License for a Deployment with Alias ``minio1``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示别名为 ``minio1`` 的部署当前许可证
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
    :class: copyable
 
    mc license info minio1
 
-If a deployment uses an expired MinIO Commercial License, the command outputs an error message.
+如果部署使用的是已过期的 MinIO Commercial License，该命令会输出错误信息。
 
-Syntax
-------
+语法
+----
       
-The command has the following syntax:
+该命令的语法如下：
 
 .. code-block:: shell
 
@@ -60,23 +60,23 @@ The command has the following syntax:
                             ALIAS      \
                             [--airgap]
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment.
+   MinIO 部署的 :ref:`alias <alias>`。
    
 .. mc-cmd:: --airgap
    :optional:
 
-   Use in environments where the client machine running the :ref:`minio client <minio-client>` does not have network access to SUBNET (for example, airgapped, firewalled, or similar configuration) to display instructions for how to register the deployment with SUBNET.
+   在运行 :ref:`minio client <minio-client>` 的客户端机器无法通过网络访问 SUBNET 的环境中使用（例如 airgapped、受防火墙限制或类似配置），以显示如何将部署注册到 SUBNET 的说明。
    
-   If the deployment is airgapped, but the local device has network access, you do not need to use the ``--airgap`` flag.
+   如果部署处于 airgapped 环境，但本地设备具备网络访问能力，则无需使用 ``--airgap`` 标志。
 
-Global Flags
-~~~~~~~~~~~~
+全局选项
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

@@ -1,95 +1,95 @@
 .. _minio-data-compression:
 
 ================
-Data Compression
+数据压缩
 ================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 
-Overview
---------
+概述
+----
 
-MinIO Server supports compressing objects to reduce disk usage.
-Objects are compressed on PUT before writing to disk, and uncompressed on GET before they are sent to the client. This makes the compression process transparent to client applications and services.
+MinIO Server 支持对对象进行压缩，以减少磁盘使用量。
+对象在 PUT 时会先压缩再写入磁盘，在 GET 时会先解压再发送给客户端。这样一来，压缩过程对客户端应用程序和服务是透明的。
 
-Depending on the type of data, compression may also increase overall throughput.
-Write throughput for a production deployment is generally 500MB per second or greater per available CPU core in the system.
-Decompression is approximately 1 GB per second or greater for each CPU core.
+根据数据类型的不同，压缩还可能提高整体吞吐量。
+在生产部署中，写入吞吐量通常为系统中每个可用 CPU 核心每秒 500MB 或更高。
+解压吞吐量大约为每个 CPU 核心每秒 1 GB 或更高。
 
-For best results, review MinIO's :ref:`recommended hardware configuration <deploy-minio-distributed-recommendations>` or use |subnet| to work directly with engineers for analyzing compression performance.
+为获得最佳效果，请参阅 MinIO 的 :ref:`推荐硬件配置 <deploy-minio-distributed-recommendations>`，或使用 |subnet| 与工程师直接协作分析压缩性能。
 
 .. _minio-data-compression-default-types:
 
-Default File Types
-~~~~~~~~~~~~~~~~~~
+默认文件类型
+~~~~~~~~~~~~
 
-Data compression is a global option, the configured settings apply to all buckets in a deployment.
-Enabling data compression compresses the following types of data by default:
+数据压缩是全局选项，所配置的设置会应用于部署中的所有存储桶。
+启用数据压缩后，默认会压缩以下类型的数据：
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-data-compression-default-desc
    :end-before: end-minio-data-compression-default-desc
 
-You can control which objects are compressed by specifying the desired file extensions and `media (MIME) types <https://en.wikipedia.org/wiki/Media_type>`__.
+你可以通过指定所需的文件扩展名和 `media (MIME) types <https://en.wikipedia.org/wiki/Media_type>`__ 来控制哪些对象会被压缩。
 
-.. admonition:: Existing objects are not modified
+.. admonition:: 现有对象不会被修改
    :class: note
 
-   Enabling, disabling, or updating a deployment's compression settings does not modify existing objects.
-   New objects are compressed according to the settings in effect at the time they are created.
+   启用、禁用或更新某个部署的压缩设置时，不会修改现有对象。
+   新对象会根据其创建时生效的设置进行压缩。
 
 .. _minio-data-compression-excluded-types:
 
-Excluded File Types
-~~~~~~~~~~~~~~~~~~~
+排除的文件类型
+~~~~~~~~~~~~~~
 
-Some data cannot be effectively compressed.
-For example: video, already compressed data, or files less than 4KiB.
-MinIO does not compress common incompressible file types, even if they are specified in the compression configuration.
+某些数据无法被有效压缩。
+例如：视频、已经压缩过的数据，或小于 4KiB 的文件。
+MinIO 不会压缩常见的不可压缩文件类型，即使它们已在压缩配置中指定。
 
-Objects of these types are never compressed:
+这些类型的对象永远不会被压缩：
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-data-compression-default-excluded-desc
    :end-before: end-minio-data-compression-default-excluded-desc
 
 
-Data Compression and Encryption
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+数据压缩与加密
+~~~~~~~~~~~~~~
 
-MinIO supports encrypting compressed objects but recommends against combining compression and encryption without a prior risk assessment.
-Before enabling encryption for compressed objects, carefully consider the security needs of your environment.
+MinIO 支持对压缩后的对象进行加密，但不建议在未事先进行风险评估的情况下同时启用压缩和加密。
+在为压缩对象启用加密之前，请仔细评估你的环境中的安全需求。
 
-See `Transparent Data Compression on MinIO <https://blog.min.io/transparent-data-compression/>`__ for more about combining compression and encryption.
-|subnet| users can `log in <https://subnet.min.io/?ref=docs>`__ and engage with our engineering and security teams to review encryption options.
+有关如何同时使用压缩和加密的更多信息，请参阅 `Transparent Data Compression on MinIO <https://blog.min.io/transparent-data-compression/>`__。
+|subnet| 用户可以 `log in <https://subnet.min.io/?ref=docs>`__ 并与我们的工程和安全团队沟通，以评估加密选项。
 
 
-Tutorials
----------
+教程
+----
 
-Enable Data Compression
-~~~~~~~~~~~~~~~~~~~~~~~
+启用数据压缩
+~~~~~~~~~~~~
 
-To enable data compression, use :mc-cmd:`mc admin config set` to set the :mc-conf:`compression` key :mc-conf:`~compression.enable` option to ``on``.
+要启用数据压缩，请使用 :mc-cmd:`mc admin config set` 将 :mc-conf:`compression` 键的 :mc-conf:`~compression.enable` 选项设置为 ``on``。
 
-The following enables compression for new objects of the :ref:`default types <minio-data-compression-default-types>`:
+以下命令会为 :ref:`默认类型 <minio-data-compression-default-types>` 的新对象启用压缩：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config set ALIAS compression enable=on
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-Existing uncompressed objects are not modified.
-To configure which extensions and types to compress, see :ref:`minio-data-compression-configure-objects`.
+现有的未压缩对象不会被修改。
+要配置需要压缩的扩展名和类型，请参阅 :ref:`minio-data-compression-configure-objects`。
 
-To view the current compression settings:
+要查看当前的压缩设置：
 
 .. code-block:: shell
    :class: copyable
@@ -97,107 +97,107 @@ To view the current compression settings:
    mc admin config get ALIAS compression
 
 
-Disable Data Compression
-~~~~~~~~~~~~~~~~~~~~~~~~
+禁用数据压缩
+~~~~~~~~~~~~
 
-To disable data compression, use :mc-cmd:`mc admin config set` to set the :mc-conf:`compression` key :mc-conf:`~compression.enable` option to ``off``:
+要禁用数据压缩，请使用 :mc-cmd:`mc admin config set` 将 :mc-conf:`compression` 键的 :mc-conf:`~compression.enable` 选项设置为 ``off``：
 
-The following disables data compression for new objects:
+以下命令会禁用新对象的数据压缩：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config set ALIAS compression enable=off
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-Existing compressed objects are not modified.
+现有的已压缩对象不会被修改。
 
 .. _minio-data-compression-configure-objects:
 
-Configure Which Objects to Compress
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+配置要压缩哪些对象
+~~~~~~~~~~~~~~~~~~
 
-Configure the objects to compress by specifying the desired file extensions and media types in :mc-conf:`~compression.extensions` or :mc-conf:`~compression.mime_types` arguments.
+通过在 :mc-conf:`~compression.extensions` 或 :mc-conf:`~compression.mime_types` 参数中指定所需的文件扩展名和媒体类型，来配置需要压缩的对象。
 
-The default data compression configuration compresses the following types of data:
+默认的数据压缩配置会压缩以下类型的数据：
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-data-compression-default-desc
    :end-before: end-minio-data-compression-default-desc
 
-.. admonition:: Default excluded extensions and types are never compressed
+.. admonition:: 默认排除的扩展名和类型永远不会被压缩
    :class: note
 
-   Some objects cannot be efficiently compressed.
-   MinIO will not attempt to compress these objects, even if they are specified in :mc-conf:`~compression.extensions` or :mc-conf:`~compression.mime_types` arguments.
-   See :ref:`minio-data-compression-excluded-types` for a list of excluded types.
+   某些对象无法被高效压缩。
+   即使这些对象已在 :mc-conf:`~compression.extensions` 或 :mc-conf:`~compression.mime_types` 参数中指定，MinIO 也不会尝试压缩它们。
+   排除类型列表请参阅 :ref:`minio-data-compression-excluded-types`。
 
-The sections below describe how to configure compression for the desired file extensions and media types.
+以下各节介绍如何为所需的文件扩展名和媒体类型配置压缩。
 
-Compress All Compressible Objects
-+++++++++++++++++++++++++++++++++
+压缩所有可压缩对象
+++++++++++++++++++
 
-To compress all objects except the :ref:`default excluded types <minio-data-compression-excluded-types>`, use :mc-cmd:`mc admin config set` to set the :mc-conf:`compression` key :mc-conf:`~compression.extensions` and :mc-conf:`~compression.mime_types` options to empty lists:
+要压缩除 :ref:`默认排除类型 <minio-data-compression-excluded-types>` 之外的所有对象，请使用 :mc-cmd:`mc admin config set` 将 :mc-conf:`compression` 键的 :mc-conf:`~compression.extensions` 和 :mc-conf:`~compression.mime_types` 选项设置为空列表：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config set ALIAS compression extensions= mime_types=
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-  
-Compress Objects by File Extension
-++++++++++++++++++++++++++++++++++
 
-To compress objects with certain file extensions, use :mc-cmd:`mc admin config set` to set the desired file extensions in an :mc-conf:`~compression.extensions` argument.
+按文件扩展名压缩对象
++++++++++++++++++++++
 
-The following command compresses files with the extensions ``.bin`` and ``.txt``:
+要压缩具有特定文件扩展名的对象，请使用 :mc-cmd:`mc admin config set` 在 :mc-conf:`~compression.extensions` 参数中设置所需的文件扩展名。
+
+以下命令会压缩扩展名为 ``.bin`` 和 ``.txt`` 的文件：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config set ALIAS compression extensions=".bin, .txt"
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-The new list of file extensions replaces the previous list.
-To add or remove an extension, repeat the :mc-conf:`~compression.extensions` command with the complete list of extensions to compress.
+新的文件扩展名列表会替换之前的列表。
+如果要添加或删除扩展名，请使用完整的待压缩扩展名列表重新执行 :mc-conf:`~compression.extensions` 命令。
 
-The following adds ``.pdf`` to the list of file extensions from the previous example:
+以下命令会将 ``.pdf`` 添加到上一个示例中的文件扩展名列表：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config set ALIAS compression extensions=".bin, .txt, .pdf"
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
 
-Compress Objects by Media Type
-++++++++++++++++++++++++++++++
+按媒体类型压缩对象
+++++++++++++++++++
 
-To compress objects of certain media types, use :mc-cmd:`mc admin config set` to set the :mc-conf:`compression` key :mc-conf:`~compression.mime_types` option to a list of the desired types.
+要压缩特定媒体类型的对象，请使用 :mc-cmd:`mc admin config set` 将 :mc-conf:`compression` 键的 :mc-conf:`~compression.mime_types` 选项设置为所需类型的列表。
 
-The following example compresses files of types ``application/json`` and ``image/bmp``:
+以下示例会压缩类型为 ``application/json`` 和 ``image/bmp`` 的文件：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config set ALIAS compression mime_types="application/json, image/bmp"
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-The new list of media types replaces the previous list.
-To add or remove a type, repeat the :mc-conf:`~compression.mime_types` command with the complete list of types to compress.
+新的媒体类型列表会替换之前的列表。
+如果要添加或删除类型，请使用完整的待压缩类型列表重新执行 :mc-conf:`~compression.mime_types` 命令。
 
-You can use ``*`` to specify all subtypes of a single media type.
-The following command adds all ``text`` subtypes to the list from the previous example:
+你可以使用 ``*`` 指定某一媒体类型下的所有子类型。
+以下命令会将所有 ``text`` 子类型添加到上一个示例中的列表：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config set ALIAS compression mime_types="application/json, image/bmp, text/*"
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。

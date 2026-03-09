@@ -1,165 +1,165 @@
 .. _minio-restore-hardware-failure-site:
 
-=====================
-Site Failure Recovery
-=====================
+============
+站点故障恢复
+============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO can make the loss of an entire site, while significant, a relatively minor incident.
-Site recovery depends on the replication option you use for the site.
+尽管整个站点丢失属于重大事故，MinIO 仍可将其影响控制在相对较小且可恢复的范围内。
+站点恢复方式取决于该站点使用的复制方案。
 
 .. list-table::
    :widths: 25 75
    :width: 100%
 
    * - Site Replication
-     - Total restoration of IAM configurations, bucket configurations, and data from the healthy peer site(s)
+     - 从健康对等站点完整恢复 IAM 配置、存储桶配置和数据
    * - Bucket Replication
-     - Data restoration of objects and metadata from a healthy remote location for each bucket configured for replication
+     - 对每个已配置复制的存储桶，从健康远端位置恢复对象和元数据
    * - :mc:`mc mirror`
-     - Data restoration of objects only from a healthy remote location with no versioning
+     - 仅从健康远端位置恢复对象数据，不包含版本控制信息
 
-Site replication healing automatically adds IAM settings, buckets, bucket configurations, and objects from the existing site(s) to the new site with no further action required.
+站点复制自愈会自动将现有站点中的 IAM 设置、存储桶、存储桶配置和对象添加到新站点，无需额外操作。
 
-You cannot configure site replication if any bucket replication rules remain in place on other healthy sites.
-Bucket replication is mutually exclusive with site replication.
+如果其他健康站点上仍保留任何存储桶复制规则，则无法配置站点复制。
+存储桶复制与站点复制互斥。
 
-If you are switching from using bucket replication to using site replication, you must first remove all bucket replication rules from the healthy site prior to setting up site replication.
+如果你准备从存储桶复制切换到站点复制，则必须先在健康站点上移除所有存储桶复制规则，然后再配置站点复制。
 
-Restore an Unhealthy Peer to Site Replication
----------------------------------------------
+将不健康对等站点恢复到 Site Replication
+----------------------------------------
 
 .. important::
 
-   The :minio-release:`RELEASE.2023-01-02T09-40-09Z` MinIO server release includes important fixes for removing a downed site in replication configurations containing three or more peer sites.
+   :minio-release:`RELEASE.2023-01-02T09-40-09Z` 版 MinIO server 包含重要修复，用于在包含三个或更多对等站点的复制配置中移除已下线站点。
 
-   For deployments configured for site replication, plan to :ref:`test and upgrade <minio-upgrade>` all peer sites to the specified release.
-   In the event of a site failure, you can update the remaining healthy sites to the specified version and use this procedure.
+   对于已配置站点复制的部署，请规划将所有对等站点 :ref:`测试并升级 <minio-upgrade>` 到该版本。
+   一旦发生站点故障，你可以先将剩余健康站点更新到该指定版本，再执行本流程。
 
-:ref:`Site replication <minio-site-replication-overview>` keeps two or more MinIO deployments in sync with IAM policies, buckets, bucket configurations, objects, and object metadata.
-If a peer site fails, such as due to a major disaster or long power outage, you can use the remaining healthy site(s) to restore the :ref:`replicable data <minio-site-replication-what-replicates>`.
+:ref:`站点复制 <minio-site-replication-overview>` 可让两个或更多 MinIO 部署在 IAM 策略、存储桶、存储桶配置、对象及对象元数据方面保持同步。
+如果某个对等站点由于重大灾害或长期停电等原因失效，你可以使用剩余健康站点来恢复 :ref:`可复制数据 <minio-site-replication-what-replicates>`。
 
-The following procedure can restore data in scenarios where :ref:`site replication <minio-site-replication-overview>` was active prior to the site loss.
-This procedure assumes a *total loss* of one or more peer sites versus replication lag or delays due to latency or transient deployment downtime.
+以下流程适用于站点丢失前已启用 :ref:`站点复制 <minio-site-replication-overview>` 的场景，并可用于恢复数据。
+本流程假设一个或多个对等站点已 *完全丢失*，而不是由于复制滞后、网络延迟或部署短暂停机所导致的延后。
 
-#. Remove the failed site from the MinIO site replication configuration using the :mc-cmd:`mc admin replicate rm` command with the ``--force`` option. 
+#. 使用带 ``--force`` 选项的 :mc-cmd:`mc admin replicate rm` 命令，将故障站点从 MinIO 站点复制配置中移除。
 
-   The following command force-removes an unhealthy peer site from the replication configuration:
+   以下命令会强制将一个不健康的对等站点从复制配置中移除：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin replicate rm HEALTHY_PEER UNHEALTHY_PEER --force
 
-   - Replace ``HEALTHY_PEER`` with the :ref:`alias <alias>` of any healthy peer in the replication configuration
+   - 将 ``HEALTHY_PEER`` 替换为复制配置中任一健康对等站点的 :ref:`alias <alias>`
 
-   - Replace ``UNHEALTHY_PEER`` with the alias of the unhealthy peer site
+   - 将 ``UNHEALTHY_PEER`` 替换为不健康对等站点的 alias
 
-   All healthy peers in the site replication configuration update to remove the unhealthy peer automatically.
-   You can use the :mc-cmd:`mc admin replicate info` command to verify the new site replication configuration.
+   站点复制配置中的所有健康对等站点都会自动更新并移除该不健康对等站点。
+   你可以使用 :mc-cmd:`mc admin replicate info` 命令验证新的站点复制配置。
 
-#. Deploy a new MinIO site following the :ref:`site replication requirements <minio-expand-site-replication>`.
+#. 按照 :ref:`站点复制要求 <minio-expand-site-replication>` 部署一个新的 MinIO 站点。
 
-   - Do not upload any data or otherwise configure the deployment beyond the stated requirements.
-   - Validate that the new MinIO deployment functions normally and has bidirectional connectivity to the other peer sites.
-   - Ensure the new site matches the server version on the existing peer sites
+   - 不要上传任何数据，也不要在既定要求之外对部署进行其他配置。
+   - 验证新的 MinIO 部署运行正常，并且与其他对等站点具备双向连通性。
+   - 确保新站点与现有对等站点使用相同的 server 版本
 
    .. warning::
 
-      The :mc-cmd:`mc admin replicate rm --force` command only operates on the online or healthy nodes in the site replication configuration.
-      The removed offline MinIO deployment retains its original replication configuration, such that if the deployment resumes normal operations it would continue replication operations to its configured peer sites.
+      :mc-cmd:`mc admin replicate rm --force` 命令只会作用于站点复制配置中在线或健康的节点。
+      被移除的离线 MinIO 部署仍会保留其原始复制配置，因此如果该部署恢复正常运行，它仍会继续向已配置的对等站点执行复制操作。
 
-      If you plan to re-use the hardware for the site replication configuration, you **must** completely wipe the drives for the deployment before re-initializing MinIO and adding the site back to the replication configuration.
+      如果你计划复用这些硬件重新加入站点复制配置，那么在重新初始化 MinIO 并将该站点重新加入复制配置之前，必须彻底清空该部署的驱动器。
 
-#. :ref:`Add the replacement peer site <minio-expand-site-replication>` to the replication configuration.
+#. 将 :ref:`替换后的对等站点加入 <minio-expand-site-replication>` 复制配置。
 
-   Use the :mc-cmd:`mc admin replicate add` command to update the replication configuration with the new site:
+   使用 :mc-cmd:`mc admin replicate add` 命令，将新站点加入复制配置：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin replicate add HEALTHY_PEER NEW_PEER
 
-   - Replace ``HEALTHY_PEER`` with the :ref:`alias <alias>` of any healthy peer in the replication configuration
+   - 将 ``HEALTHY_PEER`` 替换为复制配置中任一健康对等站点的 :ref:`alias <alias>`
 
-   - Replace ``NEW_PEER`` with the alias of the new peer
+   - 将 ``NEW_PEER`` 替换为新对等站点的 alias
 
-   All healthy peers in the site replication configuration update for the new peer automatically.
-   You can use the :mc-cmd:`mc admin replicate info` command to verify the new site replication configuration.
+   站点复制配置中的所有健康对等站点都会自动更新，将新对等站点纳入配置。
+   你可以使用 :mc-cmd:`mc admin replicate info` 命令验证新的站点复制配置。
 
-#. Resynchronize the new peer with :mc-cmd:`mc admin replicate resync`.
+#. 使用 :mc-cmd:`mc admin replicate resync` 对新对等站点执行重同步。
 
    .. code-block:: shell
       :class: copyable
 
       mc admin replicate resync start HEALTHY_PEER NEW_PEER
 
-   - Replace ``HEALTHY_PEER`` with the :ref:`alias <alias>` of any healthy peer in the replication configuration
+   - 将 ``HEALTHY_PEER`` 替换为复制配置中任一健康对等站点的 :ref:`alias <alias>`
 
-   - Replace ``NEW_PEER`` with the alias of the new peer
+   - 将 ``NEW_PEER`` 替换为新对等站点的 alias
 
 
-#. Validate the replication status.
+#. 验证复制状态。
 
-   Use the following commands to track the replication status:
+   使用以下命令跟踪复制状态：
 
-   - :mc-cmd:`mc admin replicate status` - provides overall status and progress of replication
-   - :mc:`mc replicate status` - provides bucket-level and global replication status
+   - :mc-cmd:`mc admin replicate status` - 提供复制的整体状态和进度
+   - :mc:`mc replicate status` - 提供存储桶级和全局复制状态
 
-Active Bucket Replication Resynchronization
--------------------------------------------
+主动式存储桶复制重同步
+----------------------
 
-For scenarios where :ref:`bucket replication <minio-bucket-replication>` was in place prior to the failure, you can use :mc:`mc replicate resync` to restore data to a new site.
-Create a new site to replace the failed deployment, then synchronize the data from an existing, healthy, bucket replication-enabled deployment to the new site.
+对于故障发生前已启用 :ref:`存储桶复制 <minio-bucket-replication>` 的场景，你可以使用 :mc:`mc replicate resync` 将数据恢复到新站点。
+先创建一个新站点替换故障部署，然后将现有健康、且已启用存储桶复制的部署中的数据同步到新站点。
 
-#. Deploy a new MinIO site.
-#. Set up IAM and users as needed.
-#. On the site with data, create a new ``remote target`` using the :mc-cmd:`mc admin bucket remote add` command and record the ARN from the output.
-#. From the site with the data, use the :mc-cmd:`mc replicate resync start` command with the ARN from the previous command to rebuild the bucket on the new site.
-#. Wait for re-synchronization to complete (use :mc-cmd:`mc replicate resync status` to check).
-#. Set up bucket replication rule(s) from the new MinIO site to the existing target bucket(s).
-#. `(Optional)` Delete the bucket replication rules from the target deployment(s) to restore an active-passive replication scenario.
+#. 部署一个新的 MinIO 站点。
+#. 按需配置 IAM 和用户。
+#. 在有数据的站点上，使用 :mc-cmd:`mc admin bucket remote add` 命令创建新的 ``remote target``，并记录输出中的 ARN。
+#. 在有数据的站点上，使用上一步命令返回的 ARN 作为参数执行 :mc-cmd:`mc replicate resync start`，在新站点上重建存储桶。
+#. 等待重同步完成（可使用 :mc-cmd:`mc replicate resync status` 检查）。
+#. 从新的 MinIO 站点向现有目标存储桶配置存储桶复制规则。
+#. `(Optional)` 删除目标部署中的存储桶复制规则，以恢复 active-passive 复制场景。
 
-Passive Bucket Replication Resynchronization
---------------------------------------------
+被动式存储桶复制重同步
+----------------------
 
-:ref:`Bucket replication <minio-bucket-replication>` can directly restore the site contents by performing a replication from the target bucket(s) to a new MinIO site.
+:ref:`存储桶复制 <minio-bucket-replication>` 可以通过将目标存储桶中的数据复制到新的 MinIO 站点，直接恢复站点内容。
 
-As a passive process, bucket replication may not perform as quickly as desired for a site recovery scenario.
+作为被动过程，存储桶复制在站点恢复场景中可能无法达到理想的恢复速度。
 
-Bucket replication relies on the standard replication :ref:`scanner <minio-concepts-scanner>` queue, which does not take priority over other processes.
-For recovery procedures with stricter SLA/SLO, use the active bucket replication process with :mc:`mc replicate resync` command as described above.
+存储桶复制依赖标准复制 :ref:`scanner <minio-concepts-scanner>` 队列，而该队列不会优先于其他过程执行。
+如果恢复流程对 SLA/SLO 要求更严格，请按前文所述使用基于 :mc:`mc replicate resync` 命令的主动式存储桶复制流程。
 
-Bucket replication rules copy the object, its version ID, versions, and other metadata to the target bucket.
-MinIO can restore the object with all of these attributes to a new MinIO site if bucket replication had already been in use prior to the site loss.
+存储桶复制规则会将对象、其 version ID、版本以及其他元数据复制到目标存储桶。
+如果站点丢失前已启用存储桶复制，那么 MinIO 可以将带有这些属性的对象恢复到新的 MinIO 站点。
 
-#. Deploy a new MinIO site.
-#. Set up IAM and users as needed.
-#. On the remaining target bucket deployment(s), create bucket replication rule(s) for each bucket to the new MinIO site.
-#. Wait for replication to complete.
-#. Set up bucket replication rule(s) from the new MinIO site to the existing target bucket(s).
-#. `(Optional)` Delete the bucket replication rules from the target deployment(s) to restore an active-passive replication scenario.
+#. 部署一个新的 MinIO 站点。
+#. 按需配置 IAM 和用户。
+#. 在剩余的目标存储桶部署上，为每个存储桶创建指向新 MinIO 站点的存储桶复制规则。
+#. 等待复制完成。
+#. 从新的 MinIO 站点向现有目标存储桶配置存储桶复制规则。
+#. `(Optional)` 删除目标部署中的存储桶复制规则，以恢复 active-passive 复制场景。
 
-   Do not delete the bucket replication rules from the deployments used to recover data if you prefer to keep an active-active replication between the buckets.
-   In active-active replication, changes to the objects at either location affect the objects at the other location.
+   如果你希望继续保持存储桶之间的 active-active 复制，请不要删除用于恢复数据的这些部署中的存储桶复制规则。
+   在 active-active 复制中，任一位置上对象的变更都会影响另一位置上的对象。
 
-Mirroring
----------
+镜像
+----
 
-MinIO's mirroring copies an object from any S3 compatible storage system.
+MinIO 的镜像（mirroring）可以从任意兼容 S3 的存储系统复制对象。
 
-Mirroring only copies the latest version of each object and does not include versioning metadata, regardless of the source.
-You cannot restore those attributes with this method.
+无论源端如何，镜像（mirroring）只会复制每个对象的最新版本，不包含版本控制元数据。
+因此你无法通过这种方式恢复这些属性。
 
-Use :mc:`mc mirror` in situations where you need to restore only the latest version of an object. 
-Use bucket replication or site replication where those methods were already in use if you are copying from another MinIO deployment and wish to restore the object's version history and version metadata.
+当你只需要恢复对象的最新版本时，请使用 :mc:`mc mirror`。
+如果你是从另一个 MinIO 部署复制数据，并希望恢复对象的版本历史及版本元数据，则应在这些机制原本已启用的前提下使用存储桶复制或站点复制。
 
-#. Deploy a new MinIO site.
-#. Set up IAM and users as needed.
-#. Create buckets on the new site.
-#. Use the :mc:`mc cp` CLI command to copy the contents from the mirror location to the new MinIO site.
+#. 部署一个新的 MinIO 站点。
+#. 按需配置 IAM 和用户。
+#. 在新站点上创建存储桶。
+#. 使用 :mc:`mc cp` CLI 命令，将镜像位置中的内容复制到新的 MinIO 站点。

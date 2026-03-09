@@ -3,17 +3,17 @@
 .. _minio-server-config-bucket-notification-webhook:
 
 =====================================
-Webhook Service Notification Settings
+Webhook 服务通知设置
 =====================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for configuring an Webhook service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
-See :ref:`minio-bucket-notifications-publish-webhook` for a tutorial on using these settings.
+本页记录了将 Webhook 服务配置为 :ref:`存储桶通知 <minio-bucket-notifications>` 目标所需的设置。
+有关如何使用这些设置的教程，请参见 :ref:`minio-bucket-notifications-publish-webhook`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -23,15 +23,15 @@ See :ref:`minio-bucket-notifications-publish-webhook` for a tutorial on using th
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Multiple Webhook Service Targets
---------------------------------
+多个 Webhook 服务目标
+---------------------
 
-You can specify multiple Webhook service endpoints by appending a unique identifier ``_ID`` for each set of related Webhook settings on to the top level key. 
-For example, the following commands set two distinct Webhook service endpoints as ``PRIMARY`` and ``SECONDARY`` respectively:
+可通过在顶层键后为每组相关 Webhook 设置追加唯一标识符 ``_ID`` 来指定多个 Webhook 服务端点。
+例如，以下命令分别将两个不同的 Webhook 服务端点设置为 ``PRIMARY`` 和 ``SECONDARY``：
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -43,7 +43,7 @@ For example, the following commands set two distinct Webhook service endpoints a
          export MINIO_NOTIFY_WEBHOOK_ENABLE_SECONDARY="on"
          export MINIO_NOTIFY_WEBHOOK_ENDPOINT_SECONDARY="https://webhook1.example.net"
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
       :sync: config
 
       .. code-block:: shell
@@ -56,35 +56,35 @@ For example, the following commands set two distinct Webhook service endpoints a
             endpoint="https://webhook2.example.net
             [ARGUMENT=VALUE ...]
 
-Settings
---------
+设置
+----
 
-Enable
-~~~~~~
+启用
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_WEBHOOK_ENABLE
 
-      Specify ``on`` to enable publishing bucket notifications to a Webhook service endpoint.
+      指定 ``on`` 以启用将存储桶通知发布到 Webhook 服务端点。
 
-      Defaults to ``off``.
+      默认为 ``off``。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_webhook
 
-      The top-level configuration key for defining an Webhook service endpoint for use with :ref:`MinIO bucket notifications <minio-bucket-notifications>`.
+      用于定义 Webhook 服务端点的顶层配置键，可用于 :ref:`MinIO 存储桶通知 <minio-bucket-notifications>`。
    
-      Use :mc-cmd:`mc admin config set` to set or update an Webhook service endpoint.
-      The :mc-conf:`~notify_webhook.endpoint` argument is *required* for each target.
-      Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+      使用 :mc-cmd:`mc admin config set` 设置或更新 Webhook 服务端点。
+      :mc-conf:`~notify_webhook.endpoint` 参数对每个目标均为 *必需*。
+      将其他可选参数指定为以空白字符（``" "``）分隔的列表。
    
       .. code-block:: shell
          :class: copyable
@@ -93,78 +93,78 @@ Enable
            endpoint="https://webhook.example.net"
            [ARGUMENT="VALUE"] ... \
 
-Endpoint
-~~~~~~~~
+端点
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_WEBHOOK_ENDPOINT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_webhook endpoint
          :delimiter: " "
 
-Specify the URL for the webhook service.
+指定 Webhook 服务的 URL。
 
 .. include:: /includes/linux/minio-server.rst
    :start-after: start-notify-target-online-desc
    :end-before: end-notify-target-online-desc
 
-Auth Token
-~~~~~~~~~~
+认证令牌
+~~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_WEBHOOK_AUTH_TOKEN
 
-      An authentication token of the appropriate type for the endpoint.
-      Omit for endpoints which do not require authentication.
+      适用于该端点类型的认证令牌。
+      对于不需要认证的端点可省略。
    
-      To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-      Depending on the endpoint, you may need to include additional information.
+      为支持多种令牌类型，MinIO 会使用*完全按所给内容*的值来构造请求认证头。
+      根据端点要求，你可能需要包含额外信息。
    
-      For example, for a Bearer token, prepend ``Bearer``:
+      例如，对于 Bearer 令牌，请在前面加上 ``Bearer``：
    
       .. code-block:: shell
          :class: copyable
    
          export MINIO_NOTIFY_WEBHOOK_AUTH_TOKEN_myendpoint="Bearer 1a2b3c4f5e"
    
-      Modify the value according to the endpoint requirements.
-      A custom authentication format could resemble the following:
+      请根据端点要求调整该值。
+      自定义认证格式可能类似如下：
    
       .. code-block:: shell
          :class: copyable
    
          export MINIO_NOTIFY_WEBHOOK_AUTH_TOKEN_xyz="ServiceXYZ 1a2b3c4f5e"
    
-      Consult the documentation for the desired service for more details.
+      更多详情请查阅目标服务的文档。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_webhook auth_token
          :delimiter: " "
    
-         An authentication token of the appropriate type for the endpoint.
-         Omit for endpoints which do not require authentication.
+         适用于该端点类型的认证令牌。
+         对于不需要认证的端点可省略。
    
-         To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-         Depending on the endpoint, you may need to include additional information.
+         为支持多种令牌类型，MinIO 会使用*完全按所给内容*的值来构造请求认证头。
+         根据端点要求，你可能需要包含额外信息。
    
-         For example, for a Bearer token, prepend ``Bearer``:
+         例如，对于 Bearer 令牌，请在前面加上 ``Bearer``：
    
          .. code-block:: shell
             :class: copyable
@@ -173,8 +173,8 @@ Auth Token
    	       endpoint="https://webhook-1.example.net"  \
                   auth_token="Bearer 1a2b3c4f5e"
    
-         Modify the value according to the endpoint requirements.
-         A custom authentication format could resemble the following:
+         请根据端点要求调整该值。
+         自定义认证格式可能类似如下：
    
          .. code-block:: shell
             :class: copyable
@@ -183,91 +183,91 @@ Auth Token
                   endpoint="https://webhook-1.example.net"  \
                   auth_token="ServiceXYZ 1a2b3c4f5e"
    
-         Consult the documentation for the desired service for more details.
+         更多详情请查阅目标服务的文档。
    
          .. versionchanged:: RELEASE.2023-06-23T20-26-00Z
    
-         MinIO redacts this value when returned as part of :mc-cmd:`mc admin config get`.
+         当该值作为 :mc-cmd:`mc admin config get` 的返回内容的一部分时，MinIO 会将其打码。
 
-Queue Directory
-~~~~~~~~~~~~~~~
+队列目录
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_WEBHOOK_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_webhook queue_dir
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径以启用 MinIO 针对未投递消息的持久化事件存储，例如 ``/opt/minio/events``。
 
-MinIO stores undelivered events in the specified store while the webhook service is offline and replays the stored events when connectivity resumes.
+当 Webhook 服务离线时，MinIO 会将未投递事件存储到指定存储中，并在连接恢复后重放这些已存储事件。
 
-Queue Limit
-~~~~~~~~~~~
+队列上限
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_WEBHOOK_QUEUE_LIMIT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_webhook queue_limit
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. 
-Defaults to ``100000``.
+指定未投递消息的最大上限。
+默认为 ``100000``。
 
-Client Certificate
-~~~~~~~~~~~~~~~~~~
+客户端证书
+~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_WEBHOOK_CLIENT_CERT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_webhook client_cert
          :delimiter: " "
 
-Specify the path to the client certificate to use for performing mTLS authentication to the webhook service.
+指定用于向 Webhook 服务执行 mTLS 认证的客户端证书路径。
 
-Client Key
+客户端密钥
 ~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_WEBHOOK_CLIENT_KEY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_webhook client_key
          :delimiter: " "
 
-Specify the path to the client private key to use for performing mTLS authentication to the webhook service.
+指定用于向 Webhook 服务执行 mTLS 认证的客户端私钥路径。

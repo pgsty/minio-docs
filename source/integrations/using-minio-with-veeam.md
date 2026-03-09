@@ -1,90 +1,90 @@
-# Using MinIO with Veeam
+# 将 MinIO 与 Veeam 搭配使用
 
-When using Veeam Backup and Replication, you can use S3 compatible object storage such as MinIO as a capacity tier for backups.  This disaggregates storage for the Veeam infrastructure and allows you to retain control of your data. With the ease of use of setup and administration of MinIO, it allows a Veeam backup admin to easily deploy their own object store for capacity tiering.
+在使用 Veeam Backup and Replication 时，可以将 MinIO 这类 S3 兼容对象存储用作备份的容量层。这会将 Veeam 基础设施中的存储解耦，并让你继续掌控自己的数据。借助 MinIO 在部署与管理上的易用性，Veeam 备份管理员可以轻松部署自己的对象存储用于容量分层。
 
-## Prerequisites
+## 前置条件
 
-- One or both of Veeam Backup and Replication with support for S3 compatible object store (e.g. 9.5.4) and Veeam Backup for Office365 (VBO)
-- MinIO object storage set up per <https://minio.pigsty.io/index.html#procedure>
-- Veeam requires TLS connections to the object storage.  This can be configured per <https://minio.pigsty.io/operations/network-encryption.html>
-- The S3 bucket, Access Key and Secret Key have to be created before and outside of Veeam.
-- Configure the MinIO Client for the Veeam MinIO endpoint - <https://minio.pigsty.io/reference/minio-mc.html>
+- 安装以下一个或两个产品：支持 S3 兼容对象存储的 Veeam Backup and Replication（例如 9.5.4），以及 Veeam Backup for Office365（VBO）
+- 按照 <https://minio.pigsty.io/index.html#procedure> 完成 MinIO 对象存储部署
+- Veeam 要求到对象存储的连接使用 TLS。可按 <https://minio.pigsty.io/operations/network-encryption.html> 进行配置
+- 必须在 Veeam 之外、且在接入前先创建好 S3 存储桶、Access Key 和 Secret Key。
+- 为 Veeam 对接的 MinIO endpoint 配置 MinIO Client：<https://minio.pigsty.io/reference/minio-mc.html>
 
-## Setting up an S3 compatible object store for Veeam Backup and Replication
+## 为 Veeam Backup and Replication 设置 S3 兼容对象存储
 
-### Create a bucket for Veeam backups
+### 为 Veeam 备份创建 bucket
 
-Create a bucket for Veeam Backup, e.g.,
+为 Veeam Backup 创建 bucket，例如：
 
 ```
 mc mb myminio/veeambackup
 ```
 
-> NOTE: For Veeam Backup with Immutability, create the bucket with object lock enabled, e.g.,
+> NOTE: 对于启用 Immutability 的 Veeam Backup，请在创建 bucket 时启用 object lock，例如：
 
 ```
 mc mb -l myminio/veeambackup
 ```
 
-> Object locking requires erasure coding enabled on the minio server. For more information see <https://minio.pigsty.io/operations/concepts/erasure-coding.html>.
+> Object lock 依赖 MinIO Server 启用 erasure coding。更多信息见 <https://minio.pigsty.io/operations/concepts/erasure-coding.html>。
 
-### Add MinIO as an object store for Veeam
+### 将 MinIO 添加为 Veeam 的对象存储
 
-Follow the steps from the Veeam documentation for adding MinIO as an object store - <https://helpcenter.veeam.com/docs/backup/vsphere/adding_s3c_object_storage.html?ver=100>
+按照 Veeam 文档中的步骤将 MinIO 添加为对象存储：<https://helpcenter.veeam.com/docs/backup/vsphere/adding_s3c_object_storage.html?ver=100>
 
-For Veeam Backup with Immutability, choose the amount of days you want to make backups immutable for
+对于启用 Immutability 的 Veeam Backup，选择希望备份保持不可变的天数
 
 ![Choose Immutability Days for Object Store](/images/integrations/veeam/object_store_immutable_days.png)
 
-### Creating the Scale-out Backup Repository
+### 创建 Scale-out Backup Repository
 
-- Under the Backup Infrastructure view, click on Scale-out Repositories and click the Add Scale-out Repository button on the ribbon.
+- 在 Backup Infrastructure 视图下，点击 Scale-out Repositories，然后在功能区点击 Add Scale-out Repository 按钮。
 
-- Follow the on screen wizard
+- 按照屏幕向导完成配置
 
-- On the Capacity Tier screen, check the box to Extend scale-out backup repository capacity with object storage checkbox and select the object storage. If you want to be able to test backup data immediately after a job is run, under the object storage selection, check the "Copy" box and uncheck the "Move" box.
+- 在 Capacity Tier 页面，勾选 Extend scale-out backup repository capacity with object storage 复选框并选择对象存储。如果你希望作业运行后可立即测试备份数据，请在对象存储选择下勾选 "Copy" 并取消勾选 "Move"。
 
-### Create a backup job
+### 创建备份作业
 
-#### Backup Virtual Machines with Veeam Backup and Replication
+#### 使用 Veeam Backup and Replication 备份虚拟机
 
-- Under Home > Jobs > Backup in Navigation Pane, click on Backup Job button in the ribbon and choose Virtual Machine. Follow the on screen wizard.
+- 在导航窗格的 Home > Jobs > Backup 下，点击功能区中的 Backup Job 按钮并选择 Virtual Machine。然后按屏幕向导继续。
 
-- On the Storage screen, choose the Scale-out Backup Repository that was configured previously.
+- 在 Storage 页面，选择前面已配置的 Scale-out Backup Repository。
 
-- Continue with the backup job creation.  On the Summary screen, check the Run the Job when I click Finish checkbox and click the Finish button. The backup job will start immediately.  This will create an Active Full backup of the VMs within the backup job.
+- 继续创建备份作业。在 Summary 页面，勾选 Run the Job when I click Finish 复选框并点击 Finish 按钮。备份作业会立即启动。这会为该作业中的 VM 创建一次 Active Full 备份。
 
-- Since we selected Copy mode when creating the SOBR, the backup will be copied to the capacity tier as soon as it is created on the performance tier.
+- 由于我们在创建 SOBR 时选择了 Copy 模式，备份在性能层创建后会立即复制到容量层。
 
-- For Veeam Backup with Immutability, you can choose a number of restore points or days to make backups immutable.
+- 对于启用 Immutability 的 Veeam Backup，你可以选择按还原点数量或按天数将备份设为不可变。
 
 ![Choose Immutability Options for Backups](/images/integrations/veeam/backup_job_immutable_days.png)
 
-#### Backup Office 365 with VBO
+#### 使用 VBO 备份 Office 365
 
-- Create a new bucket for VBO backups
+- 为 VBO 备份创建一个新 bucket
 
 ```
 mc mb -l myminio/vbo
 ```
 
-- Under Backup Infrastructure, right click on Object Storage Repositories and choose "Add object storage"
+- 在 Backup Infrastructure 下，右键 Object Storage Repositories 并选择 "Add object storage"
 
 ![Adding Object Storage to VBO Step 1](/images/integrations/veeam/1_add_object_store.png)
 
-- Follow through the wizard as above for Veeam Backup and Replication as the steps are the same between both products
+- 按照上文 Veeam Backup and Replication 的向导继续执行，这两个产品的步骤相同
 
-- Under Backup Infrastructure -> Backup Repositories, right click and "Add Backup Repository"
+- 在 Backup Infrastructure -> Backup Repositories 下，右键并选择 "Add Backup Repository"
 
-- Follow the wizard.  Under the "Object Storage Backup Repository" section, choose the MinIO object storage you created above
+- 按向导操作。在 "Object Storage Backup Repository" 部分，选择你上面创建的 MinIO 对象存储
 
 ![Adding Object Storage to VBO Backup Repository](/images/integrations/veeam/6_add_sobr_with_object_store.png)
 
-- When you create your backup job, choose the backup repository you created above.
+- 创建备份作业时，选择你上面创建的备份仓库。
 
-## Test the setup
+## 测试设置
 
-The next time the backup job runs, you can use the  `mc admin trace myminio` command and verify traffic is flowing to the MinIO nodes. For Veeam Backup and Replication you will need to wait for the backup to complete to the performance tier before it migrates data to the capacity tier (i.e., MinIO).
+下次备份作业运行时，你可以使用 `mc admin trace myminio` 命令，确认流量正在进入 MinIO 节点。对于 Veeam Backup and Replication，需要先等待备份在性能层完成，然后数据才会迁移到容量层（即 MinIO）。
 
 ```
 20:09:10.216 [200 OK] s3.GetObject veeam-minio01:9000/vbo/Veeam/Backup365/vbotest/Organizations/6571606ecbc4455dbfe23b83f6f45597/Webs/ca2d0986229b4ec88e3a217ef8f04a1d/Items/efaa67764b304e77badb213d131beab6/f4f0cf600f494c3eb702d8eafe0fabcc.aac07493e6cd4c71845d2495a4e1e19b 139.178.68.158    9.789ms      ↑ 90 B ↓ 8.5 KiB

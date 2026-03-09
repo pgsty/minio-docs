@@ -1,54 +1,54 @@
-# Launching a New Platform
+# 发布新平台
 
-## Overview
+## 概述
 
-The documentation URLs take the path docs.min.io/community|enterprise/$program/
-Note: we no longer use `$platform`.
+文档 URL 采用路径 `docs.min.io/community|enterprise/$program/`
+注意：我们不再使用 `$platform`。
 
-Where:
-- `$program` is `minio`, `kes`, or similar
-- `$platform` is `kubernetes/upstream`, `kubernetes/openshift`, `macos`, `container`, `windows`, `linux`, and similar
-- Not every `$program` has `$platform` specific versions of their docs
+其中：
+- `$program` 为 `minio`、`kes` 或类似项
+- `$platform` 为 `kubernetes/upstream`、`kubernetes/openshift`、`macos`、`container`、`windows`、`linux` 或类似项
+- 并非每个 `$program` 都有按 `$platform` 区分的文档版本
 
-## Steps
+## 步骤
 
-When launching docs for a new `$program` or `$platform`, the following steps must be completed:
+为新的 `$program` 或 `$platform` 发布文档时，必须完成以下步骤：
 
-1. Update the `makefile` in this repo to include the new docs
+1. 更新本仓库中的 `makefile`，纳入新文档
    
-   - Use an existing `$platform` or `$program` section as a template.
-   - This creates a build command specific for the new `$platform` or `$program` docs.
+   - 使用现有的 `$platform` 或 `$program` 段落作为模板。
+   - 这会为新的 `$platform` 或 `$program` 文档创建专用构建命令。
 
-2. Add an `elif` section for the new `$program` or `$platform` to the `source/default-conf.py` file in this repo
+2. 在本仓库的 `source/default-conf.py` 文件中，为新的 `$program` 或 `$platform` 添加一个 `elif` 段落
    
-   - Use an existing `elif` section as a template to follow.
-   - This allows you to exclude files that are not necessary from the build.
-   - Use the `url-excludes.yaml` file to specify URLs to exclude from that platforms build
+   - 使用现有 `elif` 段落作为参考模板。
+   - 这样可以在构建中排除不必要的文件。
+   - 使用 `url-excludes.yaml` 文件指定要从该平台构建中排除的 URL
 
-3. Update `build-docs.sh` in this repo to automatically build the docs for the web server on each merge to the `main` branch
+3. 更新本仓库中的 `build-docs.sh`，以便每次合并到 `main` 分支时自动为 Web 服务器构建文档
 
-   - Add the platform or program to the second `make` line.
-   - Create the commands to clear and add the path to the new docs using an existing section as a template.
-   - Kubernetes platforms should go under `/docs/kubernetes/$platform`   
-   - You can test by running locally (might need `sudo sh ./build-docs.sh`).
-     You can then use `python -m http.server --directory /var/www/docs/minio/` and testing URLs
+   - 在第二行 `make` 中添加该平台或程序。
+   - 使用现有段落作为模板，创建清理并添加新文档路径的命令。
+   - Kubernetes 平台应放在 `/docs/kubernetes/$platform` 下   
+   - 你可以通过本地运行进行测试（可能需要 `sudo sh ./build-docs.sh`）。
+     然后可以使用 `python -m http.server --directory /var/www/docs/minio/` 并测试 URL
 
-4. Update the doc main nav bar (`/source/_templates/content-navigation.html`) to include the `$program` and/or `$platform`
+4. 更新文档主导航栏（`/source/_templates/content-navigation.html`），纳入 `$program` 和/或 `$platform`
 
-   Work with the website design team as needed.
+   视需要与网站设计团队协作。
 
-5. Update the `sitemap_index.xml` file
+5. 更新 `sitemap_index.xml` 文件
 
-   - Contact a member of the website design to to add the new `$program` or `$platform` sitemap.xml path to the sitemap_index.xml on the min.io root website server.
+   - 联系网站设计团队成员，在 min.io 根站点服务器上的 sitemap_index.xml 中添加新的 `$program` 或 `$platform` sitemap.xml 路径。
 
-6. Update the Algolia crawler
+6. 更新 Algolia crawler
    
-   - Add the new `$program` or `$platform` sitemap.xml path to the **minio** Algolia crawler configuration at https://crawler.algolia.com.
-   - Select the **minio** index from the list, then select the Editor tab on the left nav
-   - Add the path to the `discoveryPatterns` section
-   - Add the path to the `pathsToMatch` section
-   - Click **Save**
+   - 在 https://crawler.algolia.com 的 **minio** Algolia crawler 配置中，添加新的 `$program` 或 `$platform` sitemap.xml 路径。
+   - 从列表中选择 **minio** 索引，然后在左侧导航中选择 Editor 选项卡
+   - 将路径添加到 `discoveryPatterns` 段落
+   - 将路径添加到 `pathsToMatch` 段落
+   - 点击 **Save**
   
-7. Reindex the docs site
+7. 重新索引文档站点
    
-   After the docs are published, manually launch the **minio** index crawler from https://crawler.algolia.com by selecting **Restart crawling**.
+   文档发布后，在 https://crawler.algolia.com 中选择 **Restart crawling**，手动启动 **minio** 索引 crawler。

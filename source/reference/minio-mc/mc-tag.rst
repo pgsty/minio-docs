@@ -4,36 +4,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc tag
 
 
-Description
------------
+说明
+----
 
 .. start-mc-tag-desc
 
-The :mc:`mc tag` command adds, removes, and lists tags associated to a bucket or object.
+:mc:`mc tag` 命令用于添加、删除和列出与存储桶或对象关联的标签。
 
 .. end-mc-tag-desc
 
-MinIO supports adding up to 10 custom tags to an object.
+MinIO 支持为对象最多添加 10 个自定义标签。
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc tag` includes the following subcommands:
+:mc:`mc tag` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc tag list`
      - .. include:: /reference/minio-mc/mc-tag-list.rst

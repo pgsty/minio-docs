@@ -1,10 +1,10 @@
-====================
-Kubernetes Reference
-====================
+================
+Kubernetes 参考
+================
 
 .. default-domain:: minio
 
-This page acts as an index for MinIO-specific Kubernetes references.
+本页面作为 MinIO Kubernetes 专有参考文档的索引。
 
 .. toctree::
    :titlesonly:

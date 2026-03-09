@@ -1,63 +1,63 @@
 .. _minio-metrics-collect-using-prometheus:
 
 ========================================
-Monitoring and Alerting using Prometheus
+使用 Prometheus 进行监控与告警
 ========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. container:: extlinks-video
 
-   - `Monitoring with MinIO and Prometheus: Overview <https://youtu.be/A3vCDaFWNNs?ref=docs>`__
-   - `Monitoring with MinIO and Prometheus: Lab <https://youtu.be/Oix9iXndSUY?ref=docs>`__
+   - `使用 MinIO 和 Prometheus 进行监控：概览 <https://youtu.be/A3vCDaFWNNs?ref=docs>`__
+   - `使用 MinIO 和 Prometheus 进行监控：实验 <https://youtu.be/Oix9iXndSUY?ref=docs>`__
 
-MinIO publishes cluster, node, bucket, and resource metrics using the :prometheus-docs:`Prometheus Data Model <concepts/data_model/#data-model>`.
-The procedure on this page documents the following:
+MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/#data-model>` 发布集群、节点、存储桶和资源指标。
+本页过程说明了以下内容：
 
-- Configuring a Prometheus service to scrape and display metrics from a MinIO deployment
-- Configuring an Alert Rule on a MinIO Metric to trigger an AlertManager action
+- 配置 Prometheus 服务，抓取并展示 MinIO 部署的指标
+- 基于某个 MinIO 指标配置 Alert Rule，以触发 AlertManager 动作
 
-These instructions use :ref:`version 2 metrics. <minio-metrics-v2>`
-For more about metrics API versions, see :ref:`Metrics and alerts. <minio-metrics-and-alerts>`
+本文说明使用 :ref:`version 2 指标 <minio-metrics-v2>`。
+关于指标 API 版本的更多信息，请参见 :ref:`指标与告警 <minio-metrics-and-alerts>`。
 
-.. admonition:: Prerequisites
+.. admonition:: 前提条件
    :class: note
 
-   This procedure requires the following:
+   此过程要求满足以下条件：
 
-   - An existing :prometheus-docs:`Prometheus deployment <prometheus/latest/installation/>` with backing :prometheus-docs:`Alert Manager <alerting/latest/overview/>`
+   - 已有 :prometheus-docs:`Prometheus 部署 <prometheus/latest/installation/>`，并配置 :prometheus-docs:`Alert Manager <alerting/latest/overview/>`
 
-   - An existing MinIO deployment with network access to the Prometheus deployment
+   - 已有可通过网络访问 Prometheus 部署的 MinIO 部署
 
-   - An :mc:`mc` installation on your local host configured to :ref:`access <alias>` the MinIO deployment
+   - 本地主机已安装 :mc:`mc`，并已配置为可 :ref:`访问 <alias>` MinIO 部署
 
 
-Configure Prometheus to Collect and Alert using MinIO Metrics
--------------------------------------------------------------
+配置 Prometheus 收集 MinIO 指标并触发告警
+------------------------------------------------------------
 
-1) Generate the Scrape Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 生成抓取配置
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc admin prometheus generate` command to generate the scrape configuration for use by Prometheus in making scraping requests:
+使用 :mc:`mc admin prometheus generate` 命令生成 Prometheus 执行抓取请求所需的 scrape 配置：
 
 .. tab-set::
 
    .. tab-item:: MinIO Server
 
-      The following command scrapes metrics for the MinIO cluster.
+      以下命令用于抓取 MinIO 集群的指标。
 
       .. code-block:: shell
          :class: copyable
       
          mc admin prometheus generate ALIAS
 
-      Replace :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` with the :mc:`alias <mc alias>` of the MinIO deployment.
+      将 :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` 替换为该 MinIO 部署的 :mc:`alias <mc alias>`。
 	 
-      The command returns output similar to the following:
+      该命令将返回类似如下的输出：
 
       .. code-block:: yaml
          :class: copyable
@@ -73,16 +73,16 @@ Use the :mc:`mc admin prometheus generate` command to generate the scrape config
               static_configs:
               - targets: [minio.example.net]
 		      
-   .. tab-item:: Nodes
+   .. tab-item:: 节点
 
-      The following command scrapes metrics for a node on the MinIO Server.
+      以下命令用于抓取 MinIO Server 上某个节点的指标。
 
       .. code-block:: shell
          :class: copyable
       
          mc admin prometheus generate ALIAS node
 
-      Replace :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` with the :mc:`alias <mc alias>` of the MinIO deployment.
+      将 :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` 替换为该 MinIO 部署的 :mc:`alias <mc alias>`。
 
       .. code-block:: yaml
          :class: copyable
@@ -98,16 +98,16 @@ Use the :mc:`mc admin prometheus generate` command to generate the scrape config
               static_configs:
               - targets: [minio-1.example.net, minio-2.example.net, minio-N.example.net]
 		      
-   .. tab-item:: Buckets
+   .. tab-item:: 存储桶
 
-      The following command scrapes metrics for buckets on the MinIO Server.
+      以下命令用于抓取 MinIO Server 上存储桶的指标。
 
       .. code-block:: shell
          :class: copyable
       
          mc admin prometheus generate ALIAS bucket
 
-      Replace :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` with the :mc:`alias <mc alias>` of the MinIO deployment.
+      将 :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` 替换为该 MinIO 部署的 :mc:`alias <mc alias>`。
 
       .. code-block:: yaml
          :class: copyable
@@ -123,18 +123,18 @@ Use the :mc:`mc admin prometheus generate` command to generate the scrape config
               static_configs:
               - targets: [minio.example.net]
       
-   .. tab-item:: Resources
+   .. tab-item:: 资源
 
       .. versionadded:: RELEASE.2023-10-07T15-07-38Z
 
-      The following command scrapes metrics for resources on the MinIO Server.
+      以下命令用于抓取 MinIO Server 上资源的指标。
 
       .. code-block:: shell
          :class: copyable
 
          mc admin prometheus generate ALIAS resource
 
-      Replace :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` with the :mc:`alias <mc alias>` of the MinIO deployment.
+      将 :mc-cmd:`ALIAS <mc admin prometheus generate ALIAS>` 替换为该 MinIO 部署的 :mc:`alias <mc alias>`。
 
       .. code-block:: yaml
          :class: copyable
@@ -150,37 +150,37 @@ Use the :mc:`mc admin prometheus generate` command to generate the scrape config
               static_configs:
               - targets: [minio.example.net]
       
-- Set an appropriate ``scrape_interval`` value to ensure each scraping operation completes before the next one begins.
-  The recommended value is 60 seconds.
+- 设置合适的 ``scrape_interval``，确保每次抓取操作都能在下一次开始前完成。
+  推荐值为 60 秒。
 
-  Some deployments require a longer scrape interval due to the number of metrics being scraped.
-  To reduce the load on your MinIO and Prometheus servers, choose the longest interval that meets your monitoring requirements.
+  某些部署由于需要抓取的指标数量较多，可能需要更长的抓取间隔。
+  为降低 MinIO 和 Prometheus Server 的负载，请选择满足监控要求的最长间隔。
 
-- Set the ``job_name`` to a value associated to the MinIO deployment.
+- 将 ``job_name`` 设置为与该 MinIO 部署相关的值。
 
-  Use a unique value to ensure isolation of the deployment metrics from any others collected by that Prometheus service.
+  请使用唯一值，以确保该部署的指标与同一 Prometheus 服务采集的其他指标彼此隔离。
 
-- MinIO deployments started with :envvar:`MINIO_PROMETHEUS_AUTH_TYPE` set to ``"public"`` can omit the ``bearer_token`` field.
+- 对于以 :envvar:`MINIO_PROMETHEUS_AUTH_TYPE` 设置为 ``"public"`` 启动的 MinIO 部署，可以省略 ``bearer_token`` 字段。
 
-- Set the ``scheme`` to http for MinIO deployments not using TLS.
+- 对于未使用 TLS 的 MinIO 部署，请将 ``scheme`` 设置为 ``http``。
 
-- Set the ``targets`` array with a hostname that resolves to the MinIO deployment.
+- 在 ``targets`` 数组中设置能够解析到 MinIO 部署的主机名。
 
-  This can be any single node, or a load balancer/proxy which handles connections to the MinIO nodes.
+  这可以是任意单个节点，也可以是负责处理与 MinIO 节点连接的负载均衡器或代理。
 
-  For MinIO Tenants on Kubernetes infrastructure, when using a Prometheus cluster in that same cluster you can specify the service DNS name for the ``minio`` service.
-  You can otherwise specify the ingress or load balancer endpoint configured to route connections to and from the MinIO Tenant.
+  对于 Kubernetes 基础设施上的 MinIO Tenant，如果使用的是同一集群中的 Prometheus 集群，则可以指定 ``minio`` service 的 DNS 名称。
+  否则，你可以指定已配置为向 MinIO Tenant 路由连接的 ingress 或 load balancer 端点。
 
-2) Restart Prometheus with the Updated Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 使用更新后的配置重启 Prometheus
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Append the desired ``scrape_configs`` job generated in the previous step to the configuration file:
+将上一步生成的目标 ``scrape_configs`` job 追加到配置文件中：
 
 .. tab-set::
 
-   .. tab-item:: Cluster
+   .. tab-item:: 集群
 
-      Cluster metrics aggregate node-level metrics and, where appropriate, attach labels to metrics for the originating node.
+      集群指标会聚合节点级指标，并在适用时为指标附加来源节点的标签。
 
       .. code-block:: yaml
          :class: copyable
@@ -197,9 +197,9 @@ Append the desired ``scrape_configs`` job generated in the previous step to the 
               - targets: [minio.example.net]
 
 
-   .. tab-item:: Nodes
+   .. tab-item:: 节点
 
-      Node metrics are specific for node-level monitoring. You need to list all MinIO nodes for this configuration.
+      节点指标专用于节点级监控。该配置需要列出所有 MinIO 节点。
 
       .. code-block:: yaml
          :class: copyable
@@ -216,7 +216,7 @@ Append the desired ``scrape_configs`` job generated in the previous step to the 
               - targets: [minio-1.example.net, minio-2.example.net, minio-N.example.net]
 
 	      
-   .. tab-item:: Bucket
+   .. tab-item:: 存储桶
 
       .. code-block:: yaml
          :class: copyable
@@ -232,7 +232,7 @@ Append the desired ``scrape_configs`` job generated in the previous step to the 
               static_configs:
               - targets: [minio.example.net]
 
-   .. tab-item:: Resource
+   .. tab-item:: 资源
 
       .. code-block:: yaml
          :class: copyable
@@ -248,24 +248,24 @@ Append the desired ``scrape_configs`` job generated in the previous step to the 
               static_configs:
               - targets: [minio.example.net]
 
-Start the Prometheus cluster using the configuration file:
+使用该配置文件启动 Prometheus 集群：
 
 .. code-block:: shell
    :class: copyable
 
    prometheus --config.file=prometheus.yaml
 
-3) Analyze Collected Metrics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 分析已采集指标
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Prometheus includes an :prometheus-docs:`expression browser <prometheus/latest/getting_started/#using-the-expression-browser>`. 
-You can execute queries here to analyze the collected metrics.
+Prometheus 内置 :prometheus-docs:`expression browser <prometheus/latest/getting_started/#using-the-expression-browser>`。
+你可以在其中执行查询，以分析已采集的指标。
 
 .. tab-set::
 
-   .. tab-item:: Examples
+   .. tab-item:: 示例
 
-      The following query examples return metrics collected by Prometheus every five minutes for a scrape job named ``minio-job``:
+      以下查询示例会返回抓取任务名为 ``minio-job`` 的 Prometheus 每五分钟采集一次的指标：
 
       .. code-block:: shell
          :class: copyable
@@ -288,60 +288,60 @@ You can execute queries here to analyze the collected metrics.
 
          minio_node_drive_io_waiting{job="minio-job"}[5m]
 
-   .. tab-item:: Recommended Metrics
+   .. tab-item:: 推荐指标
 
-      MinIO recommends the following as a basic set of metrics to monitor.
+      MinIO 建议将以下指标作为基础监控项。
 
-      See :ref:`minio-metrics-and-alerts` for information about all available metrics.
+      所有可用指标的信息请参见 :ref:`minio-metrics-and-alerts`。
 
       .. list-table::
          :header-rows: 1
          :widths: 40 60
          :width: 100%
 
-         * - Metric
-           - Description
-     
+         * - 指标
+           - 说明
+	     
          * - ``minio_node_drive_free_bytes``
-           - Total storage available on a drive.
+           - 驱动器上的总可用存储空间。
 
          * - ``minio_node_drive_free_inodes``
-           - Total free inodes.
+           - 总空闲 inode 数量。
 
          * - ``minio_node_drive_latency_us``
-           - Average last minute latency in µs for drive API storage operations.
+           - 最近一分钟内驱动器 API 存储操作的平均延迟，单位为 µs。
 
          * - ``minio_node_drive_offline_total``
-           - Total drives offline in this node.
+           - 该节点中离线驱动器的总数。
 
          * - ``minio_node_drive_online_total``
-           - Total drives online in this node.
+           - 该节点中在线驱动器的总数。
 
          * - ``minio_node_drive_total``
-           - Total drives in this node.
+           - 该节点中的驱动器总数。
 
          * - ``minio_node_drive_total_bytes``
-           - Total storage on a drive.
+           - 驱动器上的总存储空间。
 
          * - ``minio_node_drive_used_bytes``
-           - Total storage used on a drive.
+           - 驱动器上已使用的存储空间总量。
 
          * - ``minio_node_drive_errors_timeout``
-           - Total number of drive timeout errors since server start.
+           - 自 server 启动以来驱动器超时错误的总数。
 
          * - ``minio_node_drive_errors_availability``
-           - Total number of drive I/O errors, permission denied and timeouts since server start.
+           - 自 server 启动以来驱动器 I/O 错误、权限拒绝和超时的总数。
 
          * - ``minio_node_drive_io_waiting``
-           - Total number of I/O operations waiting on drive.
+           - 驱动器上等待中的 I/O 操作总数。
 
-4) Configure an Alert Rule using MinIO Metrics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 使用 MinIO 指标配置告警规则
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must configure :prometheus-docs:`Alert Rules <prometheus/latest/configuration/alerting_rules/>` on the Prometheus deployment to trigger alerts based on collected MinIO metrics.
+你必须在 Prometheus 部署上配置 :prometheus-docs:`Alert Rules <prometheus/latest/configuration/alerting_rules/>`，以根据已采集的 MinIO 指标触发告警。
 
-The following example alert rule files provide a baseline of alerts for a MinIO deployment.
-You can modify or otherwise use these examples as guidance in building your own alerts.
+以下示例告警规则文件为 MinIO 部署提供了一组基础告警。
+你可以修改这些示例，或将其作为构建自定义告警的参考。
 
 .. code-block:: yaml
    :class: copyable
@@ -367,17 +367,17 @@ You can modify or otherwise use these examples as guidance in building your own 
          summary: "Disks down in MinIO deployment"
          description: "Disks(s) in cluster {{ $labels.instance }} offline for more than 5 minutes"
 
-In the Prometheus configuration, specify the path to the alert file in the ``rule_files`` key:
+在 Prometheus 配置中，请在 ``rule_files`` 键中指定告警文件路径：
 
 .. code-block:: yaml
 
    rule_files:
    - minio-alerting.yml
 
-Once triggered, Prometheus sends the alert to the configured AlertManager service.
+一旦触发，Prometheus 会将告警发送到已配置的 AlertManager 服务。
 
-Dashboards
-----------
+仪表板
+------
 
-MinIO provides Grafana Dashboards to display metrics collected by Prometheus.
-For more information, see :ref:`minio-grafana`
+MinIO 提供 Grafana 仪表板，用于展示由 Prometheus 采集的指标。
+更多信息请参见 :ref:`minio-grafana`

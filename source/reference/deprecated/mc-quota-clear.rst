@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,57 +12,57 @@
 
 .. versionchanged:: RELEASE.2022-12-13T00-23-28Z
 
-   ``mc quota clear`` replaced ``mc admin bucket quota --clear``.
+   ``mc quota clear`` 替代了 ``mc admin bucket quota --clear``。
 
 .. versionchanged:: RELEASE.2024-07-31T15-58-33Z
 
-   ``mc quota clear`` is deprecated.
+   ``mc quota clear`` 已弃用。
 
-Description
------------
+说明
+----
 
 .. start-mc-quota-clear-desc
 
-The :mc-cmd:`mc quota clear` command removes a configured storage quota for a bucket.
+:mc-cmd:`mc quota clear` 命令会移除存储桶上已配置的存储配额。
 
 .. end-mc-quota-clear-desc
 
 
-Examples
---------
+示例
+----
 
 
-Clear Configured Bucket Quota
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+清除已配置的存储桶配额
+~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc quota clear` flag to remove the quota from a bucket.
+使用 :mc-cmd:`mc quota clear` 标志可从存储桶中移除配额。
 
 .. code-block:: shell
    :class: copyable
 
    mc quota clear TARGET/BUCKET
 
-- Replace ``TARGET`` with the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment. 
-  Replace ``BUCKET`` with the name of the bucket on which to clear the quota.
+- 将 ``TARGET`` 替换为已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+  将 ``BUCKET`` 替换为要清除配额的存储桶名称。
 
-Syntax
-------
+语法
+----
 
-:mc-cmd:`mc quota clear` has the following syntax:
+:mc-cmd:`mc quota clear` 的语法如下：
 
 .. code-block:: shell
    :class: copyable
 
    mc quota clear TARGET [ARGUMENTS]
 
-:mc-cmd:`mc quota clear` supports the following arguments:
+:mc-cmd:`mc quota clear` 支持以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the bucket for which the command creates the quota. 
-   Specify the :mc-cmd:`alias <mc alias>` of the MinIO deployment as a prefix to the path. 
-   For example:
+   该命令为其创建配额的存储桶完整路径。
+   指定 MinIO 部署的 :mc-cmd:`alias <mc alias>` 作为路径前缀。
+   例如：
 
    .. code-block:: shell
       :class: copyable
@@ -70,16 +70,16 @@ Syntax
       mc quota clear play/mybucket
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-   
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

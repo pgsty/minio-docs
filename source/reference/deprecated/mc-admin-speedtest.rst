@@ -12,61 +12,58 @@
 
 .. versionchanged:: RELEASE.2022-07-24T02-25-13Z
 
-   ``mc admin speedtest`` replaced by :mc:`mc support perf`.
+   ``mc admin speedtest`` 已由 :mc:`mc support perf` 替代。
 
-Description
+描述
 -----------
 
 .. start-mc-admin-speedtest-desc
 
-The :mc-cmd:`mc admin speedtest` command tests throughputs per host with ``PUT`` 
-and ``GET`` operations. 
+:mc-cmd:`mc admin speedtest` 命令通过 ``PUT`` 和 ``GET`` 操作测试每个主机的吞吐量。
 
 .. end-mc-admin-speedtest-desc
 
-:mc-cmd:`~mc admin speedtest` is available starting with ``mc``
-:mc-release:`RELEASE.2021-09-02T09-21-27Z` and supports distributed MinIO
-deployments running :minio-release:`RELEASE.2021-07-30T00-02-00Z` or later.
+:mc-cmd:`~mc admin speedtest` 从 ``mc``
+:mc-release:`RELEASE.2021-09-02T09-21-27Z` 开始可用，并支持运行 :minio-release:`RELEASE.2021-07-30T00-02-00Z` 或更高版本的分布式 MinIO 部署。
 
-:mc-cmd:`~mc admin speedtest` does not support standalone or MinIO Gateway
-deployments.
+:mc-cmd:`~mc admin speedtest` 不支持独立部署或 MinIO Gateway 部署。
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
       :start-after: start-minio-only
       :end-before: end-minio-only
 
-Syntax
+语法
 ------
 
-:mc-cmd:`mc admin speedtest` has the following syntax:
+:mc-cmd:`mc admin speedtest` 使用以下语法：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin speedtest [FLAGS] TARGET
 
-:mc-cmd:`mc admin speedtest` supports the following arguments:
+:mc-cmd:`mc admin speedtest` 支持以下参数：
 
 .. mc-cmd:: TARGET
 
-   *Required*
+   *必需*
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment to run the speedtest against.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，用于执行 speedtest。
 
 .. mc-cmd:: --duration
    
 
-   The duration the entire speedtests are run. Defaults to ``10s``.
+   整个 speedtest 的运行时长。默认为 ``10s``。
 
 .. mc-cmd:: --size
    
 
-   The size of the objects used for uploads/downloads. Defaults to ``64MiB``.
+   用于上传/下载的对象大小。默认为 ``64MiB``。
 
 .. mc-cmd:: --concurrent
    
 
-   The number of concurrent requests per server. Defaults to ``32``.
+   每个服务器的并发请求数。默认为 ``32``。

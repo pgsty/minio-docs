@@ -1,52 +1,57 @@
-#. Generate a KES API Key for use by MinIO
+#. 生成供 MinIO 使用的 KES API Key
 
-   Use the :kes-docs:`kes identity new <cli/kes-identity/new>` command to generate a new API key for use by the MinIO Server:
+   使用 :kes-docs:`kes identity new <cli/kes-identity/new>` 命令，
+   为 MinIO Server 生成新的 API key：
 
    .. code-block:: shell
       :class: copyable
 
       kes identity new
 
-   The output includes both the API Key for use with MinIO and the Identity hash for use with the :kes-docs:`KES Policy configuration <tutorials/configuration/#policy-configuration>`.
+   输出同时包含供 MinIO 使用的 API Key，
+   以及供 :kes-docs:`KES Policy 配置 <tutorials/configuration/#policy-configuration>` 使用的 Identity hash。
 
-#. Configure the MinIO Environment File
+#. 配置 MinIO 环境文件
 
-   Create or modify the MinIO Server environment file for all hosts in the target deployment to include the following environment variables:
+   为目标部署中的所有主机创建或修改 MinIO Server 环境文件，
+   使其包含以下环境变量：
 
    .. include:: /includes/common/common-minio-kes.rst
       :start-after: start-kes-configuration-minio-desc
       :end-before: end-kes-configuration-minio-desc
 
-   MinIO defaults to expecting this file at ``/etc/default/minio``.
-   If you modified your deployment to use a different location for the environment file, modify the file at that location.
+   MinIO 默认在 ``/etc/default/minio`` 查找此文件。
+   如果你的部署将环境文件放在其他位置，请修改对应位置的文件。
 
-#. Start MinIO
+#. 启动 MinIO
 
-   .. admonition:: KES Operations Requires Unsealed Vault
+   .. admonition:: KES 操作要求 Vault 已解封
       :class: important
 
-      Depending on your selected KMS solution, you may need to unseal the key instance to allow normal cryptographic operations, including key creation or retrieval.
-      KES requires an unsealed key target to perform its operations.
-      
-      Refer to the :kes-docs:`documentation for your chosen KMS solution <#supported-kms-targets>` for information regarding whether sealing and unsealing the instance is required for operations.
+      根据你选择的 KMS 方案，
+      你可能需要先将密钥实例解封，才能执行正常的加密操作，包括密钥创建或读取。
+      KES 需要已解封的密钥目标才能执行这些操作。
 
-      You must start KES *before* starting MinIO. 
-      The MinIO deployment requires access to KES as part of its startup.
+      关于该实例在运行时是否需要 sealed/unsealed，
+      请参阅你所选 :kes-docs:`KMS 方案文档 <#supported-kms-targets>`。
 
-   You can use the :mc:`mc admin service restart` command to restart MinIO:
+      你必须先启动 KES，再启动 MinIO。
+      MinIO 部署在启动过程中需要访问 KES。
+
+   你可以使用 :mc:`mc admin service restart` 命令重启 MinIO：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin service restart ALIAS
 
-#. Generate a New Encryption Key
+#. 生成新的加密密钥
 
    .. include:: /includes/common/common-minio-kes.rst
       :start-after: start-kes-generate-key-desc
       :end-before: end-kes-generate-key-desc
 
-#. Enable SSE-KMS for a Bucket
+#. 为存储桶启用 SSE-KMS
 
    .. include:: /includes/common/common-minio-kes.rst
       :start-after: start-kes-enable-sse-kms-desc

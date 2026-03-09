@@ -6,44 +6,42 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc event add
 
-Syntax
-------
+语法
+----
 
 .. start-mc-event-add-desc
 
-The :mc:`mc event add` command adds event notification triggers to a bucket.
+:mc:`mc event add` 命令为存储桶添加事件通知触发器。
 
 .. end-mc-event-add-desc
 
-MinIO automatically sends triggered events to the configured
-:ref:`notification target <minio-bucket-notifications>`.
+MinIO 会将已触发的事件自动发送到已配置的
+:ref:`notification target <minio-bucket-notifications>`。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command creates a new event notification trigger for
-      all ``PUT`` and ``DELETE`` operations for the ``mydata`` bucket on the
-      ``myminio`` MinIO deployment:
+      以下命令为 ``myminio`` MinIO 部署中的 ``mydata`` 存储桶上的
+      所有 ``PUT`` 和 ``DELETE`` 操作创建新的事件通知触发器：
 
       .. code-block:: shell
          :class: copyable
 
          mc event add --event "put,delete" myminio/mydata arn:aws:sqs::primary:target
 
-      The specified ARN corresponds to a configured
-      :ref:`bucket notification target <minio-bucket-notifications>` on the
-      ``myminio`` deployment.
+      指定的 ARN 对应 ``myminio`` 部署上已配置的
+      :ref:`bucket notification target <minio-bucket-notifications>`。
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -61,14 +59,14 @@ MinIO automatically sends triggered events to the configured
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The MinIO :ref:`alias <alias>` and bucket to which the command adds the new event notification. 
-   For example:
+   要添加新事件通知的 MinIO :ref:`alias <alias>` 和存储桶。
+   例如：
 
    .. code-block:: shell
 
@@ -77,73 +75,72 @@ Parameters
 .. mc-cmd:: ARN
    :required:
 
-   The :aws-docs:`Amazon Resource Name (ARN) <IAM/latest/UserGuide/reference-arns>` of the notification target.
+   通知目标的 :aws-docs:`Amazon Resource Name (ARN) <IAM/latest/UserGuide/reference-arns>`。
 
-   The MinIO server outputs an ARN for each configured notification target at server startup. 
-   See :ref:`Bucket Notifications <minio-bucket-notifications>` for more information.
+   MinIO 服务器启动时会为每个已配置的通知目标输出一个 ARN。
+   更多信息请参见 :ref:`Bucket Notifications <minio-bucket-notifications>`。
 
 .. mc-cmd:: --event
    :optional:
 
-   The event(s) for which MinIO generates bucket notifications.
+   MinIO 生成存储桶通知所依据的事件。
 
-   Supports the following values:
+   支持以下取值：
 
    - ``put``
    - ``get``
    - ``delete``
 
-   Specify multiple value using a comma ``,`` delimiter.
-   Do not add any whitespace between values.
+   使用逗号 ``,`` 分隔可指定多个值。
+   值之间不要添加空白字符。
 
-   If not specified, defaults to ``put,delete,get``.
+   如果未指定，默认值为 ``put,delete,get``。
 
-   See :ref:`mc-event-supported-events` for a detailed list of S3 events associated to each of the supported values.
+   各支持值对应的 S3 事件详见 :ref:`mc-event-supported-events`。
 
 .. mc-cmd:: ignore-existing, p
    :optional:
 
-   Directs MinIO to ignore the specified event triggers if a matching trigger already exists.
+   如果已存在匹配的触发器，则指示 MinIO 忽略指定的事件触发器。
 
 .. mc-cmd:: --prefix
    :optional:
 
-   The bucket prefix in which the specified :mc-cmd:`~mc event add --event` can trigger a bucket notification.
+   指定可由 :mc-cmd:`~mc event add --event` 触发存储桶通知的存储桶前缀。
 
-   For example, given a :mc-cmd:`~mc event add ALIAS` of ``play/mybucket`` and a :mc-cmd:`~mc event add --prefix` of ``photos``, only events in ``play/mybucket/photos`` trigger bucket notifications.
+   例如，若 :mc-cmd:`~mc event add ALIAS` 为 ``play/mybucket`` 且 :mc-cmd:`~mc event add --prefix` 为 ``photos``，则只有 ``play/mybucket/photos`` 中的事件会触发存储桶通知。
 
-   Omit to trigger the event for all prefixes and objects in the bucket.
+   省略该参数时，存储桶中所有前缀和对象的事件都可触发通知。
 
 .. mc-cmd:: --suffix
    :optional:
 
-   The bucket suffix in which the specified :mc-cmd:`~mc event add --event` can trigger a bucket notification.
+   指定可由 :mc-cmd:`~mc event add --event` 触发存储桶通知的存储桶后缀。
 
-   For example, given a :mc-cmd:`~mc event add ALIAS` of ``play/mybucket`` and a :mc-cmd:`~mc event add --suffix` of ``.jpg``, only events in ``play/mybucket/*.jpg`` trigger bucket notifications.
+   例如，若 :mc-cmd:`~mc event add ALIAS` 为 ``play/mybucket`` 且 :mc-cmd:`~mc event add --suffix` 为 ``.jpg``，则只有 ``play/mybucket/*.jpg`` 中的事件会触发存储桶通知。
 
-   Omit to trigger the event for all objects regardless of suffix.
+   省略该参数时，无论后缀为何，所有对象的事件都可触发通知。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Add an Event Notification to a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为存储桶添加事件通知
+~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
    .. tab-item:: Example
 
-      The following command adds a new event notification trigger for all
-      S3 ``PUT``, ``GET``, and ``DELETE`` operations on a bucket. The command
-      assumes the MinIO deployment has at least one configured
-      :ref:`bucket notification target <minio-bucket-notifications>`:
+      以下命令为某个存储桶上的所有 S3 ``PUT``、``GET`` 和 ``DELETE``
+      操作添加新的事件通知触发器。该命令假设 MinIO 部署中至少已配置一个
+      :ref:`bucket notification target <minio-bucket-notifications>`：
 
       .. code-block:: shell
          :class: copyable
@@ -157,26 +154,25 @@ Add an Event Notification to a Bucket
 
          mc event add ALIAS ARN
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO
-        deployment and the bucket on which to add the bucket notification event.
-        For example:
+      - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>` 和要添加
+        存储桶通知事件的存储桶。例如：
 
         ``myminio/mydata``
 
-      - Replace ``ARN`` with the notification target
-        :mc-cmd:`ARN <mc event add ARN>`.
+      - 将 ``ARN`` 替换为通知目标
+        :mc-cmd:`ARN <mc event add ARN>`。
 
 
-Behavior
---------
+行为
+----
 
 .. _mc-event-supported-events:
 
-Supported Bucket Events
-~~~~~~~~~~~~~~~~~~~~~~~
+支持的存储桶事件
+~~~~~~~~~~~~~~~~
 
-The following table lists the supported :mc:`mc event add` values and their
-corresponding :ref:`S3 events <minio-bucket-notifications-event-types>`:
+下表列出了 :mc:`mc event add` 支持的取值及其对应的
+:ref:`S3 events <minio-bucket-notifications-event-types>`：
 
 .. list-table::
    :header-rows: 1
@@ -184,7 +180,7 @@ corresponding :ref:`S3 events <minio-bucket-notifications-event-types>`:
    :width: 100%
 
    * - Supported Value
-     - Corresponding S3 Events
+     - 对应的 S3 事件
 
    * - ``put``
      - | :data:`s3:ObjectCreated:CompleteMultipartUpload`
@@ -223,10 +219,10 @@ corresponding :ref:`S3 events <minio-bucket-notifications-event-types>`:
      - | :data:`s3:Scanner:ManyVersions`
        | :data:`s3:Scanner:BigPrefix`
 
-For more complete documentation on the listed S3 events, see :s3-docs:`S3 Supported Event Types <NotificationHowTo.html#notification-how-to-event-types-and-destinations>`.
+有关上述 S3 事件的更完整文档，请参见 :s3-docs:`S3 Supported Event Types <NotificationHowTo.html#notification-how-to-event-types-and-destinations>`。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

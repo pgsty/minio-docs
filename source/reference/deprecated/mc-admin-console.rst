@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,17 +12,16 @@
 
 .. important::
 
-   This command has been replaced by :mc:`mc admin logs` in `mc RELEASE.2022-12-02T23-48-47Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-12-02T23-48-47Z>`__.
+   此命令已在 `mc RELEASE.2022-12-02T23-48-47Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-12-02T23-48-47Z>`__ 中被 :mc:`mc admin logs` 替代。
 
-   The command was previously replaced by ``mc support logs show`` in `mc RELEASE.2022-06-26T18-51-48Z <https://github.com/minio/mc/tree/RELEASE.2022-06-26T18-51-48Z>`__.
+   该命令此前已在 `mc RELEASE.2022-06-26T18-51-48Z <https://github.com/minio/mc/tree/RELEASE.2022-06-26T18-51-48Z>`__ 中被 ``mc support logs show`` 替代。
 
-Description
------------
+描述
+----
 
-The :mc:`mc admin console` command returns server log entries for each
-MinIO server in the deployment.
+:mc:`mc admin console` 命令返回部署中每个 MinIO 服务器的服务端日志条目。
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -30,39 +29,36 @@ MinIO server in the deployment.
       :end-before: end-minio-only
 
 
-Syntax
-------
+语法
+----
 
-:mc:`mc admin console` has the following syntax:
+:mc:`mc admin console` 的语法如下：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin console [FLAGS] TARGET NODENAME
 
-:mc:`mc admin console` supports the following:
+:mc:`mc admin console` 支持以下项：
 
 .. mc-cmd:: TARGET
 
-   The :mc:`alias <mc alias>` of a configured MinIO deployment from which
-   the command retrieves server logs.
+   已配置 MinIO 部署的 :mc:`alias <mc alias>`，命令将从该部署中检索服务端日志。
 
 .. mc-cmd:: NODENAME
 
-   The specific MinIO server node from which the command retrieves server logs.
+   命令从中检索服务端日志的特定 MinIO 服务器节点。
 
 .. mc-cmd:: --limit, l
    
 
-   The number of most recent log entries to show. Defaults to ``10``.
+   要显示的最新日志条目数量。默认为 ``10``。
 
 .. mc-cmd:: --type, t
    
 
-   The type of errog logs to return. Specify one or more of the following
-   options as a comma-seperated ``,`` list:
+   要返回的错误日志类型。以逗号分隔的 ``,`` 列表形式指定以下一个或多个选项：
 
    - ``minio``
    - ``application``
-   - ``all`` (Default)
-
+   - ``all``（默认）

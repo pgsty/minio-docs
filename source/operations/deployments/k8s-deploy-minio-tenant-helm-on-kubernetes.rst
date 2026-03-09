@@ -1,98 +1,98 @@
 .. _deploy-tenant-helm:
 
 ======================================
-Deploy a MinIO Tenant with Helm Charts
+使用 Helm Charts 部署 MinIO Tenant
 ======================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-Overview
---------
+概览
+----
 
-Helm is a tool for automating the deployment of applications to Kubernetes clusters.
-A `Helm chart <https://helm.sh/docs/topics/charts/>`__ is a set of YAML files, templates, and other files that define the deployment details.
-The following procedure uses a Helm Chart to deploy a Tenant managed by the MinIO Operator.
+Helm 是一个用于将应用自动部署到 Kubernetes 集群的工具。
+`Helm chart <https://helm.sh/docs/topics/charts/>`__ 是一组定义部署细节的 YAML 文件、模板和其他文件。
+以下步骤使用 Helm Chart 部署由 MinIO Operator 管理的 Tenant。
 
-This procedure requires the Kubernetes cluster have a valid :ref:`Operator <deploy-operator-kubernetes>` deployment.
-You cannot use the MinIO Operator Tenant chart to deploy a Tenant independent of the Operator.
+本步骤要求 Kubernetes 集群中已存在一个有效的 :ref:`Operator <deploy-operator-kubernetes>` 部署。
+你不能使用 MinIO Operator Tenant chart 在脱离 Operator 的情况下独立部署 Tenant。
 
 .. important::
 
-   The MinIO Operator Tenant Chart is *distinct* from the community-managed :minio-git:`MinIO Chart <minio/tree/master/helm/minio>`.
+   MinIO Operator Tenant Chart 与社区维护的 :minio-git:`MinIO Chart <minio/tree/master/helm/minio>` *不同*。
 
-   The Community Helm Chart is built, maintained, and supported by the community.
-   MinIO does not guarantee support for any given bug, feature request, or update referencing that chart.
+   社区 Helm Chart 由社区构建、维护并提供支持。
+   对于引用该 chart 的任何 bug、功能请求或更新，MinIO 均不保证提供支持。
 
-   The :ref:`Operator Tenant Chart <minio-tenant-chart-values>` is officially maintained and supported by MinIO.
-   MinIO strongly recommends the official Helm Chart for :ref:`Operator <minio-operator-chart-values>` and :ref:`Tenants <minio-tenant-chart-values>` for production environments.
+   :ref:`Operator Tenant Chart <minio-tenant-chart-values>` 由 MinIO 官方维护并提供支持。
+   对于生产环境，MinIO 强烈建议为 :ref:`Operator <minio-operator-chart-values>` 和 :ref:`Tenant <minio-tenant-chart-values>` 使用官方 Helm Chart。
 
-Prerequisites
--------------
+前提条件
+--------
 
-You must meet the following requirements to install a MinIO Tenant with Helm:
+要使用 Helm 安装 MinIO Tenant，你必须满足以下要求：
 
-- An existing Kubernetes cluster
-- The ``kubectl`` CLI tool on your local host with version matching the cluster.
-- `Helm <https://helm.sh/docs/intro/install/>`__ version 3.8 or greater.
-- `yq <https://github.com/mikefarah/yq/#install>`__ version 4.18.1 or greater.
-- An existing :ref:`MinIO Operator installation <deploy-operator-kubernetes>`.
+- 一个现有的 Kubernetes 集群
+- 本地主机上安装了与集群版本匹配的 ``kubectl`` CLI 工具
+- `Helm <https://helm.sh/docs/intro/install/>`__ 3.8 或更高版本
+- `yq <https://github.com/mikefarah/yq/#install>`__ 4.18.1 或更高版本
+- 一个现有的 :ref:`MinIO Operator 安装 <deploy-operator-kubernetes>`
 
-This procedure assumes your Kubernetes cluster access grants you broad administrative permissions.
+本步骤默认你对 Kubernetes 集群的访问权限具备较广泛的管理能力。
 
-For more about Tenant installation requirements, including supported Kubernetes versions and TLS certificates, see the :ref:`Tenant deployment prerequisites <minio-hardware-checklist-storage>`.
+有关 Tenant 安装要求的更多信息，包括受支持的 Kubernetes 版本和 TLS 证书，请参阅 :ref:`Tenant 部署前提条件 <minio-hardware-checklist-storage>`。
 
-This procedure assumes familiarity the with referenced Kubernetes concepts and utilities.
-While this documentation may provide guidance for configuring or deploying Kubernetes-related resources on a best-effort basis, it is not a replacement for the official :kube-docs:`Kubernetes Documentation <>`.
+本步骤默认你已经熟悉相关 Kubernetes 概念和工具。
+虽然本文档可能会以 best-effort 方式提供 Kubernetes 相关资源的配置或部署指导，但它不能替代官方 :kube-docs:`Kubernetes Documentation <>`。
 
-Namespace
-~~~~~~~~~
+命名空间
+~~~~~~~~
 
-The tenant must use its own namespace and cannot share a namespace with another tenant.
-In addition, MinIO strongly recommends using a dedicated namespace for the tenant with no other applications running in the namespace.
+租户必须使用自己的命名空间，不能与其他租户共享命名空间。
+此外，MinIO 强烈建议为租户使用专用命名空间，且该命名空间内不要运行其他应用。
 
 .. _deploy-tenant-helm-repo:
 
-Deploy a MinIO Tenant using Helm Charts
----------------------------------------
+使用 Helm Charts 部署 MinIO Tenant
+------------------------------------
 
-The following procedure deploys a MinIO Tenant using the MinIO Operator Chart Repository.
-This method supports a simplified installation path compared to the :ref:`local chart installation <deploy-tenant-helm-local>`.
+以下步骤使用 MinIO Operator Chart Repository 部署 MinIO Tenant。
+与 :ref:`本地 chart 安装 <deploy-tenant-helm-local>` 相比，这种方式的安装路径更简单。
 
 
-The following procedure uses Helm to deploy a MinIO Tenant using the official MinIO Tenant Chart.
+以下步骤使用 Helm 通过官方 MinIO Tenant Chart 部署 MinIO Tenant。
 
 .. important::
 
-   If you use Helm to deploy a MinIO Tenant, you must use Helm to manage or upgrade that deployment.
-   Do not use ``kubectl krew``, Kustomize, or similar methods to manage or upgrade the MinIO Tenant.
+   如果你使用 Helm 部署 MinIO Tenant，就必须使用 Helm 来管理或升级该部署。
+   不要使用 ``kubectl krew``、Kustomize 或类似方式来管理或升级 MinIO Tenant。
 
-This procedure is not exhaustive of all possible configuration options available in the :ref:`Tenant Chart <minio-tenant-chart-values>`.
-It provides a baseline from which you can modify and tailor the Tenant to your requirements.
+本步骤并未穷尽 :ref:`Tenant Chart <minio-tenant-chart-values>` 中所有可能的配置项。
+它只提供一个基线，你可以在此基础上按需修改和定制 Tenant。
 
 .. container:: procedure
 
-   #. Verify your MinIO Operator Repo Configuration
+   #. 验证 MinIO Operator Repo 配置
 
-      MinIO maintains a Helm-compatible repository at https://operator.min.io.
-      If the repository does not already exist in your local Helm configuration, add it before continuing:
+      MinIO 在 https://operator.min.io 维护了一个兼容 Helm 的仓库。
+      如果该仓库尚未存在于本地 Helm 配置中，请先添加后再继续：
 
       .. code-block:: shell
          :class: copyable
 
          helm repo add minio-operator https://operator.min.io
 
-      You can validate the repo contents using ``helm search``:
+      你可以使用 ``helm search`` 验证仓库内容：
 
       .. code-block:: shell
          :class: copyable
 
          helm search repo minio-operator
 
-      The response should resemble the following:
+      返回结果应类似如下：
 
       .. code-block:: shell
          :class: copyable
@@ -103,105 +103,105 @@ It provides a baseline from which you can modify and tailor the Tenant to your r
          minio-operator/operator         |operator-version-stable|           v|operator-version-stable|          A Helm chart for MinIO Operator
          minio-operator/tenant           |operator-version-stable|           v|operator-version-stable|          A Helm chart for MinIO Operator
 
-   #. Create a local copy of the Helm ``values.yaml`` for modification
+   #. 创建 Helm ``values.yaml`` 的本地副本以供修改
 
       .. code-block:: shell
          :class: copyable
 
          curl -sLo values.yaml https://raw.githubusercontent.com/minio/operator/master/helm/tenant/values.yaml
 
-      Open the ``values.yaml`` object in your preferred text editor.
+      请使用你偏好的文本编辑器打开 ``values.yaml`` 文件。
 
-   #. Configure the Tenant topology
+   #. 配置 Tenant 拓扑
       
-      The following fields share the ``tenant.pools[0]`` prefix and control the number of servers, volumes per server, and storage class of all pods deployed in the Tenant:
+      以下字段都带有 ``tenant.pools[0]`` 前缀，用于控制 Tenant 中所有 pod 的 server 数量、每个 server 的卷数量以及存储类：
       
       .. list-table::
          :header-rows: 1
          :widths: 30 70
 
-         * - Field
-           - Description
+         * - 字段
+           - 描述
 
          * - ``servers`` 
-           - The number of MinIO pods to deploy in the Server Pool.
+           - 要在 Server Pool 中部署的 MinIO pod 数量。
          
          * - ``volumesPerServer`` 
-           - The number of persistent volumes to attach to each MinIO pod (``servers``).
-             The Operator generates ``volumesPerServer x servers`` Persistant Volume Claims for the Tenant.
+           - 每个 MinIO pod（``servers``）要挂载的持久卷数量。
+             Operator 会为该 Tenant 生成 ``volumesPerServer x servers`` 个 Persistent Volume Claim。
          
          * - ``storageClassName`` 
-           - The Kubernetes storage class to associate with the generated Persistent Volume Claims.
+           - 与生成的 Persistent Volume Claim 关联的 Kubernetes 存储类。
 
-             If no storage class exists matching the specified value *or* if the specified storage class cannot meet the requested number of PVCs or storage capacity, the Tenant may fail to start.
+             如果不存在与指定值匹配的存储类，*或者* 指定的存储类无法满足所请求的 PVC 数量或存储容量，Tenant 可能无法启动。
 
          * - ``size``
-           - The amount of storage to request for each generated PVC.
+           - 为每个生成的 PVC 请求的存储容量。
 
-   #. Configure Tenant Affinity or Anti-Affinity
+   #. 配置 Tenant Affinity 或 Anti-Affinity
 
-      The Tenant Chart supports the following Kubernetes Selector, Affinity and Anti-Affinity configurations:
+      Tenant Chart 支持以下 Kubernetes Selector、Affinity 和 Anti-Affinity 配置：
 
       - Node Selector (``tenant.nodeSelector``)
       - Node/Pod Affinity or Anti-Affinity (``spec.pools[n].affinity``)
 
-      MinIO recommends configuring Tenants with Pod Anti-Affinity to ensure that the Kubernetes schedule does not schedule multiple pods on the same worker node.
+      MinIO 建议为 Tenant 配置 Pod Anti-Affinity，以确保 Kubernetes 调度器不会将多个 pod 调度到同一个 worker node 上。
 
-      If you have specific worker nodes on which you want to deploy the tenant, pass those node labels or filters to the ``nodeSelector`` or ``affinity`` field to constrain the scheduler to place pods on those nodes.
+      如果你希望将租户部署到特定 worker node 上，请将对应的 node label 或过滤条件传入 ``nodeSelector`` 或 ``affinity`` 字段，以约束调度器仅在这些节点上放置 pod。
 
-   #. Configure Network Encryption
+   #. 配置网络加密
 
-      The MinIO Tenant CRD provides the following fields with which you can configure tenant TLS network encryption:
+      MinIO Tenant CRD 提供了以下字段，你可以通过它们配置租户的 TLS 网络加密：
 
       .. list-table::
          :header-rows: 1
          :widths: 30 70
 
-         * - Field
-           - Description
+         * - 字段
+           - 描述
 
          * - ``tenant.certificate.requestAutoCert``
-           - Enable or disable MinIO :ref:`automatic TLS certificate generation <minio-tls>`.
+           - 启用或禁用 MinIO :ref:`自动 TLS 证书生成 <minio-tls>`。
 
-             Defaults to ``true`` or enabled if omitted.
+             若省略该字段，默认值为 ``true``，即启用。
 
          * - ``tenant.certificate.certConfig``
-           - Customize the behavior of :ref:`automatic TLS <minio-tls>`, if enabled.
+           - 在启用的情况下，自定义 :ref:`自动 TLS <minio-tls>` 的行为。
 
          * - ``tenant.certificate.externalCertSecret``
-           - Enable TLS for multiple hostnames via Server Name Indication (SNI).
+           - 通过 Server Name Indication (SNI) 为多个主机名启用 TLS。
          
-             Specify one or more Kubernetes secrets of type ``kubernetes.io/tls`` or ``cert-manager``.
+             指定一个或多个类型为 ``kubernetes.io/tls`` 或 ``cert-manager`` 的 Kubernetes secret。
 
          * - ``tenant.certificate.externalCACertSecret``
-           - Enable validation of client TLS certificates signed by unknown, third-party, or internal Certificate Authorities (CA).
+           - 启用对由未知、第三方或内部 Certificate Authorities (CA) 签发的客户端 TLS 证书的校验。
          
-             Specify one or more Kubernetes secrets of type ``kubernetes.io/tls`` containing the full chain of CA certificates for a given authority.
+             指定一个或多个类型为 ``kubernetes.io/tls`` 的 Kubernetes secret，其中包含某个 CA 的完整证书链。
 
-   #. Configure MinIO Environment Variables
+   #. 配置 MinIO 环境变量
 
-      You can set MinIO Server environment variables using the ``tenant.configuration`` field.
+      你可以使用 ``tenant.configuration`` 字段设置 MinIO Server 环境变量。
 
       .. list-table::
          :header-rows: 1
          :widths: 30 70
 
-         * - Field
-           - Description
+         * - 字段
+           - 描述
 
          * - ``tenant.configuration``
-           - Specify a Kubernetes opaque secret whose data payload ``config.env`` contains each MinIO environment variable you want to set.
+           - 指定一个 Kubernetes opaque secret，其数据负载 ``config.env`` 包含你希望设置的每一个 MinIO 环境变量。
 
-             The ``config.env`` data payload **must** be a base64-encoded string.
-             You can create a local file, set your environment variables, and then use ``cat LOCALFILE | base64`` to create the payload.
+             ``config.env`` 数据负载 **必须** 是一个 base64 编码字符串。
+             你可以先创建一个本地文件，在其中设置环境变量，再通过 ``cat LOCALFILE | base64`` 生成该负载。
 
-      The YAML includes an object ``kind: Secret`` with ``metadata.name: storage-configuration`` that sets the root username, password, erasure parity settings, and enables Tenant Console.
+      该 YAML 中包含一个 ``kind: Secret`` 且 ``metadata.name: storage-configuration`` 的对象，用于设置 root 用户名、密码、纠删码校验设置，以及启用 Tenant Console。
 
-      Modify this as needed to reflect your Tenant requirements.
+      请根据 Tenant 的实际需求修改这些值。
 
-   #. Deploy the Tenant
+   #. 部署 Tenant
 
-      Use ``helm`` to install the Tenant Chart using your ``values.yaml`` as an override:
+      使用 ``helm`` 安装 Tenant Chart，并将 ``values.yaml`` 作为覆盖配置：
 
       .. code-block:: shell
          :class: copyable
@@ -212,53 +212,53 @@ It provides a baseline from which you can modify and tailor the Tenant to your r
          --values values.yaml \
          TENANT-NAME minio-operator/tenant
 
-      You can monitor the progress using the following command:
+      你可以使用以下命令监控进度：
 
       .. code-block:: shell
          :class: copyable
 
          watch kubectl get all -n TENANT-NAMESPACE
 
-   #. Expose the Tenant MinIO S3 API port
+   #. 暴露 Tenant 的 MinIO S3 API 端口
 
-      To test the MinIO Client :mc:`mc` from your local machine, forward the MinIO port and create an alias.
+      若要在本地机器上测试 MinIO Client :mc:`mc`，请转发 MinIO 端口并创建别名。
 
-      * Forward the Tenant's MinIO port:
+      * 转发 Tenant 的 MinIO 端口：
 
       .. code-block:: shell
          :class: copyable
 
          kubectl port-forward svc/TENANT-NAME-hl 9000 -n TENANT-NAMESPACE
 
-      * Create an alias for the Tenant service:
+      * 为 Tenant 服务创建别名：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set myminio https://localhost:9000 minio minio123 --insecure
 
-      You can use :mc:`mc mb` to create a bucket on the Tenant:
+      你可以使用 :mc:`mc mb` 在 Tenant 上创建存储桶：
       
       .. code-block:: shell
          :class: copyable
 
          mc mb myminio/mybucket --insecure
 
-      If you deployed your MinIO Tenant using TLS certificates minted by a trusted Certificate Authority (CA) you can omit the ``--insecure`` flag.
+      如果你为 MinIO Tenant 部署的是由受信任 Certificate Authority (CA) 签发的 TLS 证书，则可以省略 ``--insecure`` 参数。
 
-      See :ref:`create-tenant-connect-tenant` for additional documentation on external connectivity to the Tenant.
+      有关连接 Tenant 的更多文档，请参阅 :ref:`create-tenant-connect-tenant`。
 
 .. _deploy-tenant-helm-local:
 
-Deploy a Tenant using a Local Helm Chart
-----------------------------------------
+使用本地 Helm Chart 部署 Tenant
+--------------------------------
 
-The following procedure deploys a Tenant using a local copy of the Helm Charts.
-This method may support easier pre-configuration of the Tenant compared to the :ref:`repo-based installation  <deploy-tenant-helm-repo>`.
+以下步骤使用 Helm Charts 的本地副本部署 Tenant。
+与 :ref:`基于仓库的安装 <deploy-tenant-helm-repo>` 相比，这种方式可能更便于在安装前完成 Tenant 预配置。
 
-#. Download the Helm charts
+#. 下载 Helm charts
 
-   On your local host, download the Tenant Helm charts to a convenient directory:
+   在本地主机上，将 Tenant Helm charts 下载到一个合适的目录：
 
    .. code-block:: shell
       :class: copyable
@@ -266,82 +266,82 @@ This method may support easier pre-configuration of the Tenant compared to the :
 
       curl -O https://raw.githubusercontent.com/minio/operator/master/helm-releases/tenant-|operator-version-stable|.tgz
 
-   Each chart contains a ``values.yaml`` file you can customize to suit your needs.
-   For details on the options available in the MinIO Tenant ``values.yaml``, see :ref:`minio-tenant-chart-values`.
+   每个 chart 都包含一个可按需定制的 ``values.yaml`` 文件。
+   有关 MinIO Tenant ``values.yaml`` 可用选项的详细信息，请参阅 :ref:`minio-tenant-chart-values`。
    
-   Open the ``values.yaml`` object in your preferred text editor.
+   请使用你偏好的文本编辑器打开 ``values.yaml`` 文件。
 
-#. Configure the Tenant topology
+#. 配置 Tenant 拓扑
    
-   The following fields share the ``tenant.pools[0]`` prefix and control the number of servers, volumes per server, and storage class of all pods deployed in the Tenant:
+   以下字段都带有 ``tenant.pools[0]`` 前缀，用于控制 Tenant 中所有 pod 的 server 数量、每个 server 的卷数量以及存储类：
    
    .. list-table::
       :header-rows: 1
       :widths: 30 70
 
-      * - Field
-        - Description
+      * - 字段
+        - 描述
 
       * - ``servers`` 
-        - The number of MinIO pods to deploy in the Server Pool.
+        - 要在 Server Pool 中部署的 MinIO pod 数量。
       * - ``volumesPerServer`` 
-        - The number of persistent volumes to attach to each MinIO pod (``servers``).
-          The Operator generates ``volumesPerServer x servers`` Persistant Volume Claims for the Tenant.
+        - 每个 MinIO pod（``servers``）要挂载的持久卷数量。
+          Operator 会为该 Tenant 生成 ``volumesPerServer x servers`` 个 Persistent Volume Claim。
       * - ``storageClassName`` 
-        - The Kubernetes storage class to associate with the generated Persistent Volume Claims.
+        - 与生成的 Persistent Volume Claim 关联的 Kubernetes 存储类。
 
-          If no storage class exists matching the specified value *or* if the specified storage class cannot meet the requested number of PVCs or storage capacity, the Tenant may fail to start.
+          如果不存在与指定值匹配的存储类，*或者* 指定的存储类无法满足所请求的 PVC 数量或存储容量，Tenant 可能无法启动。
 
       * - ``size``
-        - The amount of storage to request for each generated PVC.
+        - 为每个生成的 PVC 请求的存储容量。
 
-#. Configure Tenant Affinity or Anti-Affinity
+#. 配置 Tenant Affinity 或 Anti-Affinity
 
-   The Tenant Chart supports the following Kubernetes Selector, Affinity and Anti-Affinity configurations:
+   Tenant Chart 支持以下 Kubernetes Selector、Affinity 和 Anti-Affinity 配置：
 
    - Node Selector (``tenant.nodeSelector``)
    - Node/Pod Affinity or Anti-Affinity (``spec.pools[n].affinity``)
 
-   MinIO recommends configuring Tenants with Pod Anti-Affinity to ensure that the Kubernetes schedule does not schedule multiple pods on the same worker node.
+   MinIO 建议为 Tenant 配置 Pod Anti-Affinity，以确保 Kubernetes 调度器不会将多个 pod 调度到同一个 worker node 上。
 
-   If you have specific worker nodes on which you want to deploy the tenant, pass those node labels or filters to the ``nodeSelector`` or ``affinity`` field to constrain the scheduler to place pods on those nodes.
+   如果你希望将租户部署到特定 worker node 上，请将对应的 node label 或过滤条件传入 ``nodeSelector`` 或 ``affinity`` 字段，以约束调度器仅在这些节点上放置 pod。
 
-#. Configure Network Encryption
+#. 配置网络加密
 
-   The MinIO Tenant CRD provides the following fields from which you can configure tenant TLS network encryption:
+   MinIO Tenant CRD 提供了以下字段，你可以通过它们配置租户的 TLS 网络加密：
 
    .. list-table::
       :header-rows: 1
       :widths: 30 70
 
-      * - Field
-        - Description
+      * - 字段
+        - 描述
 
       * - ``tenant.certificate.requestAutoCert``
-        - Enables or disables MinIO :ref:`automatic TLS certificate generation <minio-tls>`
+        - 启用或禁用 MinIO :ref:`自动 TLS 证书生成 <minio-tls>`
 
       * - ``tenant.certificate.certConfig``
-        - Controls the settings for :ref:`automatic TLS <minio-tls>`.
-          Requires ``spec.requestAutoCert: true``
+        - 控制 :ref:`自动 TLS <minio-tls>` 的设置。
+          需要 ``spec.requestAutoCert: true``
 
       * - ``tenant.certificate.externalCertSecret``
-        - Specify one or more Kubernetes secrets of type ``kubernetes.io/tls`` or ``cert-manager``.
-          MinIO uses these certificates for performing TLS handshakes based on hostname (Server Name Indication).
+        - 指定一个或多个类型为 ``kubernetes.io/tls`` 或 ``cert-manager`` 的 Kubernetes secret。
+          MinIO 会基于主机名（Server Name Indication）使用这些证书执行 TLS 握手。
 
       * - ``tenant.certificate.externalCACertSecret``
-        - Specify one or more Kubernetes secrets of type ``kubernetes.io/tls`` with the Certificate Authority (CA) chains which the Tenant must trust for allowing client TLS connections.
+        - 指定一个或多个类型为 ``kubernetes.io/tls`` 的 Kubernetes secret，其中包含 Tenant 为允许客户端 TLS 连接而必须信任的 Certificate Authority (CA) 证书链。
 
-#. Configure MinIO Environment Variables
+#. 配置 MinIO 环境变量
 
-   You can set MinIO Server environment variables using the ``tenant.configuration`` field.
+   你可以使用 ``tenant.configuration`` 字段设置 MinIO Server 环境变量。
 
-   The field must specify a Kubernetes opaque secret whose data payload ``config.env`` contains each MinIO environment variable you want to set.
+   该字段必须指定一个 Kubernetes opaque secret，其数据负载 ``config.env`` 包含你希望设置的每一个 MinIO 环境变量。
 
-   The YAML includes an object ``kind: Secret`` with ``metadata.name: storage-configuration`` that sets the root username, password, erasure parity settings, and enables Tenant Console.
+   该 YAML 中包含一个 ``kind: Secret`` 且 ``metadata.name: storage-configuration`` 的对象，用于设置 root 用户名、密码、纠删码校验设置，以及启用 Tenant Console。
 
-   Modify this as needed to reflect your Tenant requirements.
+   请根据 Tenant 的实际需求修改这些值。
 
-#. The following Helm command creates a MinIO Tenant using the standard chart:
+#. 以下 Helm 命令会使用标准 chart 创建 MinIO Tenant：
 
    .. code-block:: shell
       :class: copyable
@@ -352,36 +352,36 @@ This method may support easier pre-configuration of the Tenant compared to the :
       --create-namespace \
       TENANT-NAME tenant-|operator-version-stable|.tgz
 
-   To deploy more than one Tenant, create a Helm chart with the details of the new Tenant and repeat the deployment steps.
-   Redeploying the same chart updates the previously deployed Tenant.
+   若要部署多个 Tenant，请创建一个包含新 Tenant 详细配置的 Helm chart，并重复上述部署步骤。
+   重新部署同一个 chart 会更新此前已部署的 Tenant。
 
-#. Expose the Tenant MinIO port
+#. 暴露 Tenant 的 MinIO 端口
 
-   To test the MinIO Client :mc:`mc` from your local machine, forward the MinIO port and create an alias.
+   若要在本地机器上测试 MinIO Client :mc:`mc`，请转发 MinIO 端口并创建别名。
 
-   * Forward the Tenant's MinIO port:
+   * 转发 Tenant 的 MinIO 端口：
 
      .. code-block:: shell
         :class: copyable
 
         kubectl port-forward svc/TENANT-NAME-hl 9000 -n TENANT-NAMESPACE
 
-   * Create an alias for the Tenant service:
+   * 为 Tenant 服务创建别名：
 
      .. code-block:: shell
         :class: copyable
 
         mc alias set myminio https://localhost:9000 minio minio123 --insecure
 
-     This example uses the non-TLS ``myminio-hl`` service, which requires the ``--insecure`` option..
+     该示例使用非 TLS 的 ``myminio-hl`` 服务，因此需要 ``--insecure`` 参数。
 
-     If you have a TLS cert configured, omit ``--insecure`` and use ``svc/minio`` instead.
+     如果你已经配置了 TLS 证书，请省略 ``--insecure``，并改用 ``svc/minio``。
 
-   You can use :mc:`mc mb` to create a bucket on the Tenant:
+   你可以使用 :mc:`mc mb` 在 Tenant 上创建存储桶：
    
      .. code-block:: shell
         :class: copyable
 
-	mc mb myminio/mybucket --insecure
+        mc mb myminio/mybucket --insecure
 
-See :ref:`create-tenant-connect-tenant` for additional documentation on external connectivity to the Tenant.
+有关连接 Tenant 的更多文档，请参阅 :ref:`create-tenant-connect-tenant`。

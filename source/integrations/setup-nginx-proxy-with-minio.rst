@@ -1,43 +1,43 @@
 .. _integrations-nginx-proxy:
 
 ======================================
-Configure NGINX Proxy for MinIO Server
+为 MinIO Server 配置 NGINX 代理
 ======================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The following documentation provides a baseline for configuring NGINX to proxy requests to MinIO in a Linux environment.
-It is not intended as a comprehensive approach to NGINX, proxying, or reverse proxying in general.
-Modify the configuration as necessary for your infrastructure.
+以下文档提供了在 Linux 环境中配置 NGINX 将请求代理到 MinIO 的基线方案。
+这并非一份关于 NGINX、代理或反向代理的一般性完整指南。
+请根据你的基础设施需要调整配置。
 
-This documentation assumes the following:
+本文档基于以下前提：
 
-- An existing `NGINX <http://nginx.org/en/download.html>`__ deployment
-- An existing :ref:`MinIO <minio-installation>` deployment
-- A DNS hostname which uniquely identifies the MinIO deployment
+- 已有 `NGINX <http://nginx.org/en/download.html>`__ 部署
+- 已有 :ref:`MinIO <minio-installation>` 部署
+- 一个可唯一标识该 MinIO 部署的 DNS 主机名
 
-There are two models for proxying requests to the MinIO Server API and the MinIO Console:
+将请求代理到 MinIO Server API 和 MinIO Console 有两种模式：
 
 .. tab-set::
 
-   .. tab-item:: Dedicated DNS
+   .. tab-item:: 专用 DNS
 
-      Create or configure a dedicated DNS name for the MinIO service.
+      为 MinIO 服务创建或配置一个专用 DNS 名称。
 
-      For the MinIO Server S3 API, proxy requests to the root of that domain.
-      For the MinIO Console Web GUI, proxy requests to the ``/minio`` subpath.
+      对于 MinIO Server S3 API，将请求代理到该域名的根路径。
+      对于 MinIO Console Web GUI，将请求代理到 ``/minio`` 子路径。
 
-      For example, given the hostname ``minio.example.net``: 
+      例如，给定主机名 ``minio.example.net``：
       
-      - Proxy requests to the root ``https://minio.example.net`` to the MinIO Server listening on ``https://minio.local:9000``.
+      - 将对根路径 ``https://minio.example.net`` 的请求代理到监听于 ``https://minio.local:9000`` 的 MinIO Server。
 
-      - Proxy requests to the subpath ``https://minio.example.net/minio/ui`` to the MinIO Console listening on ``https://minio.local:9001``.
+      - 将对 ``https://minio.example.net/minio/ui`` 子路径的请求代理到监听于 ``https://minio.local:9001`` 的 MinIO Console。
 
-      The following location blocks provide a template for further customization in your unique environment:
+      以下 location 块提供了模板，可在你的环境中进一步定制：
 
       .. code-block:: nginx
          :class: copyable
@@ -114,23 +114,23 @@ There are two models for proxying requests to the MinIO Server API and the MinIO
             }
          }
 
-      The S3 API signature calculation algorithm does *not* support proxy schemes where you host the MinIO Server API such as ``example.net/s3/``.
+      S3 API 签名计算算法*不*支持将 MinIO Server API 托管在 ``example.net/s3/`` 这类路径上的代理方案。
 
-      You must also set the following environment variables for the MinIO deployment:
+      你还必须为 MinIO 部署设置以下环境变量：
 
-      - Set the :envvar:`MINIO_BROWSER_REDIRECT_URL` to the proxy host FQDN of the MinIO Console (``https://example.net/minio/ui``)
+      - 将 :envvar:`MINIO_BROWSER_REDIRECT_URL` 设置为 MinIO Console 代理主机的 FQDN（``https://example.net/minio/ui``）
 
-   .. tab-item:: Subdomain
+   .. tab-item:: 子域名
 
-      Create or configure separate, unique subdomains for the MinIO Server S3 API and for the MinIO Console Web GUI.
+      为 MinIO Server S3 API 和 MinIO Console Web GUI 分别创建或配置独立且唯一的子域名。
 
-      For example, given the root domain of ``example.net``:
+      例如，给定根域 ``example.net``：
 
-      - Proxy request to the subdomain ``minio.example.net`` to the MinIO Server listening on ``https://minio.local:9000``
+      - 将对 ``minio.example.net`` 子域名的请求代理到监听于 ``https://minio.local:9000`` 的 MinIO Server
 
-      - Proxy requests to the subdomain ``console.example.net`` to the MinIO Console listening on ``https://minio.local:9001``
+      - 将对 ``console.example.net`` 子域名的请求代理到监听于 ``https://minio.local:9001`` 的 MinIO Console
 
-      The following location blocks provide a template for further customization in your unique environment:
+      以下 location 块提供了模板，可在你的环境中进一步定制：
 
       .. code-block:: nginx
          :class: copyable
@@ -219,8 +219,8 @@ There are two models for proxying requests to the MinIO Server API and the MinIO
             }
          }
 
-      The S3 API signature calculation algorithm does *not* support proxy schemes where you host the MinIO Server API on a subpath, such as ``minio.example.net/s3/``.
+      S3 API 签名计算算法*不*支持将 MinIO Server API 托管在子路径上的代理方案，例如 ``minio.example.net/s3/``。
 
-      You must also set the following environment variables for the MinIO deployment:
+      你还必须为 MinIO 部署设置以下环境变量：
 
-      - Set the :envvar:`MINIO_BROWSER_REDIRECT_URL` to the proxy host FQDN of the MinIO Console (``https://console.example.net/``)
+      - 将 :envvar:`MINIO_BROWSER_REDIRECT_URL` 设置为 MinIO Console 代理主机的 FQDN（``https://console.example.net/``）

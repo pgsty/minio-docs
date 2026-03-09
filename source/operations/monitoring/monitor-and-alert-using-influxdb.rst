@@ -1,120 +1,119 @@
 .. _minio-metrics-influxdb:
 
-======================================
-Monitoring and Alerting using InfluxDB
-======================================
+========================================
+使用 InfluxDB 进行监控与告警
+========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO publishes cluster and node metrics using the :prometheus-docs:`Prometheus Data Model <concepts/data_model/>`.
-`InfluxDB <https://www.influxdata.com/?ref=minio>`__ supports scraping MinIO metrics data for monitoring and alerting.
+MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/>` 发布集群和节点指标。
+`InfluxDB <https://www.influxdata.com/?ref=minio>`__ 支持抓取 MinIO 指标数据，用于监控和告警。
 
-The procedure on this page documents the following:
+本页介绍以下内容：
 
-- Configuring an InfluxDB service to scrape and display metrics from a MinIO deployment
-- Configuring an Alert on a MinIO metric 
+- 配置 InfluxDB 服务，抓取并展示 MinIO 部署的指标
+- 基于 MinIO 指标配置告警
 
-.. admonition:: Prerequisites
+.. admonition:: 前提条件
    :class: note
 
-   This procedure requires the following:
+   此过程要求满足以下条件：
 
-   - An existing InfluxDB deployment configured with one or more :influxdb-docs:`notification endpoints <notification-endpoints/>`
-   - An existing MinIO deployment with network access to the InfluxDB deployment
-   - An :mc:`mc` installation on your local host configured to :ref:`access <alias>` the MinIO deployment
+   - 已有 InfluxDB 部署，并配置一个或多个 :influxdb-docs:`notification endpoints <notification-endpoints/>`
+   - 已有可通过网络访问 InfluxDB 部署的 MinIO 部署
+   - 本地主机已安装 :mc:`mc`，并已配置为可 :ref:`访问 <alias>` MinIO 部署
 
-   These instructions use :ref:`version 2 metrics. <minio-metrics-v2>`
-   For more about metrics API versions, see :ref:`Metrics and alerts. <minio-metrics-and-alerts>`
+   本文说明使用 :ref:`version 2 指标 <minio-metrics-v2>`。
+   关于指标 API 版本的更多信息，请参见 :ref:`指标与告警 <minio-metrics-and-alerts>`。
 
-For MinIO Deployments on Kubernetes, this procedure assumes all necessary network control components, such as Ingress or Load Balancers, to facilitate access between the MinIO Tenant and the InfluxDB service.
+对于 Kubernetes 上的 MinIO 部署，本文默认已具备 Ingress、负载均衡器等必要的网络控制组件，以便 MinIO 租户与 InfluxDB 服务之间能够互相访问。
 
-Configure InfluxDB to Collect and Alert using MinIO Metrics
------------------------------------------------------------
+配置 InfluxDB 收集 MinIO 指标并触发告警
+--------------------------------------------------
 
 .. important::
 
-   This procedure specifically uses the InfluxDB UI to create a scraping endpoint. 
+   本过程专门使用 InfluxDB UI 来创建抓取端点。
    
-   The InfluxDB UI does not provide the same level of configuration as using `Telegraf <https://docs.influxdata.com/telegraf/v1.24/>`__ and the corresponding `Prometheus plugin <https://github.com/influxdata/telegraf/blob/release-1.24/plugins/inputs/prometheus/README.md>`__.
-   Specifically:
+   InfluxDB UI 提供的配置能力不如 `Telegraf <https://docs.influxdata.com/telegraf/v1.24/>`__ 及其对应的 `Prometheus plugin <https://github.com/influxdata/telegraf/blob/release-1.24/plugins/inputs/prometheus/README.md>`__ 完整。
+   具体来说：
 
-   - You cannot enable authenticated access to the MinIO metrics endpoint via the InfluxDB UI
-   - You cannot set a tag for collected metrics (e.g. ``url_tag``) for uniquely identifying the metrics for a given MinIO deployment
+   - 无法通过 InfluxDB UI 为 MinIO 指标端点启用认证访问
+   - 无法为已采集指标设置标签（例如 ``url_tag``），以唯一标识特定 MinIO 部署的指标
 
-   The Telegraf Prometheus plugin also supports Kubernetes-specific features, such as scraping the ``minio`` service for a given MinIO Tenant.
+   Telegraf Prometheus plugin 还支持 Kubernetes 特有能力，例如抓取特定 MinIO 租户的 ``minio`` service。
 
-   Configuring Telegraf is out of scope for this procedure. 
-   You can use this procedure as general guidance for configuring Telegraf to scrape MinIO metrics.
+   配置 Telegraf 不在本文范围内。
+   可将本文作为配置 Telegraf 抓取 MinIO 指标的一般指导。
 
 .. container:: procedure
 
-   1. Configure Public Access to MinIO Metrics
+   1. 配置对 MinIO 指标的公开访问
 
-      Set the :envvar:`MINIO_PROMETHEUS_AUTH_TYPE` environment variable to ``"public"`` for all nodes in the MinIO deployment.
-      You can then restart the deployment to allow public access to MinIO metrics.
+      在 MinIO 部署的所有节点上，将 :envvar:`MINIO_PROMETHEUS_AUTH_TYPE` 环境变量设置为 ``"public"``。
+      随后可重启部署，以允许公开访问 MinIO 指标。
 
-      You can validate the change by attempting to ``curl`` the metrics endpoint:
+      可通过对指标端点执行 ``curl`` 来验证变更是否生效：
 
       .. code-block:: shell
          :class: copyable
 
          curl https://HOSTNAME/minio/v2/metrics/cluster
 
-      Replace ``HOSTNAME`` with the URL of the load balancer or reverse proxy through which you access the MinIO deployment.
-      You can alternatively specify any single node as ``HOSTNAME:PORT``, specifying the MinIO server API port in addition to the node hostname.
+      将 ``HOSTNAME`` 替换为访问 MinIO 部署所使用的负载均衡器或反向代理 URL。
+      也可以将任意单个节点写成 ``HOSTNAME:PORT``，即在节点主机名之外再指定 MinIO server API 端口。
 
-      The response body should include a list of collected MinIO metrics.
+      响应正文中应包含已采集的 MinIO 指标列表。
 
-   #. Log into the InfluxDB UI and Create a Bucket
+   #. 登录 InfluxDB UI 并创建 Bucket
 
-      Select the :influxdb-docs:`Organization <organizations/view-orgs/>` under which you want to store MinIO metrics.
+      选择用于存储 MinIO 指标的 :influxdb-docs:`Organization <organizations/view-orgs/>`。
 
-      Create a :influxdb-docs:`New Bucket <organizations/buckets/create-bucket/>` in which to store metrics for the MinIO deployment.
+      创建一个 :influxdb-docs:`New Bucket <organizations/buckets/create-bucket/>`，用于存储该 MinIO 部署的指标。
 
-   #. Create a new Scraping Source
+   #. 创建新的抓取源
 
-      Create a :influxdb-docs:`new InfluxDB Scraper <write-data/no-code/scrape-data/manage-scrapers/create-a-scraper/>`.
+      创建一个 :influxdb-docs:`新的 InfluxDB Scraper <write-data/no-code/scrape-data/manage-scrapers/create-a-scraper/>`。
 
-      Specify the full URL to the MinIO deployment, including the metrics endpoint:
+      指定 MinIO 部署的完整 URL，其中包含指标端点：
 
       .. code-block:: shell
          :class: copyable
 
          https://HOSTNAME/minio/v2/metrics/cluster
 
-      Replace ``HOSTNAME`` with the URL of the load balancer or reverse proxy through which you access the MinIO deployment.
-      You can alternatively specify any single node as ``HOSTNAME:PORT``, specifying the MinIO server API port in addition to the node hostname.
+      将 ``HOSTNAME`` 替换为访问 MinIO 部署所使用的负载均衡器或反向代理 URL。
+      也可以将任意单个节点写成 ``HOSTNAME:PORT``，即在节点主机名之外再指定 MinIO server API 端口。
 
-   #. Validate the Data
+   #. 验证数据
 
-      Use the :influxdb-docs:`DataExplorer <query-data/execute-queries/data-explorer/>` to visualize the collected MinIO data.
+      使用 :influxdb-docs:`DataExplorer <query-data/execute-queries/data-explorer/>` 可视化已采集的 MinIO 数据。
 
-      For example, you can set a filter on ``minio_cluster_capacity_usable_total_bytes`` and ``minio_cluster_capacity_usable_free_bytes`` to compare the total usable against total free space on the MinIO deployment.
+      例如，可针对 ``minio_cluster_capacity_usable_total_bytes`` 和 ``minio_cluster_capacity_usable_free_bytes`` 设置过滤条件，以比较 MinIO 部署中的总可用空间和剩余可用空间。
 
-   #. Configure a Check
+   #. 配置 Check
 
-      Create a :influxdb-docs:`new Check <https://docs.influxdata.com/influxdb/v2.4/monitor-alert/checks/create/>` on a MinIO metric.
+      基于某个 MinIO 指标创建一个 :influxdb-docs:`新的 Check <https://docs.influxdata.com/influxdb/v2.4/monitor-alert/checks/create/>`。
 
-      The following example check rules provide a baseline of alerts for a MinIO deployment.
-      You can modify or otherwise use these examples for guidance in building your own checks.
+      以下示例 Check 规则为 MinIO 部署提供了一组基础告警。
+      可按需修改这些示例，或将其作为构建自定义 Check 的参考。
 
-      - Create a :guilabel:`Threshold Check` named ``MINIO_NODE_DOWN``. 
+      - 创建一个名为 ``MINIO_NODE_DOWN`` 的 :guilabel:`Threshold Check`。
       
-        Set the filter for the ``minio_cluster_nodes_offline_total`` key.
+        将过滤条件设置为 ``minio_cluster_nodes_offline_total`` 键。
         
-        Set the :guilabel:`Thresholds` to :guilabel:`WARN` when the value is greater than :guilabel:`1`
+        在值大于 :guilabel:`1` 时，将 :guilabel:`Thresholds` 设置为 :guilabel:`WARN`。
 
-      - Create a :guilabel:`Threshold Check` named ``MINIO_QUORUM_WARNING``.
+      - 创建一个名为 ``MINIO_QUORUM_WARNING`` 的 :guilabel:`Threshold Check`。
 
-        Set the filter for the ``minio_cluster_drive_offline_total`` key.
+        将过滤条件设置为 ``minio_cluster_drive_offline_total`` 键。
 
-        Set the :guilabel:`Thresholds` to :guilabel:`CRITICAL` when the value is one less than your configured :ref:`Erasure Code Parity <minio-erasure-coding>` setting.
+        当该值比已配置的 :ref:`纠删码校验值 <minio-erasure-coding>` 少 1 时，将 :guilabel:`Thresholds` 设置为 :guilabel:`CRITICAL`。
 
-        For example, a deployment using EC:4 should set this value to ``3``.
+        例如，使用 ``EC:4`` 的部署应将该值设置为 ``3``。
 
-      Configure your :influxdb-docs:`Notification endpoints <monitor-alert/notification-endpoints/>` and :influxdb-docs:`Notification rules <monitor-alert/notification-rules/>` such that checks of each type trigger an appropriate response.
-
+      配置 :influxdb-docs:`Notification endpoints <monitor-alert/notification-endpoints/>` 和 :influxdb-docs:`Notification rules <monitor-alert/notification-rules/>`，使各类 Check 都能触发适当响应。

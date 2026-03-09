@@ -1,18 +1,18 @@
 .. _minio-server-envvar-bucket-notification-kafka:
 .. _minio-server-config-bucket-notification-kafka:
 
-===========================
-Kafka Notification Settings
-===========================
+===================
+Kafka 通知设置
+===================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for configuring an Kafka service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
-See :ref:`minio-bucket-notifications-publish-kafka` for a tutorial on using these settings.
+本页面记录了将 Kafka 服务配置为 :ref:`Bucket Notifications <minio-bucket-notifications>` 目标的相关设置。
+有关如何使用这些设置的教程，请参见 :ref:`minio-bucket-notifications-publish-kafka`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -22,15 +22,15 @@ See :ref:`minio-bucket-notifications-publish-kafka` for a tutorial on using thes
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Multiple Kafka Targets
-----------------------
+多个 Kafka 目标
+----------------
 
-You can specify multiple Kafka service endpoints by appending a unique identifier ``_ID`` for each set of related Kafka settings on to the top level key. 
+你可以在顶层键后附加唯一标识符 ``_ID``，为每组相关的 Kafka 设置指定多个 Kafka 服务端点。
 
-Examples
-~~~~~~~~
+示例
+~~~~
 
-For example, the following commands set two distinct Kafka service endpoints as ``PRIMARY`` and ``SECONDARY`` respectively:
+例如，以下命令分别将两个不同的 Kafka 服务端点设置为 ``PRIMARY`` 和 ``SECONDARY``：
 
 .. tab-set:: 
    
@@ -59,15 +59,15 @@ For example, the following commands set two distinct Kafka service endpoints as 
             brokers="https://kafka1.example.net:9200, https://kafka2.example.net:9200"
             [ARGUMENT=VALUE ...]
 
-      Notice that for configuration settings, the unique identifier appends to ``notify_kafka`` only, not to each individual argument.
+      请注意，对于配置设置，唯一标识符只附加到 ``notify_kafka``，而不是附加到每个单独参数。
 
-Settings
---------
+设置
+----
 
-Enable
-~~~~~~
+启用
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
@@ -76,20 +76,20 @@ Enable
 
       .. envvar:: MINIO_NOTIFY_KAFKA_ENABLE
 
-      Specify ``on`` to enable publishing bucket notifications to a Kafka service endpoint.
+      指定 ``on`` 以启用将存储桶通知发布到 Kafka 服务端点。
 
-      Defaults to ``off``.
+      默认为 ``off``。
 
    .. tab-item:: Configuration Setting
       :sync: config
 
       .. mc-conf:: notify_kafka
 
-      The top-level configuration key for defining an Kafka service endpoint for use with :ref:`MinIO bucket notifications <minio-bucket-notifications>`.
+      用于定义 Kafka 服务端点并与 :ref:`MinIO bucket notifications <minio-bucket-notifications>` 配合使用的顶层配置键。
 
-      Use :mc-cmd:`mc admin config set` to set or update an Kafka service endpoint.
-      The :mc-conf:`~notify_kafka.brokers` argument is *required* for each target.
-      Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+      使用 :mc-cmd:`mc admin config set` 设置或更新 Kafka 服务端点。
+      对于每个目标，:mc-conf:`~notify_kafka.brokers` 参数都是*必需*的。
+      其他可选参数请以空白字符（``" "``）分隔的列表形式指定。
 
       .. code-block:: shell
          :class: copyable
@@ -101,7 +101,7 @@ Enable
 Brokers
 ~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
@@ -116,8 +116,8 @@ Brokers
       .. mc-conf:: notify_kafka brokers
          :delimiter: " "
 
-Specify a comma-separated list of Kafka broker addresses. 
-For example:
+指定以逗号分隔的 Kafka broker 地址列表。
+例如：
 
 ``"kafka1.example.com:2021,kafka2.example.com:2021"``
 
@@ -128,7 +128,7 @@ For example:
 Topic
 ~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -143,12 +143,12 @@ Topic
       .. mc-conf:: notify_kafka topic
          :delimiter: " "
 
-Specify the name of the Kafka topic to which MinIO publishes bucket events.
+指定 MinIO 发布存储桶事件的 Kafka topic 名称。
 
 SASL
 ~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -163,12 +163,12 @@ SASL
       .. mc-conf:: notify_kafka sasl
          :delimiter: " "
 
-Specify ``on`` to enable SASL authentication.
+指定 ``on`` 以启用 SASL 身份验证。
 
 SASL Username
 ~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -183,12 +183,12 @@ SASL Username
       .. mc-conf:: notify_kafka sasl_username
          :delimiter: " "
 
-Specify the username for performing SASL/PLAIN or SASL/SCRAM authentication to the Kafka broker(s).
+指定用于对 Kafka broker 执行 SASL/PLAIN 或 SASL/SCRAM 身份验证的用户名。
 
 SASL Password
 ~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -203,16 +203,16 @@ SASL Password
       .. mc-conf:: notify_kafka sasl_password
          :delimiter: " "
 
-Specify the password for performing SASL/PLAIN or SASL/SCRAM authentication to the Kafka broker(s).
+指定用于对 Kafka broker 执行 SASL/PLAIN 或 SASL/SCRAM 身份验证的密码。
 
 .. versionchanged:: RELEASE.2023-06-23T20-26-00Z
 
-   MinIO redacts this value when returned as part of :mc-cmd:`mc admin config get`.
+   当此值作为 :mc-cmd:`mc admin config get` 返回结果的一部分时，MinIO 会对其进行脱敏。
 
 SASL Mechanism
 ~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -227,17 +227,17 @@ SASL Mechanism
       .. mc-conf:: notify_kafka sasl_mechanism
          :delimiter: " "
 
-Specify the SASL mechanism to use for authenticating to the Kafka broker(s).
-MinIO supports the following mechanisms:
+指定用于对 Kafka broker 进行身份验证的 SASL 机制。
+MinIO 支持以下机制：
 
-- ``PLAIN`` (Default)
+- ``PLAIN``（默认）
 - ``SHA256``
 - ``SHA512``
 
 TLS Client Auth
 ~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -252,16 +252,16 @@ TLS Client Auth
       .. mc-conf:: notify_kafka tls_client_auth
          :delimiter: " "
 
-Specify the client authentication type of the Kafka broker(s).
-The following table lists the supported values and their mappings
+指定 Kafka broker 的客户端身份验证类型。
+下表列出了支持的取值及其映射关系
 
 .. list-table::
    :header-rows: 1
    :widths: 20 80
    :width: 100%
 
-   * - Value
-     - Authentication Type
+   * - 值
+     - 身份验证类型
 
    * - 0
      - ``NoClientCert``
@@ -278,12 +278,12 @@ The following table lists the supported values and their mappings
    * - 4
      - ``RequireAndVerifyClientCert``
 
-See `ClientAuthType <https://golang.org/pkg/crypto/tls/#ClientAuthType>`__ for more information on each client auth type.
+有关各客户端身份验证类型的更多信息，请参见 `ClientAuthType <https://golang.org/pkg/crypto/tls/#ClientAuthType>`__。
 
 TLS
 ~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -298,12 +298,12 @@ TLS
       .. mc-conf:: notify_kafka tls
          :delimiter: " "
 
-Specify ``on`` to enable TLS connectivity to the Kafka broker(s).
+指定 ``on`` 以启用与 Kafka broker 的 TLS 连接。
 
 TLS Skip Verify
 ~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -318,15 +318,15 @@ TLS Skip Verify
       .. mc-conf:: notify_kafka tls_skip_verify
          :delimiter: " "
 
-Enables or disables TLS verification of the NATS service endpoint TLS certificates.
+启用或禁用对 NATS 服务端点 TLS 证书的 TLS 验证。
 
-- Specify ``on`` to disable TLS verification *(Default)*.
-- Specify ``off`` to enable TLS verification.
+- 指定 ``on`` 以禁用 TLS 验证（*默认*）。
+- 指定 ``off`` 以启用 TLS 验证。
 
 Client TLS Cert
 ~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -341,12 +341,12 @@ Client TLS Cert
       .. mc-conf:: notify_kafka client_tls_cert
          :delimiter: " "
 
-Specify the path to the client certificate to use for performing mTLS authentication to the Kafka broker(s).
+指定客户端证书路径，用于对 Kafka broker 执行 mTLS 身份验证。
 
 Client TLS Key
 ~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -361,12 +361,12 @@ Client TLS Key
       .. mc-conf:: notify_kafka client_tls_key
          :delimiter: " "
 
-Specify the path to the client private key to use for performing mTLS authentication to the Kafka broker(s).
+指定客户端私钥路径，用于对 Kafka broker 执行 mTLS 身份验证。
 
 Version
 ~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -381,13 +381,13 @@ Version
       .. mc-conf:: notify_kafka version
          :delimiter: " "
 
-Specify the version of the Kafka cluster to assume when performing operations against that cluster. 
-See the `sarama reference documentation <https://github.com/shopify/sarama/blob/v1.20.1/config.go#L327>`__ for more information on this field's behavior.
+指定在对 Kafka 集群执行操作时假定的 Kafka 集群版本。
+有关此字段行为的更多信息，请参见 `sarama reference documentation <https://github.com/shopify/sarama/blob/v1.20.1/config.go#L327>`__。
 
 Batch Size
 ~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -402,16 +402,16 @@ Batch Size
       .. mc-conf:: notify_kafka batch_size
          :delimiter: " "
 
-Specify the integer value to use as the `batch size <https://kafka.apache.org/documentation/#producerconfigs_batch.size>`__ for sending records to Kafka.
+指定整数值，作为向 Kafka 发送记录时的 `batch size <https://kafka.apache.org/documentation/#producerconfigs_batch.size>`__。
 
 .. versionchanged:: RELEASE.2023-12-02T10-51-33Z
 
-   MinIO previously limited this value to ``100``.
+   MinIO 先前将此值限制为 ``100``。
 
 Queue Directory
 ~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -426,14 +426,14 @@ Queue Directory
       .. mc-conf:: notify_kafka queue_dir
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径以启用 MinIO 对未投递消息的持久化事件存储，例如 ``/opt/minio/events``。
 
-MinIO stores undelivered events in the specified store while the Kafka server/broker is offline and replays the stored events when connectivity resumes.
+当 Kafka server/broker 离线时，MinIO 会将未投递事件存储在指定存储中，并在连接恢复后重放这些已存储事件。
 
 Queue Limit
 ~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -448,13 +448,13 @@ Queue Limit
       .. mc-conf:: notify_kafka queue_limit
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. 
-Defaults to ``100000``.
+指定未投递消息的最大限制。
+默认为 ``100000``。
 
 Comment
 ~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -469,14 +469,14 @@ Comment
       .. mc-conf:: notify_kafka comment
          :delimiter: " "
 
-Specify a comment to associate with the Kafka configuration.
+指定与 Kafka 配置关联的注释。
 
 Compression Codec
 ~~~~~~~~~~~~~~~~~
 
 .. versionadded:: MinIO Server RELEASE.2023-12-09T18-17-51Z
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -491,9 +491,9 @@ Compression Codec
       .. mc-conf:: notify_kafka compression_codec
          :delimiter: " "
 
-Specify the compression codec to use when sending records to Kafka.
+指定向 Kafka 发送记录时使用的压缩编解码器。
 
-Supports the following values:
+支持以下取值：
 
 - ``none``
 - ``snappy``
@@ -506,7 +506,7 @@ Compression Level
 
 .. versionadded:: MinIO Server RELEASE.2023-12-09T18-17-51Z
 
-*Optional*
+*可选*
 
 .. tab-set::
 
@@ -521,7 +521,7 @@ Compression Level
       .. mc-conf:: notify_kafka compression_level
          :delimiter: " "
 
-Controls the level of compression applied based on the configured compression codec.
+根据已配置的压缩编解码器控制应用的压缩级别。
 
-Specify an integer value greater than or equal to ``0``.
-The effect of the value depends on the selected codec.
+指定大于或等于 ``0`` 的整数值。
+该值的效果取决于所选编解码器。

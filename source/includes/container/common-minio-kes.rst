@@ -1,10 +1,10 @@
 .. start-common-deploy-create-pod-and-containers
 
-The commands in this section create the following resources:
+本节中的命令会创建以下资源：
 
-- A Podman :podman-docs:`Pod <markdown/podman-pod.1.html>` to facilitate container communications
-- A Container for the KES Server configured to use the chosen supported |KMS| solution.
-- A Container for a MinIO Server running in :ref:`Single-Node Single-Drive Mode <minio-snsd>`.
+- 一个 Podman :podman-docs:`Pod <markdown/podman-pod.1.html>`，用于简化容器间通信。
+- 一个配置为使用所选受支持 |KMS| 方案的 KES Server 容器。
+- 一个以 :ref:`Single-Node Single-Drive Mode <minio-snsd>` 运行的 MinIO Server 容器。
 
 .. code-block:: shell
    :class: copyable
@@ -35,7 +35,7 @@ The commands in this section create the following resources:
      quay.io/minio/minio:|minio-latest| server  \
        --console-address ":9001"
 
-You can verify the status of the containers using the following commands:
+你可以使用以下命令检查容器状态：
 
 .. code-block:: shell
    :class: copyable
@@ -43,24 +43,29 @@ You can verify the status of the containers using the following commands:
    # Should show three pods - one for the Pod, one for KES, and one for MinIO
    sudo podman container ls
 
-If all pods are operational, you can connect to the MinIO deployment by opening your browser to http://127.0.0.1:9000 and logging in with the root credentials specified in the MinIO environment file.
+如果所有 pod 都处于运行状态，
+你就可以在浏览器中访问 http://127.0.0.1:9000 连接到 MinIO 部署，
+并使用 MinIO 环境文件中指定的 root 凭证登录。
 
 .. end-common-deploy-create-pod-and-containers
 
 .. start-kes-generate-kes-certs-desc
 
-The following commands create two TLS certificates that expire within 30 days of creation:
+以下命令会创建两个在创建后 30 天内过期的 TLS 证书：
 
-- A TLS certificate to secure communications between KES and the |KMS| service.
-- A TLS certificate for MinIO to perform mTLS authentication to KES.
+- 用于保护 KES 与 |KMS| 服务之间通信的 TLS 证书。
+- 用于 MinIO 向 KES 执行 mTLS 认证的 TLS 证书。
 
-.. admonition:: Use Caution in Production Environments
+.. admonition:: 生产环境中请谨慎使用
    :class: important
 
-   **DO NOT** use the TLS certificates generated as part of this procedure for any long-term development or production environments. 
+   **不要** 将本流程生成的 TLS 证书
+   用于任何长期开发环境或生产环境。
 
-   Defer to organization/industry best practices around TLS certificate generation and management. 
-   A complete guide to creating valid certificates (for example, well-formed, current, and trusted) is beyond the scope of this procedure.
+   请遵循所在组织或行业关于 TLS 证书生成和管理的最佳实践。
+   关于如何创建有效证书
+   （例如格式正确、未过期且受信任）的完整指南
+   不在本流程范围之内。
 
 .. code-block:: shell
     :class: copyable
@@ -87,7 +92,8 @@ The following commands create two TLS certificates that expire within 30 days of
 
 .. start-kes-configuration-minio-desc
 
-This command assumes the ``minio-kes.cert``, ``minio-kes.key``, and ``kes-server.cert`` certificates are accessible at the specified location:
+以下命令假定 ``minio-kes.cert``、``minio-kes.key`` 和 ``kes-server.cert``
+证书在指定位置可访问：
 
 .. code-block:: shell
    :class: copyable
@@ -104,41 +110,56 @@ This command assumes the ``minio-kes.cert``, ``minio-kes.key``, and ``kes-server
    MINIO_KMS_KES_KEY_NAME=minio-backend-default-key
 
 .. note::
-   
-   - An API key is the preferred way to authenticate with the KES server, as it provides a streamlined and secure authentication process to the KES server.
 
-   - Alternatively, specify the :envvar:`MINIO_KMS_KES_KEY_FILE` and :envvar:`MINIO_KMS_KES_CERT_FILE` instead of :envvar:`MINIO_KMS_KES_API_KEY`.
-     
-     API keys are mutually exclusive with certificate-based authentication. 
-     Specify *either* the API key variable *or* the Key File and Cert File variables.
-   
-   - The documentation on this site uses API keys.
+   - API key 是与 KES Server 认证的首选方式，
+     因为它为 KES Server 提供了更精简且更安全的认证流程。
 
-MinIO uses the :envvar:`MINIO_KMS_KES_KEY_NAME` key for the following cryptographic operations:
+   - 或者，你也可以指定
+     :envvar:`MINIO_KMS_KES_KEY_FILE` 和
+     :envvar:`MINIO_KMS_KES_CERT_FILE`，
+     而不是 :envvar:`MINIO_KMS_KES_API_KEY`。
 
-- Encrypting the MinIO backend (IAM, configuration, etc.)
-- Encrypting objects using :ref:`SSE-KMS <minio-encryption-sse-kms>` if the request does not include a specific |EK|.
-- Encrypting objects using :ref:`SSE-S3 <minio-encryption-sse-s3>`.
+     API key 与基于证书的认证互斥。
+     二者只能指定其一：要么 API key 变量，
+     要么 Key File 和 Cert File 变量。
 
-The ``minio-kes`` certificates enable for mTLS between the MinIO deployment and the KES server *only*.
-They do not otherwise enable TLS for other client connections to MinIO.
+   - 本站文档统一使用 API key。
 
-KES automatically creates this key if it does not already exist on the root KMS.
+MinIO 会将 :envvar:`MINIO_KMS_KES_KEY_NAME` 这个密钥
+用于以下加密操作：
+
+- 加密 MinIO 后端（IAM、配置等）。
+- 在请求未包含特定 |EK| 时，
+  使用 :ref:`SSE-KMS <minio-encryption-sse-kms>` 加密对象。
+- 使用 :ref:`SSE-S3 <minio-encryption-sse-s3>` 加密对象。
+
+``minio-kes`` 证书仅用于 MinIO 部署与 KES Server 之间的 mTLS。
+它们不会为其他连接到 MinIO 的客户端启用 TLS。
+
+如果该密钥在根 KMS 上尚不存在，
+KES 会自动创建它。
 
 .. end-kes-configuration-minio-desc
 
 .. start-kes-generate-key-desc
 
-.. admonition:: Unseal Vault Before Creating Key
+.. admonition:: 创建密钥前先解封 Vault
    :class: important
 
-   If required for your chosen provider, you must unseal the backing |KMS| instance before creating new encryption keys.
-   Refer to the documentation for your chosen KMS solution for more information.
+   如果你所选的提供方有此要求，
+   则必须先解封底层 |KMS| 实例，
+   然后才能创建新的加密密钥。
+   更多信息请参考所选 KMS 方案的文档。
 
-MinIO requires that the |EK| exist on the root KMS *before* performing |SSE| operations using that key. 
-Use :kes-docs:`kes key create <cli/kes-key/create/>` *or* :mc-cmd:`mc admin kms key create` to create a new |EK| for use with |SSE|.
+MinIO 要求在使用某个 |EK| 执行 |SSE| 操作之前，
+该 |EK| 必须已存在于根 KMS 中。
+使用 :kes-docs:`kes key create <cli/kes-key/create/>` *或*
+:mc-cmd:`mc admin kms key create`
+为 |SSE| 创建新的 |EK|。
 
-The following command uses the :kes-docs:`kes key create <cli/kes-key/create/>` command to add a new External Key (EK) stored on the root KMS server for use with encrypting the MinIO backend.
+以下命令使用 :kes-docs:`kes key create <cli/kes-key/create/>`
+在根 KMS Server 上添加一个新的 External Key（EK），
+供加密 MinIO 后端时使用。
 
 .. code-block:: shell
    :class: copyable
@@ -151,6 +172,7 @@ The following command uses the :kes-docs:`kes key create <cli/kes-key/create/>` 
      -e KES_CLIENT_CERT=/certs/minio-kes.cert  \
      kes:|kes-stable| key create -k my-new-encryption-key
 
-You can specify any key name as appropriate for your use case, such as a bucket-specific key ``minio-mydata-key``.
+你可以根据自己的使用场景指定任意密钥名称，
+例如某个存储桶专用密钥 ``minio-mydata-key``。
 
 .. end-kes-generate-key-desc

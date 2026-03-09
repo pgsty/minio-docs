@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -17,37 +17,35 @@
 .. |versionid| replace:: :mc-cmd:`~mc legalhold set --version-id`
 .. |alias| replace:: :mc-cmd:`~mc legalhold set ALIAS`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-legalhold-set-desc
 
-The :mc:`mc legalhold set` command enables :ref:`legal hold
-<minio-object-locking-legalhold>` Write-Once Read-Many (WORM) object locking on
-an object or objects.
+:mc:`mc legalhold set` 命令可在单个或多个对象上启用
+:ref:`legal hold <minio-object-locking-legalhold>` 的一次写入多次读取（WORM）对象锁定。
 
 .. end-mc-legalhold-set-desc
 
-:mc:`mc legalhold` *requires* that the specified bucket has 
-:ref:`object locking enabled <minio-object-locking>`. You can **only** enable
-object locking at bucket creation. See :mc-cmd:`mc mb --with-lock` for
-documentation on creating buckets with object locking enabled. 
+:mc:`mc legalhold` *要求* 指定的存储桶已
+:ref:`启用对象锁定 <minio-object-locking>`。你**只能**在创建存储桶时启用对象锁定。
+有关创建已启用对象锁定的存储桶，请参见 :mc-cmd:`mc mb --with-lock` 文档。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command enables legalhold WORM locking on all existing objects
-      in the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会在 ``myminio`` MinIO 部署中，对 ``mydata`` 存储桶内所有现有对象启用
+      legalhold WORM 锁定：
 
       .. code-block:: shell
          :class: copyable
 
          mc legalhold set --recursive myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -62,14 +60,14 @@ documentation on creating buckets with object locking enabled.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The MinIO :ref:`alias <alias>` and path to the object or
-   objects on which to enable the legal hold. For example:
+   MinIO :ref:`别名 <alias>`，以及要启用 legal hold 的对象路径（可为单个或多个对象）。
+   例如：
 
    .. code-block:: shell
       
@@ -78,13 +76,13 @@ Parameters
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Applies the legal hold to all existing objects in the 
-   :mc-cmd:`~mc legalhold set ALIAS` bucket or bucket prefix.
+   将 legal hold 应用于 :mc-cmd:`~mc legalhold set ALIAS` 指定存储桶或存储桶前缀下的
+   所有现有对象。
 
-   .. admonition:: ``--recursive`` only applies to existing objects
+   .. admonition:: ``--recursive`` 仅作用于现有对象
       :class: note
 
-      To enable legal hold for future objects, periodically repeat the :mc:`mc legalhold` command as new objects are created.
+      若要为后续新建对象启用 legal hold，请在有新对象创建后周期性重复执行 :mc:`mc legalhold` 命令。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -100,54 +98,52 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Use :mc:`mc legalhold set` to enable legal hold on objects:
+使用 :mc:`mc legalhold set` 为对象启用 legal hold：
 
 .. code-block:: shell
    :class: copyable
 
    mc legalhold set [--recursive] ALIAS/PATH 
 
-- Replace :mc-cmd:`ALIAS <mc legalhold set ALIAS>` with the 
-  :ref:`alias <alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc legalhold set ALIAS>` 替换为 S3 兼容主机的
+  :ref:`alias <alias>`。
 
-- Replace :mc-cmd:`PATH <mc legalhold set ALIAS>` with the path to the bucket
-  or object on the S3-compatible host. If specifying the path to a bucket or
-  bucket prefix, include the :mc-cmd:`~mc legalhold set --recursive`
-  option.
+- 将 :mc-cmd:`PATH <mc legalhold set ALIAS>` 替换为 S3 兼容主机上的存储桶或对象路径。
+  如果指定的是存储桶或存储桶前缀路径，请包含
+  :mc-cmd:`~mc legalhold set --recursive` 选项。
 
-Behavior
---------
+行为
+----
 
-Legal Holds Require Explicit Removal
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Legal Hold 需要显式移除
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Legal holds are indefinite and enforce complete immutability for locked objects.
-Only privileged users with the :policy-action:`s3:PutObjectLegalHold` can set or
-lift the legal hold.
+Legal hold 没有期限，并会对被锁定对象强制执行完全不可变。
+只有具备 :policy-action:`s3:PutObjectLegalHold` 权限的特权用户才能设置或解除 legal hold。
 
-Legal Holds Complement Other Retention Modes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Legal Hold 与其他保留模式互补
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Legal holds are complementary to both :ref:`minio-object-locking-governance` and
-:ref:`minio-object-locking-compliance` retention settings. An object held under
-both legal hold *and* a ``GOVERNANCE/COMPLIANCE`` retention rule remains WORM
-locked until the legal hold is lifed *and* the rule expires.
+Legal hold 与 :ref:`minio-object-locking-governance` 和
+:ref:`minio-object-locking-compliance` 保留设置互补。若对象同时受 legal hold 和
+``GOVERNANCE/COMPLIANCE`` 保留规则约束，则在 legal hold 被解除且规则到期之前，
+该对象会一直保持 WORM 锁定。
 
-For ``GOVERNANCE`` locked objects, the legal hold prevents mutating the object
-*even if* the user has the necessary privileges to bypass retention.
+对于 ``GOVERNANCE`` 锁定对象，legal hold 会阻止对象被修改，
+*即使*用户具备绕过保留策略所需的权限也是如此。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

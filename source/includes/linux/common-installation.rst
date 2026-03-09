@@ -1,22 +1,23 @@
 .. start-install-minio-binary-desc
 
-The following tabs provide examples of installing MinIO onto 64-bit Linux operating systems using RPM, DEB, or binary.
-The RPM and DEB packages automatically install MinIO to the necessary system paths and create a ``minio`` service for ``systemctl``.
-MinIO strongly recommends using the RPM or DEB installation routes.
-To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-systemctl`.
+以下选项卡给出了在 64 位 Linux 操作系统上通过 RPM、DEB 或二进制方式安装 MinIO 的示例。
+RPM 和 DEB 软件包会自动将 MinIO 安装到所需系统路径，
+并为 ``systemctl`` 创建 ``minio`` 服务。
+MinIO 强烈建议优先使用 RPM 或 DEB 安装方式。
+如需更新由 ``systemctl`` 管理的部署，请参阅 :ref:`minio-upgrade-systemctl`。
 
-.. dropdown:: amd64 (Intel or AMD 64-bit processors)
+.. dropdown:: amd64 (Intel 或 AMD 64 位处理器)
    :open:
 
-   Use one of the following options to download the MinIO server installation file for a machine running Linux on an Intel or AMD 64-bit processor.
+   对于运行 Linux 且使用 Intel 或 AMD 64 位处理器的机器，
+   请使用以下任一方式下载 MinIO server 安装文件。
 
    .. tab-set::
    
       .. tab-item:: RPM (RHEL)
          :sync: rpm
    
-         Use the following commands to download the latest stable MinIO RPM and
-         install it.
+         使用以下命令下载最新稳定版 MinIO RPM 并完成安装。
    
          .. code-block:: shell
             :class: copyable
@@ -28,8 +29,7 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
       .. tab-item:: DEB (Debian/Ubuntu)
          :sync: deb
    
-         Use the following commands to download the latest stable MinIO DEB and
-         install it:
+         使用以下命令下载最新稳定版 MinIO DEB 并完成安装：
    
          .. code-block:: shell
             :class: copyable
@@ -41,9 +41,9 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
       .. tab-item:: Binary
          :sync: binary
    
-         Use the following commands to download the latest stable MinIO binary and
-         install it to the system ``$PATH``:
-   
+         使用以下命令下载最新稳定版 MinIO 二进制文件，
+         并将其安装到系统 ``$PATH`` 中：
+
          .. code-block:: shell
             :class: copyable
    
@@ -51,17 +51,17 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
             chmod +x minio
             sudo mv minio /usr/local/bin/
 
-.. dropdown:: arm64 (ARM 64-bit processors)
+.. dropdown:: arm64 (ARM 64 位处理器)
    
-   Use one of the following options to download the MinIO server installation file for a machine running Linux on an ARM 64-bit processor.
+   对于运行 Linux 且使用 ARM 64 位处理器的机器，
+   请使用以下任一方式下载 MinIO server 安装文件。
 
    .. tab-set::
    
       .. tab-item:: RPM (RHEL)
          :sync: rpm
    
-         Use the following commands to download the latest stable MinIO RPM and
-         install it.
+         使用以下命令下载最新稳定版 MinIO RPM 并完成安装。
    
          .. code-block:: shell
             :class: copyable
@@ -73,8 +73,7 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
       .. tab-item:: DEB (Debian/Ubuntu)
          :sync: deb
    
-         Use the following commands to download the latest stable MinIO DEB and
-         install it:
+         使用以下命令下载最新稳定版 MinIO DEB 并完成安装：
    
          .. code-block:: shell
             :class: copyable
@@ -86,8 +85,8 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
       .. tab-item:: Binary
          :sync: binary
    
-         Use the following commands to download the latest stable MinIO binary and
-         install it to the system ``$PATH``:
+         使用以下命令下载最新稳定版 MinIO 二进制文件，
+         并将其安装到系统 ``$PATH`` 中：
    
          .. code-block:: shell
             :class: copyable
@@ -96,24 +95,25 @@ To update deployments managed using ``systemctl``, see :ref:`minio-upgrade-syste
             chmod +x minio
             MINIO_ROOT_USER=admin MINIO_ROOT_PASSWORD=password ./minio server /mnt/data --console-address ":9001"
 
-.. dropdown:: Other Architectures
+.. dropdown:: 其他架构
 
-   MinIO also supports additional architectures:
+   MinIO 还支持以下架构：
 
    - ppc64le
    - s390x
 
-   For instructions to download the binary, RPM, or DEB files for those architectures, see the `MinIO download page <https://min.io/download#/linux?ref=docs-install>`__.
+   如需获取这些架构对应的二进制、RPM 或 DEB 文件下载说明，
+   请参阅 `MinIO download page <https://min.io/download#/linux?ref=docs-install>`__。
 
 .. end-install-minio-binary-desc
 
 .. start-run-minio-binary-desc
 
-Run the :mc-cmd:`minio server` command to start the MinIO server.
-Specify the path to the volume or folder to use as the storage directory.
-The :mc-cmd:`minio` process must have full access (``rwx``) to the specified path and all subfolders:
+运行 :mc-cmd:`minio server` 命令以启动 MinIO server。
+指定用作存储目录的卷或文件夹路径。
+:mc-cmd:`minio` 进程必须对该路径及其所有子文件夹拥有完整访问权限（``rwx``）：
 
-The following example uses the ``~/minio-data`` folder:
+以下示例使用 ``~/minio-data`` 文件夹：
 
 .. code-block:: shell
    :class: copyable
@@ -121,8 +121,8 @@ The following example uses the ``~/minio-data`` folder:
    mkdir ~/minio-data
    minio server ~/minio-data --console-address ":9001"
 
-The :mc:`minio server` process prints its output to the system console, similar
-to the following:
+:mc:`minio server` 进程会将输出打印到系统控制台，
+其内容类似如下：
 
 .. code-block:: shell
 
@@ -141,30 +141,26 @@ to the following:
 
    WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables
 
-Open your browser to any of the listed :guilabel:`Console` addresses to open the
-:ref:`MinIO Console <minio-console>` and log in with the :guilabel:`RootUser`
-and :guilabel:`RootPass`.
+在浏览器中打开列出的任意 :guilabel:`Console` 地址，
+即可进入 :ref:`MinIO Console <minio-console>`，
+并使用 :guilabel:`RootUser` 和 :guilabel:`RootPass` 登录。
 
-For applications, use the :guilabel:`API` addresses to access the MinIO
-server and perform S3 operations.
+对于应用程序，请使用 :guilabel:`API` 地址访问 MinIO server 并执行 S3 操作。
 
-The following steps are optional but recommended for further securing the
-MinIO deployment.
+以下步骤属于可选项，但建议执行以进一步增强 MinIO 部署的安全性。
 
 .. end-run-minio-binary-desc
 
 .. start-upgrade-minio-binary-desc
 
-The following tabs provide examples of updating MinIO onto 64-bit Linux
-operating systems using RPM, DEB, or binary:
+以下选项卡给出了在 64 位 Linux 操作系统上通过 RPM、DEB 或二进制方式更新 MinIO 的示例：
 
 .. tab-set::
 
    .. tab-item:: RPM (RHEL)
       :sync: rpm
 
-      Use the following commands to download the latest stable MinIO RPM and
-      update the existing installation.
+      使用以下命令下载最新稳定版 MinIO RPM 并更新现有安装。
 
       .. code-block:: shell
          :class: copyable
@@ -176,8 +172,7 @@ operating systems using RPM, DEB, or binary:
    .. tab-item:: DEB (Debian/Ubuntu)
       :sync: deb
 
-      Use the following commands to download the latest stable MinIO DEB and
-      upgrade the existing installation:
+      使用以下命令下载最新稳定版 MinIO DEB 并升级现有安装：
 
       .. code-block:: shell
          :class: copyable
@@ -189,8 +184,8 @@ operating systems using RPM, DEB, or binary:
    .. tab-item:: Binary
       :sync: binary
 
-      Use the following commands to download the latest stable MinIO binary and
-      overwrite the existing binary:
+      使用以下命令下载最新稳定版 MinIO 二进制文件，
+      并覆盖现有二进制文件：
 
       .. code-block:: shell
          :class: copyable
@@ -199,22 +194,27 @@ operating systems using RPM, DEB, or binary:
          chmod +x minio
          sudo mv -f ./minio /usr/local/bin/minio
 
-      Replace ``/usr/local/bin`` with the location of the existing MinIO
-      binary. Run ``which minio`` to identify the path if not already known.
+      将 ``/usr/local/bin`` 替换为现有 MinIO 二进制文件所在位置。
+      如果尚不确定该路径，请运行 ``which minio`` 进行确认。
 
 .. end-upgrade-minio-binary-desc
 
 .. start-install-minio-systemd-desc
 
-The ``.deb`` or ``.rpm`` packages install the following `systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ service file to ``/usr/lib/systemd/system/minio.service``. 
-For binary installations, create this file manually on all MinIO hosts.
+``.deb`` 或 ``.rpm`` 软件包会将以下
+`systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ 服务文件
+安装到 ``/usr/lib/systemd/system/minio.service``。
+对于二进制安装方式，请在所有 MinIO 主机上手动创建该文件。
 
 .. note::
    
-   ``systemd`` checks the ``/etc/systemd/...`` path before checking the ``/usr/lib/systemd/...`` path and uses the first file it finds.
-   To avoid conflicting or unexpected configuration options, check that the file only exists at the ``/usr/lib/systemd/system/minio.service`` path.
+   ``systemd`` 会先检查 ``/etc/systemd/...`` 路径，再检查 ``/usr/lib/systemd/...`` 路径，
+   并使用它找到的第一个文件。
+   为避免配置冲突或意外选项，请确认该文件仅存在于
+   ``/usr/lib/systemd/system/minio.service`` 路径下。
 
-   Refer to the `man page for systemd.unit <https://www.man7.org/linux/man-pages/man5/systemd.unit.5.html>`__ for details on the file path search order.
+   关于文件路径搜索顺序的详细信息，请参阅
+   `systemd.unit 的 man page <https://www.man7.org/linux/man-pages/man5/systemd.unit.5.html>`__。
     
 .. code-block:: shell
    :class: copyable

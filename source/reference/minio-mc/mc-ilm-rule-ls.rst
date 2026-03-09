@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -15,35 +15,35 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   ``mc ilm rule ls`` replaces ``mc ilm ls``.
+   ``mc ilm rule ls`` 替代了 ``mc ilm ls``。
 
 .. versionchanged:: RELEASE.2023-05-26T23-31-54Z
 
-   ``mc ilm rule ls --json`` output includes the policy modification time in ``updateAt``.
+   ``mc ilm rule ls --json`` 的输出在 ``updateAt`` 中包含策略修改时间。
    
-Syntax
-------
+语法
+----
 
 .. start-mc-ilm-rule-ls-desc
 
-The :mc:`mc ilm rule ls` command summarizes all configured object lifecycle management rules on a MinIO bucket in a tabular format.
+:mc:`mc ilm rule ls` 命令以表格格式汇总 MinIO 存储桶上配置的所有对象生命周期管理规则。
 
 .. end-mc-ilm-rule-ls-desc
 
-The :mc:`mc ilm rule list` command has equivalent functionality to :mc:`mc ilm rule ls`.
+:mc:`mc ilm rule list` 命令与 :mc:`mc ilm rule ls` 的功能等效。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command lists all lifecycle management rules for the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令列出 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的所有生命周期管理规则：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm rule ls myminio/mydata
 
-      The output of the command might resemble the following:
+      命令输出可能类似如下：
 
       .. code-block:: shell
       
@@ -79,7 +79,7 @@ The :mc:`mc ilm rule list` command has equivalent functionality to :mc:`mc ilm r
 
    .. tab-item:: SYNTAX
 
-      The :mc:`mc ilm rule ls` command has the following syntax:
+      :mc:`mc ilm rule ls` 命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -92,14 +92,14 @@ The :mc:`mc ilm rule list` command has equivalent functionality to :mc:`mc ilm r
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
    
-   The :ref:`alias <alias>` and full path to the bucket on the MinIO deployment for which to list the object lifecycle management rules. 
-   For example:
+   要列出对象生命周期管理规则的 MinIO 部署中，存储桶对应的 :ref:`alias <alias>` 和完整路径。
+   例如：
 
    .. code-block:: none
 
@@ -109,59 +109,59 @@ Parameters
 .. mc-cmd:: --expiry
    :optional:
    
-   :mc:`mc ilm rule ls` returns only fields related to lifecycle rule expiration.
+   :mc:`mc ilm rule ls` 仅返回与生命周期规则过期相关的字段。
 
-   Mutually exclusive with :mc-cmd:`~mc ilm rule ls --transition`.
+   与 :mc-cmd:`~mc ilm rule ls --transition` 互斥。
 
 .. mc-cmd:: --transition
    :optional:
 
-   :mc:`mc ilm rule ls` returns only fields related to lifecycle rule transition.
+   :mc:`mc ilm rule ls` 仅返回与生命周期规则转移相关的字段。
 
-   Mutually exclusive with :mc-cmd:`~mc ilm rule ls --expiry`.
+   与 :mc-cmd:`~mc ilm rule ls --expiry` 互斥。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-List Bucket Lifecycle Management Rules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出存储桶生命周期管理规则
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc ilm rule ls` to list a bucket's lifecycle management rules:
+使用 :mc:`mc ilm rule ls` 列出存储桶的生命周期管理规则：
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm rule ls ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc ilm rule ls ALIAS>` with the :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc ilm rule ls ALIAS>` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace ``PATH`` with the path to the bucket on the S3-compatible host.
+- 将 ``PATH`` 替换为 S3 兼容主机上该存储桶的路径。
 
-Show Policy Modification Time
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示策略修改时间
+~~~~~~~~~~~~~~~~
 
-Use :mc:`mc ilm rule ls` with :option::`--json <mc.--json>` to show the time the policy for a bucket was last updated.
+使用带有 :option:`--json <mc.--json>` 的 :mc:`mc ilm rule ls` 显示存储桶策略上次更新时间。
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm rule ls ALIAS/PATH --json
 
-- Replace :mc-cmd:`ALIAS <mc ilm rule ls ALIAS>` with the :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc ilm rule ls ALIAS>` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace ``PATH`` with the path to the bucket on the S3-compatible host.
+- 将 ``PATH`` 替换为 S3 兼容主机上该存储桶的路径。
 
-The ``updateAt`` property in the JSON output contains the date and time the policy was updated.
+JSON 输出中的 ``updateAt`` 属性包含该策略更新的日期和时间。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -184,17 +184,17 @@ The output resembles the following:
 
 
 
-Required Permissions
---------------------
-
-For permissions required to list rules, refer to the :ref:`required permissions <minio-mc-ilm-rule-permissions>` on the parent command.
-
-
-Behavior
+所需权限
 --------
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+有关列出规则所需的权限，请参阅父命令中的 :ref:`required permissions <minio-mc-ilm-rule-permissions>`。
+
+
+行为
+----
+
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

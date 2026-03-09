@@ -1,18 +1,18 @@
 .. _minio-server-envvar-bucket-notification-elasticsearch:
 .. _minio-server-config-bucket-notification-elasticsearch:
 
-===================================
-Elasticsearch Notification Settings
-===================================
+==============================
+Elasticsearch 通知设置
+==============================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for configuring an Elasticsearch service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
-See :ref:`minio-bucket-notifications-publish-elasticsearch` for a tutorial on using these settings.
+本文档介绍如何配置 Elasticsearch 服务作为 :ref:`Bucket Notifications <minio-bucket-notifications>` 的目标。
+有关如何使用这些设置的教程，请参阅 :ref:`minio-bucket-notifications-publish-elasticsearch`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -22,18 +22,18 @@ See :ref:`minio-bucket-notifications-publish-elasticsearch` for a tutorial on us
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Multiple Elasticsearch Targets
-------------------------------
+多个 Elasticsearch 目标
+----------------------
 
-You can specify multiple Elasticsearch service endpoints by appending a unique identifier ``_ID`` for each set of related settings. 
-For example, the following commands set two distinct Elasticsearch service endpoints as ``PRIMARY`` and ``SECONDARY``, respectively:
+可通过为每组相关设置追加唯一标识符 ``_ID`` 来指定多个 Elasticsearch 服务端点。
+例如，以下命令分别将两个不同的 Elasticsearch 服务端点设置为 ``PRIMARY`` 和 ``SECONDARY``：
 
-Examples
-~~~~~~~~
+示例
+~~~~
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -49,7 +49,7 @@ Examples
          export MINIO_NOTIFY_ELASTICSEARCH_INDEX_SECONDARY="bucketevents"
          export MINIO_NOTIFY_ELASTICSEARCH_FORMAT_SECONDARY="namespace"
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
       :sync: config
 
       .. code-block:: shell
@@ -66,47 +66,47 @@ Examples
             format="namespace" \
             [ARGUMENT=VALUE ...]
 
-      Notice that for configuration settings, the unique identifier appends to ``notify_elasticsearch`` only, not to each individual argument.
+      注意，对于配置设置，唯一标识符只追加到 ``notify_elasticsearch``，而不是每个单独参数。
 
-Settings
---------
+设置
+----
 
-Enable
-~~~~~~
+启用
+~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :selected:
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_ENABLE
 
-      Specify ``on`` to enable publishing bucket notifications to an Elasticsearch service endpoint.
+      指定 ``on`` 以启用将存储桶通知发布到 Elasticsearch 服务端点。
       
-      Defaults to ``off``.
+      默认为 ``off``。
 
-      Requires specifying the following additional environment variables if set to ``on``:
+      如果设置为 ``on``，则还必须指定以下环境变量：
    
       - :envvar:`MINIO_NOTIFY_ELASTICSEARCH_URL`
       - :envvar:`MINIO_NOTIFY_ELASTICSEARCH_INDEX`
       - :envvar:`MINIO_NOTIFY_ELASTICSEARCH_FORMAT`
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       
       .. mc-conf:: notify_elasticsearch
       
-         The top-level configuration key for defining an Elasticsearch service endpoint for use with :ref:`MinIO bucket notifications <minio-bucket-notifications>`.
+         用于定义 Elasticsearch 服务端点以配合 :ref:`MinIO bucket notifications <minio-bucket-notifications>` 使用的顶级配置键。
       
-         Use :mc-cmd:`mc admin config set` to set or update an Elasticsearch service endpoint. 
-         The following arguments are *required* for each target:
+         使用 :mc-cmd:`mc admin config set` 设置或更新 Elasticsearch 服务端点。
+         对于每个目标，以下参数为*必需*：
          
          - :mc-conf:`~notify_elasticsearch.url`
          - :mc-conf:`~notify_elasticsearch.index`
          - :mc-conf:`~notify_elasticsearch.format`
          
-         Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+         其他可选参数以空白字符（``" "``）分隔的列表形式指定。
       
          .. code-block:: shell
             :class: copyable
@@ -118,25 +118,25 @@ Enable
 URL
 ~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_URL
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_elasticsearch url
          :delimiter: " "
 
-Specify the Elasticsearch service endpoint to which MinIO publishes bucket events. 
-For example, ``https://elasticsearch.example.com:9200``.
+指定 MinIO 将存储桶事件发布到的 Elasticsearch 服务端点。
+例如：``https://elasticsearch.example.com:9200``。
 
-MinIO supports passing authentication information using as URL parameters using the format ``PROTOCOL://USERNAME:PASSWORD@HOSTNAME:PORT``.
+MinIO 支持通过 URL 参数传递认证信息，格式为 ``PROTOCOL://USERNAME:PASSWORD@HOSTNAME:PORT``。
 
 .. include:: /includes/linux/minio-server.rst
    :start-after: start-notify-target-online-desc
@@ -145,156 +145,156 @@ MinIO supports passing authentication information using as URL parameters using 
 Index
 ~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_INDEX
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
       .. mc-conf:: notify_elasticsearch index
          :delimiter: " "
 
-Specify the name of the Elasticsearch index in which to store or update MinIO bucket events. 
-Elasticsearch automatically creates the index if it does not exist.
+指定用于存储或更新 MinIO 存储桶事件的 Elasticsearch index 名称。
+如果 index 不存在，Elasticsearch 会自动创建。
 
 Format
 ~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_FORMAT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_elasticsearch format
          :delimiter: " "
 
-Specify the format of event data written to the Elasticsearch index. 
-MinIO supports the following values:
+指定写入 Elasticsearch index 的事件数据格式。
+MinIO 支持以下取值：
 
 ``namespace``
-   For each bucket event, MinIO creates a JSON document with the bucket and object name from the event as the document ID and the actual event as part of the document body. 
-   Additional updates to that object modify the existing index entry for that object. 
-   Similarly, deleting the object also deletes the corresponding index entry.
+   对于每个存储桶事件，MinIO 会创建一个 JSON 文档，以事件中的存储桶名和对象名作为文档 ID，并将实际事件作为文档正文的一部分。
+   对该对象的后续更新会修改该对象在 index 中的现有条目。
+   同样，删除该对象也会删除对应的 index 条目。
    
 ``access``
-   For each bucket event, MinIO creates a JSON document with the event details and appends it to the index with an Elasticsearch-generated random ID. 
-   Additional updates to an object result in new index entries,    and existing entries remain unmodified.
+   对于每个存储桶事件，MinIO 会创建一个包含事件详情的 JSON 文档，并以 Elasticsearch 生成的随机 ID 将其追加到 index。
+   对对象的后续更新会产生新的 index 条目，而现有条目保持不变。
 
 Username
 ~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_USERNAME
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_elasticsearch username
          :delimiter: " "
 
-The username for connecting to an Elasticsearch service endpoint which enforces authentication.
+用于连接启用了认证的 Elasticsearch 服务端点的用户名。
 
 Password
 ~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_PASSWORD
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_elasticsearch password
          :delimiter: " "
 
-The password for connecting to an Elasticsearch service endpoint which enforces authentication.
+用于连接启用了认证的 Elasticsearch 服务端点的密码。
 
 .. versionchanged:: RELEASE.2023-06-23T20-26-00Z
 
-   MinIO redacts this value when returned as part of :mc-cmd:`mc admin config get`.
+   当该值作为 :mc-cmd:`mc admin config get` 的返回内容一部分时，MinIO 会对其进行脱敏。
 
-Queue Directory
-~~~~~~~~~~~~~~~
+队列目录
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_elasticsearch queue_dir 
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径以启用 MinIO 针对未投递消息的持久化事件存储，例如 ``/opt/minio/events``。
 
-MinIO stores undelivered events in the specified store while the Elasticsearch service is offline and replays the stored events when connectivity resumes.
+当 Elasticsearch 服务离线时，MinIO 会将未投递事件存储在指定存储中，并在连接恢复后重放这些已存储事件。
 
-Queue Limit
-~~~~~~~~~~~
+队列上限
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_QUEUE_LIMIT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_elasticsearch queue_limit 
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. 
-Defaults to ``100000``.
+指定未投递消息的最大上限。
+默认为 ``100000``。
 
-Comment
-~~~~~~~
+注释
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_ELASTICSEARCH_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: notify_elasticsearch comment 
          :delimiter: " "
 
-Specify a comment to associate with the Elasticsearch configuration.
+指定与 Elasticsearch 配置关联的注释。

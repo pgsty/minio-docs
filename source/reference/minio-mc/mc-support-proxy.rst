@@ -4,62 +4,62 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. mc:: mc support proxy
 
-Description
------------
+说明
+----
 
 .. start-mc-support-proxy-desc
 
-Use the :mc-cmd:`mc support proxy` command to configure a proxy to use to communicate with |SUBNET|.
+使用 :mc-cmd:`mc support proxy` 命令配置与 |SUBNET| 通信时使用的代理。
 
 .. end-mc-support-proxy-desc
 
-Examples
---------
+示例
+----
 
-Set a Proxy URL
-~~~~~~~~~~~~~~~
+设置代理 URL
+~~~~~~~~~~~~
 
-Define the proxy URL to use when the deployment ``minio1`` communicates to SUBNET.
-The proxy URL in the example is ``http://my.proxy``.
+定义部署 ``minio1`` 与 SUBNET 通信时使用的代理 URL。
+此示例中的代理 URL 为 ``http://my.proxy``。
 
 .. code-block:: shell
    :class: copyable
  
    mc support proxy set minio1 http://my.proxy
 
-Remove the Proxy URL Configured for a Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+删除为部署配置的代理 URL
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command removes the URL configured as the proxy for the alias ``minio1``.
+以下命令会删除为别名 ``minio1`` 配置的代理 URL。
 
 .. code-block:: shell
    :class: copyable
  
    mc support proxy remove minio1
 
-Disable ``callhome`` Logs
-~~~~~~~~~~~~~~~~~~~~~~~~~
+禁用 ``callhome`` 日志
+~~~~~~~~~~~~~~~~~~~~~~
 
-The following command shows the URL configured as the proxy for the alias ``minio1``.
+以下命令显示为别名 ``minio1`` 配置的代理 URL。
 
 .. code-block:: shell
    :class: copyable
 
    mc support proxy show minio1
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: set
    :fullpath:
 
-   Create a proxy URL for the MinIO deployment to use when communicating with |SUBNET|.
+   为 MinIO 部署创建与 |SUBNET| 通信时使用的代理 URL。
 
    .. code-block:: shell
                
@@ -68,7 +68,7 @@ Syntax
 .. mc-cmd:: show
    :fullpath:
 
-   Display the current proxy URL configured for communicating with |SUBNET|.
+   显示当前为与 |SUBNET| 通信配置的代理 URL。
 
    .. code-block:: shell
                
@@ -77,16 +77,15 @@ Syntax
 .. mc-cmd:: remove
    :fullpath:
 
-   Remove the proxy URL configured for communicating with |SUBNET|.
+   删除为与 |SUBNET| 通信配置的代理 URL。
 
    .. code-block:: shell
                
       mc support proxy remove ALIAS 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
-

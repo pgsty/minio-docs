@@ -7,36 +7,34 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc anonymous set
 
-Syntax
-------
+语法
+----
 
 .. start-mc-anonymous-set-desc
 
-The :mc:`mc anonymous set` command sets anonymous (i.e. unauthenticated or public)
-access :ref:`policies <minio-policy>` for a bucket. 
+:mc:`mc anonymous set` 命令为存储桶设置匿名（即未认证或公开）访问
+:ref:`策略 <minio-policy>`。
 
 .. end-mc-anonymous-set-desc
 
-Buckets with anonymous policies allow clients to access the bucket contents
-and perform actions consistent with the specified policy without 
-:ref:`authentication <minio-authentication-and-identity-management>`.
+配置了匿名策略的存储桶允许客户端在无需
+:ref:`身份验证 <minio-authentication-and-identity-management>` 的情况下，
+访问存储桶内容并执行与指定策略一致的操作。
 
-To set anonymous bucket policies using an IAM 
-:s3-docs:`JSON policy <using-iam-policies>`, use the
-:mc-cmd:`mc anonymous set-json` command.
+要使用 IAM :s3-docs:`JSON 策略 <using-iam-policies>` 设置存储桶匿名策略，
+请使用 :mc-cmd:`mc anonymous set-json` 命令。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command sets anonymous access policies for several
-      buckets on the ``myminio`` MinIO deployment:
+      以下命令为 ``myminio`` MinIO 部署上的多个存储桶设置匿名访问策略：
 
       .. code-block:: shell
          :class: copyable
@@ -45,14 +43,14 @@ To set anonymous bucket policies using an IAM
          mc anonymous set download myminio/downloads
          mc anonymous set public myminio/public
 
-      Applications can perform the following operations without authentication:
+      应用程序可在无需认证的情况下执行以下操作：
 
-      - ``PUT`` objects to ``myminio/uploads`` and ``myminio/public``.
-      - ``GET`` objects from ``myminio/downloads`` and ``myminio/public``.
+      - 向 ``myminio/uploads`` 和 ``myminio/public`` 执行 ``PUT`` 对象操作。
+      - 从 ``myminio/downloads`` 和 ``myminio/public`` 执行 ``GET`` 对象操作。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -64,75 +62,70 @@ To set anonymous bucket policies using an IAM
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: PERMISSION
       
-   *Required* Name of the policy to assign to the specified ``ALIAS``.
-   Specify one of the following values:
+   *必需* 要分配给指定 ``ALIAS`` 的策略名称。
+   指定以下值之一：
 
-   - ``none`` - Disable anonymous access to the ``ALIAS``.
-   - ``download`` - Enable download-only access to the ``ALIAS``.
-   - ``upload`` - Enable upload-only access to the ``ALIAS``.
-   - ``public`` - Enable download and upload access to the ``ALIAS``.
+   - ``none`` - 禁用对 ``ALIAS`` 的匿名访问。
+   - ``download`` - 启用对 ``ALIAS`` 的仅下载访问。
+   - ``upload`` - 启用对 ``ALIAS`` 的仅上传访问。
+   - ``public`` - 启用对 ``ALIAS`` 的下载和上传访问。
 
 .. mc-cmd:: ALIAS
 
-   *Required* The full path to the bucket or bucket prefix to which the
-   command applies the specified :mc-cmd:`~mc anonymous set PERMISSION`. 
+   *必需* 要应用指定 :mc-cmd:`~mc anonymous set PERMISSION` 的存储桶或存储桶前缀的完整路径。
    
-   Specify the :ref:`alias <alias>` of the MinIO or other
-   S3-compatible service *and* the full path to the bucket or bucket
-   prefix. For example:
+   指定 MinIO 或其他 S3 兼容服务的 :ref:`alias <alias>`，*以及* 存储桶或存储桶前缀的完整路径。例如：
 
    .. code-block:: shell
 
       mc anonymous set public play/mybucket
 
-   Specify a bucket prefix to set the policy on only that prefix. For example,
-   this command sets distinct anonymous bucket policies on the 
-   ``mybucket/downloads`` and ``mybucket/uploads`` prefixes:
+   指定存储桶前缀可仅对该前缀设置策略。例如，以下命令分别为
+   ``mybucket/downloads`` 和 ``mybucket/uploads`` 前缀设置不同的匿名存储桶策略：
 
    .. code-block:: shell
 
       mc anonymous set download play/mybucket/downloads
       mc anonymous set upload play/mybucket/uploads
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Set Anonymous Policy for Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为存储桶设置匿名策略
+~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc anonymous set` to set the anonymous policy for a 
-bucket:
+使用 :mc:`mc anonymous set` 为存储桶设置匿名策略：
 
 .. code-block:: shell
    :class: copyable
 
    mc anonymous set POLICY ALIAS/PATH
 
-- Replace :mc-cmd:`POLICY <mc anonymous set PERMISSION>` with a supported
-  :mc-cmd:`permission <mc anonymous set PERMISSION>`.
+- 将 :mc-cmd:`POLICY <mc anonymous set PERMISSION>` 替换为受支持的
+  :mc-cmd:`permission <mc anonymous set PERMISSION>`。
 
-- Replace :mc-cmd:`ALIAS <mc anonymous set ALIAS>` with the 
-  :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc anonymous set ALIAS>` 替换为已配置 S3 兼容主机的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc anonymous set ALIAS>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc anonymous set ALIAS>` 替换为目标存储桶。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

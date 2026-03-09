@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
@@ -14,85 +14,85 @@
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Description
------------
+描述
+----
 
 .. start-mc-support-inspect-desc
 
-The :mc:`mc support inspect` command collects the data and metadata associated to objects at the specified path.
+:mc:`mc support inspect` 命令会收集指定路径下与对象相关的数据和元数据。
 
 .. end-mc-support-inspect-desc
 
-MinIO assembles this data from each backend drive storing an :ref:`erasure shard <minio-erasure-coding>` for each specified object.
-The command produces an encrypted zip file that includes all matching files with their respective *host+drive+path*.
+对于每个指定对象，MinIO 会从存储其 :ref:`纠删码分片 <minio-erasure-coding>` 的各个后端驱动器汇总这些数据。
+该命令会生成一个加密 zip 文件，其中包含所有匹配文件及其对应的 *host+drive+path*。
 
-If this information is required to diagnose a |SUBNET| issue, MinIO Engineering will provide the appropriate command.
-The resulting report is intended for use by MinIO Engineering via SUBNET and may contain internal or private data points associated to the object.
-Exercise caution before sending a report to a third party or posting the report in a public forum.
+如果诊断 |SUBNET| 问题需要这些信息，MinIO Engineering 会提供相应命令。
+生成的报告用于 MinIO Engineering 通过 SUBNET 进行分析，且可能包含与对象相关的内部或私有数据点。
+将报告发送给第三方或发布到公共论坛前请谨慎评估。
 
 .. versionchanged:: RELEASE.2023-01-11T03-14-16Z
 
-   The file uploads to MinIO for use by the engineering team in support efforts.
-   The file saves the the current working directory in the event the file does not successfully upload (such as in an airgapped environment).
+   该文件会上传到 MinIO，供工程团队用于支持工作。
+   如果文件上传失败（例如在 airgapped 环境中），则会保存到当前工作目录。
 
 .. versionchanged:: RELEASE.2022-12-12T19-27-27Z
    
-   When writing the zip archive, MinIO also encrypts the zip index of file names included in the archive.
+   在写入 zip 归档时，MinIO 还会对归档内文件名的 zip 索引进行加密。
    
 .. versionchanged:: RELEASE.2024-10-29T15-34-59Z
 
-   Inspect now generates unique file names to help distinguish one inspect file from another.
-   The file name reflects the inspected path.
+   Inspect 现在会生成唯一文件名，以区分不同的 inspect 文件。
+   文件名会体现被检查的路径。
    
 .. important::
    
-   :mc:`mc support inspect` requires a MinIO deployment server from October 2021 or later. 
+   :mc:`mc support inspect` 要求 MinIO 部署端服务版本为 2021 年 10 月或之后。 
 
-Wildcards
----------
+通配符
+------
 
-The command supports wildcard ``*`` pattern matching for prefixes or objects when using the Bash shell.
-For non-Bash shells, a message displays indicating that wildcard patterns are only supported in Bash.
+使用 Bash shell 时，该命令支持对前缀或对象进行通配符 ``*`` 模式匹配。
+对于非 Bash shell，会显示提示消息，说明通配符模式仅在 Bash 中受支持。
 
 .. code-block:: shell
    :class: copyable
 
    mc support inspect ALIAS/bucket/path/**/xl.meta
    
-This command collects all ``xl.meta`` associated to objects at ``ALIAS/bucket/path/``.
+该命令会收集 ``ALIAS/bucket/path/`` 下与对象相关的所有 ``xl.meta``。
 
 
-Examples
---------
+示例
+----
 
-Download Metadata for an Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+下载对象元数据
+~~~~~~~~~~~~~~
 
-You can download the metadata for an object.
-Metadata stores in an ``xl.meta`` binary file.
+可下载某个对象的元数据。
+元数据存储在 ``xl.meta`` 二进制文件中。
 
-The following command downloads the ``xl.meta`` from ``mybucket/myobject`` on the ``minio1`` deployment.
+以下命令从 ``minio1`` 部署中的 ``mybucket/myobject`` 下载 ``xl.meta``。
 
-The file downloads from all drives as a zip archive file.
+该文件会从所有驱动器下载，并打包为 zip 归档文件。
 
 .. code-block:: shell
    :class: copyable
 
    mc support inspect minio1/mybucket/myobject/xl.meta
 
-The contents of the ``xl.meta`` file are not human readable.
-You can convert the contents of an ``xl.meta`` file to JSON format.
+``xl.meta`` 文件内容不可直接人工阅读。
+可将 ``xl.meta`` 文件内容转换为 JSON 格式。
 
 
-Download All Objects at a Prefix Recursively
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+递归下载某个前缀下的所有对象
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command downloads all objects recursively found at a prefix.
+以下命令会递归下载某个前缀下找到的所有对象。
 
 .. caution::
 
-   This can be an expensive operation.
-   Proceed with caution.
+   该操作的开销可能较高。
+   请谨慎执行。
 
 .. code-block:: shell
    :class: copyable
@@ -100,10 +100,10 @@ The following command downloads all objects recursively found at a prefix.
    mc support inspect minio1/mybucket/myobject/**
 
 
-Syntax
-------
+语法
+----
       
-The command has the following syntax:
+该命令语法如下：
 
 .. code-block:: shell
 
@@ -111,23 +111,23 @@ The command has the following syntax:
                             [--legacy]   \
                             TARGET
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: --legacy
    :optional:
 
-   Use the older method of exporting inspection data, which does not encrypt data by default.
+   使用旧版检查数据导出方式，该方式默认不加密数据。
    
 .. mc-cmd:: TARGET
    :required:
 
-   The path to the location or object to inspect.
-   The path should include the `alias <alias>` of the MinIO deployment and, if needed, the prefix and/or object name.
+   要检查的位置或对象路径。
+   该路径应包含 MinIO 部署的 `alias <alias>`，并在需要时包含前缀和/或对象名称。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

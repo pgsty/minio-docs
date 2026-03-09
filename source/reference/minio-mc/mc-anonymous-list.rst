@@ -6,32 +6,30 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc anonymous list
 
-Syntax
-------
+语法
+----
 
 .. start-mc-anonymous-list-desc
 
-The :mc:`mc anonymous list` retrieves all anonymous (i.e. unauthenticated or
-public) access policies for a bucket. 
+:mc:`mc anonymous list` 检索存储桶的所有匿名（即未经身份验证或公开）访问策略。
 
 .. end-mc-anonymous-list-desc
 
-Buckets with anonymous policies allow clients to access the bucket contents
-and perform actions consistent with the specified policy without 
-:ref:`authentication <minio-authentication-and-identity-management>`.
+具有匿名策略的存储桶允许客户端在无需
+:ref:`身份验证 <minio-authentication-and-identity-management>` 的情况下访问存储桶内容，
+并执行与指定策略一致的操作。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command lists all anonymous access policies for the
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令列出 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的所有匿名访问策略：
 
       .. code-block:: shell
          :class: copyable
@@ -40,7 +38,7 @@ and perform actions consistent with the specified policy without
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -52,53 +50,50 @@ and perform actions consistent with the specified policy without
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* The full path to the bucket or bucket prefix for which the
-   command retrieves the anonymous bucket policies.
+   *必需* 要检索其匿名存储桶策略的存储桶或存储桶前缀完整路径。
    
-   Specify the :ref:`alias <alias>` of the MinIO or other
-   S3-compatible service *and* the full path to the bucket or bucket
-   prefix. For example:
+   指定 MinIO 或其他 S3 兼容服务的 :ref:`alias <alias>`，*以及* 存储桶或存储桶前缀的完整路径。
+   例如：
 
    .. code-block:: shell
             
       mc anonymous list public play/mybucket
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-List Anonymous Policies for Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+列出存储桶的匿名策略
+~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc anonymous list` to list the anonymous policies for a 
-bucket:
+使用 :mc:`mc anonymous list` 列出存储桶的匿名策略：
 
 .. code-block:: shell
    :class: copyable
 
    mc anonymous list ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc anonymous get ALIAS>` with the 
-  :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc anonymous get ALIAS>` 替换为已配置 S3 兼容主机的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc anonymous get ALIAS>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc anonymous get ALIAS>` 替换为目标存储桶。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

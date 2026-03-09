@@ -2,43 +2,43 @@
 .. |MINIO_S3_URL| replace:: minio-url.example.net:9000
 .. |MINIO_CONSOLE_URL| replace:: minio-url.example.net:9001
 
-1) Configure or Create a Client for Accessing Keycloak
+1) 配置或创建用于访问 Keycloak 的 Client
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Authenticate to the Keycloak :guilabel:`Administrative Console` and navigate to :guilabel:`Clients`.
+认证到 Keycloak :guilabel:`Administrative Console`，然后进入 :guilabel:`Clients`。
 
 .. include:: /includes/common/common-configure-keycloak-identity-management.rst
    :start-after: start-configure-keycloak-client
    :end-before: end-configure-keycloak-client
 
-2) Create Client Scope for MinIO Client
+2) 为 MinIO Client 创建 Client Scope
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Client scopes allow Keycloak to map user attributes as part of the JSON Web Token (JWT) returned in authentication requests.
-This allows MinIO to reference those attributes when assigning policies to the user.
-This step creates the necessary client scope to support MinIO authorization after successful Keycloak authentication.
+Client Scope 允许 Keycloak 在认证请求返回的 JSON Web Token（JWT）中映射用户属性。
+这样 MinIO 就可以在向用户分配策略时引用这些属性。
+此步骤会创建 Keycloak 认证成功后 MinIO 授权所需的 Client Scope。
 
 .. include:: /includes/common/common-configure-keycloak-identity-management.rst
    :start-after: start-configure-keycloak-client-scope
    :end-before: end-configure-keycloak-client-scope
 
-3) Apply the Necessary Attribute to Keycloak Users/Groups
+3) 将所需属性应用到 Keycloak Users/Groups
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must assign an attribute named ``policy`` to the Keycloak Users or Groups. 
-Set the value to any :ref:`policy <minio-policy>` on the MinIO deployment.
+你必须为 Keycloak Users 或 Groups 分配一个名为 ``policy`` 的属性。
+将其值设置为 MinIO 部署上的任意 :ref:`policy <minio-policy>`。
 
 .. include:: /includes/common/common-configure-keycloak-identity-management.rst
    :start-after: start-configure-keycloak-user-group-attributes
    :end-before: end-configure-keycloak-user-group-attributes
 
-4) Configure MinIO for Keycloak Authentication
+4) 为 Keycloak 认证配置 MinIO
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO supports multiple methods for configuring Keycloak authentication:
+MinIO 支持多种配置 Keycloak 认证的方法：
 
-- Using a terminal/shell and the :mc:`mc idp openid` command
-- Using environment variables set prior to starting MinIO
+- 使用终端/shell 和 :mc:`mc idp openid` 命令
+- 使用在启动 MinIO 之前设置的环境变量
 
 .. tab-set::
 
@@ -48,29 +48,27 @@ MinIO supports multiple methods for configuring Keycloak authentication:
          :start-after: start-configure-keycloak-minio-cli
          :end-before: end-configure-keycloak-minio-cli
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
 
       .. include:: /includes/common/common-configure-keycloak-identity-management.rst
          :start-after: start-configure-keycloak-minio-envvar
          :end-before: end-configure-keycloak-minio-envvar
 
-Restart the MinIO deployment for the changes to apply.
+重启 MinIO 部署以应用这些更改。
 
-Check the MinIO logs and verify that startup succeeded with no errors related to the OIDC configuration.
+检查 MinIO 日志，确认启动成功，且没有与 OIDC 配置相关的错误。
 
-5) Generate Application Credentials using the Security Token Service (STS)
+5) 使用 Security Token Service（STS）生成应用程序凭证
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-configure-keycloak-identity-management.rst
    :start-after: start-configure-keycloak-sts
    :end-before: end-configure-keycloak-sts
 
-Next Steps
+后续步骤
 ~~~~~~~~~~
 
-Applications should implement the :ref:`STS AssumeRoleWithWebIdentity <minio-sts-assumerolewithwebidentity>` flow using their :ref:`SDK <minio-drivers>` of choice.
-When STS credentials expire, applications should have logic in place to regenerate the JWT token, STS token, and MinIO credentials before retrying and continuing operations.
-
-
-
-
+应用程序应使用其选择的 :ref:`SDK <minio-drivers>`
+实现 :ref:`STS AssumeRoleWithWebIdentity <minio-sts-assumerolewithwebidentity>` 流程。
+当 STS 凭证过期时，应用程序应具备在重试并继续操作之前重新生成 JWT Token、
+STS Token 和 MinIO 凭证的逻辑。

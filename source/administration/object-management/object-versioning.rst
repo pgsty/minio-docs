@@ -1,12 +1,12 @@
 .. _minio-bucket-versioning:
 
 =================
-Bucket Versioning
+存储桶版本控制
 =================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -15,78 +15,75 @@ Bucket Versioning
    - `Versioning overview <https://youtu.be/XGOiwV6Cbuk?ref=docs>`__
    - `Versioning lab <https://youtu.be/nFUI2N5zH34?ref=docs>`__
 
-Overview
---------
+概述
+----
 
-MinIO supports keeping multiple "versions" of an object in a single bucket.
+MinIO 支持在单个存储桶中保留对象的多个“版本”。
 
-When enabled, versioning allows MinIO to keep multiple iterations of the same object.
-Write operations which would normally overwrite an existing object instead result in the creation of a new versioned object. 
-MinIO versioning protects from unintended overwrites and deletions while providing support for "undoing" a write operation. 
-Bucket versioning is a prerequisite for configuring :ref:`object locking and retention rules <minio-object-locking>`.
+启用后，版本控制允许 MinIO 保留同一对象的多个迭代版本。
+原本会覆盖现有对象的写入操作，将改为创建一个新的版本化对象。
+MinIO 版本控制可以防止意外覆盖和删除，同时支持对写入操作执行“撤销”。
+配置 :ref:`对象锁定和保留规则 <minio-object-locking>` 的前提条件之一，就是启用存储桶版本控制。
 
-For versioned buckets, a write operation results in a new version of that object with a unique version ID.
-MinIO marks the "latest" version of the object that clients retrieve by default. 
-Clients can then explicitly choose to list, retrieve, or remove a specific object version. 
+对于已启用版本控制的存储桶，写入操作会为该对象创建一个带有唯一版本 ID 的新版本。
+MinIO 会将对象的“最新”版本标记为客户端默认获取的版本。
+之后，客户端可以显式选择列出、获取或移除某个特定对象版本。
 
-Define :ref:`object expiration <minio-lifecycle-management-create-expiry-rule>` rules to remove versions of objects no longer needed, such as by the number of versions or the date of versions.
+可以定义 :ref:`对象过期 <minio-lifecycle-management-create-expiry-rule>` 规则，按版本数量或版本日期等条件移除不再需要的对象版本。
 
-Read Operations on Versioned Objects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+版本化对象的读取操作
+~~~~~~~~~~~~~~~~~~~~
 
-Review each of the four images in this series to see how MinIO retrieves objects in a versioned bucket.
-Use the arrows on either side of the images to navigate from one to the next.
+查看本组中的四张图片，了解 MinIO 如何在启用版本控制的存储桶中获取对象。
+使用图片两侧的箭头可在各张图片之间切换。
 
 .. card-carousel:: 1
 
-   .. card:: Object with Single Version
+   .. card:: 单一版本对象
 
       .. image:: /images/retention/minio-versioning-single-version.svg
-         :alt: Object with single version
+         :alt: 单一版本对象
          :align: center
 
-      MinIO adds a unique version ID to each object as part of write operations.
+      MinIO 会在写入操作中为每个对象添加唯一的版本 ID。
 
-   .. card:: Object with Multiple Versions
+   .. card:: 多版本对象
 
       .. image:: /images/retention/minio-versioning-multiple-versions.svg
-         :alt: Object with Multiple Versions
+         :alt: 多版本对象
          :align: center
 
-      MinIO retains all versions of an object and marks the most recent
-      version as the "latest".
+      MinIO 会保留对象的所有版本，并将最近的版本标记为“最新”版本。
 
-   .. card:: Retrieving the Latest Object Version
+   .. card:: 获取对象最新版本
 
       .. image:: /images/retention/minio-versioning-retrieve-latest-version.svg
-         :alt: Object with Multiple Versions
+         :alt: 多版本对象
          :align: center
 
-      A read operation request without a version ID returns the latest version of the object.
+      未指定版本 ID 的读取请求会返回该对象的最新版本。
 
-   .. card:: Retrieving a Specific Object Version
+   .. card:: 获取特定对象版本
 
       .. image:: /images/retention/minio-versioning-retrieve-single-version.svg
-         :alt: Object with Multiple Versions
+         :alt: 多版本对象
          :align: center
 
-      Include the version ID to retrieve a specific version of an object during a read operation.
+      在读取操作中指定版本 ID，即可获取对象的特定版本。
 
 .. versionchanged:: MinIO Server RELEASE.2023-05-04T21-44-30Z
 
-   MinIO does not create versions for creation, mutation, or deletion of explicit directory objects ("prefixes").
-   Objects created within that explicit directory object retain normal versioning behavior.
+   对于显式目录对象（“prefixes”）的创建、变更或删除，MinIO 不会创建版本。
+   在该显式目录对象内创建的对象，仍保留正常的版本控制行为。
 
-MinIO implicitly determines prefixes from object paths.
-Explicit prefix creation typically only occurs with Spark and similar workloads which apply legacy POSIX/HDFS directory creation behavior within the S3 context.
+MinIO 会根据对象路径隐式推断前缀。
+显式创建前缀通常只会出现在 Spark 及类似工作负载中，这类工作负载会在 S3 场景下采用传统 POSIX/HDFS 的目录创建行为。
 
-Versioning is Per-Namespace
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+版本控制按命名空间生效
+~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO uses the full namespace (the bucket and path to an object) for each object
-as part of determining object uniqueness. For example, all of the following
-namespaces are "unique" objects, where mutations of each object result in
-the creation of new object versions *at that namespace*:
+MinIO 使用对象的完整命名空间（即存储桶和对象路径）来判断对象的唯一性。
+例如，下列所有命名空间都对应“唯一”对象，对其中任一对象的变更，都会在*该命名空间下*创建新的对象版本：
 
 .. code-block:: shell
 
@@ -95,220 +92,195 @@ the creation of new object versions *at that namespace*:
    blobbucket/object.blob
    blobbucket/blobs/object.blob
 
-While ``object.blob`` might be the same binary across all namespaces, 
-MinIO only enforces versioning with a specific namespace and therefore
-considers each ``object.blob`` above as distinct and unique.
+尽管各个命名空间中的 ``object.blob`` 可能是相同的二进制数据，
+MinIO 仅在特定命名空间内实施版本控制，因此会将上面的每个 ``object.blob`` 视为彼此独立且唯一的对象。
 
-Versioning and Storage Capacity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+版本控制与存储容量
+~~~~~~~~~~~~~~~~~~
 
-MinIO does not perform incremental or differential-type versioning. For
-mutation-heavy workloads, this may result in substantial drive usage by
-older or aged object versions.
+MinIO 不执行增量式或差异式版本控制。
+对于频繁变更的工作负载，较旧或老化的对象版本可能会占用大量磁盘空间。
 
-For example, consider a 1GB object containing log data. An application
-appends 100MB of data to the log and uploads to MinIO. MinIO would then contain
-both the 1GB and 1.1GB versions of the object. If the application repeated
-this process every day for 10 days, the bucket would eventually contain more
-than 14GB of data associated to a single object.
+例如，假设一个包含日志数据的对象大小为 1GB。应用向该日志追加 100MB 数据后重新上传到 MinIO。
+此时 MinIO 会同时保存该对象的 1GB 和 1.1GB 两个版本。
+如果应用连续 10 天每天都重复这一过程，那么该存储桶最终会为这一个对象累计保存超过 14GB 的数据。
 
-MinIO supports configuring configuring :ref:`object lifecycle management rules 
-<minio-lifecycle-management>` to automatically expire or transition aged
-object versions and free up storage capacity. For example, you can configure
-a rule to automatically expire object versions 90 days after they become
-non-current (i.e. no longer the "latest" version of that object). See 
-:ref:`MinIO Object Expiration <minio-lifecycle-management-expiration>` for 
-more information.
+MinIO 支持配置 :ref:`对象生命周期管理规则
+<minio-lifecycle-management>`，以自动过期或过渡老旧对象版本并释放存储容量。
+例如，你可以配置一条规则，使对象版本在变为非当前版本（即不再是该对象的“最新”版本）90 天后自动过期。
+更多信息请参见 :ref:`MinIO 对象过期 <minio-lifecycle-management-expiration>`。
 
-You can alternatively perform manual removal of object versions using the 
-following commands:
+你也可以使用以下命令手动移除对象版本：
 
-- :mc-cmd:`mc rm --versions` - Removes all versions of an object.
+- :mc-cmd:`mc rm --versions` - 删除对象的所有版本。
 - :mc-cmd:`mc rm --versions --older-than <mc rm --older-than>` -
-   Removes all versions of an object older than the specified calendar date.
+   删除对象中早于指定日历日期的所有版本。
 
 .. versionadded:: RELEASE.2024-04-18T19-09-19Z
 
-   MinIO emits a warning if the cumulative size of versions for any single object exceeds 1TiB.
+   如果任一单个对象的版本累计大小超过 1TiB，MinIO 会发出警告。
 
 .. _minio-bucket-versioning-id:
 
-Version ID Generation
-~~~~~~~~~~~~~~~~~~~~~
+版本 ID 生成
+~~~~~~~~~~~~
 
-MinIO generates a unique and immutable identifier for each versioned object as
-part of write operations. Each object version ID consists of a 128-bit
-fixed-size :rfc:`UUIDv4 <4122#section-4.4>`. UUID generation is sufficiently
-random to ensure high likelihood of uniqueness for any environment, are
-computationally difficult to guess, and do not require centralized registration
-process and authority to guarantee uniqueness.
+MinIO 会在写入操作中为每个版本化对象生成唯一且不可变的标识符。
+每个对象版本 ID 都由一个 128 位固定长度的 :rfc:`UUIDv4 <4122#section-4.4>` 组成。
+UUID 的生成具有足够随机性，可在任何环境中以极高概率保证唯一性，计算上也难以猜测，并且无需依赖中心化注册流程或机构来保证唯一性。
 
 .. image:: /images/retention/minio-versioning-multiple-versions.svg
-   :alt: Object with Multiple Versions
+   :alt: 多版本对象
    :width: 600px
    :align: center
 
-MinIO does not support client-managed version ID allocation. All version ID
-generation is handled by the MinIO server process.
+MinIO 不支持由客户端管理版本 ID 的分配。
+所有版本 ID 的生成都由 MinIO 服务端进程处理。
 
-For objects created while versioning is disabled or suspended, MinIO 
-uses a ``null`` version ID. You can access or remove these objects by specifying
-``null`` as the version ID as part of S3 operations.
+对于在版本控制禁用或挂起期间创建的对象，MinIO 会使用 ``null`` 版本 ID。
+在 S3 操作中将 ``null`` 指定为版本 ID，即可访问或移除这些对象。
 
 .. _minio-bucket-versioning-delete:
 
-Versioned Delete Operations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+版本化删除操作
+~~~~~~~~~~~~~~
 
-Performing a ``DELETE`` operation on a versioned object creates a 0-byte ``DeleteMarker`` as the latest version of that object.
-For objects where the latest version is a ``DeleteMarker``, clients must specify versioning flags or identifiers to perform ``GET/HEAD/LIST/DELETE`` operations on a prior version of that object.
-The default server behavior omits ``DeleteMarker`` objects from consideration for unversioned operations.
+对版本化对象执行 ``DELETE`` 操作时，会创建一个 0 字节的 ``DeleteMarker`` 作为该对象的最新版本。
+如果对象的最新版本是 ``DeleteMarker``，客户端必须指定版本控制相关标志或标识符，才能对该对象的先前版本执行 ``GET/HEAD/LIST/DELETE`` 操作。
+在未显式指定版本的操作中，服务端默认会忽略 ``DeleteMarker`` 对象。
 
-MinIO can utilize :ref:`Lifecycle Management expiration rules <minio-lifecycle-management-expiration>` to automatically remove versioned objects permanently.
-Otherwise, use manual ``DELETE`` operations to permanently remove non-current versioned objects or ``DeleteMarker`` objects.
+MinIO 可以利用 :ref:`生命周期管理过期规则 <minio-lifecycle-management-expiration>` 自动永久移除版本化对象。
+否则，可使用手动 ``DELETE`` 操作永久删除非当前版本对象或 ``DeleteMarker`` 对象。
 
-.. admonition:: MinIO Implements Idempotent Delete Markers
+.. admonition:: MinIO 实现幂等 Delete Marker
    :class: note
 
    .. versionchanged:: RELEASE.2022-08-22T23-53-06Z
 
-   Standard S3 implementations can create multiple sequential delete markers for the same object when processing simple ``DeleteObject`` requests with no version identifier.
-   See the S3 docs for details on :s3-docs:`managing delete markers <ManagingDelMarkers.html#RemDelMarker>`.
+   标准 S3 实现处理未指定版本标识符的简单 ``DeleteObject`` 请求时，可能会为同一对象连续创建多个删除标记。
+   关于更多细节，请参见 S3 文档中的 :s3-docs:`管理删除标记 <ManagingDelMarkers.html#RemDelMarker>`。
 
-   MinIO diverges from standard S3 implementation by avoiding this potential duplication of delete markers.
-   When processing a ``Delete`` request with no version identifier, MinIO creates at most one Delete Marker for the specified object.
-   MinIO **does not** share S3's behavior in creating multiple sequential delete markers.
+   MinIO 与标准 S3 实现不同，会避免这种潜在的删除标记重复。
+   处理未指定版本标识符的 ``Delete`` 请求时，MinIO 最多只会为指定对象创建一个 Delete Marker。
+   MinIO **不会** 像 S3 那样创建多个连续的删除标记。
 
-To permanently delete an object version, perform the ``DELETE`` operation and 
-specify the version ID of the object to delete. Versioned delete operations 
-are **irreversible**.
+若要永久删除某个对象版本，请执行 ``DELETE`` 操作并指定待删除对象的版本 ID。
+版本化删除操作**不可逆**。
 
 .. card-carousel:: 1
 
-   .. card:: Deleting an Object
+   .. card:: 删除对象
 
       .. image:: /images/retention/minio-versioning-delete-object.svg
-         :alt: Deleting an Object
+         :alt: 删除对象
          :align: center
 
-      Performing a ``DELETE`` operation on a versioned object produces a 
-      ``DeleteMarker`` for that object.
+      对版本化对象执行 ``DELETE`` 操作时，会为该对象生成一个 ``DeleteMarker``。
 
-   .. card:: Reading a Deleted Object
+   .. card:: 读取已删除对象
 
       .. image:: /images/retention/minio-versioning-retrieve-deleted-object.svg
-         :alt: Object with Multiple Versions
+         :alt: 多版本对象
          :align: center
 
-      Clients by default retrieve the "latest" object version. MinIO returns
-      a ``404``-like response if the latest version is a ``DeleteMarker``.
+      客户端默认获取对象的“最新”版本。
+      如果最新版本是 ``DeleteMarker``，MinIO 会返回类似 ``404`` 的响应。
 
-   .. card:: Retrieve Previous Version of Deleted Object
+   .. card:: 获取已删除对象的先前版本
 
       .. image:: /images/retention/minio-versioning-retrieve-version-before-delete.svg
-         :alt: Retrieve Version of Deleted Object
+         :alt: 获取已删除对象的版本
          :align: center
 
-      Clients can retrieve any previous version of the object by specifying the
-      version ID, even if the "Latest" version is a ``DeleteMarker``.
+      即使“最新”版本是 ``DeleteMarker``，客户端仍可通过指定版本 ID 获取该对象的任意先前版本。
 
-   .. card:: Delete a Specific Object Version
+   .. card:: 删除特定对象版本
 
       .. image:: /images/retention/minio-versioning-delete-specific-version.svg
-         :alt: Retrieve Version of Deleted Object
+         :alt: 获取已删除对象的版本
          :align: center
 
-      Clients can delete a specific object version by specifying the version ID
-      as part of the ``DELETE`` operation. Deleting a specific version is 
-      **permanent** and does not result in the creation of a ``DeleteMarker``.
+      客户端可在 ``DELETE`` 操作中指定版本 ID，以删除某个特定对象版本。
+      删除特定版本属于**永久**删除，不会创建 ``DeleteMarker``。
 
-The following :mc:`mc` commands operate on ``DeleteMarkers`` or versioned 
-objects:
+以下 :mc:`mc` 命令可用于处理 ``DeleteMarkers`` 或版本化对象：
 
-- Use :mc-cmd:`mc ls --versions` to view all versions of an object,
-  including delete markers.
+- 使用 :mc-cmd:`mc ls --versions` 查看对象的所有版本，包括删除标记。
 
-- Use :mc-cmd:`mc cp --version-id=UUID ... <mc cp --version-id>` to 
-  retrieve the version of the "deleted" object with matching ``UUID``.
+- 使用 :mc-cmd:`mc cp --version-id=UUID ... <mc cp --version-id>` 获取 ``UUID`` 匹配的“已删除”对象版本。
 
-- Use :mc-cmd:`mc rm --version-id=UUID ... <mc rm --version-id>` to delete
-  the version of the object with matching ``UUID``.
+- 使用 :mc-cmd:`mc rm --version-id=UUID ... <mc rm --version-id>` 删除 ``UUID`` 匹配的对象版本。
 
-- Use :mc-cmd:`mc rm --versions` to delete *all* versions of an object.
+- 使用 :mc-cmd:`mc rm --versions` 删除对象的*所有*版本。
 
-Tutorials
----------
+教程
+----
 
-Enable Bucket Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~
+启用存储桶版本控制
+~~~~~~~~~~~~~~~~~~
 
-You can enable versioning using the MinIO Console, the MinIO :mc:`mc` CLI, or
-using an S3-compatible SDK.
+你可以使用 MinIO Console、MinIO :mc:`mc` CLI 或兼容 S3 的 SDK 启用版本控制。
 
-Use the :mc:`mc version enable` command to enable versioning on an 
-existing bucket:
+使用 :mc:`mc version enable` 命令为现有存储桶启用版本控制：
 
 .. code-block:: shell
    :class: copyable
 
    mc version enable ALIAS/BUCKET
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured 
-  MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace ``BUCKET`` with the 
-  :mc-cmd:`target bucket <mc version enable ALIAS>` on which to enable
-  versioning.
+- 将 ``BUCKET`` 替换为要启用版本控制的 :mc-cmd:`目标存储桶 <mc version enable ALIAS>`。
 
-Objects created prior to enabling versioning have a ``null`` :ref:`version ID <minio-bucket-versioning-id>`.
+在启用版本控制之前创建的对象，其 :ref:`版本 ID <minio-bucket-versioning-id>` 为 ``null``。
 
-Exclude a Prefix From Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从版本控制中排除前缀
+~~~~~~~~~~~~~~~~~~~~
 
-You can exclude certain :ref:`prefixes <minio-admin-concepts-organize-objects>` from versioning using the :ref:`MinIO Client <minio-client>`.
-This is useful for Spark/Hadoop workloads or others that initially create objects with temporary prefixes. 
+你可以使用 :ref:`MinIO Client <minio-client>` 将某些 :ref:`前缀 <minio-admin-concepts-organize-objects>` 排除在版本控制之外。
+这对于 Spark/Hadoop 等起初会使用临时前缀创建对象的工作负载尤其有用。
 
-.. admonition:: Replication and Object Locking Require Versioning
+.. admonition:: 复制和对象锁定都要求启用版本控制
    :class: note
 
-   MinIO requires versioning to support :term:`replication`.
-   Objects in excluded prefixes do not replicate to any peer site or remote site.
+   MinIO 依赖版本控制来支持 :term:`复制 <replication>`。
+   位于排除前缀中的对象不会复制到任何对等站点或远程站点。
 
-   MinIO does not support excluding prefixes from versioning on buckets with :ref:`object locking enabled <minio-object-locking>`.
+   对于已 :ref:`启用对象锁定 <minio-object-locking>` 的存储桶，MinIO 不支持从版本控制中排除前缀。
 
-- Use :mc:`mc version enable` with the :mc-cmd:`~mc version enable --excluded-prefixes` option:
+- 使用带 :mc-cmd:`~mc version enable --excluded-prefixes` 选项的 :mc:`mc version enable`：
 
   .. code-block:: shell
      :class: copyable
 
      mc version enable --excluded-prefixes "prefix1, prefix2" ALIAS/BUCKET
 
-  - Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+  - 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-  - Replace ``BUCKET`` with the name of the :s3-docs:`bucket <UsingBucket.html>` you want to exclude :ref:`prefixes <minio-admin-concepts-organize-objects>` for.
+  - 将 ``BUCKET`` 替换为要为其排除 :ref:`前缀 <minio-admin-concepts-organize-objects>` 的 :s3-docs:`存储桶 <UsingBucket.html>` 名称。
 
-The list of :mc-cmd:`~mc version enable --excluded-prefixes` prefixes match all objects containing the specified strings in their prefix or name, similar to a regular expression of the form ``prefix*``.
-To match objects by prefix only, use ``prefix/*``.
+:mc-cmd:`~mc version enable --excluded-prefixes` 中的前缀列表会匹配前缀或名称中包含指定字符串的所有对象，其行为类似 ``prefix*`` 形式的正则表达式。
+若仅按前缀匹配对象，请使用 ``prefix/*``。
 
-For example, the following command excludes any objects containing ``_test`` or ``_temp`` in their prefix or name from versioning:
+例如，以下命令会将前缀或名称中包含 ``_test`` 或 ``_temp`` 的对象排除在版本控制之外：
 
   .. code-block:: shell
      :class: copyable
 
      mc version enable --excluded-prefixes "_test, _temp" local/my-bucket
 
-You can exclude up to 10 prefixes for each bucket.
-To add or remove prefixes, repeat the :mc:`mc version enable` command with an updated list.
-The new list of prefixes replaces the previous one.
+每个存储桶最多可排除 10 个前缀。
+若要添加或移除前缀，请使用更新后的列表再次执行 :mc:`mc version enable` 命令。
+新列表会替换先前的列表。
 
-To view the currently excluded prefixes, use :mc:`mc version info` with the ``--json`` option:
+若要查看当前排除的前缀，请使用带 ``--json`` 选项的 :mc:`mc version info`：
 
   .. code-block:: shell
      :class: copyable
 
      mc version info ALIAS/BUCKET --json
 
-The command output resembles the following, with the list of excluded prefixes in the ``ExcludedPrefixes`` property:
+命令输出类似如下，排除前缀列表位于 ``ExcludedPrefixes`` 属性中：
 
 .. code-block:: shell
 
@@ -326,7 +298,7 @@ The command output resembles the following, with the list of excluded prefixes i
       }
      }
 
-To disable prefix exclusion and resume versioning all prefixes, repeat the :mc:`mc version enable` command without :mc-cmd:`~mc version enable --excluded-prefixes`:
+若要禁用前缀排除并恢复对所有前缀启用版本控制，请在不带 :mc-cmd:`~mc version enable --excluded-prefixes` 的情况下再次执行 :mc:`mc version enable`：
 
   .. code-block:: shell
      :class: copyable
@@ -334,44 +306,44 @@ To disable prefix exclusion and resume versioning all prefixes, repeat the :mc:`
      mc version enable ALIAS/BUCKET
 
      
-Exclude Folders from Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从版本控制中排除文件夹
+~~~~~~~~~~~~~~~~~~~~~~
 
-You can exclude folders from versioning using the :ref:`MinIO Client <minio-client>`.
+你可以使用 :ref:`MinIO Client <minio-client>` 将文件夹排除在版本控制之外。
 
-.. admonition:: Replication and Object Locking Require Versioning
+.. admonition:: 复制和对象锁定都要求启用版本控制
    :class: note
 
-   MinIO requires versioning to support :term:`replication`.
-   Objects in excluded folders do not replicate to any peer site or remote site.
+   MinIO 依赖版本控制来支持 :term:`复制 <replication>`。
+   位于排除文件夹中的对象不会复制到任何对等站点或远程站点。
 
-   MinIO does not support excluding folders from versioning on buckets with :ref:`object locking enabled <minio-object-locking>`.
+   对于已 :ref:`启用对象锁定 <minio-object-locking>` 的存储桶，MinIO 不支持从版本控制中排除文件夹。
 
-.. admonition:: Object locking
+.. admonition:: 对象锁定
    :class: note
 
-   Buckets with :ref:`object locking enabled <minio-object-locking>` require versioning and do not support excluding folders.
+   已 :ref:`启用对象锁定 <minio-object-locking>` 的存储桶要求启用版本控制，且不支持排除文件夹。
 
-- Use :mc:`mc version enable` with the :mc-cmd:`~mc version enable --exclude-folders` option to exclude objects with names ending in ``/`` from versioning:
+- 使用带 :mc-cmd:`~mc version enable --exclude-folders` 选项的 :mc:`mc version enable`，将名称以 ``/`` 结尾的对象排除在版本控制之外：
 
   .. code-block:: shell
      :class: copyable
 
      mc version enable --exclude-folders ALIAS/BUCKET
 
-  - Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+  - 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-  - Replace ``BUCKET`` with the :s3-docs:`bucket <UsingBucket.html>` you want to exclude :ref:`folders <minio-admin-concepts-organize-objects>` for.
+  - 将 ``BUCKET`` 替换为要为其排除 :ref:`文件夹 <minio-admin-concepts-organize-objects>` 的 :s3-docs:`存储桶 <UsingBucket.html>`。
 
-To check whether folders are versioned for a bucket, use the :mc:`mc version enable` command with the ``--json`` option.
-If the ``ExcludeFolders`` property is ``true``, folders in that bucket are not versioned.
+若要检查某个存储桶中的文件夹是否启用版本控制，请使用带 ``--json`` 选项的 :mc:`mc version enable` 命令。
+如果 ``ExcludeFolders`` 属性为 ``true``，则该存储桶中的文件夹不启用版本控制。
 
   .. code-block:: shell
      :class: copyable
 
      mc version enable --excluded-prefixes ALIAS/BUCKET --json
 
-The command output resembles the following:
+命令输出类似如下：
 
 .. code-block:: shell
 
@@ -387,7 +359,7 @@ The command output resembles the following:
       }
      }
 
-To disable folder exclusion and resume versioning all folders, repeat the :mc:`mc version enable` command without :mc-cmd:`~mc version enable --exclude-folders`:
+若要禁用文件夹排除并恢复对所有文件夹启用版本控制，请在不带 :mc-cmd:`~mc version enable --exclude-folders` 的情况下再次执行 :mc:`mc version enable`：
 
   .. code-block:: shell
      :class: copyable
@@ -395,26 +367,23 @@ To disable folder exclusion and resume versioning all folders, repeat the :mc:`m
      mc version enable ALIAS/BUCKET
 
 
-Suspend Bucket Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~~
+挂起存储桶版本控制
+~~~~~~~~~~~~~~~~~~
 
-You can suspend bucket versioning at any time using he MinIO :mc:`mc` CLI or using an S3-compatible SDK.
+你可以随时使用 MinIO :mc:`mc` CLI 或兼容 S3 的 SDK 挂起存储桶版本控制。
 
-Use the :mc:`mc version suspend` command to enable versioning on an existing bucket:
+使用 :mc:`mc version suspend` 命令挂起现有存储桶的版本控制：
 
 .. code-block:: shell
    :class: copyable
 
    mc version suspend ALIAS/BUCKET
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of a configured 
-  MinIO deployment.
+- 将 ``ALIAS`` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace ``BUCKET`` with the 
-  :mc-cmd:`target bucket <mc mb ALIAS>` on which to disable
-  versioning.
+- 将 ``BUCKET`` 替换为要禁用版本控制的 :mc-cmd:`目标存储桶 <mc mb ALIAS>`。
 
-Objects created while versioning is suspended are assigned a ``null`` :ref:`version ID <minio-bucket-versioning-id>`. 
-Any mutations to an object while versioning is suspended result in overwriting that ``null`` versioned object. 
-MinIO does not remove or otherwise alter existing versioned objects as part of suspending versioning. 
-Clients can continue interacting with any existing object versions in the bucket.
+在版本控制挂起期间创建的对象会被分配一个 ``null`` :ref:`版本 ID <minio-bucket-versioning-id>`。
+在版本控制挂起期间，对对象的任何变更都会覆盖该 ``null`` 版本对象。
+MinIO 在挂起版本控制时不会删除或以其他方式更改已有的版本化对象。
+客户端仍可继续与存储桶中已有的各个对象版本进行交互。

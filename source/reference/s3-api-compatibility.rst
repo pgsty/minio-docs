@@ -1,22 +1,22 @@
 ====================
-S3 API Compatibility
+S3 API 兼容性
 ====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents S3 APIs supported by MinIO Object Storage.
-For reference documentation on any given API, see the corresponding documentation for Amazon S3.
+本页面记录 MinIO 对象存储支持的 S3 API。
+如需查看任意 API 的参考文档，请参阅 Amazon S3 的对应文档。
 
 .. important::
 
-   MinIO strongly recommends using an :ref:`S3-Compatible SDK <minio-drivers>` for performing object storage operations.
+   MinIO 强烈建议使用 :ref:`S3 兼容 SDK <minio-drivers>` 执行对象存储操作。
 
-Object APIs
------------
+对象 API
+--------
 
 - :s3-api:`CopyObject <API_CopyObject.html>`
 - :s3-api:`DeleteObject <API_DeleteObject.html>`
@@ -34,8 +34,8 @@ Object APIs
 - :s3-api:`RestoreObject <API_RestoreObject.html>`
 - :s3-api:`SelectObjectContent <API_SelectObjectContent.html>`
 
-Object Locking
-~~~~~~~~~~~~~~
+对象锁定
+~~~~~~~~
 
 - :s3-api:`GetObjectRetention <API_GetObjectRetention.html>`
 - :s3-api:`PutObjectRetention <API_PutObjectRetention.html>`
@@ -44,16 +44,16 @@ Object Locking
 - :s3-api:`GetObjectLockConfiguration <API_GetObjectLockConfiguration.html>`
 - :s3-api:`PutObjectLockConfiguration <API_PutObjectLockConfiguration.html>`
 
-Unsupported API Object Endpoints
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+不支持的 API 对象端点
+~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: text
 
    GetObjectAcl
    PutObjectAcl
 
-Multipart Uploads
-~~~~~~~~~~~~~~~~~
+多部分上传
+~~~~~~~~~~
 
 - :s3-api:`AbortMultipartUpload <API_AbortMultipartUpload.html>`
 - :s3-api:`CompleteMultipartUpload <API_CompleteMultipartUpload.html>`
@@ -63,14 +63,14 @@ Multipart Uploads
 - :s3-api:`UploadPart <API_UploadPart.html>`
 - :s3-api:`UploadPartCopy <API_UploadPartCopy.html>`
 
-Differences from S3 APIs for Multipart Uploads
-++++++++++++++++++++++++++++++++++++++++++++++
+与 S3 API 在多部分上传方面的差异
++++++++++++++++++++++++++++++++
 
-- ``ListMultipartUploads`` requires the exact object name as a prefix.
-- The ``AbortIncompleteMultipartUpload`` lifecycle action is not supported with ``PutBucketLifecycle``.
+- ``ListMultipartUploads`` 需要使用精确的对象名称作为前缀。
+- ``PutBucketLifecycle`` 不支持 ``AbortIncompleteMultipartUpload`` 生命周期动作。
 
-Bucket APIs
------------
+存储桶 API
+----------
 
 
 - :s3-api:`CreateBucket <API_CreateBucket.html>`
@@ -88,15 +88,15 @@ Bucket APIs
 - :s3-api:`PutBucketTagging <API_PutBucketTagging.html>`
 - :s3-api:`PutBucketVersioning <API_PutBucketVersioning.html>`
 
-Bucket Replication
-~~~~~~~~~~~~~~~~~~
+存储桶复制
+~~~~~~~~~~
 
 - :s3-api:`GetBucketReplication <API_GetBucketReplication.html>`
 - :s3-api:`PutBucketReplication <API_PutBucketReplication.html>`
 - :s3-api:`DeleteBucketReplication <API_DeleteBucketReplication.html>`
 
-Bucket Lifecycle
-~~~~~~~~~~~~~~~~
+存储桶生命周期
+~~~~~~~~~~~~~~
 
 - :s3-api:`GetBucketLifecycle <API_GetBucketLifecycle.html>`
 - :s3-api:`GetBucketLifecycleConfiguration <API_GetBucketLifecycleConfiguration.html>`
@@ -104,24 +104,24 @@ Bucket Lifecycle
 - :s3-api:`PutBucketLifecycleConfiguration <API_PutBucketLifecycleConfiguration.html>`
 - :s3-api:`DeleteBucketLifecycle <API_DeleteBucketLifecycle.html>`
 
-Bucket Notifications
-~~~~~~~~~~~~~~~~~~~~
+存储桶通知
+~~~~~~~~~~
 
 - :s3-api:`GetBucketNotification <API_GetBucketNotification.html>`
 - :s3-api:`GetBucketNotificationConfiguration <API_GetBucketNotificationConfiguration.html>`
 - :s3-api:`PutBucketNotification <API_PutBucketNotification.html>`
 - :s3-api:`PutBucketNotificationConfiguration <API_PutBucketNotificationConfiguration.html>`
 
-Bucket Policies
-~~~~~~~~~~~~~~~
+存储桶策略
+~~~~~~~~~~
 
 - :s3-api:`GetBucketPolicy <API_GetBucketPolicy.html>`
 - :s3-api:`GetBucketPolicyStatus <API_GetBucketPolicyStatus.html>`
 - :s3-api:`PutBucketPolicy <API_PutBucketPolicy.html>`
 - :s3-api:`DeleteBucketPolicy <API_DeleteBucketPolicy.html>`
 
-Unsupported API Bucket Operations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+不支持的 API 存储桶操作
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: text
 
@@ -158,10 +158,10 @@ Unsupported API Bucket Operations
    DeleteBucketAnalyticsConfiguration
    CreateSession
 
-MinIO alternatives for unsupported Bucket resources
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MinIO 针对不支持的存储桶资源的替代方案
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- For calls to ``BucketACL`` or ``ObjectACL`` operations, use :ref:`Policies <minio-policy>`.
-- Calls to ``BucketCORS`` operations are not needed because CORS is enabled by default on all buckets for all HTTP verbs.
-- For calls to ``BucketWebsite`` operations, use ``caddy`` or ``nginx``.
-- For calls to ``BucketAnalytics``, ``BucketMetrics``, or ``BucketLogging`` operations, use :ref:`Bucket Notifications <minio-bucket-notifications>`.
+- 对于 ``BucketACL`` 或 ``ObjectACL`` 操作调用，请使用 :ref:`Policies <minio-policy>`。
+- 不需要 ``BucketCORS`` 操作调用，因为默认情况下所有存储桶都已为所有 HTTP 动词启用 CORS。
+- 对于 ``BucketWebsite`` 操作调用，请使用 ``caddy`` 或 ``nginx``。
+- 对于 ``BucketAnalytics``、``BucketMetrics`` 或 ``BucketLogging`` 操作调用，请使用 :ref:`Bucket Notifications <minio-bucket-notifications>`。

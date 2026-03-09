@@ -4,22 +4,22 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin scanner trace
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-scanner-trace-desc
 
-The :mc-cmd:`mc admin scanner trace` command displays :ref:`scanner <minio-concepts-scanner>`-specific API operations occurring on the target MinIO deployment.
+:mc-cmd:`mc admin scanner trace` 命令会显示目标 MinIO 部署上发生的 :ref:`scanner <minio-concepts-scanner>` 相关 API 操作。
 
 .. end-mc-admin-scanner-trace-desc
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -28,18 +28,18 @@ The :mc-cmd:`mc admin scanner trace` command displays :ref:`scanner <minio-conce
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following example returns a list of API operations related to the scanner on the ``myminio`` deployment.
+      以下示例返回 ``myminio`` 部署上与 scanner 相关的 API 操作列表。
 
       .. code-block:: shell
          :class: copyable
 
          mc admin scanner trace myminio
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -58,162 +58,162 @@ The :mc-cmd:`mc admin scanner trace` command displays :ref:`scanner <minio-conce
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment for which to display :ref:`scanner <minio-concepts-scanner>` API operations.
+   要显示其 :ref:`scanner <minio-concepts-scanner>` API 操作的 MinIO 部署的 :ref:`alias <alias>`。
 
 .. mc-cmd:: --filter-request
    :optional:
 
-   Trace scanner operations or calls with request size greater than the specified :mc-cmd:`~mc admin scanner trace --filter-size` value.
+   跟踪请求大小大于指定 :mc-cmd:`~mc admin scanner trace --filter-size` 值的 scanner 操作或调用。
 
-   **Must** be used with :mc-cmd:`~mc admin scanner trace --filter-size` flag.
+   **必须** 与 :mc-cmd:`~mc admin scanner trace --filter-size` 标志配合使用。
 
 .. mc-cmd:: --filter-response
    :optional:
 
-   Trace scanner operations or calls with response size greater than the specified :mc-cmd:`~mc admin scanner trace --filter-size` value.
+   跟踪响应大小大于指定 :mc-cmd:`~mc admin scanner trace --filter-size` 值的 scanner 操作或调用。
 
-   **Must** be used with :mc-cmd:`~mc admin scanner trace --filter-size` flag.
+   **必须** 与 :mc-cmd:`~mc admin scanner trace --filter-size` 标志配合使用。
 
 .. mc-cmd:: --filter-size
    :optional:
 
-   Filter output to request sizes or response sizes greater than the specified size.
+   将输出过滤为请求大小或响应大小大于指定大小的条目。
 
-   Must be used with either :mc-cmd:`~mc admin scanner trace --filter-request` or :mc-cmd:`~mc admin scanner trace --filter-response` flag.
+   必须与 :mc-cmd:`~mc admin scanner trace --filter-request` 或 :mc-cmd:`~mc admin scanner trace --filter-response` 标志之一配合使用。
 
-   Valid units include:
+   有效单位包括：
 
    .. list-table::
       :header-rows: 1
       :widths: 20 80
       :width: 100%
    
-      * - Suffix
-        - Unit Size
+      * - 后缀
+        - 单位大小
    
       * - ``k``
-        - KB (Kilobyte, 1000 Bytes)
+        - KB（Kilobyte，1000 Bytes）
    
       * - ``m``
-        - MB (Megabyte, 1000 Kilobytes)
+        - MB（Megabyte，1000 Kilobytes）
    
       * - ``g``
-        - GB (Gigabyte, 1000 Megabytes)
+        - GB（Gigabyte，1000 Megabytes）
    
       * - ``t``
-        - TB (Terrabyte, 1000 Gigabytes)
+        - TB（Terabyte，1000 Gigabytes）
    
       * - ``ki``
-        - KiB (Kibibyte, 1024 Bites)
+        - KiB（Kibibyte，1024 Bytes）
    
       * - ``mi``
-        - MiB (Mebibyte, 1024 Kibibytes)
+        - MiB（Mebibyte，1024 Kibibytes）
    
       * - ``gi``
-        - GiB (Gibibyte, 1024 Mebibytes)
+        - GiB（Gibibyte，1024 Mebibytes）
    
       * - ``ti``
-        - TiB (Tebibyte, 1024 Gibibytes)
+        - TiB（Tebibyte，1024 Gibibytes）
 
 .. mc-cmd:: --funcname
    :optional:
 
-   Returns calls for the entered function name.
+   返回与输入函数名对应的调用。
 
 .. mc-cmd:: --node
    :optional:
 
-   Returns calls for the specified server.
+   返回指定服务器的调用。
 
 .. mc-cmd:: --path
    :optional:
 
-   Returns calls for the specified path.
+   返回指定路径的调用。
 
 .. mc-cmd:: --response-duration
    :optional:
 
-   Trace calls with response duration greater than the specified value.
+   跟踪响应持续时间大于指定值的调用。
 
 .. mc-cmd:: --verbose, -v
    :optional:
 
-   Returns verbose output.
+   返回详细输出。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Examples
---------
+示例
+----
 
-Monitor all scanner API operations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+监控所有 scanner API 操作
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin scanner trace` to monitor :ref:`scanner <minio-concepts-scanner>` API operations on the MinIO deployment at the alias ``myminio``:
+使用 :mc-cmd:`mc admin scanner trace` 监控别名为 ``myminio`` 的 MinIO 部署上的 :ref:`scanner <minio-concepts-scanner>` API 操作：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin scanner trace myminio
 
-Show scanner trace for a specific path
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示特定路径的 scanner 跟踪
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin scanner trace` to monitor API operations for a the path ``my-bucket/my-prefix/*`` on the deployment at the ``myminio`` alias:
+使用 :mc-cmd:`mc admin scanner trace` 监控别名为 ``myminio`` 的部署上路径 ``my-bucket/my-prefix/*`` 的 API 操作：
 
 .. code-block:: shell
    :class: copyable
    
-    mc admin scanner trace --path my-bucket/my-prefix/* myminio
+   mc admin scanner trace --path my-bucket/my-prefix/* myminio
 
-Show scanner API operations for the ``scanObject`` function
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示 ``scanObject`` 函数的 scanner API 操作
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Monitor scanner activity for the ``scanObject function`` on the ``myminio`` deployment:
+监控 ``myminio`` 部署上 ``scanObject`` 函数的 scanner 活动：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin scanner trace --funcname=scanner.ScanObject myminio 
 
-Show scanner operation requests greater than ``1MB`` in size
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示大于 ``1MB`` 的 scanner 操作请求
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin scanner trace` to monitor requests larger than a ``1MB`` on the ``myminio`` deployment:
+使用 :mc-cmd:`mc admin scanner trace` 监控 ``myminio`` 部署上大于 ``1MB`` 的请求：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin scanner trace --filter-request --filter-size 1MB myminio
 
-Show scanner operation responses greater than ``1MB`` in size
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示大于 ``1MB`` 的 scanner 操作响应
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin scanner trace` to monitor large response sizes:
-
-.. code-block:: shell
-   :class: copyable
-
-    mc admin scanner trace --filter-response --filter-size 1MB myminio 
-
-Show scanner operations that last longer than five milliseconds
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Use :mc-cmd:`mc admin scanner trace` to monitor long operations:
+使用 :mc-cmd:`mc admin scanner trace` 监控较大的响应大小：
 
 .. code-block:: shell
    :class: copyable
 
-    mc admin scanner trace --response-duration 5ms myminio
+   mc admin scanner trace --filter-response --filter-size 1MB myminio 
+
+显示持续超过五毫秒的 scanner 操作
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+使用 :mc-cmd:`mc admin scanner trace` 监控耗时较长的操作：
+
+.. code-block:: shell
+   :class: copyable
+
+   mc admin scanner trace --response-duration 5ms myminio

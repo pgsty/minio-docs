@@ -1,14 +1,17 @@
-You can install the MinIO plugin using either the Kubernetes Krew plugin manager or manually by downloading and installing the plugin binary to your local host:
+你可以通过 Kubernetes Krew 插件管理器安装 MinIO 插件，
+也可以手动下载插件二进制并安装到本地主机：
 
 .. tab-set::
 
    .. tab-item:: Krew Plugin Manager
 
-      Krew is a ``kubectl`` plugin manager developed by the `Kubernetes SIG CLI group <https://github.com/kubernetes-sigs>`__.
-      See the ``krew`` `installation documentation <https://krew.sigs.k8s.io/docs/user-guide/setup/install/>`__ for specific instructions.
-      You can use the Krew plugin for Linux, macOS, and Windows operating systems.
+      Krew 是由 `Kubernetes SIG CLI group <https://github.com/kubernetes-sigs>`__
+      开发的 ``kubectl`` 插件管理器。
+      具体安装方法请参阅 ``krew``
+      `installation documentation <https://krew.sigs.k8s.io/docs/user-guide/setup/install/>`__。
+      Krew 适用于 Linux、macOS 和 Windows 操作系统。
 
-      You can use Krew to install the MinIO ``kubectl`` plugin using the following commands:
+      你可以使用以下命令，通过 Krew 安装 MinIO ``kubectl`` 插件：
 
       .. code-block:: shell
          :class: copyable
@@ -16,7 +19,7 @@ You can install the MinIO plugin using either the Kubernetes Krew plugin manager
          kubectl krew update
          kubectl krew install minio
 
-      If you want to update the MinIO plugin with Krew, use the following command:
+      如果要通过 Krew 更新 MinIO 插件，请使用以下命令：
 
       .. code-block:: shell
          :class: copyable
@@ -25,10 +28,11 @@ You can install the MinIO plugin using either the Kubernetes Krew plugin manager
 
    .. tab-item:: Manual (Linux, MacOS)
 
-      You can download the MinIO ``kubectl`` plugin to your local system path.
-      The ``kubectl`` CLI automatically discovers and runs compatible plugins.
+      你可以将 MinIO ``kubectl`` 插件下载到本地系统路径中。
+      ``kubectl`` CLI 会自动发现并运行兼容插件。
 
-      The following code downloads the most recent version of the MinIO Kubernetes plugin and installs it to the system path:
+      以下代码会下载最新版本的 MinIO Kubernetes 插件，
+      并将其安装到系统路径中：
 
       .. code-block:: shell
          :substitutions:
@@ -38,23 +42,25 @@ You can install the MinIO plugin using either the Kubernetes Krew plugin manager
          chmod +x kubectl-minio
          mv kubectl-minio /usr/local/bin/
 
-      The ``mv`` command above may require ``sudo`` escalation depending on the permissions of the authenticated user.
+      上述 ``mv`` 命令可能需要 ``sudo`` 提权，
+      具体取决于当前认证用户的权限。
 
-      Run the following command to verify installation of the plugin:
+      运行以下命令验证插件是否安装成功：
 
       .. code-block:: shell
          :class: copyable
 
          kubectl minio version
 
-      The output should display the Operator version as 5.0.14.
+      输出应显示 Operator 版本为 5.0.14。
 
    .. tab-item:: Manual (Windows)
 
-      You can download the MinIO ``kubectl`` plugin to your local system path.
-      The ``kubectl`` CLI automatically discovers and runs compatible plugins.
+      你可以将 MinIO ``kubectl`` 插件下载到本地系统路径中。
+      ``kubectl`` CLI 会自动发现并运行兼容插件。
 
-      The following PowerShell command downloads the most recent version of the MinIO Kubernetes plugin and installs it to the system path:
+      以下 PowerShell 命令会下载最新版本的 MinIO Kubernetes 插件，
+      并将其安装到系统路径中：
 
       .. code-block:: powershell
          :substitutions:
@@ -62,13 +68,13 @@ You can install the MinIO plugin using either the Kubernetes Krew plugin manager
 
          Invoke-WebRequest -Uri "https://github.com/minio/operator/releases/download/v5.0.14/kubectl-minio_5.0.14_windows_amd64.exe" -OutFile "C:\kubectl-plugins\kubectl-minio.exe"
 
-      Ensure the path to the plugin folder is included in the Windows PATH.
+      请确保插件目录路径已包含在 Windows PATH 中。
 
-      Run the following command to verify installation of the plugin:
+      运行以下命令验证插件是否安装成功：
 
       .. code-block:: shell
          :class: copyable
 
          kubectl minio version
 
-      The output should display the Operator version as 5.0.14.
+      输出应显示 Operator 版本为 5.0.14。

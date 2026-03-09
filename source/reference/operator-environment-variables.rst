@@ -1,100 +1,100 @@
 .. _minio-operator-envvars:
 
 ====================================
-MinIO Operator Environment Variables
+MinIO Operator 环境变量
 ====================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
 
-The :ref:`MinIO Operator <minio-operator-installation>` uses the following environment variables during startup to set configuration settings.
-Configure these variables in the ``minio-operator`` container.
+:ref:`MinIO Operator <minio-operator-installation>` 在启动期间使用以下环境变量来设置配置项。
+请在 ``minio-operator`` 容器中配置这些变量。
 
-Setting Environment Variables in Kubernetes
+在 Kubernetes 中设置环境变量
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To set these environment variables, modify the operator container's yaml at ``.spec.env`` or use the following ``kubectl`` command syntax:
+要设置这些环境变量，请修改 Operator 容器 YAML 中的 ``.spec.env``，或使用以下 ``kubectl`` 命令语法：
 
 .. code-block:: shell
    :class: copyable
 
    kubectl set env -n minio-operator deployment/minio-operator <ENV_VARIABLE>=<value> ... <ENV_VARIABLE2>=<value2>
 
-Replace:
+替换：
 
-- ``minio-operator`` with the namespace for your Operator, if not using the default value.
-- ``deployment/minio-operator`` with the deployment for your Operator, if not the default value.
-  (Most deployments use the default value.)
-- ``<ENV_VARIABLE>`` with the environment variable to set or modify.
-- ``<value>`` with the value to use for the environment variable.
+- 如果未使用默认值，将 ``minio-operator`` 替换为你的 Operator 所在命名空间。
+- 如果未使用默认值，将 ``deployment/minio-operator`` 替换为你的 Operator 对应 deployment。
+  （大多数部署使用默认值。）
+- 将 ``<ENV_VARIABLE>`` 替换为要设置或修改的环境变量。
+- 将 ``<value>`` 替换为该环境变量要使用的值。
 
-You can set or modify multiple environment variables by separating each ``VARIABLE=value`` pair with a space.
+你可以使用空格分隔多个 ``VARIABLE=value`` 键值对，以设置或修改多个环境变量。
 
-Available MinIO Operator Environment Variables
+可用的 MinIO Operator 环境变量
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. envvar:: MINIO_OPERATOR_CERTIFICATES_VERSION
 
-   Specifies the certificate API version to use.
+   指定要使用的证书 API 版本。
 
-   Valid values are ``v1`` or ``v1beta1``.
+   有效值为 ``v1`` 或 ``v1beta1``。
 
-   When not specified, the default is the API Kubernetes provides.
+   未指定时，默认使用 Kubernetes 提供的 API。
 
 .. envvar:: MINIO_OPERATOR_RUNTIME
 
-   Specify the type of runtime to use.
+   指定要使用的运行时类型。
 
-   Valid values are ``EKS``, ``Rancher``, or ``OpenShift``.
-   Leave blank if none of the options apply.
+   有效值为 ``EKS``、``Rancher`` 或 ``OpenShift``。
+   如果以上选项均不适用，则留空。
 
-   When set as ``EKS``, the :envvar:`MINIO_OPERATOR_CSR_SIGNER_NAME` must be ``beta.eks.amazonaws.com/app-serving``.
+   当设置为 ``EKS`` 时，:envvar:`MINIO_OPERATOR_CSR_SIGNER_NAME` 必须为 ``beta.eks.amazonaws.com/app-serving``。
 
 .. envvar:: MINIO_OPERATOR_CSR_SIGNER_NAME
 
-   Override the default signer for certificate signing requests (CSRs).
+   覆盖证书签名请求（CSR）的默认签名者。
 
-   When not specified, the default value is ``kubernetes.io/kubelet-serving``.
+   未指定时，默认值为 ``kubernetes.io/kubelet-serving``。
 
 .. envvar:: OPERATOR_CERT_PASSWD
    
-   *Optional*
+   *可选*
 
-   The password Operator should use to decrypt the private key in the TLS certificate for Operator.
+   Operator 用于解密其 TLS 证书中私钥的密码。
 
 .. envvar:: OPERATOR_STS_ENABLED
 
-   Toggle STS Service ``on`` or ``off``.
+   将 STS Service 切换为 ``on`` 或 ``off``。
 
    .. versionchanged:: v5.0.11
 
-      When not specified, the default value is ``on``.
+      未指定时，默认值为 ``on``。
 
-   For versions prior to Operator 5.0.11, the default value was ``off``.
+   在 Operator 5.0.11 之前的版本中，默认值为 ``off``。
 
 .. envvar:: MINIO_CONSOLE_DEPLOYMENT_NAME
 
-   The name to use for the Operator Console.
+   用于 Operator Console 的名称。
 
-   When not specified, the default value is ``operator``.
+   未指定时，默认值为 ``operator``。
 
 .. envvar:: MINIO_CONSOLE_TLS_ENABLE
 
-   Toggle Console TLS service ``on`` or ``off``.
+   将 Console TLS 服务切换为 ``on`` 或 ``off``。
 
-   When not specified, the default value is ``off``.
+   未指定时，默认值为 ``off``。
 
 .. envvar:: MINIO_OPERATOR_IMAGE
 
    .. versionadded:: v5.0.11
 
-   Specify the image of the MinIO instance sidecar container loaded by the Operator.
+   指定由 Operator 加载的 MinIO 实例 sidecar 容器镜像。
 
-   Omit to use the Operator image.
+   省略该项则使用 Operator 镜像。
 
 .. envvar:: WATCHED_NAMESPACE
 
-   A comma-separated list of the namespace(s) Operator should watch for tenants.
+   Operator 监视租户时应监视的命名空间列表，以逗号分隔。
    
-   When not specified, the default value is ``""`` to watch all namespaces.
+   未指定时，默认值为 ``""``，即监视所有命名空间。

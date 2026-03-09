@@ -1,43 +1,56 @@
 .. start-kes-prereq-hashicorp-vault-desc
 
-This procedure assumes an existing :kes-docs:`supported KMS installation <#supported-kms-targets>` accessible from the Kubernetes cluster.
+本流程假定 Kubernetes 集群能够访问一个现有的
+:kes-docs:`受支持 KMS 安装 <#supported-kms-targets>`。
 
-- For deployments within the same Kubernetes cluster as the MinIO Tenant, you can use Kubernetes service names to allow the MinIO Tenant to establish connectivity to the target KMS service.
+- 对于与 MinIO Tenant 位于同一 Kubernetes 集群内的部署，
+  你可以使用 Kubernetes service 名称，
+  让 MinIO Tenant 与目标 KMS 服务建立连接。
 
-- For deployments external to the Kubernetes cluster, you must ensure the cluster supports routing communications between Kubernetes services and pods and the external network.
-  This may require configuration or deployment of additional Kubernetes network components and/or enabling access to the public internet.
+- 对于位于 Kubernetes 集群外部的部署，
+  你必须确保集群支持在 Kubernetes services、pods 与外部网络之间路由通信。
+  这可能要求额外配置或部署 Kubernetes 网络组件，
+  和/或启用对公网的访问。
 
-Defer to the documentation for your chosen KMS solution for guidance on deployment and configuration.
+关于部署和配置的具体指导，请参考你所选 KMS 方案的文档。
 
 .. end-kes-prereq-hashicorp-vault-desc
 
 .. start-kes-enable-sse-kms-desc
 
-You can use either the MinIO Tenant Console or the MinIO :mc:`mc` CLI to enable bucket-default SSE-KMS with the generated key:
+你可以使用 MinIO Tenant Console 或 MinIO :mc:`mc` CLI，
+通过生成的密钥启用存储桶默认 SSE-KMS：
 
 .. tab-set::
 
    .. tab-item:: MinIO Tenant Console
 
-      Connect to the :ref:`MinIO Tenant Console service <create-tenant-connect-tenant>` and log in.
-      For clients internal to the Kubernetes cluster, you can specify the :kube-docs:`service DNS name <concepts/services-networking/dns-pod-service/#a-aaaa-records>`.
-      For clients external to the Kubernetes cluster, specify the hostname of the service exposed by Ingress, Load Balancer, or similar Kubernetes network control component.
+      连接到 :ref:`MinIO Tenant Console service <create-tenant-connect-tenant>` 并登录。
+      对于 Kubernetes 集群内部客户端，
+      你可以指定 :kube-docs:`service DNS name <concepts/services-networking/dns-pod-service/#a-aaaa-records>`。
+      对于 Kubernetes 集群外部客户端，
+      请指定通过 Ingress、Load Balancer 或类似 Kubernetes 网络控制组件暴露的服务主机名。
 
-      Once logged in, create a new Bucket and name it to your preference.
-      Select the Gear :octicon:`gear` icon to open the management view.
+      登录后，新建一个 Bucket，并按你的偏好命名。
+      选择齿轮 :octicon:`gear` 图标打开管理视图。
 
-      Select the pencil :octicon:`pencil` icon next to the :guilabel:`Encryption` field to open the modal for configuring a bucket default SSE scheme.
+      选择 :guilabel:`Encryption` 字段旁的铅笔 :octicon:`pencil` 图标，
+      打开配置存储桶默认 SSE 方案的弹窗。
 
-      Select :guilabel:`SSE-KMS`, then enter the name of the key created in the previous step.
+      选择 :guilabel:`SSE-KMS`，然后输入上一步创建的密钥名称。
 
-      Once you save your changes, try to upload a file to the bucket. 
-      When viewing that file in the object browser, note that in the sidebar the metadata includes the SSE encryption scheme and information on the key used to encrypt that object.
-      This indicates the successful encrypted state of the object.
+      保存更改后，尝试向该存储桶上传一个文件。
+      在对象浏览器中查看该文件时，
+      请注意侧边栏中的元数据包含了 SSE 加密方案
+      以及用于加密该对象的密钥信息。
+      这表明该对象已成功加密。
 
    .. tab-item:: MinIO CLI
 
-      Use the :ref:`MinIO API Service <create-tenant-connect-tenant>` to create a new :ref:`alias <alias>` for the MinIO deployment.
-      You can then use the :mc:`mc encrypt set` command to enable SSE-KMS encryption for a bucket:
+      使用 :ref:`MinIO API Service <create-tenant-connect-tenant>`
+      为 MinIO 部署创建新的 :ref:`alias <alias>`。
+      之后即可使用 :mc:`mc encrypt set`
+      为存储桶启用 SSE-KMS 加密：
 
       .. code-block:: shell
          :class: copyable
@@ -47,48 +60,57 @@ You can use either the MinIO Tenant Console or the MinIO :mc:`mc` CLI to enable 
          mc mb k8s/encryptedbucket
          mc encrypt set SSE-KMS encrypted-bucket-key k8s/encryptedbucket
 
-      For clients external to the Kubernetes cluster, specify the hostname of the service exposed by Ingress, Load Balancer, or similar Kubernetes network control component.
+      对于 Kubernetes 集群外部客户端，
+      请指定通过 Ingress、Load Balancer 或类似 Kubernetes 网络控制组件暴露的服务主机名。
 
-      Write a file to the bucket using :mc:`mc cp` or any S3-compatible SDK with a ``PutObject`` function. 
-      You can then run :mc:`mc stat` on the file to confirm the associated encryption metadata.
+      使用 :mc:`mc cp` 或任何带有 ``PutObject`` 函数的 S3 兼容 SDK
+      将文件写入该存储桶。
+      然后你可以对该文件执行 :mc:`mc stat`，
+      以确认其关联的加密元数据。
 
 .. end-kes-enable-sse-kms-desc
 
 .. start-kes-generate-key-desc
 
-.. admonition:: Unseal Vault Before Creating Key
+.. admonition:: 创建密钥前先解封 Vault
    :class: important
 
-   If required by your chosen provider, you must unseal the backing vault instance before creating new encryption keys.
-   See the documentation for your chosen KMS solution for more information.
+   如果你所选的提供方有此要求，
+   则必须先解封底层 Vault 实例，
+   然后才能创建新的加密密钥。
+   更多信息请参考你所选 KMS 方案的文档。
 
-MinIO requires that the |EK| for a given bucket or object exist on the root KMS *before* performing |SSE| operations using that key.
-You can use the :mc-cmd:`mc admin kms key create` command against the MinIO Tenant.
+MinIO 要求某个存储桶或对象使用的 |EK| 在执行 |SSE| 操作之前，
+必须已经存在于根 KMS 中。
+你可以针对 MinIO Tenant 使用 :mc-cmd:`mc admin kms key create` 命令。
 
-You must ensure your local host can access the MinIO Tenant pods and services before using :mc:`mc` to manage the Tenant.
-For hosts internal to the Kubernetes cluster, you can use the :kube-docs:`service DNS name <concepts/services-networking/dns-pod-service/#a-aaaa-records>`.
-For hosts external to the Kubernetes cluster, specify the hostname of the service exposed by Ingress, Load Balancer, or similar Kubernetes network control component.
+在使用 :mc:`mc` 管理 Tenant 之前，
+你必须确保本地主机能够访问 MinIO Tenant 的 pods 和 services。
+对于 Kubernetes 集群内部主机，
+你可以使用 :kube-docs:`service DNS name <concepts/services-networking/dns-pod-service/#a-aaaa-records>`。
+对于 Kubernetes 集群外部主机，
+请指定通过 Ingress、Load Balancer 或类似 Kubernetes 网络控制组件暴露的服务主机名。
 
-Run this command in a separate Terminal or Shell:
+在单独的 Terminal 或 Shell 中运行以下命令：
 
 .. code-block:: shell
    :class: copyable
 
    # Replace '-n minio' with the namespace of the MinIO deployment
    # If you deployed the Tenant without TLS you may need to change the port range
-   
+
    # You can validate the ports in use by running
    #  kubectl get svc/minio -n minio
 
    kubectl port forward svc/minio 443:443 -n minio
 
-The following commands in a new Terminal or Shell window:
+在新的 Terminal 或 Shell 窗口中执行以下操作：
 
-- Connect a local :mc:`mc` client to the Tenant.
+- 将本地 :mc:`mc` 客户端连接到 Tenant。
+- 创建加密密钥。
 
-- Create the encryption key.
-
-See :ref:`mc-install` for instructions on installing ``mc`` on your local host.
+关于如何在本地主机上安装 ``mc``，
+请参见 :ref:`mc-install`。
 
 .. code-block:: shell
    :class: copyable

@@ -4,50 +4,50 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc ready
 
-Syntax
+语法
 ------
 
 .. start-mc-ready-desc
 
-The :mc:`mc ready` command checks the status of a cluster and whether the cluster has ``read`` and ``write`` quorum.
+:mc:`mc ready` 命令用于检查集群状态，以及集群是否具有 ``read`` 和 ``write`` quorum。
 
 .. end-mc-ready-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following sends a ``GET`` request to the cluster at alias ``myminio`` and returns its status.
+      以下命令向别名为 ``myminio`` 的集群发送 ``GET`` 请求，并返回其状态。
 
       .. code-block:: shell
          :class: copyable
 
          mc ready myminio
 
-      The command sends a ``GET`` request to the deployment at the :mc:`~mc alias` ``myminio``.'
-      The command repeats the request until it is successful.
+      该命令会向 :mc:`~mc alias` ``myminio`` 对应的部署发送 ``GET`` 请求。
+      该命令会重复发送请求，直到成功为止。
 
-      The output before the cluster at alias ``myminio`` is ready resembles the following:
+      在别名 ``myminio`` 对应的集群就绪之前，输出类似如下：
 
       .. code-block:: text
 
          The cluster `myminio` is unreachable: Get "http://myminio.example.com:9000/minio/health/cluster": dial tcp 198.51.100.0:9000: connect: connection refused
 
-      Once the request succeeds in connecting to the ``myminio`` deployment, the output resembles the following:
+      当请求成功连接到 ``myminio`` 部署后，输出类似如下：
      
       .. code-block:: text
 
          The cluster `myminio` is ready
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -61,50 +61,50 @@ The :mc:`mc ready` command checks the status of a cluster and whether the cluste
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the :ref:`alias <minio-mc-alias>` or prefix where the command should run.
+   命令运行目标的完整路径，可为 :ref:`alias <minio-mc-alias>` 或前缀。
 
 .. mc-cmd:: --cluster-read
    :optional:
 
-   Checks if the cluster has enough :term:`quorum <read quorum>` to serve ``READ`` requests.
+   检查集群是否具有足够的 :term:`quorum <read quorum>` 来处理 ``READ`` 请求。
 
 .. mc-cmd:: --maintenance
    :optional:
    
-   Checks if the cluster can maintain read and write quorum if the node for the alias is taken down for maintenance.
+   检查当该别名对应节点因维护下线时，集群是否仍可维持 read 和 write quorum。
 
-   Use an alias for the specific node you expect to take down for maintenance and not an alias set to a load balancer.
+   对预期下线维护的具体节点使用其 alias，而不要使用指向负载均衡器的 alias。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Check if the cluster has read quorum
+检查集群是否具有 read quorum
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command checks that a deployment has sufficient drives available for read operations.
+以下命令检查某个部署是否有足够可用驱动器来执行读取操作。
 
 .. code-block:: shell
    :class: copyable
 
    mc read myminio --cluster-read
 
-Check if a cluster is down for maintenance
+检查集群是否处于维护下线场景
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command checks whether the cluster can maintain read and write quorum during maintenance when the node at alias ``myminio`` is taken down.
+以下命令检查当别名 ``myminio`` 对应节点下线时，集群在维护期间是否仍可维持 read 和 write quorum。
 
 .. code-block:: shell
    :class: copyable

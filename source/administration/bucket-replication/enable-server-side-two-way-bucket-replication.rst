@@ -1,54 +1,54 @@
 .. _minio-bucket-replication-serverside-twoway:
 
-=============================================
-Enable Two-Way Server-Side Bucket Replication
-=============================================
+==========================
+启用双向服务端存储桶复制
+==========================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The procedure on this page creates a new bucket replication rule for two-way "active-active" synchronization of objects between MinIO buckets.
+本页中的过程会创建新的存储桶复制规则，用于在 MinIO 存储桶之间对对象执行双向“主动-主动”同步。
 
 .. image:: /images/replication/active-active-twoway-replication.svg
    :width: 800px
-   :alt: Active-Active Replication synchronizes data between two remote clusters.
+   :alt: 主动-主动复制在两个远程集群之间同步数据。
    :align: center
 
-- To configure replication between arbitrary S3-compatible services, use :mc:`mc mirror`.
+- 如需在任意兼容 S3 的服务之间配置复制，请使用 :mc:`mc mirror`。
 
-- To configure one-way "active-passive" replication between MinIO clusters, see :ref:`minio-bucket-replication-serverside-oneway`.
+- 如需在 MinIO 集群之间配置单向“主动-被动”复制，请参见 :ref:`minio-bucket-replication-serverside-oneway`。
   
-- To configure multi-site "active-active" replication between MinIO clusters, see :ref:`minio-bucket-replication-serverside-multi`.
+- 如需在 MinIO 集群之间配置多站点“主动-主动”复制，请参见 :ref:`minio-bucket-replication-serverside-multi`。
 
-This tutorial covers configuring Active-Active replication between two MinIO clusters. For a tutorial on multi-site replication between three or more MinIO clusters, see :ref:`minio-bucket-replication-serverside-multi`.
+本教程介绍如何在两个 MinIO 集群之间配置主动-主动复制。有关在三个或更多 MinIO 集群之间进行多站点复制的教程，请参见 :ref:`minio-bucket-replication-serverside-multi`。
 
 
 .. _minio-bucket-replication-serverside-twoway-requirements:
 
-Requirements
-------------
+要求
+----
 
-You must meet all of the basic requirements for bucket replication described in :ref:`Bucket Replication Requirements <minio-bucket-replication-requirements>`.
+您必须满足 :ref:`存储桶复制要求 <minio-bucket-replication-requirements>` 中描述的所有存储桶复制基础要求。
 
-In addition, to set up active-active bucket replication, you must meet the following additional requirements:
+此外，要设置主动-主动存储桶复制，您还必须满足以下附加要求：
 
 .. _minio-bucket-replication-serverside-twoway-permissions:
 
-Access to Both Clusters
-~~~~~~~~~~~~~~~~~~~~~~~
+访问两个集群
+~~~~~~~~~~~~
 
-You must have network access and login credentials with required permissions to both deployment to set up active-active bucket replication.
+要设置主动-主动存储桶复制，您必须能够通过网络访问两个部署，并拥有具有所需权限的登录凭证。
 
-You can access the deployments by installing :mc:`mc` and using the command line.
-Use the :mc:`mc alias set` command to create an alias for both MinIO deployments.
+您可以安装 :mc:`mc` 并通过命令行访问这些部署。
+使用 :mc:`mc alias set` 命令为两个 MinIO 部署创建别名。
 
-Alias creation requires specifying an access key for a user on the deployment. 
-This user **must** have permission to create and manage users and policies on the deployment. 
+创建别名时，需要为部署中的某个用户指定 access key。
+该用户**必须**具有在该部署上创建和管理用户及策略的权限。
 
-Specifically, ensure the user has *at minimum*:
+具体而言，请确保该用户*至少*具有以下权限：
 
 - :policy-action:`admin:CreateUser`
 - :policy-action:`admin:ListUsers`
@@ -58,113 +58,112 @@ Specifically, ensure the user has *at minimum*:
 - :policy-action:`admin:AttachUserOrGroupPolicy`
 
 
-Considerations
---------------
+注意事项
+--------
 
-.. dropdown:: Use Consistent Replication Settings
+.. dropdown:: 使用一致的复制设置
    :icon: fold-down
 
-   MinIO supports customizing the replication configuration to enable or disable the following replication behaviors:
+   MinIO 支持自定义复制配置，以启用或禁用以下复制行为：
 
-   - Replication of :ref:`delete operations <minio-object-delete>`
-   - Replication of delete markers
-   - Replication of existing objects
-   - Replication of metadata-only changes
+   - :ref:`删除操作 <minio-object-delete>` 的复制
+   - 删除标记的复制
+   - 现有对象的复制
+   - 仅元数据变更的复制
 
-   When configuring replication rules for a bucket, ensure that both MinIO deployments participating in active-active replication use the *same* replication behaviors to ensure consistent and predictable synchronization of objects.
+   为存储桶配置复制规则时，请确保参与主动-主动复制的两个 MinIO 部署使用*相同*的复制行为，以确保对象同步一致且可预测。
 
-.. dropdown:: Replication of Existing Objects
+.. dropdown:: 现有对象的复制
    :icon: fold-down
 
-   MinIO supports automatically replicating existing objects in a bucket.
+   MinIO 支持自动复制存储桶中的现有对象。
 
-   MinIO requires explicitly enabling replication of existing objects using the :mc-cmd:`mc replicate add --replicate` or :mc-cmd:`mc replicate update --replicate` and including the ``existing-objects`` replication feature flag. 
-   This procedure includes the required flags for enabling replication of existing objects.
+   MinIO 要求使用 :mc-cmd:`mc replicate add --replicate` 或 :mc-cmd:`mc replicate update --replicate` 显式启用现有对象复制，并包含 ``existing-objects`` 复制功能标志。
+   此过程包含启用现有对象复制所需的标志。
 
-.. dropdown:: Replication of Delete Operations
+.. dropdown:: 删除操作的复制
    :icon: fold-down
 
-   MinIO supports replicating delete operations onto the target bucket. 
-   Specifically, MinIO can replicate versioning :s3-docs:`Delete Markers <versioning-workflows.html>` and the deletion of specific versioned objects:
+   MinIO 支持将删除操作复制到目标存储桶。
+   具体而言，MinIO 可以复制版本控制中的 :s3-docs:`Delete Markers <versioning-workflows.html>` 以及特定已版本化对象的删除：
 
-   - For delete operations on an object, MinIO replication also creates the delete marker on the target bucket.
+   - 对于对象上的删除操作，MinIO 复制也会在目标存储桶上创建删除标记。
 
-   - For delete operations on versions of an object, MinIO replication also deletes those versions on the target bucket.
+   - 对于对象某个版本的删除操作，MinIO 复制也会删除目标存储桶上的这些版本。
 
-   MinIO requires explicitly enabling replication of delete operations using the :mc-cmd:`mc replicate add --replicate` or :mc-cmd:`mc replicate update --replicate`. 
-   This procedure includes the required flags for enabling replication of delete operations and delete markers.
+   MinIO 要求使用 :mc-cmd:`mc replicate add --replicate` 或 :mc-cmd:`mc replicate update --replicate` 显式启用删除操作复制。
+   此过程包含启用删除操作和删除标记复制所需的标志。
 
-   MinIO does *not* replicate delete operations resulting from the application of :ref:`lifecycle management expiration rules <minio-lifecycle-management-expiration>`. 
-   Configure matching expiration rules on both the source and destination bucket to ensure consistent application of object expiration.
+   MinIO *不会* 复制因应用 :ref:`lifecycle management expiration rules <minio-lifecycle-management-expiration>` 而产生的删除操作。
+   请在源存储桶和目标存储桶上配置匹配的过期规则，以确保对象过期行为一致。
 
-   See :ref:`minio-replication-behavior-delete` and :ref:`minio-object-delete` for more complete documentation.
+   有关更完整的文档，请参见 :ref:`minio-replication-behavior-delete` 和 :ref:`minio-object-delete`。
 
-.. dropdown:: Multi-Site Replication
+.. dropdown:: 多站点复制
    :icon: fold-down
 
-   MinIO supports configuring multiple remote targets per bucket or bucket prefix. 
-   This enables configuring multi-site active-active replication between MinIO deployments.
+   MinIO 支持为每个存储桶或存储桶前缀配置多个远程目标。
+   这使得可以在 MinIO 部署之间配置多站点主动-主动复制。
 
-   This procedure covers active-active replication between *two* MinIO sites. 
-   You can repeat this procedure for each "pair" of MinIO deployments in the replication mesh. For a dedicated tutorial, see :ref:`minio-bucket-replication-serverside-multi`.
+   本过程介绍 *两个* MinIO 站点之间的主动-主动复制。
+   您可以针对复制网格中的每一“对”MinIO 部署重复此过程。有关专门教程，请参见 :ref:`minio-bucket-replication-serverside-multi`。
 
-Procedure
----------
+操作步骤
+--------
 
-- :ref:`Configure Two-Way Bucket Replication Using the Command Line <minio-bucket-replication-two-way-minio-cli-procedure>`
-   - :ref:`Create Replication Remote Targets <minio-bucket-replication-two-way-minio-cli-create-remote-targets>`
-   - :ref:`Create a New Bucket Replication Rule on Each Deployment <minio-bucket-replication-two-way-minio-cli-create-replication-rules>`
-   - :ref:`Validate the Replication Configuration <minio-bucket-replication-two-way-minio-cli-verify-replication-config>` 
+- :ref:`使用命令行配置双向存储桶复制 <minio-bucket-replication-two-way-minio-cli-procedure>`
+   - :ref:`创建复制远程目标 <minio-bucket-replication-two-way-minio-cli-create-remote-targets>`
+   - :ref:`在每个部署上创建新的存储桶复制规则 <minio-bucket-replication-two-way-minio-cli-create-replication-rules>`
+   - :ref:`验证复制配置 <minio-bucket-replication-two-way-minio-cli-verify-replication-config>` 
 
 .. _minio-bucket-replication-two-way-minio-cli-procedure:
 
-Configure Two-Way Bucket Replication Using the Command Line ``mc``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用命令行 ``mc`` 配置双向存储桶复制
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This procedure creates two-way, active-active replication between two MinIO deployments.
+此过程会在两个 MinIO 部署之间创建双向、主动-主动复制。
 
-This procedure assumes you have already defined an alias for each deployment as a user with the :ref:`necessary replication permissions <minio-bucket-replication-serverside-twoway-permissions>`.
+此过程假定您已使用具有 :ref:`所需复制权限 <minio-bucket-replication-serverside-twoway-permissions>` 的用户为每个部署定义了别名。
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   :mc:`mc replicate add` automatically creates the necessary replication targets, removing the need for using the deprecated ``mc admin remote bucket add`` command.
-   This procedure only documents the procedure as of that release.
+   :mc:`mc replicate add` 会自动创建所需的复制目标，因此不再需要使用已弃用的 ``mc admin remote bucket add`` 命令。
+   本文档仅说明自该版本起的过程。
 
 .. _minio-bucket-replication-two-way-minio-cli-create-remote-targets:
 
 .. _minio-bucket-replication-two-way-minio-cli-create-replication-rules:
 
-1) Create a New Bucket Replication Rule on Each Deployment
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1) 在每个部署上创建新的存储桶复制规则
++++++++++++++++++++++++++++++++++++++++
 
 .. include:: /includes/common/bucket-replication.rst
    :start-after: start-create-bucket-replication-rule-cli-desc
    :end-before: end-create-bucket-replication-rule-cli-desc
 
-Repeat this step on the other MinIO deployment.
-Change the ``ALIAS`` and ``--remote-bucket`` values to correspond to the first deployment.
+在另一个 MinIO 部署上重复此步骤。
+将 ``ALIAS`` 和 ``--remote-bucket`` 的值修改为与第一个部署对应。
 
-You should have two replication rules configured at the conclusion of this step - one created on each deployment that points to the bucket on the other deployment.
-Use the :mc:`mc replicate ls` command to verify the created replication rules.
+完成此步骤后，您应已配置两条复制规则：每个部署上一条，并指向另一个部署上的存储桶。
+使用 :mc:`mc replicate ls` 命令验证已创建的复制规则。
 
 .. _minio-bucket-replication-two-way-minio-cli-verify-replication-config:
 
-2) Validate the Replication Configuration
-+++++++++++++++++++++++++++++++++++++++++
+2) 验证复制配置
++++++++++++++++
 
 .. include:: /includes/common/bucket-replication.rst
    :start-after: start-validate-bucket-replication-cli-desc
    :end-before: end-validate-bucket-replication-cli-desc
 
-Repeat this test by copying another object to the second deployment and verifying the object replicates to the first deployment.
+通过将另一个对象复制到第二个部署，并验证该对象会复制到第一个部署，来重复执行此测试。
 
-Once both objects exist on both deployments, you have successfully set up two-way, active-active replication between MinIO buckets.
+当两个对象都存在于两个部署上时，您就已成功在 MinIO 存储桶之间设置了双向、主动-主动复制。
 
 .. seealso::
 
-   - Use the :mc:`mc replicate update` command to modify an existing
-     replication rule.
+   - 使用 :mc:`mc replicate update` 命令修改现有复制规则。
 
-   - Use the :mc:`mc replicate update` command with the :mc-cmd:`--state "disable" <mc replicate update --state>` flag to disable an existing replication rule.
+   - 使用 :mc:`mc replicate update` 命令并配合 :mc-cmd:`--state "disable" <mc replicate update --state>` 标志禁用现有复制规则。
 
-   - Use the :mc:`mc replicate rm` command to remove an existing replication rule.
+   - 使用 :mc:`mc replicate rm` 命令移除现有复制规则。

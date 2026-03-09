@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
@@ -14,32 +14,32 @@
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Description
------------
+描述
+----
 
 .. start-mc-support-profile-desc
 
-:mc:`mc support profile` runs a system profile for your deployment.
-The results of the profile can provide insight into the MinIO server process running on a given node.
+:mc:`mc support profile` 为你的部署运行系统性能剖析。
+剖析结果可帮助了解给定节点上运行的 MinIO 服务端进程状态。
 
 .. end-mc-support-profile-desc
 
-The resulting report is intended for use by MinIO Engineering.
-You can upload the report to |subnet|.
-Independent or third-party use of these profiles for diagnostics and remediation is done at your own risk.
+生成的报告供 MinIO Engineering 使用。
+你可以将报告上传到 |subnet|。
+若由你自己或第三方独立使用这些剖析结果进行诊断和修复，风险自担。
 
 .. include:: /includes/common-mc-support.rst
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Examples
---------
+示例
+----
 
-Fetch CPU Profiling
-~~~~~~~~~~~~~~~~~~~
+获取 CPU 剖析
+~~~~~~~~~~~~~
 
-This command retrieves the CPU profile on a MinIO deployment with the alias ``minio1``.
-The profile runs for the default of 10 seconds.
+此命令从别名为 ``minio1`` 的 MinIO 部署中获取 CPU 剖析数据。
+剖析按默认时长运行 10 秒。
 
 .. code-block:: shell
    :class: copyable
@@ -47,32 +47,32 @@ The profile runs for the default of 10 seconds.
    mc support profile --type cpu minio1/
 
 
-Fetch CPU, Memory, and Block Profiling Concurrently
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+并发获取 CPU、内存和 block 剖析
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This command fetches the profile of the CPU, memory, and block usage on the alias ``minio2``.
-The profile runs for the default of 10 seconds.
+此命令从别名 ``minio2`` 获取 CPU、内存和 block 使用情况的剖析数据。
+剖析按默认时长运行 10 秒。
 
 .. code-block:: shell
    :class: copyable
 
    mc support profile --type cpu,mem,block minio2/
 
-Fetch CPU, Memory, and Block Profiling Concurrently for 10 Minutes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+并发获取 CPU、内存和 block 剖析（持续 10 分钟）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This command fetches the profile of the CPU, memory, and block  on the alias ``minio3``.
-The profile runs for 10 minutes (600 seconds).
+此命令从别名 ``minio3`` 获取 CPU、内存和 block 的剖析数据。
+剖析运行 10 分钟（600 秒）。
 
 .. code-block:: shell
    :class: copyable
 
    mc support profile --type cpu,mem,block --duration 600 minio3/
 
-Syntax
-------
+语法
+----
       
-The :mc:`mc support profile` command has the following syntax:
+:mc:`mc support profile` 命令语法如下：
 
 .. code-block:: shell
 
@@ -83,26 +83,26 @@ The :mc:`mc support profile` command has the following syntax:
                             [--duration]  \
                             ALIAS 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: --duration
    :optional:
 
-   Run profiling for the specified duration in seconds.
+   按指定时长运行剖析，单位为秒。
 
-   Use ``--type <value>`` where ``<value>`` is the number of seconds for the profile to run.
+   使用 ``--type <value>``，其中 ``<value>`` 为剖析运行的秒数。
 
-   If not specified, the command collects data for 10 seconds.
+   如果未指定，命令将收集 10 秒的数据。
 
 .. mc-cmd:: --type
    :optional:
 
-   Specify the profile(s) to gather data for.
+   指定要收集数据的剖析类型。
 
-   Use ``--type <value>`` where ``<value>`` is one or more comma-separated types of data to collect.
+   使用 ``--type <value>``，其中 ``<value>`` 为一个或多个以逗号分隔的数据类型。
 
-   Valid types are:
+   有效类型包括：
 
    - ``cpu``
    - ``cpuio``
@@ -113,27 +113,27 @@ Parameters
    - ``threads``
    - ``goroutines``
    
-   If not specified, the command collects data for CPU, memory, block, mutex, threads, and goroutines.
+   如果未指定，命令将收集 CPU、memory、block、mutex、threads 和 goroutines 的数据。
 
    .. important::
 
-      Do not use the ``cpuio`` or ``trace`` data types unless directed to by MinIO Support.
-      These profiles require significant resources and may degrade cluster performance if used without guidance.
+      除非 MinIO Support 明确要求，否则不要使用 ``cpuio`` 或 ``trace`` 数据类型。
+      这些剖析会消耗大量资源，在缺乏指导时使用可能导致集群性能下降。
 
 .. mc-cmd:: --airgap
    :optional:
 
-   Use in environments without network access to SUBNET (for example, airgapped, firewalled, or similar configuration).
+   在无法网络访问 SUBNET 的环境中使用（例如 airgapped、firewalled 或类似配置）。
 
-   If the deployment is airgapped, but the local device where you are using the :ref:`minio client <minio-client>` has network access, you do not need to use the ``--airgap`` flag.
+   如果部署是 airgapped，但你运行 :ref:`minio client <minio-client>` 的本地设备具有网络访问能力，则无需使用 ``--airgap`` 标志。
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment.
+   MinIO 部署的 :ref:`alias <alias>`。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

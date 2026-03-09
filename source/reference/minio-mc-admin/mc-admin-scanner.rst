@@ -4,34 +4,34 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin scanner
 
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-scanner-desc
 
-The :mc:`mc admin scanner` commands provide information about the :ref:`scanner <minio-concepts-scanner>` process. 
+:mc:`mc admin scanner` 命令提供有关 :ref:`scanner <minio-concepts-scanner>` 进程的信息。
 
 .. end-mc-admin-scanner-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc admin scanner` includes the following subcommands:
+:mc:`mc admin scanner` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc admin scanner status`
      - .. include:: /reference/minio-mc-admin/mc-admin-scanner-status.rst

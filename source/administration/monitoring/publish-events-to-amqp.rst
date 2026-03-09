@@ -1,83 +1,73 @@
 .. _minio-bucket-notifications-publish-amqp:
 
 =================================
-Publish Events to AMQP (RabbitMQ)
+将事件发布到 AMQP (RabbitMQ)
 =================================
 
 .. default-domain:: minio
 
 .. |ARN| replace:: ``arn:minio:sqs::primary:amqp``
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports publishing :ref:`bucket notification
-<minio-bucket-notifications>` events to a `AMQP 0-9-1 <https://www.amqp.org/>`__ 
-service endpoint such as `RabbitMQ <https://www.rabbitmq.com>`__. 
+MinIO 支持将 :ref:`bucket notification
+<minio-bucket-notifications>` 事件发布到 `AMQP 0-9-1 <https://www.amqp.org/>`__
+服务端点，例如 `RabbitMQ <https://www.rabbitmq.com>`__。
 
-MinIO relies on the :github:`streadway/amqp` project for AMQP connectivity. The
-project is primarily tested against `RabbitMQ <https://www.rabbitmq.com/>`__
-deployments, though other `AMQP 0-9-1-compatible <https://www.amqp.org/>`__
-services *may* also work. The procedures on this page assume a RabbitMQ
-deployment using the AMQP 0-9-1 protocol as the service endpoint.
+MinIO 依赖 :github:`streadway/amqp` 项目实现 AMQP 连接。该项目主要针对
+`RabbitMQ <https://www.rabbitmq.com/>`__ 部署进行测试，但其他兼容
+`AMQP 0-9-1 <https://www.amqp.org/>`__ 的服务也可能可以使用。本页中的步骤假定服务端点为使用 AMQP 0-9-1 协议的 RabbitMQ 部署。
 
-Add an AMQP Endpoint to a MinIO Deployment
-------------------------------------------
+向 MinIO 部署添加 AMQP 端点
+---------------------------
 
-The following procedure adds a new AMQP service endpoint for supporting
-:ref:`bucket notifications <minio-bucket-notifications>` in a MinIO
-deployment.
+以下步骤用于向 MinIO 部署添加一个新的 AMQP 服务端点，以支持
+:ref:`bucket notifications <minio-bucket-notifications>`。
 
-Prerequisites
-~~~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-AMQP 0-9-1 Service Endpoint
-+++++++++++++++++++++++++++
+AMQP 0-9-1 服务端点
++++++++++++++++++++
 
-MinIO relies on the :github:`streadway/amqp` project for AMQP connectivity. The
-project is primarily tested against `RabbitMQ <https://www.rabbitmq.com/>`__
-deployments, though other `AMQP 0-9-1-compatible <https://www.amqp.org/>`__
-services *may* also work. This procedure assumes a RabbitMQ deployment 
-using the 0-9-1 protocol as the service endpoint.
+MinIO 依赖 :github:`streadway/amqp` 项目实现 AMQP 连接。该项目主要针对
+`RabbitMQ <https://www.rabbitmq.com/>`__ 部署进行测试，但其他兼容
+`AMQP 0-9-1-compatible <https://www.amqp.org/>`__ 的服务也可能可以使用。
+本步骤假定服务端点为使用 0-9-1 协议的 RabbitMQ 部署。
 
-If the AMQP service requires authentication, you *must* provide an appropriate
-username and password during the configuration process to grant MinIO access
-to the service.
+如果 AMQP 服务要求身份验证，则你必须在配置过程中提供相应的用户名和密码，以授权 MinIO 访问该服务。
 
-MinIO ``mc`` Command Line Tool
-++++++++++++++++++++++++++++++
+MinIO ``mc`` 命令行工具
++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+本步骤在部分操作中使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`Quickstart <mc-install>`。
 
-1) Add the AMQP Endpoint to MinIO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 向 MinIO 添加 AMQP 端点
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can configure a new AMQP service endpoint using either environment variables
-*or* by setting runtime configuration settings.
+你可以使用环境变量或运行时配置设置来配置新的 AMQP 服务端点。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
 
-      MinIO supports specifying the AMQP service endpoint and associated
-      configuration settings using 
-      :ref:`environment variables 
-      <minio-server-envvar-bucket-notification-amqp>`. The 
-      :mc:`minio server` process applies the specified settings on its 
-      next startup.
-      
-      The following example code sets *all*  environment variables
-      related to configuring an AMQP service endpoint. The minimum
-      *required* variables are
-      :envvar:`MINIO_NOTIFY_AMQP_ENABLE` and :envvar:`MINIO_NOTIFY_AMQP_URL`:
+      MinIO 支持使用
+      :ref:`environment variables
+      <minio-server-envvar-bucket-notification-amqp>` 指定 AMQP 服务端点及其关联配置设置。
+      :mc:`minio server` 进程会在下一次启动时应用这些设置。
+
+      以下示例代码设置了配置 AMQP 服务端点相关的全部环境变量。
+      必需的最小变量为
+      :envvar:`MINIO_NOTIFY_AMQP_ENABLE` 和 :envvar:`MINIO_NOTIFY_AMQP_URL`：
 
       .. cond:: windows
-      
+
          .. code-block:: shell
             :class: copyable
-         
+
                set MINIO_NOTIFY_AMQP_ENABLE_<IDENTIFIER>="on"
                set MINIO_NOTIFY_AMQP_URL_<IDENTIFIER>="<ENDPOINT>"
                set MINIO_NOTIFY_AMQP_EXCHANGE_<IDENTIFIER>="<string>"
@@ -112,39 +102,30 @@ You can configure a new AMQP service endpoint using either environment variables
                export MINIO_NOTIFY_AMQP_QUEUE_DIR_<IDENTIFIER>="<string>"
                export MINIO_NOTIFY_AMQP_QUEUE_LIMIT_<IDENTIFIER>="<string>"
                export MINIO_NOTIFY_AMQP_COMMENT_<IDENTIFIER>="<string>"
-         
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the
-        AMQP service endpoint. Use the same ``<IDENTIFIER>`` value for all 
-        environment variables related to the new AMQP service endpoint.
-        The following examples assume an identifier of ``PRIMARY``.
 
-        If the specified ``<IDENTIFIER>`` matches an existing AMQP service
-        endpoint on the MinIO deployment, the new settings *override* 
-        any existing settings for that endpoint. Use 
-        :mc-cmd:`mc admin config get notify_amqp <mc admin config get>` to
-        review the currently configured AMQP endpoints on the MinIO deployment.
+      - 将 ``<IDENTIFIER>`` 替换为该 AMQP 服务端点的唯一描述性字符串。与新 AMQP 服务端点相关的所有环境变量都应使用相同的 ``<IDENTIFIER>`` 值。以下示例假定标识符为 ``PRIMARY``。
 
-      - Replace ``<ENDPOINT>`` with the URL of the AMQP service endpoint.
-        For example:
+        如果指定的 ``<IDENTIFIER>`` 与 MinIO 部署中现有的某个 AMQP 服务端点匹配，则新设置会覆盖该端点的任何现有设置。使用
+        :mc-cmd:`mc admin config get notify_amqp <mc admin config get>` 查看 MinIO 部署上当前已配置的 AMQP 端点。
+
+      - 将 ``<ENDPOINT>`` 替换为 AMQP 服务端点的 URL。
+        例如：
 
         ``amqp://user:password@hostname:port``
 
-      See :ref:`AMQP Service for Bucket Notifications
-      <minio-server-envvar-bucket-notification-amqp>` for complete documentation
-      on each environment variable.
+      参见 :ref:`AMQP Service for Bucket Notifications
+      <minio-server-envvar-bucket-notification-amqp>`，获取每个环境变量的完整文档。
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
 
-      MinIO supports adding or updating AMQP endpoints on a running 
-      :mc:`minio server` process using the :mc-cmd:`mc admin config set` command 
-      and the :mc-conf:`notify_amqp` configuration key. You must restart the 
-      :mc:`minio server` process to apply any new or updated configuration
-      settings.
+      MinIO 支持在运行中的 :mc:`minio server` 进程上，使用 :mc-cmd:`mc admin config set` 命令和
+      :mc-conf:`notify_amqp` 配置键来添加或更新 AMQP 端点。你必须重启
+      :mc:`minio server` 进程，才能应用任何新增或更新的配置设置。
 
-      The following example code sets *all*  settings related to configuring an
-      AMQP service endpoint. The minimum *required* setting is 
-      :mc-conf:`notify_amqp url <notify_amqp.url>`:
+      以下示例代码设置了配置 AMQP 服务端点相关的全部设置。
+      必需的最小设置为
+      :mc-conf:`notify_amqp url <notify_amqp.url>`：
 
       .. code-block:: shell
          :class: copyable
@@ -164,58 +145,48 @@ You can configure a new AMQP service endpoint using either environment variables
            queue_limit="<string>" \
            comment="<string>"
 
-      - Replace ``IDENTIFIER`` with a unique descriptive string for the
-        AMQP service endpoint. The following examples in this procedure
-        assume an identifier of ``PRIMARY``.
+      - 将 ``IDENTIFIER`` 替换为该 AMQP 服务端点的唯一描述性字符串。本步骤中的后续示例假定标识符为 ``PRIMARY``。
 
-        If the specified ``IDENTIFIER`` matches an existing AMQP service
-        endpoint on the MinIO deployment, the new settings *override* 
-        any existing settings for that endpoint. Use 
-        :mc-cmd:`mc admin config get notify_amqp <mc admin config get>` to
-        review the currently configured AMQP endpoints on the MinIO deployment.
+        如果指定的 ``IDENTIFIER`` 与 MinIO 部署中现有的某个 AMQP 服务端点匹配，则新设置会覆盖该端点的任何现有设置。使用
+        :mc-cmd:`mc admin config get notify_amqp <mc admin config get>` 查看 MinIO 部署上当前已配置的 AMQP 端点。
 
-      - Replace ``ENDPOINT`` with the URL of the AMQP service endpoint.
-        For example:
+      - 将 ``ENDPOINT`` 替换为 AMQP 服务端点的 URL。
+        例如：
 
         ``amqp://user:password@hostname:port``
 
-      See :ref:`AMQP Bucket Notification Configuration Settings
-      <minio-server-config-bucket-notification-amqp>` for complete 
-      documentation on each setting.
+      参见 :ref:`AMQP Bucket Notification Configuration Settings
+      <minio-server-config-bucket-notification-amqp>`，获取每个设置的完整文档。
 
-1) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署以应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`alias <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured AMQP
-target similar to the following:
+:mc:`minio server` 进程会在启动时为每个已配置的 AMQP 目标打印一行类似如下的内容：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:amqp
 
-You must specify the ARN resource when configuring bucket notifications with
-the associated AMQP deployment as a target.
+在将关联的 AMQP 部署配置为目标时，你必须在 bucket notification 配置中指定该 ARN 资源。
 
 .. include:: /includes/common-bucket-notifications.rst
    :start-after: start-bucket-notification-find-arn
    :end-before: end-bucket-notification-find-arn
 
-3) Configure Bucket Notifications using the AMQP Endpoint as a Target
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 使用 AMQP 端点作为目标配置 Bucket Notifications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc event add` command to add a new bucket notification 
-event with the configured AMQP service as a target:
+使用 :mc:`mc event add` 命令新增 bucket notification 事件，并将已配置的 AMQP 服务作为目标：
 
 .. code-block:: shell
    :class: copyable
@@ -223,32 +194,25 @@ event with the configured AMQP service as a target:
    mc event add ALIAS/BUCKET arn:minio:sqs::primary:amqp \
      --event EVENTS
 
-- Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment.
-- Replace ``BUCKET`` with the name of the bucket in which to configure the 
-  event.
-- Replace ``EVENTS`` with a comma-separated list of :ref:`events 
-  <mc-event-supported-events>` for which MinIO triggers notifications.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`。
+- 将 ``BUCKET`` 替换为要配置事件的存储桶名称。
+- 将 ``EVENTS`` 替换为以逗号分隔的 :ref:`events
+  <mc-event-supported-events>` 列表，MinIO 会在这些事件发生时触发通知。
 
-Use :mc:`mc event ls` to view all configured bucket events for 
-a given notification target:
+使用 :mc:`mc event ls` 查看给定通知目标上已配置的所有 bucket 事件：
 
 .. code-block:: shell
    :class: copyable
 
    mc event ls ALIAS/BUCKET arn:minio:sqs::primary:amqp
 
-4) Validate the Configured Events
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证已配置的事件
+~~~~~~~~~~~~~~~~~~~
 
-Perform an action on the bucket for which you configured the new event and 
-check the AMQP service for the notification data. The action required
-depends on which :mc-cmd:`events <mc event add --event>` were specified
-when configuring the bucket notification.
+对配置了新事件的存储桶执行一个操作，并检查 AMQP 服务中的通知数据。所需的具体操作取决于配置 bucket notification 时指定了哪些 :mc-cmd:`events <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the 
-``s3:ObjectCreated:Put`` event, you can use the 
-:mc:`mc cp` command to create a new object in the bucket and trigger 
-a notification.
+例如，如果 bucket notification 配置包含 ``s3:ObjectCreated:Put`` 事件，则可以使用
+:mc:`mc cp` 命令在该存储桶中创建一个新对象，并触发通知。
 
 .. code-block:: shell
    :class: copyable
@@ -257,70 +221,62 @@ a notification.
 
 
 
-Update an AMQP Endpoint in a MinIO Deployment
----------------------------------------------
+更新 MinIO 部署中的 AMQP 端点
+-----------------------------
 
-The following procedure updates an existing AMQP service endpoint for supporting
-:ref:`bucket notifications <minio-bucket-notifications>` in a MinIO
-deployment.
+以下步骤用于更新 MinIO 部署中现有的 AMQP 服务端点，以支持
+:ref:`bucket notifications <minio-bucket-notifications>`。
 
-Prerequisites
-~~~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-AMQP 0-9-1 Service Endpoint
-+++++++++++++++++++++++++++
+AMQP 0-9-1 服务端点
++++++++++++++++++++
 
-MinIO relies on the :github:`streadway/amqp` project for AMQP connectivity. The
-project is primarily tested against `RabbitMQ <https://www.rabbitmq.com/>`__
-deployments, though other `AMQP 0-9-1-compatible <https://www.amqp.org/>`__
-services *may* also work. This procedure *assumes* a RabbitMQ deployment 
-as the service endpoint.
+MinIO 依赖 :github:`streadway/amqp` 项目实现 AMQP 连接。该项目主要针对
+`RabbitMQ <https://www.rabbitmq.com/>`__ 部署进行测试，但其他兼容
+`AMQP 0-9-1-compatible <https://www.amqp.org/>`__ 的服务也可能可以使用。
+本步骤假定服务端点为 RabbitMQ 部署。
 
-If the AMQP service requires authentication, you *must* provide an appropriate
-username and password during the configuration process to grant MinIO access
-to the service.
+如果 AMQP 服务要求身份验证，则你必须在配置过程中提供相应的用户名和密码，以授权 MinIO 访问该服务。
 
-MinIO ``mc`` Command Line Tool
-++++++++++++++++++++++++++++++
+MinIO ``mc`` 命令行工具
++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+本步骤在部分操作中使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`Quickstart <mc-install>`。
 
 
-1) List Configured AMQP Endpoints In The Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 列出部署中已配置的 AMQP 端点
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config get` command to list the currently
-configured AMQP service endpoints in the deployment:
+使用 :mc-cmd:`mc admin config get` 命令列出部署中当前已配置的 AMQP 服务端点：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config get ALIAS/ notify_amqp
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO deployment.
+将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`。
 
-The command output resembles the following:
+命令输出类似如下：
 
 .. code-block:: shell
 
    notify_amqp:primary delivery_mode="0" exchange_type="" no_wait="off" queue_dir="" queue_limit="0"  url="amqp://user:password@hostname:port" auto_deleted="off" durable="off" exchange="" internal="off" mandatory="off" routing_key=""
    notify_amqp:secondary delivery_mode="0" exchange_type="" no_wait="off" queue_dir="" queue_limit="0"  url="amqp://user:password@hostname:port" auto_deleted="off" durable="off" exchange="" internal="off" mandatory="off" routing_key=""
 
-The :mc-conf:`notify_amqp` key is the top-level configuration key for an
-:ref:`minio-server-config-bucket-notification-amqp`. The 
-:mc-conf:`url <notify_amqp.url>` key specifies the AMQP service endpoint 
-for the given `notify_amqp` key. The ``notify_amqp:<IDENTIFIER>`` suffix 
-describes the unique identifier for that AMQP service endpoint.
+:mc-conf:`notify_amqp` 键是
+:ref:`minio-server-config-bucket-notification-amqp` 的顶层配置键。
+:mc-conf:`url <notify_amqp.url>` 键为给定的 `notify_amqp` 键指定 AMQP 服务端点。
+``notify_amqp:<IDENTIFIER>`` 后缀表示该 AMQP 服务端点的唯一标识符。
 
-Note the identifier for the AMQP service endpoint you want to update for
-the next step. 
+记下你要更新的 AMQP 服务端点标识符，以供下一步使用。
 
-2) Update the AMQP Endpoint
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 更新 AMQP 端点
+~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config set` command to set the new configuration
-for the AMQP service endpoint:
+使用 :mc-cmd:`mc admin config set` 命令为该 AMQP 服务端点设置新配置：
 
 .. code-block:: shell
    :class: copyable
@@ -340,44 +296,34 @@ for the AMQP service endpoint:
       queue_limit="<string>" \
       comment="<string>"
 
-The :mc-conf:`notify_amqp url <notify_amqp.url>` configuration setting is the
-*minimum* required for an AMQP service endpoint. All other configuration
-settings are *optional*. See :ref:`minio-server-config-bucket-notification-amqp`
-for a complete list of AMQP configuration settings.
+:mc-conf:`notify_amqp url <notify_amqp.url>` 配置设置是 AMQP 服务端点所需的最小配置。其他所有配置设置都是可选的。参见 :ref:`minio-server-config-bucket-notification-amqp`，获取完整的 AMQP 配置设置列表。
 
-3) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署以应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`alias <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured AMQP
-target similar to the following:
+:mc:`minio server` 进程会在启动时为每个已配置的 AMQP 目标打印一行类似如下的内容：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:amqp
 
-4) Validate the Changes
-~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证更改
+~~~~~~~~~~~
 
-Perform an action on a bucket which has an event configuration using the updated
-AMQP service endpoint and check the AMQP service for the notification data. The
-action required depends on which :mc-cmd:`events <mc event add --event>` were
-specified when configuring the bucket notification.
+对某个使用已更新 AMQP 服务端点配置事件的存储桶执行一个操作，并检查 AMQP 服务中的通知数据。所需的具体操作取决于配置 bucket notification 时指定了哪些 :mc-cmd:`events <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the 
-``s3:ObjectCreated:Put`` event, you can use the 
-:mc:`mc cp` command to create a new object in the bucket and trigger 
-a notification.
+例如，如果 bucket notification 配置包含 ``s3:ObjectCreated:Put`` 事件，则可以使用
+:mc:`mc cp` 命令在该存储桶中创建一个新对象，并触发通知。
 
 .. code-block:: shell
    :class: copyable

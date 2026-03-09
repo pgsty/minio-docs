@@ -6,44 +6,43 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc anonymous get
 
-Syntax
-------
+语法
+----
 
 .. start-mc-anonymous-get-desc
 
-The :mc:`mc anonymous get` command gets the anonymous (i.e. unauthenticated or
-public) access :ref:`policies <minio-policy>` for a bucket. 
+:mc:`mc anonymous get` 命令用于获取存储桶的匿名（即未认证或公共）访问
+:ref:`策略 <minio-policy>`。
 
 .. end-mc-anonymous-get-desc
 
-Buckets with anonymous policies allow clients to access the bucket contents
-and perform actions consistent with the specified policy without 
-:ref:`authentication <minio-authentication-and-identity-management>`.
+配置了匿名策略的存储桶允许客户端在无需
+:ref:`身份验证 <minio-authentication-and-identity-management>` 的情况下访问存储桶内容，
+并执行与指定策略一致的操作。
 
-To get the :s3-docs:`JSON policy <using-iam-policies>` assigned to the bucket,
-use the :mc-cmd:`mc anonymous get-json` command.
+要获取分配给存储桶的 :s3-docs:`JSON 策略 <using-iam-policies>`，
+请使用 :mc-cmd:`mc anonymous get-json` 命令。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command retrieves the anonymous access policy for the
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令检索 ``myminio`` MinIO 部署上 ``mydata`` 存储桶的匿名访问策略：
 
       .. code-block:: shell
          :class: copyable
 
          mc anonymous get myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -55,53 +54,50 @@ use the :mc-cmd:`mc anonymous get-json` command.
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* The full path to the bucket or bucket prefix for which the
-   command retrieves the anonymous bucket policy.
+   *必需* 命令要检索其匿名存储桶策略的存储桶或存储桶前缀完整路径。
    
-   Specify the :ref:`alias <alias>` of the MinIO or other
-   S3-compatible service *and* the full path to the bucket or bucket
-   prefix. For example:
+   指定 MinIO 或其他 S3 兼容服务的 :ref:`别名 <alias>`，以及存储桶或存储桶前缀的
+   完整路径。例如：
 
    .. code-block:: shell
             
       mc anonymous get public play/mybucket
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Get Anonymous Policy for Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+获取存储桶匿名策略
+~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc anonymous get` to get the anonymous policy for a 
-bucket:
+使用 :mc:`mc anonymous get` 获取存储桶的匿名策略：
 
 .. code-block:: shell
    :class: copyable
 
    mc anonymous get ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc anonymous get ALIAS>` with the 
-  :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc anonymous get ALIAS>` 替换为已配置 S3 兼容主机的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc anonymous get ALIAS>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc anonymous get ALIAS>` 替换为目标存储桶。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

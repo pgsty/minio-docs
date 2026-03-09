@@ -6,38 +6,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc encrypt clear
 
-Syntax
-------
+语法
+----
 
 .. start-mc-encrypt-clear-desc
 
-The :mc:`mc encrypt clear` command removes the current default
-encryption settings for a bucket.
+:mc:`mc encrypt clear` 命令用于移除存储桶当前的默认加密设置。
 
 .. end-mc-encrypt-clear-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes the default encryption settings for
-      the ``mydata`` bucket on the MinIO deployment associated with the 
-      ``myminio`` :ref:`alias <alias>`:
+      以下命令会移除 ``myminio`` :ref:`alias <alias>` 关联的 MinIO
+      部署中 ``mydata`` 存储桶的默认加密设置：
 
       .. code-block:: shell
          :class: copyable
 
          mc encrypt clear myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -48,67 +46,63 @@ encryption settings for a bucket.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   The full path to the bucket on which to remove the default SSE mode.
-   Specify the :ref:`alias <alias>` of the MinIO deployment as the prefix to the
-   ALIAS path. For example:
+   要移除默认 SSE 模式的目标存储桶完整路径。
+   指定 MinIO 部署的 :ref:`alias <alias>` 作为 ALIAS 路径前缀。例如：
 
    .. code-block:: shell
 
       mc encrypt clear play/mybucket
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Remove the Automatic Server-Side Encryption Settings for a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+移除存储桶的自动服务端加密设置
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
       .. code-block:: shell
          :class: copyable
 
           mc encrypt clear myminio/data
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc encrypt clear ALIAS
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of the
-        MinIO deployment on which to remove automatic server-side bucket
-        encryption.
+      - 将 ``ALIAS`` 替换为目标 MinIO 部署的 :ref:`alias <alias>`，
+        即要移除存储桶自动服务端加密配置的部署别名。
 
-Behavior
---------
+行为
+----
 
-Modifying Bucket Encryption Settings Does Not Affect Encrypted Objects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+修改存储桶加密设置不会影响已加密对象
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Disabling automatic bucket encryption does *not* decrypt any objects in the
-bucket. 
+禁用存储桶自动加密 *不会* 解密该存储桶中的任何对象。
 
-To permanently decrypt objects in the bucket, you can perform an in-place
-copy after disabling object decryption. For versioned buckets, the
-previous object versions remain encrypted.
+要永久解密存储桶中的对象，可在禁用对象解密后执行原地复制。
+对于启用版本控制的存储桶，旧版本对象仍保持加密状态。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

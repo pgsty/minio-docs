@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,32 +14,32 @@
 
 .. important::
 
-   This command has been replaced and will be deprecated in a future MinIO Client release.
+   此命令已被替代，并将在未来的 MinIO Client 版本中弃用。
 
-   As of MinIO Client RELEASE.2024-10-08T09-37-26Z, use the :mc:`mc admin accesskey create` command to add access keys for built-in MinIO IDP users.
+   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey create` 命令为内置 MinIO IDP 用户添加访问密钥。
 
-   To add access keys for AD/LDAP users, use the :mc:`mc idp ldap accesskey create` command.
+   如需为 AD/LDAP 用户添加访问密钥，请使用 :mc:`mc idp ldap accesskey create` 命令。
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-svcacct-add-desc
 
-The :mc-cmd:`mc admin user svcacct add` command adds a new access key to an existing MinIO or AD/LDAP user.
+:mc-cmd:`mc admin user svcacct add` 命令为现有 MinIO 或 AD/LDAP 用户添加新的访问密钥。
 
 .. end-mc-admin-svcacct-add-desc
 
-.. admonition:: Access keys for OpenID Connect users
+.. admonition:: OpenID Connect 用户的访问密钥
    :class: note
 
-   To generate service account access keys for :ref:`OpenID Connect users <minio-external-identity-management-openid>`, use the :ref:`MinIO Console <minio-console>`.
+   要为 :ref:`OpenID Connect 用户 <minio-external-identity-management-openid>` 生成服务账号访问密钥，请使用 :ref:`MinIO Console <minio-console>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command creates a new access key associated to an existing MinIO user:
+      以下命令会创建一个与现有 MinIO 用户关联的新访问密钥：
 
       .. code-block:: shell                                                                 
          :class: copyable
@@ -50,11 +50,11 @@ The :mc-cmd:`mc admin user svcacct add` command adds a new access key to an exis
             --policy "/path/to/policy.json"              \
             myminio myuser                                                                  
                                                                                    
-      The command returns the access key and secret key for the new account.
+      命令会返回该新账号的访问密钥和秘密密钥。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -72,60 +72,60 @@ The :mc-cmd:`mc admin user svcacct add` command adds a new access key to an exis
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: USER
    :required:
 
-   The username of the user to which MinIO adds the new access key.
+   MinIO 要为其添加新访问密钥的用户名。
 
-   - For :ref:`MinIO-managed users <minio-users>`, specify the access key for the user.
-   - For :ref:`Active Directory/LDAP users <minio-external-identity-management-ad-ldap>`, specify the Distinguished Name of the user.
-   - For :ref:`OpenID Connect users <minio-external-identity-management-openid>`, use the :ref:`MinIO Console <minio-console>` to generate access keys.
+   - 对于 :ref:`MinIO 管理的用户 <minio-users>`，指定该用户的访问密钥。
+   - 对于 :ref:`Active Directory/LDAP 用户 <minio-external-identity-management-ad-ldap>`，指定用户的 Distinguished Name。
+   - 对于 :ref:`OpenID Connect 用户 <minio-external-identity-management-openid>`，请使用 :ref:`MinIO Console <minio-console>` 生成访问密钥。
 
 .. mc-cmd:: --access-key
    :optional:
 
-   A string to use as the access key for this account.
-   Omit to let MinIO autogenerate a random 20 character value.
+   用作此账号访问密钥的字符串。
+   省略时，MinIO 会自动生成一个 20 个字符的随机值。
 
-   Access Key names *must* be unique across all users.
+   Access Key 名称在所有用户之间 *必须* 唯一。
 
 .. mc-cmd:: --comment
    :optional:
 
    .. versionchanged:: RELEASE.2023-05-18T16-59-00Z
-      Replaced by :mc-cmd:`~mc admin user svcacct add --description` and :mc-cmd:`~mc admin user svcacct add --name`.
+      已由 :mc-cmd:`~mc admin user svcacct add --description` 和 :mc-cmd:`~mc admin user svcacct add --name` 替代。
       
-      Originally added in version RELEASE.2023-01-28T20-29-38Z.
+      最初在 RELEASE.2023-01-28T20-29-38Z 版本中引入。
 
 
-   This option has been removed.
-   Use ``--description`` or ``--name`` instead.
+   此选项已移除。
+   请改用 ``--description`` 或 ``--name``。
 
 .. mc-cmd:: --description
    :optional:
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   Add a description for the service account.
-   For example, you might specify the reason the service account exists.
+   为服务账号添加描述。
+   例如，可以说明该服务账号存在的原因。
 
 .. mc-cmd:: --expiry
    :optional:
 
    .. versionadded:: RELEASE.2023-05-30T22-41-38Z
 
-   Set an expiration date for the service account.
-   The date must be in the future, you may not set an expiration date that has already passed.
+   为服务账号设置过期日期。
+   该日期必须是未来时间，不能设置已经过去的过期日期。
 
-   Allowed date and time formats:
+   允许的日期和时间格式：
 
    - ``2023-06-24``
    - ``2023-06-24T10:00``
@@ -138,35 +138,35 @@ Parameters
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   Add a human-readable name for the service account.
+   为服务账号添加一个人类可读的名称。
 
 .. mc-cmd:: --policy
    :optional:
 
-   The path to a :ref:`policy document <minio-policy>` to attach to the new access key, with a maximum size of 2048 characters.
-   The attached policy cannot grant access to any action or resource not explicitly allowed by the parent user's policies.
+   要附加到新访问密钥的 :ref:`策略文档 <minio-policy>` 路径，最大大小为 2048 个字符。
+   附加的策略不能授予父用户策略未明确允许的任何操作或资源访问权限。
    
 
 .. mc-cmd:: --secret-key
    :optional:
 
-   The secret key to associate with the new account.
-   Omit to let MinIO autogenerate a random 40-character value.
+   与新账号关联的秘密密钥。
+   省略时，MinIO 会自动生成一个 40 字符的随机值。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

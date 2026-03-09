@@ -16,37 +16,34 @@
 .. |versions| replace:: :mc-cmd:`~mc retention clear --versions`
 .. |alias| replace:: :mc-cmd:`~mc retention clear ALIAS`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-retention-clear-desc
 
-The :mc:`mc retention clear` command removes the 
-:ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` settings for
-an object or object(s) in a bucket. You can also remove the default object lock
-settings for a bucket.
+:mc:`mc retention clear` 命令可移除存储桶中一个或多个对象的
+:ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` 设置。
+你还可以移除存储桶的默认对象锁设置。
 
 .. end-mc-retention-clear-desc
 
-To change the retention status of an object under 
-:ref:`legal hold <minio-object-locking-legalhold>`, use 
-:mc:`mc legalhold clear`.
+要更改处于 :ref:`legal hold <minio-object-locking-legalhold>` 状态的对象的
+保留状态，请使用 :mc:`mc legalhold clear`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes the default object lock configuration for 
-      the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会移除 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的默认对象锁配置：
 
       .. code-block:: shell
          :class: copyable
 
          mc retention clear --default myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -63,51 +60,44 @@ To change the retention status of an object under
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-      :mc-cmd:`mc retention clear --version-id` is mutually exclusive with
-      multiple other parameters. See the reference documentation for more
-      information.
+      :mc-cmd:`mc retention clear --version-id` 与多个其他参数互斥。更多信息请参阅
+      参考文档。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The full path to the object or objects for which to clear
-   the object lock configuration. Specify the :mc-cmd:`alias <mc alias>` of a
-   configured S3-compatible service as the prefix to the ``ALIAS`` bucket
-   path. For example:
+   要清除对象锁配置的对象或对象集合的完整路径。将已配置的 S3 兼容服务
+   :mc-cmd:`alias <mc alias>` 作为 ``ALIAS`` 存储桶路径前缀。例如：
 
    .. code-block:: shell
 
       mc retention clear play/mybucket/object.txt
 
-   - If the ``ALIAS`` specifies a bucket or bucket prefix, include
-      :mc-cmd:`~mc retention clear --recursive` to clear the object lock
-      settings to the bucket contents.
+   - 如果 ``ALIAS`` 指定的是存储桶或存储桶前缀，请添加
+      :mc-cmd:`~mc retention clear --recursive`，以清除存储桶内容的对象锁设置。
 
-   - If the ``ALIAS`` bucket has versioning enabled,
-      :mc:`mc retention clear` by default applies to only the latest
-      object version. Use :mc-cmd:`~mc retention clear --version-id` or
-      :mc-cmd:`~mc retention clear --versions` to clear the object lock
-      settings for a specific version or for all versions of the object.
+   - 如果 ``ALIAS`` 存储桶已启用版本控制，:mc:`mc retention clear` 默认仅作用于
+      最新对象版本。使用 :mc-cmd:`~mc retention clear --version-id` 或
+      :mc-cmd:`~mc retention clear --versions`，可清除某个特定版本或对象所有版本的
+      对象锁设置。
 
 .. mc-cmd:: --default
    :optional:
 
-   Clears the default object lock settings for the bucket specified
-   to :mc-cmd:`~mc retention clear ALIAS`.
+   清除 :mc-cmd:`~mc retention clear ALIAS` 指定存储桶的默认对象锁设置。
    
-   If specifying :mc-cmd:`~mc retention clear --default`, 
-   :mc:`mc retention clear` ignores all other flags.
+   如果指定 :mc-cmd:`~mc retention clear --default`，
+   :mc:`mc retention clear` 会忽略所有其他 flag。
 
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Recursively clears the object lock settings for all objects in the
-   specified :mc-cmd:`~mc retention clear ALIAS` path.
+   递归清除指定 :mc-cmd:`~mc retention clear ALIAS` 路径下所有对象的对象锁设置。
 
-   Mutually exclusive with :mc-cmd:`~mc retention clear --version-id`.
+   与 :mc-cmd:`~mc retention clear --version-id` 互斥。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -123,7 +113,7 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-   Mutually exclusive with any of the following flags:
+   与以下任一 flag 互斥：
    
    - :mc-cmd:`~mc retention clear --versions`
    - :mc-cmd:`~mc retention clear --rewind`
@@ -136,64 +126,61 @@ Parameters
       :start-after: start-versions-desc
       :end-before: end-versions-desc
 
-   Use :mc-cmd:`~mc retention clear --versions` and
-   :mc-cmd:`~mc retention clear --rewind` together to remove the
-   retention settings from all object versions that existed at a
-   specific point-in-time.
+   将 :mc-cmd:`~mc retention clear --versions` 与
+   :mc-cmd:`~mc retention clear --rewind` 组合使用，可移除在特定时间点存在的
+   所有对象版本的保留设置。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Clear Object Lock Settings for an Object or Object(s)
+清除单个或多个对象的对象锁设置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Specific Object
+   .. tab-item:: 单个对象
 
       .. code-block:: shell
          :class: copyable
 
          mc retention clear ALIAS/PATH
 
-      - Replace :mc-cmd:`ALIAS <mc retention clear ALIAS>` with the
-        :mc:`alias <mc alias>` of a configured S3-compatible host.
+      - 将 :mc-cmd:`ALIAS <mc retention clear ALIAS>` 替换为已配置的
+        S3 兼容主机 :mc:`alias <mc alias>`。
 
-      - Replace :mc-cmd:`PATH <mc retention clear ALIAS>` with the path to the
-        object.
+      - 将 :mc-cmd:`PATH <mc retention clear ALIAS>` 替换为对象路径。
 
 
-   .. tab-item:: Multiple Objects
+   .. tab-item:: 多个对象
 
-      Use :mc:`mc retention clear` with
-      :mc-cmd:`~mc retention clear --recursive` to clear the retention
-      settings from all objects in a bucket:
+      将 :mc:`mc retention clear` 与
+      :mc-cmd:`~mc retention clear --recursive` 配合使用，可清除存储桶中所有对象的
+      保留设置：
 
       .. code-block:: shell
          :class: copyable
 
          mc retention clear --recursive ALIAS/PATH
 
-      - Replace :mc-cmd:`ALIAS <mc retention clear ALIAS>` with the
-        :mc:`alias <mc alias>` of a configured S3-compatible host.
+      - 将 :mc-cmd:`ALIAS <mc retention clear ALIAS>` 替换为已配置的
+        S3 兼容主机 :mc:`alias <mc alias>`。
 
-      - Replace :mc-cmd:`PATH <mc retention clear ALIAS>` with the path to the 
-        bucket.
+      - 将 :mc-cmd:`PATH <mc retention clear ALIAS>` 替换为存储桶路径。
 
 
 .. include:: /includes/facts-locking.rst
    :start-after: start-command-requires-locking-desc
    :end-before: end-command-requires-locking-desc
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

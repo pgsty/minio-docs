@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -16,32 +16,32 @@
 .. |versionid| replace:: :mc-cmd:`~mc stat --version-id`
 .. |alias| replace:: :mc-cmd:`~mc stat ALIAS`
 
-Syntax
+语法
 -----------
 
 .. start-mc-stat-desc
 
-The :mc:`mc stat` command displays information on objects in a MinIO bucket, including object metadata.
-You can also use it to retrieve bucket metadata.
+:mc:`mc stat` 命令用于显示 MinIO 存储桶中对象的信息，包括对象元数据。
+你也可以使用它来检索存储桶元数据。
 
 .. end-mc-stat-desc
 
-You can use :mc:`mc stat` against the local filesystem to produce similar results to the ``stat`` commandline tool.
+你可以对本地文件系统使用 :mc:`mc stat`，以获得与 ``stat`` 命令行工具类似的结果。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command displays information on all objects in the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令显示 ``myminio`` MinIO 部署中 ``mydata`` 存储桶内所有对象的信息：
 
       .. code-block:: shell
          :class: copyable
 
          mc stat --recursive myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -60,33 +60,33 @@ You can use :mc:`mc stat` against the local filesystem to produce similar result
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-      :mc-cmd:`mc stat --version-id` is mutually exclusive with multiple parameters. See the reference documentation for more information.
+      :mc-cmd:`mc stat --version-id` 与多个参数互斥。更多信息请参阅参考文档。
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of a MinIO deployment and the full path to the object for which to retrieve detailed information. For example:
+   MinIO 部署的 :ref:`alias <alias>`，以及要检索详细信息的对象完整路径。例如：
 
    .. code-block:: shell
 
       mc stat myminio/mybucket/myobject.txt
 
-   You can specify multiple objects on the same or different MinIO deployments:
+   你可以在同一个或不同的 MinIO 部署上指定多个对象：
 
    .. code-block:: shell
 
       mc stat myminio/mybucket/myobject.txt myminio/mybucket/myobject.txt
 
-   If specifying the path to a bucket or bucket prefix, you **must** include the :mc-cmd:`mc stat --recursive` flag:
+   如果指定的是存储桶路径或存储桶前缀路径，则**必须**包含 :mc-cmd:`mc stat --recursive` 标志：
 
    .. code-block:: shell
 
       mc stat --recursive myminio/mybucket/
 
-   For retrieving information on a file from a local filesystem, specify the full path to that file:
+   要检索本地文件系统中文件的信息，请指定该文件的完整路径：
 
    .. code-block:: shell
 
@@ -101,12 +101,12 @@ Parameters
 .. mc-cmd:: --no-list
    :optional:
 
-   Disable all ``LIST`` operations if the target does not exist.   
+   如果目标不存在，则禁用所有 ``LIST`` 操作。
 
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Recursively :mc:`mc stat` the contents of the MinIO bucket specified to :mc-cmd:`~mc stat ALIAS`.
+   递归地对 :mc-cmd:`~mc stat ALIAS` 指定的 MinIO 存储桶内容执行 :mc:`mc stat`。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -116,13 +116,13 @@ Parameters
       :end-before: end-rewind-desc
 
 .. mc-cmd:: --versions
-   :optional:   
+   :optional:
 
    .. include:: /includes/facts-versioning.rst
       :start-after: start-versions-desc
       :end-before: end-versions-desc
 
-   Use :mc-cmd:`~mc stat --versions` and  :mc-cmd:`~mc stat --rewind` together to remove all object versions which existed at a specific point in time.
+   将 :mc-cmd:`~mc stat --versions` 与 :mc-cmd:`~mc stat --rewind` 一起使用，可移除某个特定时间点存在的所有对象版本。
 
 .. mc-cmd:: --version-id, vid
    :optional:
@@ -131,33 +131,33 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-   Mutually exclusive with any of the following flags:
-   
+   与以下任一标志互斥：
+
    - :mc-cmd:`~mc stat --versions`
    - :mc-cmd:`~mc stat --rewind`
    - :mc-cmd:`~mc stat --recursive`
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Display Object Details
+显示对象详情
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The following example displays details of the object ``myfile.txt`` in the bucket ``mybucket``:
+以下示例显示存储桶 ``mybucket`` 中对象 ``myfile.txt`` 的详细信息：
 
 .. code-block:: shell
    :class: copyable
 
    mc stat myminio/mybucket/myfile.txt
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -169,22 +169,22 @@ The output resembles the following:
    Metadata  :
      Content-Type: text/plain 
 
-You can specify more than one object by adding multiple paths:
+你可以通过添加多个路径来指定多个对象：
 
 .. code-block:: shell
    :class: copyable
 
    mc stat myminio/mybucket/file1.txt myminio/yourbucket/file2.txt
 
-To display detail for all objects in a bucket, use :mc-cmd:`~mc stat --recursive`.
-The following example displays details for all objects in bucket ``mybucket``:
+要显示存储桶中所有对象的详细信息，请使用 :mc-cmd:`~mc stat --recursive`。
+以下示例显示存储桶 ``mybucket`` 中所有对象的详细信息：
 
 .. code-block:: shell
    :class: copyable
 
    mc stat --recursive myminio/mybucket
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -205,17 +205,17 @@ The output resembles the following:
      Content-Type: text/plain
 
 
-Display Bucket Details
+显示存储桶详情
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The following example displays information about the bucket ``mybucket`` on the ``myminio`` MinIO deployment:
+以下示例显示 ``myminio`` MinIO 部署上存储桶 ``mybucket`` 的信息：
 
 .. code-block:: shell
    :class: copyable
 
    mc stat myminio/mybucket
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -249,12 +249,12 @@ The output resembles the following:
       0 object(s) LESS_THAN_1024_B
 
 
-Count of Objects in a Bucket
+存储桶中的对象数量
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To show the number of objects in a bucket, use :std:option:`--json <mc.--json>` and extract the value of ``objectsCount`` with a JSON parser:
+要显示存储桶中的对象数量，请使用 :std:option:`--json <mc.--json>` 并通过 JSON 解析器提取 ``objectsCount`` 的值：
 
-The following example uses the `jq <https://jqlang.github.io/jq/>`__ utility:
+以下示例使用 `jq <https://jqlang.github.io/jq/>`__ 工具：
 
 .. code-block:: shell
    :class: copyable
@@ -262,10 +262,10 @@ The following example uses the `jq <https://jqlang.github.io/jq/>`__ utility:
    mc stat myminio/mybucket --json | jq '.Usage.objectsCount'
 
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

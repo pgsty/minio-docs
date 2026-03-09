@@ -6,36 +6,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc version info
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-version-info-desc
 
-The :mc:`mc version info` command returns the versioning status for the specified bucket.
+:mc:`mc version info` 命令返回指定存储桶的版本控制状态。
 
 .. end-mc-version-info-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command returns the versioning status for the ``mybucket`` bucket on the ``myminio`` MinIO deployment:
+      以下命令返回 ``myminio`` MinIO 部署中 ``mybucket`` 存储桶的版本控制状态：
 
       .. code-block:: shell
          :class: copyable
 
          mc version info myminio/mybucket
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -47,50 +47,50 @@ The :mc:`mc version info` command returns the versioning status for the specifie
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   The full path to the bucket on which to retrieve the versioning status.
-   For example:
+   要获取其版本控制状态的存储桶的完整路径。
+   例如：
 
    .. code-block:: shell
 
       mc version info myminio/mybucket
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Example
--------
+示例
+----
 
-Get Bucket Versioning Status
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+获取存储桶版本控制状态
+~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc version info` to retrieve the versioning status for a bucket:
+使用 :mc:`mc version info` 获取存储桶的版本控制状态：
 
 .. code-block:: shell
    :class: copyable
 
    mc version info ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc version info ALIAS>` with the :mc:`alias <mc alias>` of a configured MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc version info ALIAS>` 替换为已配置 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc version info ALIAS>` with the bucket on which to retrieve the versioning status.
+- 将 :mc-cmd:`PATH <mc version info ALIAS>` 替换为要获取版本控制状态的存储桶。
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

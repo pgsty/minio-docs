@@ -1,114 +1,114 @@
 .. _minio-batch-framework-keyrotate-job:
 
-==================
-Batch Key Rotation
-==================
+============
+批量密钥轮换
+============
 
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. versionadded:: MinIO RELEASE.2023-04-07T05-28-58Z
 
-The MinIO Batch Framework allows you to create, manage, monitor, and execute jobs using a YAML-formatted job definition file (a "batch file").
-The batch jobs run directly on the MinIO deployment to take advantage of the server-side processing power without constraints of the local machine where you run the :ref:`MinIO Client <minio-client>`.
+MinIO Batch Framework 允许你使用 YAML 格式的作业定义文件（“批处理文件”）来创建、管理、监控和执行作业。
+批处理作业直接在 MinIO 部署上运行，以利用服务端处理能力，而不受运行 :ref:`MinIO Client <minio-client>` 的本地机器限制。
 
-The ``keyrotate`` batch job type cycles the :ref:`sse-s3 or sse-kms keys <minio-sse-data-encryption>` for encrypted objects on a MinIO deployment.
+``keyrotate`` 批处理作业类型会为 MinIO 部署上的加密对象轮换 :ref:`sse-s3 or sse-kms keys <minio-sse-data-encryption>`。
 
-The YAML configuration supports filters to restrict key rotation to a specific set of objects by creation date, tags, metadata, or kms key.
-You can also define retry attempts or set a notification endpoint and token.
+YAML 配置支持按创建日期、标签、元数据或 kms key 进行过滤，将密钥轮换限制在特定对象集合上。
+你还可以定义重试次数，或设置通知 endpoint 和 token。
 
 .. _minio-batch-framework-keyrotate-job-ref:
 
-Key Rotate Batch Job Reference
-------------------------------
+密钥轮换批处理作业参考
+----------------------
 
 .. versionadded:: MinIO RELEASE.2023-04-07T05-28-58Z 
 
-Use the ``keyrotate`` job type to create a batch job that cycles the :ref:`sse-s3 or sse-kms keys <minio-sse-data-encryption>` for encrypted objects.
+使用 ``keyrotate`` 作业类型创建批处理作业，以轮换加密对象的 :ref:`sse-s3 or sse-kms keys <minio-sse-data-encryption>`。
 
-Required Fields
-~~~~~~~~~~~~~~~
+必填字段
+~~~~~~~~
 
   .. list-table::
      :widths: 25 75
      :width: 100%
 
      * - ``type:`` 
-       - Either ``sse-s3`` or ``sse-kms``.
+       - ``sse-s3`` 或 ``sse-kms`` 之一。
      * - ``key:`` 
-       - Only for use with the ``sse-kms`` type. 
-         The key to use to unseal the key vault.
+       - 仅用于 ``sse-kms`` 类型。
+         用于解封密钥保管库的密钥。
    
-Optional Fields
-~~~~~~~~~~~~~~~
+可选字段
+~~~~~~~~
 
-For **flag based filters**
+对于**基于标志的过滤条件**
 
 .. list-table::
    :widths: 25 75
    :width: 100%
 
    * - ``newerThan:`` 
-     - A string representing a length of time in ``#d#h#s`` format.
+     - 以 ``#d#h#s`` 格式表示时长的字符串。
        
-       Keys rotate only for objects newer than the specified length of time.
-       For example, ``7d``, ``24h``, ``5d12h30s`` are valid strings.
+       仅为比指定时长更新的对象轮换密钥。
+       例如，``7d``、``24h``、``5d12h30s`` 都是有效字符串。
    * - ``olderThan:`` 
-     - A string representing a length of time in ``#d#h#s`` format.
+     - 以 ``#d#h#s`` 格式表示时长的字符串。
        
-       Keys rotate only for objects older than the specified length of time.
+       仅为比指定时长更旧的对象轮换密钥。
    * - ``createdAfter:`` 
-     - A date in ``YYYY-MM-DDTHH:MM:SSZ`` :rfc:`RFC3339 <3339>`  date and time format.
+     - 采用 ``YYYY-MM-DDTHH:MM:SSZ`` :rfc:`RFC3339 <3339>` 日期时间格式的日期。
   
-       Keys rotate only for objects created after the date.
+       仅为在该日期之后创建的对象轮换密钥。
    * - ``createdBefore:`` 
-     - A date in ``YYYY-MM-DDTHH:MM:SSZ`` :rfc:`RFC3339 <3339>`  date and time format.
+     - 采用 ``YYYY-MM-DDTHH:MM:SSZ`` :rfc:`RFC3339 <3339>` 日期时间格式的日期。
        
-       Keys rotate only for objects created prior to the date.
+       仅为在该日期之前创建的对象轮换密钥。
    * - ``context:``
-     - Only for use with the ``sse-kms`` type.
-       The context within which to perform actions. 
+     - 仅用于 ``sse-kms`` 类型。
+       执行操作时使用的上下文。
    * - ``tags:``
-     - Rotate keys only for objects with tags that match the specified ``key:`` and ``value:``.  
+     - 仅为标签与指定 ``key:`` 和 ``value:`` 匹配的对象轮换密钥。  
    * - ``metadata:``
-     - Rotate keys only for objects with metadata that match the specified ``key:`` and ``value:``.  
+     - 仅为元数据与指定 ``key:`` 和 ``value:`` 匹配的对象轮换密钥。  
    * - ``kmskey:``
-     - Rotate keys only for objects with a KMS key-id that match the specified value.  
-       This is only applicable for the ``sse-kms`` type. 
+     - 仅为 KMS key-id 与指定值匹配的对象轮换密钥。  
+       这仅适用于 ``sse-kms`` 类型。 
 
-For **notifications**
+对于**通知**
 
 .. list-table::
    :widths: 25 75
    :width: 100%
 
    * - ``endpoint:`` 
-     - The predefined endpoint to send events for notifications.
+     - 用于发送通知事件的预定义 endpoint。
    * - ``token:`` 
-     - An optional JSON Web Token (JWT) to access the ``endpoint``.
+     - 用于访问 ``endpoint`` 的可选 JSON Web Token (JWT)。
 
-For **retry attempts**
+对于**重试**
 
-If something interrupts the job, you can define a maximum number of retry attempts.
-For each retry, you can also define how long to wait between attempts.
+如果作业被中断，你可以定义最大重试次数。
+对于每次重试，你还可以定义两次尝试之间的等待时间。
 
 .. list-table::
    :widths: 25 75
    :width: 100%
 
    * - ``attempts:`` 
-     - Number of tries to complete the batch job before giving up.
+     - 在放弃之前完成批处理作业的尝试次数。
    * - ``delay:`` 
-     - The amount of time to wait between each attempt.
+     - 每次尝试之间的等待时长。
 
-Sample YAML Description File for a ``keyrotate`` Job Type
----------------------------------------------------------
+``keyrotate`` 作业类型的 YAML 描述文件示例
+----------------------------------------------
 
-Use :mc:`mc batch generate` to create a basic ``keyrotate`` batch job for further customization:
+使用 :mc:`mc batch generate` 创建一个基础的 ``keyrotate`` 批处理作业，以便进一步自定义：
 
 .. literalinclude:: /includes/code/keyrotate.yaml
    :language: yaml

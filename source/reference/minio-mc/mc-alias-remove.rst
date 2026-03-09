@@ -6,37 +6,35 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc alias remove
 
-Syntax
-------
+语法
+----
 
 .. start-mc-alias-remove-desc
 
-The :mc:`mc alias remove` removes an existing alias from the local
-:program:`mc` configuration.
+:mc:`mc alias remove` 从本地 :program:`mc` 配置中移除一个已存在的别名。
 
 .. end-mc-alias-remove-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes the ``myminio`` :ref:`alias <alias>` for a
-      MinIO deployment from the host machine:
+      以下命令会从主机上移除 MinIO 部署的 ``myminio`` :ref:`alias <alias>`：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias remove myminio
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc alias remove` command has the following syntax:
+      :mc:`mc alias remove` 命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -47,54 +45,53 @@ The :mc:`mc alias remove` removes an existing alias from the local
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* The alias to remove from the local :program:`mc` configuration.
+   *必填* 要从本地 :program:`mc` 配置中移除的别名。
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Remove an Alias from the ``mc`` Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从 ``mc`` 配置中移除别名
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc alias remove` to remove an existing alias from the
-:program:`mc` configuration:
+使用 :mc:`mc alias remove` 从 :program:`mc` 配置中移除一个已存在的别名：
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following command removes the ``myminio`` alias.
+      以下命令会移除 ``myminio`` 别名。
 
       .. code-block:: shell
          :class: copyable
 
          mc alias remove myminio
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc alias remove ALIAS
 
-      Replace ``ALIAS`` with the the name of the alias to remove.
+      将 ``ALIAS`` 替换为要移除的别名名称。
 
-Behavior
-~~~~~~~~
+行为
+~~~~
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

@@ -4,38 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin policy ls
 .. mc:: mc admin policy list
 
-Syntax
+语法
 ------
 
 .. start-mc-admin-policy-list-desc
 
-Lists all policies on the target MinIO deployment.
+列出目标 MinIO 部署上的所有策略。
 
 .. end-mc-admin-policy-list-desc
 
-The :mc:`mc admin policy list` command has equivalent functionality to :mc:`mc admin policy ls`.
+:mc:`mc admin policy list` 命令与 :mc:`mc admin policy ls` 具有等效功能。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command displays a list of the policies currently current on the :term:`alias` ``play``.
+      以下命令显示 :term:`alias` ``play`` 上当前存在的策略列表。
 
       .. code-block:: shell
          :class: copyable
 
          mc admin policy ls play
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -47,36 +47,36 @@ The :mc:`mc admin policy list` command has equivalent functionality to :mc:`mc a
          :end-before: end-minio-syntax
 
 
-Parameters
+参数
 ~~~~~~~~~~
 
-The :mc-cmd:`mc admin policy ls` command accepts the following arguments:
+:mc-cmd:`mc admin policy ls` 命令接受以下参数：
 
 .. mc-cmd:: TARGET
    
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment from which the command lists the available policies.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，命令将从该部署列出可用策略。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-List the policies that exist on the deployment at alias ``myminio``.
+列出别名为 ``myminio`` 的部署上存在的策略。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy ls myminio
 
-Output
+输出
 ~~~~~~
 
-The command returns output that resembles the following:
+该命令返回的输出类似如下：
 
 .. code-block:: shell
 

@@ -4,41 +4,41 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc ilm
 
 
-Description
------------
+描述
+----
 
 .. start-mc-ilm-desc
 
-The :mc:`mc ilm` commands manage :ref:`object lifecycle management rules <minio-lifecycle-management>` and tiering on a MinIO deployment. 
+:mc:`mc ilm` 命令用于管理 MinIO 部署中的 :ref:`对象生命周期管理规则 <minio-lifecycle-management>` 和分层。
 
 .. end-mc-ilm-desc
 
-Use these command to 
+使用这些命令可以：
 
-- create tiers
-- create :ref:`tiering <minio-lifecycle-management-tiering>` rules
-- manage :ref:`expiration <minio-lifecycle-management-expiration>` rules for objects on a bucket
+- 创建层
+- 创建 :ref:`分层 <minio-lifecycle-management-tiering>` 规则
+- 管理存储桶中对象的 :ref:`过期 <minio-lifecycle-management-expiration>` 规则
      
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc ilm` includes the following subcommands:
+:mc:`mc ilm` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc ilm restore`
      - .. include:: /reference/minio-mc/mc-ilm-restore.rst

@@ -6,42 +6,41 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc encrypt set
 
-Syntax
-------
+语法
+----
 
 .. start-mc-encrypt-set-desc
 
-The :mc:`mc encrypt set` encrypt command sets or updates the default
-bucket :ref:`Server-Side Encryption (SSE) mode <minio-sse>`. MinIO automatically
-encrypts objects written to that bucket using the specified SSE mode.
+:mc:`mc encrypt set` 加密命令用于设置或更新存储桶默认的
+:ref:`服务端加密（SSE）模式 <minio-sse>`。MinIO 会使用指定的 SSE 模式
+自动加密写入该存储桶的对象。
 
 .. end-mc-encrypt-set-desc
 
-:mc:`mc encrypt set` only supports :ref:`SSE-KMS <minio-encryption-sse-kms>`
-and :ref:`SSE-S3 <minio-encryption-sse-s3>`.
+:mc:`mc encrypt set` 仅支持 :ref:`SSE-KMS <minio-encryption-sse-kms>`
+和 :ref:`SSE-S3 <minio-encryption-sse-s3>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command sets the default 
-      :ref:`SSE-KMS encryption key <minio-encryption-sse-kms>` for the bucket
-      ``mydata`` on the ``myminio`` MinIO deployment:
+      以下命令为 ``myminio`` MinIO 部署上的 ``mydata`` 存储桶设置默认的
+      :ref:`SSE-KMS 加密密钥 <minio-encryption-sse-kms>`：
 
       .. code-block:: shell
          :class: copyable
 
          mc encrypt set sse-kms "minio-encryption-key" myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -52,98 +51,92 @@ and :ref:`SSE-S3 <minio-encryption-sse-s3>`.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ENCRYPTION
    
-      Specify the server-side encryption type to use as the default SSE mode.
-      Supports the following values:
+      指定作为默认 SSE 模式的服务端加密类型。
+      支持以下取值：
 
-      - ``sse-kms`` - Encrypt objects using the key specified in 
-        :mc-cmd:`~mc encrypt set KMSKEY`. MinIO
-        must have access to the specified key on the external KMS to
-        successfully encrypt or decrypt objects protected using SSE-KMS.
+      - ``sse-kms`` - 使用 :mc-cmd:`~mc encrypt set KMSKEY` 中指定的密钥
+        对对象加密。MinIO 必须能够访问外部 KMS 上指定的密钥，才能成功加密
+        或解密受 SSE-KMS 保护的对象。
 
-      - ``sse-s3`` - Encrypt objects using the key specified to
-        :envvar:`MINIO_KMS_KES_KEY_NAME`. MinIO must have access to the
-        specified key on the external KMS to successfully encrypt or decrypt
-        objects protected using SSE-S3.
+      - ``sse-s3`` - 使用 :envvar:`MINIO_KMS_KES_KEY_NAME` 指定的密钥
+        对对象加密。MinIO 必须能够访问外部 KMS 上指定的密钥，才能成功加密
+        或解密受 SSE-S3 保护的对象。
 
 .. mc-cmd:: KMSKEY
 
-   Specify the KMS Master Key to use for performing SSE object encryption. This
-   option only applies if :mc-cmd:`~mc encrypt set ENCRYPTION` is
-   ``sse-kms``. 
+   指定用于执行 SSE 对象加密的 KMS Master Key。该选项仅在
+   :mc-cmd:`~mc encrypt set ENCRYPTION` 为 ``sse-kms`` 时生效。
    
-   Omit this option to direct MinIO to use the 
+   省略该选项可让 MinIO 使用
    :envvar:`MINIO_KMS_KES_KEY_NAME`.
 
 .. mc-cmd:: ALIAS
 
-   The full path to the bucket on which to set the default SSE mode. Specify the
-   :ref:`alias <alias>` of the MinIO deployment as the prefix to the TARGET
-   path. For example:
+   要设置默认 SSE 模式的存储桶完整路径。将 MinIO 部署的
+   :ref:`alias <alias>` 作为 TARGET 路径前缀。例如：
 
    .. code-block:: shell
 
       mc encrypt set ENCRYPTION [KMSKEY] play/mybucket
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Enable Automatic Server-Side Bucket Encryption
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+启用自动服务端存储桶加密
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following commands assumes that:
+      以下命令假设：
       
-      - The MinIO server configuration supports
+      - MinIO 服务端配置支持
         :ref:`SSE-KMS <minio-encryption-sse-kms>`
 
-      - The root has an encryption key ``minio-encryption-key``.
+      - root KMS 上存在加密密钥 ``minio-encryption-key``。
 
       .. code-block:: shell
          :class: copyable
 
           mc encrypt set sse-kms minio-encryption-key myminio/data
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc encrypt set ENCRYPTION KMSKEY TARGET
 
-      - Replace ``ENCRYPTION`` with ``sse-kms`` or ``sse-s3`` depending
-        on the preferred encryption mode.
+      - 将 ``ENCRYPTION`` 替换为 ``sse-kms`` 或 ``sse-s3``，具体取决于
+        所需的加密模式。
 
-      - Replace ``KMSKEY`` with the name of the encryption key on the
-        configured root KMS. This argument has no effect with ``sse-s3``.
+      - 将 ``KMSKEY`` 替换为已配置 root KMS 中的加密密钥名称。
+        该参数对 ``sse-s3`` 无效。
 
-      - Replace ``TARGET`` with the :ref:`alias <alias>` of the
-        MinIO deployment on which to configure automatic server-side bucket
-        encryption.
+      - 将 ``TARGET`` 替换为要配置自动服务端存储桶加密的 MinIO 部署
+        :ref:`alias <alias>`。
 
-Behavior
---------
+行为
+----
 
-:mc:`mc encrypt set` makes no assumptions about the MinIO server's current
-encryption state. Specifying default encryption settings which the 
-server cannot support may result in undesired behavior.
+:mc:`mc encrypt set` 不会对 MinIO 服务端当前的加密状态作任何假设。
+如果指定了服务端无法支持的默认加密设置，可能导致非预期行为。
 
-Setting or modifying the default server-side encryption settings does *not*
-automatically encrypt or decrypt the existing bucket contents. 
-If the bucket contents *must* have consistent encryption, use the
-:mc:`mc mv` command with :mc-cmd:`~mc mv --enc-kms`, :mc-cmd:`~mc mv --enc-s3`, or :mc-cmd:`~mc mv --enc-c` to specify the type of encryption to use for the moved contents.
-This manually modifies the encryption settings or encrypted state of the bucket contents *before* changing the bucket default. 
+设置或修改默认服务端加密设置时，*不会* 自动加密或解密存储桶中已有内容。
+如果存储桶内容 *必须* 保持一致的加密状态，请使用 :mc:`mc mv` 命令并结合
+:mc-cmd:`~mc mv --enc-kms`、:mc-cmd:`~mc mv --enc-s3` 或
+:mc-cmd:`~mc mv --enc-c` 指定迁移内容使用的加密类型。
+这会在更改存储桶默认设置 *之前*，手动修改存储桶内容的加密设置或加密状态。

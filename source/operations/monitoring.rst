@@ -1,25 +1,25 @@
-=====================
-Monitoring and Alerts
-=====================
+==========
+监控与告警
+==========
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. container:: extlinks-video
 
-   - `Monitoring with MinIO and Prometheus: Overview <https://youtu.be/A3vCDaFWNNs?ref=docs>`__
-   - `Monitoring with MinIO and Prometheus: Lab <https://youtu.be/Oix9iXndSUY?ref=docs>`__
+   - `使用 MinIO 和 Prometheus 进行监控：概览 <https://youtu.be/A3vCDaFWNNs?ref=docs>`__
+   - `使用 MinIO 和 Prometheus 进行监控：实验 <https://youtu.be/Oix9iXndSUY?ref=docs>`__
 
-Metrics and Alerts
-------------------
+指标与告警
+----------
 
-MinIO publishes point-in-time metrics using the :prometheus-docs:`Prometheus Data Model <concepts/data_model/>`.
-You can use any scraping tool which supports that data model to pull those metrics into a database for populating historical views, performing query/analysis of metrics data, or creating alerts on preferred data points.
+MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/>` 发布时点指标。
+你可以使用任何支持该数据模型的抓取工具，将这些指标拉取到数据库中，以生成历史视图、执行指标查询与分析，或基于关注的数据点创建告警。
 
-The following table lists tutorials for integrating MinIO metrics with select third-party monitoring software.
+下表列出了将 MinIO 指标接入部分第三方监控软件的教程。
 
 .. list-table::
    :stub-columns: 1
@@ -27,37 +27,37 @@ The following table lists tutorials for integrating MinIO metrics with select th
    :width: 100%
 
    * - :ref:`minio-metrics-collect-using-prometheus`
-     - Configure Prometheus to Monitor and Alert for a MinIO deployment
+     - 配置 Prometheus，对 MinIO 部署进行监控与告警
 
    * - :ref:`minio-metrics-influxdb`
-     - Configure InfluxDB to Monitor and Alert for a MinIO deployment.
+     - 配置 InfluxDB，对 MinIO 部署进行监控与告警。
 
-Other metrics and analytics software suites which support the Prometheus data model may work regardless of their inclusion on the above list.
+其他支持 Prometheus 数据模型的指标与分析软件套件，即使未出现在上表中，也可能同样可用。
 
-Logging
--------
+日志
+----
 
-MinIO publishes all :mc:`minio server` operations to the system console. 
-MinIO also supports publishing server logs and audit logs to an HTTP webhook.
+MinIO 会将所有 :mc:`minio server` 操作输出到系统控制台。
+MinIO 还支持将服务日志和审计日志发布到 HTTP Webhook。
 
-- :ref:`Server logs <minio-logging-publish-server-logs>` contain the same :mc:`minio server` operations logged to the system console. 
-  Server logs support general monitoring and troubleshooting of operations.
+- :ref:`服务日志 <minio-logging-publish-server-logs>` 包含与系统控制台中相同的 :mc:`minio server` 操作日志。
+  服务日志适用于常规监控与运维排障。
 
-- :ref:`Audit logs <minio-logging-publish-audit-logs>` are more granular descriptions of each operation on the MinIO deployment. 
-  Audit logging supports security standards and regulations which require detailed tracking of operations.
+- :ref:`审计日志 <minio-logging-publish-audit-logs>` 会以更细粒度描述 MinIO 部署上的每一次操作。
+  审计日志适用于需要对操作进行详细追踪的安全标准与合规要求。
 
-MinIO publishes logs as a JSON document as a ``PUT`` request to each configured endpoint. 
-The endpoint server is responsible for processing each JSON document.
-MinIO requires explicit configuration of each webhook endpoint and does *not* publish logs to a webhook by default.
+MinIO 会将日志作为 JSON 文档，通过 ``PUT`` 请求发送到每个已配置的端点。
+端点服务器负责处理这些 JSON 文档。
+MinIO 要求显式配置每个 Webhook 端点，默认情况下 *不会* 向 Webhook 发布日志。
 
-See :ref:`minio-logging` for more complete documentation.
+更完整的文档请参见 :ref:`minio-logging`。
 
-Healthchecks
-------------
+健康检查
+--------
 
-MinIO exposes unauthenticated endpoints for probing node uptime and  cluster :ref:`high availability <minio-ec-parity>` for simple healthchecks.
-These endpoints return only an HTTP status code. 
-See :ref:`minio-healthcheck-api` for more information.
+MinIO 提供无需身份验证的端点，用于探测节点在线状态以及集群 :ref:`高可用性 <minio-ec-parity>`，从而执行简单健康检查。
+这些端点只返回 HTTP 状态码。
+更多信息请参见 :ref:`minio-healthcheck-api`。
 
 .. toctree::
    :titlesonly:

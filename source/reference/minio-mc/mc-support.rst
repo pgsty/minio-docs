@@ -4,42 +4,42 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc support
 
 
-Description
------------
+描述
+----
 
 .. start-mc-support-desc
 
-The MinIO Client :mc:`mc support` commands provides tools for analyzing deployment health or performance and for running diagnostics.
-You can also upload generated health reports for further analysis by MinIO engineering.
+MinIO Client :mc:`mc support` 命令提供用于分析部署健康状况或性能、并运行诊断的工具。
+你还可以上传生成的健康报告，供 MinIO 工程团队进一步分析。
 
 .. end-mc-support-desc
 
 .. important::
 
-   The ``mc support`` commands require an active |SUBNET| registration.
+   ``mc support`` 命令需要有效的 |SUBNET| 注册。
    
-   :mc-cmd:`mc support proxy set` and :mc-cmd:`mc support proxy remove` are exceptions, as you may need to set up a proxy to complete the deployment registration.
+   :mc-cmd:`mc support proxy set` 和 :mc-cmd:`mc support proxy remove` 是例外，因为你可能需要先配置代理才能完成部署注册。
 
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc support` includes the following subcommands:
+:mc:`mc support` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc support callhome`
      - .. include:: /reference/minio-mc/mc-support-callhome.rst

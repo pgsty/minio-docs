@@ -9,35 +9,35 @@
 
 
 ==========================
-Deploy MinIO on Kubernetes
+在 Kubernetes 上部署 MinIO
 ==========================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO is a Kubernetes-native high performance object store with an S3-compatible API. 
-The MinIO Kubernetes Operator supports deploying MinIO Tenants onto private and public cloud infrastructures ("Hybrid" Cloud).
+MinIO 是一个 Kubernetes 原生的高性能对象存储，提供兼容 S3 的 API。
+MinIO Kubernetes Operator 支持将 MinIO 租户部署到私有云和公有云基础设施（“Hybrid” Cloud）上。
 
-All documentation assumes familiarity with referenced Kubernetes concepts, utilities, and procedures. 
-While MinIO documentation *may* provide guidance for configuring or deploying Kubernetes-related resources on a best-effort basis, it is not a replacement for the official :kube-docs:`Kubernetes Documentation <>`.
+所有文档都默认你已经熟悉所引用的 Kubernetes 概念、工具和操作流程。
+虽然 MinIO 文档 *可能* 会以 best-effort 方式提供 Kubernetes 相关资源的配置或部署指导，但它不能替代官方 :kube-docs:`Kubernetes Documentation <>`。
 
-The MinIO Operator is a first-party Kubernetes-native operator that manages the deployment of MinIO Tenants onto Kubernetes infrastructure.
+MinIO Operator 是 MinIO 官方提供的 Kubernetes 原生 Operator，用于管理 MinIO 租户在 Kubernetes 基础设施上的部署。
 
-The Operator provides MinIO-centric functionality around Tenant management, including support for configuring all core MinIO features. 
+该 Operator 提供以 MinIO 为核心的租户管理功能，包括对所有 MinIO 核心特性的配置支持。
 
-You can interact with the Operator through the MinIO :kube-docs:`Custom Resource Definition (CRD) <concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions>`, or through the Operator Console UI.
+你可以通过 MinIO 的 :kube-docs:`Custom Resource Definition (CRD) <concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions>` 或 Operator Console UI 与 Operator 交互。
 
-The CRD provides a highly customizable entry point for using tools like Kustomize for deploying Tenants.
-You can also use the MinIO Operator Console, a rich web-based UI that has complete support for deploying and configuring MinIO Tenants.
+CRD 为使用 Kustomize 等工具部署租户提供了高度可定制的入口。
+你也可以使用 MinIO Operator Console 这一功能完整的 Web UI 来部署和配置 MinIO 租户。
 
 .. important:: 
 
-   The MinIO Operator Console UI is deprecated and removed in MinIO Operator 6.0.0.
+   MinIO Operator Console UI 已被弃用，并在 MinIO Operator 6.0.0 中移除。
 
-   You can continue to use standard Kubernetes approaches for MinIO Tenant management, such as Kustomize templates, Helm Charts, and ``kubectl`` commands for introspecting Tenant namespaces and resources.
+   你仍可继续使用标准 Kubernetes 方式管理 MinIO 租户，例如 Kustomize 模板、Helm Charts，以及用于查看租户命名空间和资源的 ``kubectl`` 命令。
 
 
 .. toctree::

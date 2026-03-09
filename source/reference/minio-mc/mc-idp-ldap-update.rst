@@ -6,27 +6,27 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc idp ldap update
 
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-update-desc
 
-The :mc:`mc idp ldap update` command modifies an existing set of configurations for an AD/LDAP provider.
+:mc:`mc idp ldap update` 命令用于修改 AD/LDAP 提供程序的现有配置集。
 
 .. end-mc-idp-ldap-update-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following example changes two of the AD/LDAP configuration settings for the ``myminio`` deployment.
+      以下示例修改 ``myminio`` 部署的两个 AD/LDAP 配置项。
 
       .. code-block:: shell
          :class: copyable
@@ -36,9 +36,9 @@ The :mc:`mc idp ldap update` command modifies an existing set of configurations 
                      lookup_bind_dn=cn=admin,dc=min,dc=io  \
                      lookup_bind_password=somesecret
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令使用以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -48,22 +48,22 @@ The :mc:`mc idp ldap update` command modifies an existing set of configurations 
                                    [CFG_PARAM1]     \
                                    [CFG_PARAM2]...
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to update for AD/LDAP integration.
-      - Replace the ``[CFG_PARAM#]`` with each of the :ref:`configuration setting <minio-ldap-config-settings>` key-value pairs in the format of ``PARAMETER="value"``.
+      - 将 ``ALIAS`` 替换为要更新 AD/LDAP 集成配置的 MinIO 部署的 :ref:`alias <alias>`。
+      - 将 ``[CFG_PARAM#]`` 替换为各个 :ref:`configuration setting <minio-ldap-config-settings>` 键值对，格式为 ``PARAMETER="value"``。
 
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment on which to modify an AD/LDAP integration.
+   要修改其 AD/LDAP 集成配置的 MinIO 部署的 :ref:`alias <alias>`。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -75,19 +75,19 @@ Parameters
    :end-before: end-minio-ad-ldap-params
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

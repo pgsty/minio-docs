@@ -2,10 +2,12 @@
 
 .. important::
 
-   MinIO plans to deprecate the Tenant Console Audit Log feature and remove it in an upcoming release.
-   MinIO recommends disabling this feature in preparation for this change.
+   MinIO 计划弃用租户 Console Audit Log 功能，
+   并在后续版本中移除。
+   MinIO 建议提前禁用该功能，为此变更做好准备。
 
-   As an alternative, use any webhook-capable database or logging service to capture :ref:`audit logs <minio-logging-publish-audit-logs>` from the Tenant.
+   作为替代方案，可使用任意支持 webhook 的数据库或日志服务，
+   来接收租户的 :ref:`审计日志 <minio-logging-publish-audit-logs>`。
 
 .. end-deprecate-audit-logs
 
@@ -13,9 +15,11 @@
 
 .. important::
 
-   MinIO plans to deprecate the Tenant Prometheus pod feature and remove it in an upcoming release.
-   MinIO recommends setting this value to ``false`` in preparation for this change.
+   MinIO 计划弃用租户 Prometheus pod 功能，
+   并在后续版本中移除。
+   MinIO 建议提前将该值设置为 ``false``，为此变更做好准备。
 
-   As an alternative, use any Prometheus service deployed within the Kubernetes cluster or externally to :ref:`capture Tenant metrics <minio-metrics-collect-using-prometheus>`.
+   作为替代方案，可使用部署在 Kubernetes 集群内或集群外的任意 Prometheus 服务，
+   来 :ref:`采集租户指标 <minio-metrics-collect-using-prometheus>`。
 
 .. end-deprecate-prometheus

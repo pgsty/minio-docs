@@ -1,12 +1,12 @@
 .. _minio-go-quickstart:
 
-===================
-Go Quickstart Guide
-===================
+=================
+Go 快速入门指南
+=================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 

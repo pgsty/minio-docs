@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,36 +14,35 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   ``mc ilm rule export`` replaces ``mc ilm export``.
+   ``mc ilm rule export`` 替代 ``mc ilm export``。
 
-Syntax
-------
+语法
+----
 
 .. start-mc-ilm-rule-export-desc
 
-The :mc:`mc ilm rule export` command exports the object lifecycle management configuration for a MinIO bucket.
+:mc:`mc ilm rule export` 命令用于导出 MinIO 存储桶的对象生命周期管理配置。
 
 .. end-mc-ilm-rule-export-desc
 
-The :mc:`mc ilm rule export` command outputs to ``STDOUT`` by default. 
-You can output the contents to a ``.json`` file for archival or ingestion using :mc:`mc ilm rule import`.
+:mc:`mc ilm rule export` 命令默认输出到 ``STDOUT``。
+你可以将内容输出到 ``.json`` 文件中进行归档，或使用 :mc:`mc ilm rule import` 导入。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command exports the lifecycle management configuration
-      of the ``mydata`` bucket on the ``myminio`` deployment to the
-      ``mydata-lifecycle-config.json`` file:
+      以下命令将 ``myminio`` 部署上 ``mydata`` 存储桶的生命周期管理配置
+      导出到 ``mydata-lifecycle-config.json`` 文件：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm rule export myminio/mydata > mydata-lifecycle-config.json
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -55,71 +54,67 @@ You can output the contents to a ``.json`` file for archival or ingestion using 
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
    
-   The :ref:`alias <alias>` and full path to the bucket on the MinIO deployment for which to export object lifecycle management rules. 
-   For example:
+   要导出对象生命周期管理规则的 MinIO 部署中存储桶的 :ref:`alias <alias>` 和完整路径。
+   例如：
 
    .. code-block:: none
 
       mc ilm rule export myminio/mydata > bucket-lifecycle.json
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Export the Bucket Lifecycle Management Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+导出存储桶生命周期管理配置
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following command exports the bucket lifecycle management
-      configuration to the ``bucket-lifecycle.json`` file:
+      以下命令将存储桶生命周期管理配置导出到 ``bucket-lifecycle.json`` 文件：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm rule export myminio/mybucket > bucket-lifecycle.json
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm rule export ALIAS > file.json
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO 
-        deployment and the bucket for which to export object lifecycle
-        management rules:
+      - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>` 以及要导出对象生命周期管理规则的存储桶：
 
         ``myminio/mydata``
 
-      - Replace ``file.json`` with the name of the file to which to export the
-        lifecycle management rules.
+      - 将 ``file.json`` 替换为用于导出生命周期管理规则的文件名。
 
-Required Permissions
---------------------
-
-For permissions required to export a rule, refer to the :ref:`required permissions <minio-mc-ilm-rule-permissions>` on the parent command.
-
-
-Behavior
+所需权限
 --------
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+有关导出规则所需的权限，请参阅父命令中的 :ref:`required permissions <minio-mc-ilm-rule-permissions>`。
+
+
+行为
+----
+
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

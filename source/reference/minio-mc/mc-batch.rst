@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -13,30 +13,30 @@
 
 .. versionadded:: mc RELEASE.2023-03-20T17-17-53Z
 
-   Added the ability to cancel jobs with the :mc:`mc batch cancel` command.
+   新增了通过 :mc:`mc batch cancel` 命令取消作业的能力。
 
 
-Description
------------
+描述
+----
 
 .. start-mc-batch-desc
 
-The :mc:`mc batch` commands allow you to run one or more job tasks on a MinIO deployment.
+:mc:`mc batch` 命令允许您在 MinIO 部署上运行一个或多个作业任务。
 
 .. end-mc-batch-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc-cmd:`mc batch` includes the following subcommands:
+:mc-cmd:`mc batch` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc batch cancel`
      - .. include:: /reference/minio-mc/mc-batch-cancel.rst

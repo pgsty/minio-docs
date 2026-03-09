@@ -1,10 +1,10 @@
-===================
-Baremetal Reference
-===================
+============
+裸金属参考
+============
 
 .. default-domain:: minio
 
-This page acts as an index for MinIO Baremetal references.
+本页作为 MinIO 裸金属参考文档的索引页。
 
 .. toctree::
    :titlesonly:

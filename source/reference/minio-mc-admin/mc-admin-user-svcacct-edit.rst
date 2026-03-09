@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,26 +14,26 @@
 
 .. important::
 
-   This command has been replaced and will be deprecated in a future MinIO Client release.
+   此命令已被替代，并将在未来的 MinIO Client 发布版本中弃用。
 
-   As of MinIO Client RELEASE.2024-10-08T09-37-26Z, use the :mc:`mc admin accesskey edit` command to modify access keys for built-in MinIO IDP users.
+   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey edit` 命令修改内置 MinIO IDP 用户的访问密钥。
 
-   To modify access keys for AD/LDAP users, use the :mc:`mc idp ldap accesskey edit` command.
+   如需修改 AD/LDAP 用户的访问密钥，请使用 :mc:`mc idp ldap accesskey edit` 命令。
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-svcacct-edit-desc
 
-The :mc-cmd:`mc admin user svcacct edit` command modifies the configuration of an access key associated to the specified user.
+:mc-cmd:`mc admin user svcacct edit` 命令用于修改与指定用户关联的访问密钥配置。
 
 .. end-mc-admin-svcacct-edit-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command applies a new policy and secret key to the ``myuserserviceaccount`` access key on the ``myminio`` deployment:
+      以下命令为 ``myminio`` 部署上的 ``myuserserviceaccount`` 访问密钥应用新的策略和密钥：
 
       .. code-block:: shell  
          :class: copyable 
@@ -43,9 +43,9 @@ The :mc-cmd:`mc admin user svcacct edit` command modifies the configuration of a
                                --policy "/path/to/new/policy.json"              \  
                                myminio myuserserviceaccount
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      该命令的语法如下：
   
       .. code-block:: shell  
          :class: copyable 
@@ -61,36 +61,36 @@ The :mc-cmd:`mc admin user svcacct edit` command modifies the configuration of a
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: SERVICEACCOUNT
    :required:
 
-   The service account to modify.
+   要修改的服务账号。
 
 .. mc-cmd:: --description
    :optional:
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   Add a description for the service account.
-   For example, you might specify the reason the service account exists.
+   为服务账号添加描述。
+   例如，可以说明该服务账号存在的原因。
 
 .. mc-cmd:: --expiry
    :optional:
 
    .. versionadded:: RELEASE.2023-05-30T22-41-38Z
 
-   Set an expiration date for the service account.
-   The date must be in the future, you may not set an expiration date that has already passed.
+   为服务账号设置过期日期。
+   日期必须在未来，不能设置已经过去的过期日期。
 
-   Allowed date and time formats:
+   允许的日期和时间格式：
 
    - ``2023-06-24``
    - ``2023-06-24T10:00``
@@ -103,37 +103,37 @@ Parameters
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   Add a human-readable name for the service account.
+   为服务账号添加一个便于识别的名称。
 
 .. mc-cmd:: --policy
    :optional:
 
-   The path to a :ref:`policy document <minio-policy>` to attach to the new access key, with a maximum size of 2048 characters.
-   The attached policy cannot grant access to any action or resource not explicitly allowed by the parent user's policies.
+   要附加到新访问密钥的 :ref:`policy document <minio-policy>` 路径，最大长度为 2048 个字符。
+   附加的策略不能授予父用户策略未明确允许的任何操作或资源访问权限。
 
-   The new policy overwrites any previously attached policy.
+   新策略会覆盖此前已附加的任何策略。
 
 .. mc-cmd:: --secret-key
    :optional:
 
-   The secret key to associate with the new access key.
-   Overwrites the previous secret key.
-   Applications using the access keys *must* update to use the new credentials to continue performing operations.
+   与新访问密钥关联的密钥。
+   会覆盖此前的密钥。
+   使用这些访问密钥的应用程序 *必须* 更新为新凭证，才能继续执行操作。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

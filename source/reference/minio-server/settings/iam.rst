@@ -1,17 +1,17 @@
 .. _minio-server-envvar-iam:
 
 =======================================
-Identity and Access Management Settings
+身份与访问管理设置
 =======================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The pages in this section document settings for configuring MinIO to work with identity and access management (IAM) solutions.
-There is a page of settings for each of the IAM methods MinIO supports.
+本节页面记录了用于配置 MinIO 与身份与访问管理（IAM）方案协同工作的相关设置。
+MinIO 支持的每种 IAM 方法都对应一个独立的设置页面。
 
 - :ref:`Active Directory / LDAP <minio-server-envvar-external-identity-management-ad-ldap>`
 - :ref:`OpenID <minio-server-envvar-external-identity-management-openid>`

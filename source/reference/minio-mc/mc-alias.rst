@@ -4,38 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc alias
 
 
-Description
------------
+说明
+----
 
 .. start-mc-alias-desc
 
-The :mc:`mc alias` commands provide a convenient interface for managing the list of S3-compatible hosts that :mc-cmd:`mc` can connect to and run operations against.
+:mc:`mc alias` 命令提供了一个便捷接口，用于管理 :mc-cmd:`mc` 可连接并执行操作的 S3 兼容主机列表。
 
 .. end-mc-alias-desc
 
 .. important:: 
    
-   :mc-cmd:`mc` commands that operate on S3-compatible services *require* specifying an alias for that service.
+   对 S3 兼容服务执行操作的 :mc-cmd:`mc` 命令 *必须* 为该服务指定一个别名。
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc alias` includes the following subcommands:
+:mc:`mc alias` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc alias list`
      - .. include:: /reference/minio-mc/mc-alias-list.rst

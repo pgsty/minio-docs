@@ -2,14 +2,12 @@
 
    .. tab-item:: Linux
 
-      The following commands add a *temporary* extension to your system
-      PATH for running the ``mc`` utility. Defer to your operating system
-      instructions for making permanent modifications to your system PATH.
+      以下命令会向系统 PATH *临时* 追加一项，以便运行 ``mc`` 工具。
+      若要永久修改系统 PATH，请遵循你的操作系统说明。
 
-      Alternatively, execute ``mc`` by navigating to the parent folder and
-      running ``./mc --help``
+      或者，你也可以进入 ``mc`` 所在目录并运行 ``./mc --help``。
 
-      **64-bit Intel**
+      **64 位 Intel**
 
       .. code-block:: shell
          :class: copyable
@@ -23,7 +21,7 @@
 
          mc --help
 
-      **64-bit PPC**
+      **64 位 PPC**
 
       .. code-block:: shell
          :class: copyable
@@ -51,15 +49,19 @@
 
          mc --help
 
-      .. admonition:: Install from the MinIO Download Page
+      .. admonition:: 从 MinIO 下载页面安装
          :class: note
 
-         MinIO does not officially publish its binaries to common Linux repositories or package managers (Ubuntu, RHEL, Archlinux/AUR).
-         The only official source of MinIO binaries is the `MinIO Download Page <https://dl.min.io/client/mc/release/>`__.
+         MinIO 不会通过常见 Linux 软件仓库或包管理器
+         （Ubuntu、RHEL、Archlinux/AUR）正式发布其二进制文件。
+         MinIO 二进制文件唯一的官方来源是
+         `MinIO Download Page <https://dl.min.io/client/mc/release/>`__。
 
-         MinIO does not recommend installation through a package manager, as upstream repositories may install the incorrect package or a renamed package.
+         MinIO 不建议通过包管理器安装，因为上游仓库可能会安装错误的软件包，
+         或安装被重命名的软件包。
 
-         All documentation assumes the installation of the *official* ``mc`` client binary through the download page *only*, with no changes to binary naming.
+         所有文档都假定你 *仅* 通过下载页面安装 *官方* ``mc`` 客户端二进制文件，
+         且二进制名称未做任何修改。
 
    .. tab-item:: macOS
 
@@ -72,12 +74,11 @@
 
    .. tab-item:: Windows
 
-      Open the following file in a browser:
+      在浏览器中打开以下文件：
       
       https://dl.min.io/client/mc/release/windows-amd64/mc.exe
 
-      Execute the file by double clicking on it, *or* by running the
-      following in the command prompt or powershell:
+      双击该文件即可执行，*或者* 在命令提示符或 PowerShell 中运行以下命令：
 
       .. code-block:: powershell
 
@@ -85,18 +86,14 @@
 
    .. tab-item:: Source
 
-      Installation from source is intended for developers and advanced users
-      and requires a working Golang environment. See 
+      从源码安装适用于开发者和高级用户，并要求具备可用的 Golang 环境。请参阅
       `How to install Golang <https://golang.org/doc/install>`__.
 
-      Run the following commands in a terminal environment to install ``mc``
-      from source:
+      在终端环境中运行以下命令，从源码安装 ``mc``：
 
       .. code-block:: shell
          :class: copyable
 
          go install github.com/minio/mc@latest
 
-      :mc:`mc update` does not support source-based installations.
-
-
+      :mc:`mc update` 不支持源码安装方式。

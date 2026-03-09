@@ -1,48 +1,48 @@
 .. _minio-certmanager-tenants:
 
-========================
-cert-manager for Tenants
-========================
+========================================
+租户的 cert-manager
+========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-The following procedures create and apply the resources necessary to use cert-manager for the TLS certificates within a tenant.
+以下过程用于创建并应用在租户内使用 cert-manager 管理 TLS 证书所需的资源。
 
 .. note::
 
-   The procedures use ``tenant-1`` as the name of the tenant.
+   本过程使用 ``tenant-1`` 作为租户名称。
    
-   Replace the string ``tenant-1`` throughout the procedures to reflect the name of your tenant.
+   请在整个过程中将 ``tenant-1`` 替换为你的租户名称。
 
-Prerequisites
--------------
+前提条件
+--------
 
-- `kustomize <https://kustomize.io/>`__ installed
-- ``kubectl`` access to your ``k8s`` cluster
-- Completed the steps to :ref:`set up cert-manager <minio-setup-certmanager>`
-- The MinIO Operator installed and :ref:`set up for cert-manager <minio-certmanager-operator>`.
+- 已安装 `kustomize <https://kustomize.io/>`__
+- 可通过 ``kubectl`` 访问你的 ``k8s`` 集群
+- 已完成 :ref:`cert-manager 的设置 <minio-setup-certmanager>`
+- 已安装 MinIO Operator，并已 :ref:`完成 cert-manager 设置 <minio-certmanager-operator>`
 
-1) Create the tenant namespace CA Issuer
-----------------------------------------
+1) 创建租户命名空间的 CA Issuer
+-------------------------------
 
-Before deploying a new tenant, create a Certificate Authority and Issuer for the tenant's namespace.
+在部署新租户之前，先为该租户的命名空间创建 Certificate Authority 和 ``Issuer``。
 
-1. If necessary, create the tenant's namespace.
+1. 如有必要，先创建租户命名空间。
 
    .. code-block:: shell
       :class: copyable
 
       kubectl create ns tenant-1
 
-   This much match the value of the ``metadata.namespace`` field in the tenant's YAML.
+   该值必须与租户 YAML 中 ``metadata.namespace`` 字段的值一致。
 
-2. Request a Certificate for a new Certificate Authority with ``spec.isCA`` set to ``true``.
+2. 为新的 Certificate Authority 申请一个 ``Certificate``，并将 ``spec.isCA`` 设为 ``true``。
 
-   Create a file called ``tenant-1-ca-certificate.yaml`` with the following contents:
+   创建一个名为 ``tenant-1-ca-certificate.yaml`` 的文件，内容如下：
 
    .. code-block:: yaml
       :class: copyable
@@ -69,25 +69,25 @@ Before deploying a new tenant, create a Certificate Authority and Issuer for the
 
    .. important::
 
-      The ``spec.issueRef.name`` must match the name of the ``ClusterIssuer`` created when :ref:`setting up cert-manager <minio-cert-manager-create-cluster-issuer>`.
-      If you specified a different ``ClusterIssuer`` name or are using a different ``Issuer`` from the guide, modify the ``issuerRef`` to match your environment.
+      ``spec.issueRef.name`` 必须与 :ref:`设置 cert-manager <minio-cert-manager-create-cluster-issuer>` 时创建的 ``ClusterIssuer`` 名称一致。
+      如果你使用了不同的 ``ClusterIssuer`` 名称，或者采用了与本指南不同的 ``Issuer``，请按你的环境修改 ``issuerRef``。
 
 
-3. Apply the resource:
+3. 应用该资源：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl apply -f tenant-1-ca-certificate.yaml
 
-2) Create the ``Issuer``
-------------------------
+2) 创建 ``Issuer``
+------------------
 
-The ``Issuer`` issues the certificates within the tenant namespace.
+``Issuer`` 负责在租户命名空间内签发证书。
 
-1. Generate a resource definition for an ``Issuer``.
+1. 生成一个 ``Issuer`` 的资源定义。
 
-   Create a file called ``tenant-1-ca-issuer.yaml`` with the following contents:
+   创建一个名为 ``tenant-1-ca-issuer.yaml`` 的文件，内容如下：
 
    .. code-block:: yaml
       :class: copyable
@@ -102,18 +102,18 @@ The ``Issuer`` issues the certificates within the tenant namespace.
         ca:
           secretName: tenant-1-ca-tls
 
-2. Apply the ``Issuer`` resource definition:
+2. 应用该 ``Issuer`` 资源定义：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl apply -f tenant-1-ca-issuer.yaml
 
-3) Create a certificate for the tenant
---------------------------------------
+3) 为租户创建证书
+-----------------
 
-Request that cert-manager issue a new TLS server certificate for MinIO.
-The certificate must be valid for the following DNS domains:
+请求 cert-manager 为 MinIO 签发新的 TLS server 证书。
+该证书必须对以下 DNS 域名有效：
 
 - ``minio.<namespace>``
 - ``minio.<namespace>.svc``
@@ -124,32 +124,32 @@ The certificate must be valid for the following DNS domains:
 
 .. important::
 
-   Replace the the placeholder text (marked with the ``<`` and ``>`` characters) with values for your tenant: 
+   请将占位符文本（由 ``<`` 和 ``>`` 标识）替换为你的租户实际值：
 
-   - ``<cluster domain>`` is the internal root DNS domain assigned in your Kubernetes cluster. 
-     Typically, this is ``cluster.local``, but confirm the value by checking your CoreDNS configuration for the correct value for your Kubernetes cluster. 
+   - ``<cluster domain>`` 是 Kubernetes 集群内部的根 DNS 域。
+     通常为 ``cluster.local``，但你仍应检查 CoreDNS 配置，以确认 Kubernetes 集群实际使用的值。
       
-     For example:
+     例如：
 
      .. code-block:: shell
         :class: copyable
 
         kubectl get configmap coredns -n kube-system -o jsonpath="{.data}"
 
-     Different Kubernetes providers manage the root domain differently.
-     Check with your Kubernetes provider for more information.
+     不同 Kubernetes 提供方对根域名的管理方式各不相同。
+     更多信息请参考你的 Kubernetes 提供方文档。
 
-   - ``tenant-name`` is the name provided to your tenant in the ``metadata.name`` of the Tenant YAML. 
-     For this example it is ``myminio``.
+   - ``tenant-name`` 是 Tenant YAML 中 ``metadata.name`` 字段指定的名称。
+     在本例中该值为 ``myminio``。
 
-   - ``namespace`` is the value created earlier where the tenant will be installed.
-     In the tenant YAML, it is defined in the the ``metadata.namespace`` field. 
-     For this example it is ``tenant-1``.
+   - ``namespace`` 是前面创建、将用于安装租户的命名空间值。
+     在 Tenant YAML 中，它定义在 ``metadata.namespace`` 字段。
+     在本例中该值为 ``tenant-1``。
 
-1. Request a ``Certificate`` for the specified domains
+1. 为指定域名申请一个 ``Certificate``
 
-   Create a file called ``tenant-1-minio-certificate.yaml``.
-   The contents of the file should resemble the following, modified to reflect your cluster and tenant configurations: 
+   创建一个名为 ``tenant-1-minio-certificate.yaml`` 的文件。
+   文件内容应类似如下，并根据你的集群和租户配置进行调整：
 
    .. code-block:: yaml
       :class: copyable
@@ -174,17 +174,17 @@ The certificate must be valid for the following DNS domains:
 
    .. tip::
 
-      For this example, the Tenant name is ``myminio``. 
-      We recommend naming the secret in the field ``spec.secretName`` as ``<tenant-name>-tls`` as a naming convention.
+      在本例中，Tenant 名称为 ``myminio``。
+      作为命名约定，建议将 ``spec.secretName`` 字段中的 secret 命名为 ``<tenant-name>-tls``。
 
-2. Apply the certificate resource:
+2. 应用该证书资源：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl apply -f tenant-1-minio-certificate.yaml
 
-3. Validate the changes took effect:
+3. 验证变更是否已生效：
 
    .. code-block:: shell
       :class: copyable
@@ -193,20 +193,20 @@ The certificate must be valid for the following DNS domains:
 
    .. note::
 
-      - Replace ``tenant-1`` with the namespace for your tenant.
-      - Replace ``myminio-tls`` with the name of your secret, if different.
+      - 将 ``tenant-1`` 替换为你的租户命名空间。
+      - 如果 secret 名称不同，请将 ``myminio-tls`` 替换为实际值。
 
-4) Deploy the tenant using cert-manager for TLS certificate management
-----------------------------------------------------------------------
+4) 使用 cert-manager 部署租户并管理 TLS 证书
+------------------------------------------------------------
 
-When deploying a Tenant, you must set the TLS configuration such that:
+部署 Tenant 时，必须将 TLS 配置设置为以下状态：
 
-- The Tenant does not automatically generate its own certificates (``spec.requestAutoCert: false``) *and*
-- The Tenant has a valid cert-manager reference (``spec.externalCertSecret``)
+- Tenant 不会自动生成自己的证书（``spec.requestAutoCert: false``）*并且*
+- Tenant 具有有效的 cert-manager 引用（``spec.externalCertSecret``）
 
-This directs the Operator to deploy the Tenant using the cert-manager certificates exclusively.
+这会指示 Operator 在部署 Tenant 时仅使用 cert-manager 管理的证书。
 
-The following YAML ``spec`` provides a baseline configuration meeting these requirements:
+以下 YAML ``spec`` 提供了满足这些要求的基线配置：
 
 .. code-block:: yaml
    :emphasize-lines: 6,9,11
@@ -226,31 +226,31 @@ The following YAML ``spec`` provides a baseline configuration meeting these requ
          type: cert-manager.io/v1
    ...
 
-5) Trust the tenant's CA in MinIO Operator
-------------------------------------------
+5) 在 MinIO Operator 中信任租户 CA
+------------------------------------------------
 
-The MinIO Operator does not trust the tenant's CA by default.
-To trust the tenant's CA, you must pass the certificate to the Operator as a secret.
+默认情况下，MinIO Operator 不信任租户的 CA。
+若要让 Operator 信任该 CA，你必须将该证书作为 secret 传递给 Operator。
 
-To do this, create a secret with the prefix ``operator-ca-tls-`` followed by a unique identifier in the `minio-operator` namespace.
+为此，请在 ``minio-operator`` 命名空间中创建一个以 ``operator-ca-tls-`` 为前缀、后接唯一标识符命名的 secret。
 
-MinIO Operator mounts and trusts **all** certificates issued by the provided Certificate Authorities. 
-This is required because the MinIO Operator performs health checks using the ``/minio/health/cluster`` endpoint.
+MinIO Operator 会挂载并信任由所提供的 Certificate Authority 签发的 **所有** 证书。
+这是必需的，因为 MinIO Operator 会通过 ``/minio/health/cluster`` 端点执行健康检查。
 
-Create ``operator-ca-tls-tenant-1`` secret
-++++++++++++++++++++++++++++++++++++++++++
+创建 ``operator-ca-tls-tenant-1`` secret
++++++++++++++++++++++++++++++++++++++++++++++++
 
-Copy the tenant's cert-manager generated CA public key (``ca.crt``) into the `minio-operator` namespace. 
-This allows Operator to trust the cert-manager issued CA and all certificates derived from it.
+将租户中由 cert-manager 生成的 CA 公钥（``ca.crt``）复制到 ``minio-operator`` 命名空间中。
+这样 Operator 就能信任该 cert-manager 颁发的 CA 及其派生的所有证书。
 
-1. Create a ``ca.crt`` file containing the CA:
+1. 创建一个包含该 CA 的 ``ca.crt`` 文件：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl get secrets -n tenant-1 tenant-1-ca-tls -o=jsonpath='{.data.ca\.crt}' | base64 -d > ca.crt
 
-2. Create the secret:
+2. 创建 secret：
 
    .. code-block:: shell
       :class: copyable
@@ -259,14 +259,13 @@ This allows Operator to trust the cert-manager issued CA and all certificates de
 
 .. tip::
 
-   In this example we chose a secret name of ``operator-ca-tls-tenant-1``. 
-   We used the tenant namespace ``tenant-1`` as a suffix for easy identification of which namespace the CA comes from.
-   Use the name of your tenant namespace for easier linking secrets to the related resources.
+   在本例中，我们选择将 secret 命名为 ``operator-ca-tls-tenant-1``。
+   我们使用租户命名空间 ``tenant-1`` 作为后缀，以便更容易识别该 CA 来自哪个命名空间。
+   建议使用你的租户命名空间名称作为后缀，以便将 secret 与相关资源更容易关联起来。
 
-6) Deploy the tenant 
---------------------
+6) 部署租户
+-----------
 
-With the Certificate Authority and ``Issuer`` in place for the tenant's namespace, you can now :ref:`deploy the object store tenant <minio-k8s-deploy-minio-tenant>`.
+租户命名空间中的 Certificate Authority 和 ``Issuer`` 就绪后，你现在可以 :ref:`部署对象存储租户 <minio-k8s-deploy-minio-tenant>`。
 
-Use the modified baseline tenant YAML to disable AutoCert and reference the secret you generated.
-
+请使用修改后的基线 Tenant YAML，禁用 AutoCert 并引用刚刚生成的 secret。

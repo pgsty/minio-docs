@@ -6,42 +6,39 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc replicate reset
 .. mc:: mc replicate resync
 
-Syntax
-------
+语法
+----
 
 .. start-mc-replicate-resync-desc
 
-The :mc:`mc replicate resync` command resynchronizes all objects in the
-specified MinIO bucket to a remote :ref:`replication
-<minio-bucket-replication-serverside>` target. 
+:mc:`mc replicate resync` 命令会将指定 MinIO 存储桶中的所有对象，
+重新同步到远端 :ref:`replication
+<minio-bucket-replication-serverside>` 目标。
 
 .. end-mc-replicate-resync-desc
 
-This command *requires* first configuring the remote bucket target using the
-:mc-cmd:`mc replicate add` command. You must specify the resulting
-remote ARN as part of running :mc:`mc replicate resync`.
+此命令*要求*先使用 :mc-cmd:`mc replicate add` 命令配置远端存储桶目标。
+执行 :mc:`mc replicate resync` 时，必须指定由此生成的远端 ARN。
 
-This command supports rebuilding a MinIO deployment using an active-active
-replication remote as the "backup" source. See the following tutorials
-for more information on active-active replication:
+此命令支持使用 active-active 复制的远端作为“备份”来源来重建 MinIO 部署。
+有关 active-active 复制的更多信息，请参阅以下教程：
 
 - :ref:`minio-bucket-replication-serverside-twoway`
 - :ref:`minio-bucket-replication-serverside-multi`
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command resynchronizes the content of the 
-      ``mydata`` bucket on the ``myminio`` MinIO deployment to the remote
-      MinIO deployment associated to the specified ``--remote-bucket``:
+      以下命令将 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的内容，
+      重新同步到与指定 ``--remote-bucket`` 关联的远端 MinIO 部署：
 
       .. code-block:: shell
          :class: copyable
@@ -50,9 +47,9 @@ for more information on active-active replication:
             --remote-bucket "arn:minio:replication::d3c086c7-1d64-40c2-954b-fe8222907033:mydata" \ 
             myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -66,16 +63,15 @@ for more information on active-active replication:
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment and full path to
-   the bucket or bucket prefix which MinIO uses as the replication source. For
-   example, the following command starts replication using the ``data``
-   bucket on the MinIO deployment associated to the ``primary`` alias.
+   MinIO 部署的 :ref:`alias <alias>`，以及 MinIO 用作复制源的存储桶或存储桶前缀的完整路径。
+   例如，以下命令使用与 ``primary`` 别名关联的 MinIO 部署上的 ``data``
+   存储桶启动复制。
 
    .. code-block:: none
 
@@ -84,72 +80,65 @@ Parameters
 .. mc-cmd:: start
    :required:
 
-   Starts the resynchronization procedure using the specified 
-   :mc-cmd:`bucket <mc replicate resync ALIAS>` as the source and the
-   :mc-cmd:`--remote-bucket <mc replicate resync --remote-bucket>` as the 
-   remote target.
+   使用指定的 :mc-cmd:`bucket <mc replicate resync ALIAS>` 作为源，
+   并使用 :mc-cmd:`--remote-bucket <mc replicate resync --remote-bucket>` 作为远端目标，
+   启动重新同步过程。
 
-   Mutually exclusive with :mc:`mc replicate resync status`.
+   与 :mc:`mc replicate resync status` 互斥。
 
 .. mc-cmd:: status
    :required:
 
-   Returns the status of resynchronization on the specified 
-   :mc-cmd:`bucket <mc replicate resync ALIAS>` to all remote targets.
+   返回指定 :mc-cmd:`bucket <mc replicate resync ALIAS>` 到所有远端目标的重新同步状态。
 
-   Include the :mc-cmd:`~mc replicate resync --remote-bucket` argument to
-   filter the status output to only the specified remote target.
+   包含 :mc-cmd:`~mc replicate resync --remote-bucket` 参数可将状态输出过滤为仅显示指定远端目标。
 
 .. mc-cmd:: --remote-bucket
    :required:
 
-   Specify the ARN for the destination deployment and bucket. 
+   指定目标部署和存储桶的 ARN。
    
-   You can retrieve the ARN using :mc-cmd:`mc replicate ls` with the ``--json`` option.
-   The ``rule.Destination.Bucket`` field contains the ARN for any given replication rule.
+   可通过 :mc-cmd:`mc replicate ls` 配合 ``--json`` 选项获取 ARN。
+   ``rule.Destination.Bucket`` 字段包含任意给定复制规则的 ARN。
 
 .. mc-cmd:: older-than
    :optional:
 
-   Specify a duration in days where MinIO only resynchronizes
-   objects older than the specified duration.
+   指定一个以天为单位的时长，MinIO 仅会重新同步早于该时长的对象。
 
-   Only valid with :mc:`mc replicate resync start`.
+   仅可与 :mc:`mc replicate resync start` 一起使用。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Resynchronize Remote Replication Target from Source Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从源存储桶重新同步远端复制目标
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following :mc:`mc replicate resync` command resynchronizes all objects
-on the specified source bucket to the remote target regardless of their
-replication status:
+以下 :mc:`mc replicate resync` 命令会将指定源存储桶中的所有对象重新同步到远端目标，
+不考虑其复制状态：
 
 .. code-block:: shell
    :class: copyable
 
    mc replicate resync start --remote-bucket "arn:minio:replication::UUID:data" primary/data
 
-- Replace ``primary/data`` with the :mc-cmd:`~mc replicate add ALIAS` and
-  full bucket path for which to create the replication configuration.
+- 将 ``primary/data`` 替换为 :mc-cmd:`~mc replicate add ALIAS` 对应的完整存储桶路径，用于创建复制配置。
 
-- Replace the :mc-cmd:`~mc replicate add --remote-bucket` value with the 
-  ARN of the remote target. Use :mc-cmd:`mc replicate ls` to list
-  all configured remote replication targets.
+- 将 :mc-cmd:`~mc replicate add --remote-bucket` 的值替换为远端目标的 ARN。
+  使用 :mc-cmd:`mc replicate ls` 列出所有已配置的远端复制目标。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

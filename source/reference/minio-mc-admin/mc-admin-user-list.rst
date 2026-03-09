@@ -14,36 +14,36 @@
 .. mc:: mc admin user ls
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-user-list-desc
 
-The :mc:`mc admin user ls` command lists all :ref:`MinIO users <minio-internal-idp>` on the target MinIO deployment.
+:mc:`mc admin user ls` 命令会列出目标 MinIO 部署上的所有 :ref:`MinIO 用户 <minio-internal-idp>`。
 
 .. end-mc-admin-user-list-desc
 
-The :mc:`mc admin user list` command has equivalent functionality to :mc:`mc admin user ls`.
+:mc:`mc admin user list` 命令与 :mc:`mc admin user ls` 功能等效。
 
-:mc-cmd:`mc admin user ls` does *not* return the access key or secret key associated to a user.
-Use :mc-cmd:`mc admin user info` to retrieve detailed user information, including the user access key.
+:mc-cmd:`mc admin user ls` *不会* 返回与用户关联的 access key 或 secret key。
+使用 :mc-cmd:`mc admin user info` 可获取用户详细信息，包括用户的 access key。
 
-To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :mc:`AD/LDAP <mc idp ldap>`.
+要管理外部 Identity Provider 用户，请参阅 :mc:`OIDC <mc idp openid>` 或 :mc:`AD/LDAP <mc idp ldap>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command lists all users on the ``myminio`` MinIO deployment:
+      以下命令会列出 ``myminio`` MinIO 部署上的所有用户：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin user ls myminio
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -56,39 +56,39 @@ To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :m
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment from which the command lists users.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，命令将从该部署中列出用户。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Example
--------
+示例
+----
 
-List Available Users
-~~~~~~~~~~~~~~~~~~~~
+列出可用用户
+~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin user ls` to list all users on a MinIO deployment:
+使用 :mc-cmd:`mc admin user ls` 列出 MinIO 部署上的所有用户：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user ls ALIAS
 
-- Replace :mc-cmd:`ALIAS <mc admin user ls ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user ls ALIAS>` 替换为该 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -97,11 +97,11 @@ The output resembles the following:
    enabled    newuser
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

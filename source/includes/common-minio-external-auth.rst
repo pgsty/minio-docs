@@ -7,50 +7,50 @@
 
 .. start-minio-openid-client-id
 
-Specify the unique public identifier MinIO uses when authenticating user
-credentials against the :abbr:`OIDC (OpenID Connect)` compatible provider.
+指定 MinIO 在使用与 :abbr:`OIDC (OpenID Connect)` 兼容的 provider 验证用户凭证时
+所使用的唯一公开标识符。
 
 .. end-minio-openid-client-id
 
 .. start-minio-openid-client-secret
 
-Specify the client secret MinIO uses when authenticating user credentials
-against the :abbr:`OIDC (OpenID Connect)` compatible provider. This field
-may be optional depending on the provider.
+指定 MinIO 在使用与 :abbr:`OIDC (OpenID Connect)` 兼容的 provider 验证用户凭证时
+所使用的 client secret。根据 provider 的不同，此字段可能是可选的。
 
 .. versionchanged:: RELEASE.2023-06-23T20-26-00Z
 
-   MinIO redacts this value when returned as part of :mc-cmd:`mc admin config get`.
+   当通过 :mc-cmd:`mc admin config get` 返回此值时，MinIO 会将其脱敏。
 
 .. end-minio-openid-client-secret
 
 
 .. start-minio-openid-role-policy
 
-Specify a comma-separated list of :ref:`policy names <minio-policy>` to use for the request's ``RoleArn`` for all authentication requests for the provider.
-The specified policy or policies must already exist on the MinIO Server.
+指定逗号分隔的 :ref:`策略名称 <minio-policy>` 列表，用于该 provider 的所有认证请求
+中的 ``RoleArn``。指定的一个或多个策略必须已经存在于 MinIO Server 上。
 
-To use this OIDC configuration, you must specify the corresponding :ref:`RoleArn <minio-assumerolewithwebidentity-query-parameters>` in the STS request body.
+要使用此 OIDC 配置，你必须在 STS 请求体中指定对应的
+:ref:`RoleArn <minio-assumerolewithwebidentity-query-parameters>`。
 
 .. end-minio-openid-role-policy
 
 
 .. start-minio-openid-jwks-url
 
-Specify the URL for the JSON Web Key Set (JWKS) for MinIO to use when verifying
-any JSON Web Tokens (JWT) issued by the :abbr:`OIDC (OpenID Connect)` compatible
-provider.
+指定 JSON Web Key Set (JWKS) 的 URL，MinIO 在验证与
+:abbr:`OIDC (OpenID Connect)` 兼容的 provider 签发的 JSON Web Token (JWT) 时
+会使用该 URL。
 
 .. end-minio-openid-jwks-url
 
 .. start-minio-openid-config-url
 
-Specify the URL for the :abbr:`OIDC (OpenID Connect)` compatible provider
-`discovery document 
-<https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig>`__. 
+指定与 :abbr:`OIDC (OpenID Connect)` 兼容的 provider 的
+`discovery document
+<https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig>`__
+URL。
 
-The :abbr:`OIDC (OpenID Connect)` Discovery URL typically resembles the
-following:
+:abbr:`OIDC (OpenID Connect)` Discovery URL 通常类似于：
 
 ``https://openid-provider.example.net/.well-known/openid-configuration``
 
@@ -58,38 +58,36 @@ following:
 
 .. start-minio-openid-claim-name
 
-Specify the name of the 
-`JWT Claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__ 
-MinIO uses to identify the :ref:`policies <minio-policy>` to attach to the
-authenticated user.
+指定 `JWT Claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__
+的名称，MinIO 使用该 Claim 来识别应附加到已认证用户上的
+:ref:`策略 <minio-policy>`。
 
-The claim can contain one or more comma-separated policy names to attach to 
-the user. The claim must contain *at least* one policy for the user to have
-any permissions on the MinIO server.
+该 Claim 可以包含一个或多个逗号分隔的策略名称，以附加给用户。该 Claim *至少*
+必须包含一个策略，否则该用户在 MinIO server 上将没有任何权限。
 
-Defaults to ``policy``.
+默认值为 ``policy``。
 
 .. end-minio-openid-claim-name
 
 .. start-minio-openid-display-name
 
-Specify the user-facing name the MinIO Console displays on the login screen.
+指定 MinIO Console 在登录页面上显示给用户的名称。
 
 .. end-minio-openid-display-name
 
 .. start-minio-openid-claim-prefix
 
-Specify the 
-`JWT Claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__ 
-namespace prefix to apply to the specified claim name.
+指定应用到所给 Claim 名称上的
+`JWT Claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__
+命名空间前缀。
 
 .. end-minio-openid-claim-prefix
 
 .. start-minio-openid-scopes
 
-Specify a comma-separated list of 
-`scopes <https://datatracker.ietf.org/doc/html/rfc6749#section-3.3>`__. 
-Defaults to those scopes advertised in the discovery document.
+指定逗号分隔的
+`scopes <https://datatracker.ietf.org/doc/html/rfc6749#section-3.3>`__ 列表。
+默认使用 discovery document 中公布的 scopes。
 
 .. end-minio-openid-scopes
 
@@ -97,48 +95,57 @@ Defaults to those scopes advertised in the discovery document.
 
 .. important::
 
-   This parameter was removed in :minio-release:`RELEASE.2023-02-27T18-10-45Z`.
-   Use the :envvar:`MINIO_BROWSER_REDIRECT_URL` :ref:`environment variable <minio-server-environment-variables>` instead.
+   该参数已在 :minio-release:`RELEASE.2023-02-27T18-10-45Z` 中移除。
+   请改用 :envvar:`MINIO_BROWSER_REDIRECT_URL`
+   :ref:`环境变量 <minio-server-environment-variables>`。
 
-The MinIO Console defaults to using the hostname of the node making the authentication request. 
-For MinIO deployments behind a load balancer or reverse proxy, specify this field to ensure the OIDC provider returns the authentication response to the correct MinIO Console URL.
-Include the Console hostname, port, and ``/oauth_callback``:
+MinIO Console 默认使用发起认证请求的节点主机名。
+对于位于负载均衡器或反向代理之后的 MinIO 部署，请指定该字段，以确保 OIDC
+provider 将认证响应返回到正确的 MinIO Console URL。
+其中应包含 Console 主机名、端口以及 ``/oauth_callback``：
 
 .. code-block:: shell
 
    http://minio.example.net:consoleport/oauth_callback
 
-Ensure you start the MinIO Server with the :mc-cmd:`~minio server --console-address` option to set a static Console listen port.
-The default behavior with that option omitted is to select a random port number at startup.
+请确保在启动 MinIO Server 时使用 :mc-cmd:`~minio server --console-address`
+选项，以设置固定的 Console 监听端口。
+如果省略该选项，默认行为是在启动时随机选择端口号。
 
-The specified URI *must* match one of the approved redirect / callback URIs on the provider. 
-See the OpenID `Authentication Request <https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest>`__ for more information.
+指定的 URI *必须* 与 provider 上批准的某个 redirect / callback URI 匹配。
+更多信息请参见 OpenID
+`Authentication Request <https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest>`__。
 
 .. end-minio-openid-redirect-uri
 
 .. start-minio-openid-redirect-uri-dynamic
 
-The MinIO Console defaults to using the hostname of the node making the authentication request as part of the redirect URI provided to the OIDC provider.
-For MinIO deployments behind a load balancer using a round-robin protocol, this may result in the load balancer returning the response to a different MinIO Node than the originating client.
+MinIO Console 默认会将发起认证请求的节点主机名作为重定向 URI 的一部分，
+并将其提供给 OIDC provider。
+对于位于使用轮询协议的负载均衡器之后的 MinIO 部署，这可能导致负载均衡器将响应
+返回给与原始客户端不同的 MinIO 节点。
 
-Specify this option as ``on`` to direct the MinIO Console to use the ``Host`` header of the originating request to construct the redirect URI passed to the OIDC provider.
-Defaults to ``off``.
+将此选项指定为 ``on``，可让 MinIO Console 使用原始请求中的 ``Host`` 头来构造
+传递给 OIDC provider 的重定向 URI。
+默认值为 ``off``。
 
 .. end-minio-openid-redirect-uri-dynamic
 
 .. start-minio-openid-claim-userinfo
 
-Allow MinIO to fetch claims from the `UserInfo Endpoint <https://openid.net/specs/openid-connect-core-1_0.html#UserInfo>`__ for the authenticated user.
+允许 MinIO 从已认证用户的
+`UserInfo Endpoint <https://openid.net/specs/openid-connect-core-1_0.html#UserInfo>`__
+获取 claims。
 
-Valid values are ``on`` or ``off``.
+有效值为 ``on`` 或 ``off``。
 
 .. end-minio-openid-claim-userinfo
 
 .. start-minio-openid-vendor
 
-Specify the OIDC Vendor to enable specific supported behaviors for that vendor.
+指定 OIDC Vendor，以启用该 vendor 的特定受支持行为。
 
-Supports the following value:
+支持以下值：
 
 - ``keycloak``
 
@@ -146,22 +153,22 @@ Supports the following value:
 
 .. start-minio-openid-keycloak-realm
 
-Specify the Keycloak Realm to use as part of Keycloak Admin API Operations, such as ``main``.
+指定用于 Keycloak Admin API 操作的 Keycloak Realm，例如 ``main``。
 
 .. end-minio-openid-keycloak-realm
 
 .. start-minio-openid-keycloak-admin-url
 
-Specify the Keycloak Admin API URL. 
-MinIO can use this URL if configured to periodically validate authenticated Keycloak users as active/existing.
-For example, ``https://keycloak-endpoint:port/admin/``.
+指定 Keycloak Admin API URL。
+如果配置为定期校验已认证的 Keycloak 用户是否处于激活 / 存在状态，MinIO 可以
+使用该 URL。
+例如，``https://keycloak-endpoint:port/admin/``。
 
 .. end-minio-openid-keycloak-admin-url
 
 .. start-minio-openid-comment
 
-Specify a comment to associate with the :abbr:`OIDC (OpenID Connect)` compatible 
-provider configuration.
+指定要附加到与 :abbr:`OIDC (OpenID Connect)` 兼容 provider 配置上的注释。
 
 .. end-minio-openid-comment
 
@@ -174,40 +181,43 @@ provider configuration.
 
 .. start-minio-ad-ldap-server-addr
 
-Specify the hostname for the Active Directory / LDAP server. For example:
+指定 Active Directory / LDAP server 的主机名。例如：
 
 .. code-block:: shell
    :class: copyable
 
    ldapserver.com:636
 
-.. admonition:: :mc-cmd:`~mc idp ldap add srv_record_name` automatically identifies the port
+.. admonition:: :mc-cmd:`~mc idp ldap add srv_record_name` 会自动识别端口
    :class: note
 
-   If your AD/LDAP server uses :mc-cmd:`DNS SRV Records <mc idp ldap add srv_record_name>`, do *not* append the port number to your :mc-cmd:`~mc idp ldap add server_addr` value.
-   SRV requests automatically include port numbers when returning the list of available servers.
+   如果你的 AD/LDAP server 使用
+   :mc-cmd:`DNS SRV Records <mc idp ldap add srv_record_name>`，则 *不要* 在
+   :mc-cmd:`~mc idp ldap add server_addr` 的值后追加端口号。
+   SRV 请求在返回可用服务器列表时会自动包含端口号。
    
 .. end-minio-ad-ldap-server-addr
 
 .. start-minio-ad-ldap-lookup-bind-dn
 
-Specify the Distinguished Name (DN) for an AD/LDAP account MinIO uses when
-querying the AD/LDAP server. Enables :ref:`Lookup-Bind
-<minio-external-identity-management-ad-ldap-lookup-bind>` authentication to the AD/LDAP server.
+指定 MinIO 在查询 AD/LDAP server 时所使用的 AD/LDAP 账户 Distinguished Name (DN)。
+这会启用对 AD/LDAP server 的
+:ref:`Lookup-Bind <minio-external-identity-management-ad-ldap-lookup-bind>`
+认证。
 
-The DN account should be a read-only access keys with sufficient
-privileges to support querying performing user and group lookups.
+该 DN 账户应为只读访问账号，并具备足够权限以支持执行用户和组查询。
 
 .. end-minio-ad-ldap-lookup-bind-dn
 
 .. start-minio-ad-ldap-lookup-bind-password
 
-Specify the password for the :ref:`Lookup-Bind 
-<minio-external-identity-management-ad-ldap-lookup-bind>` user account.
+指定
+:ref:`Lookup-Bind <minio-external-identity-management-ad-ldap-lookup-bind>`
+用户账户的密码。
 
 .. versionchanged:: RELEASE.2023-06-23T20-26-00Z
 
-   MinIO redacts this value when returned as part of :mc-cmd:`mc admin config get`.
+   当通过 :mc-cmd:`mc admin config get` 返回此值时，MinIO 会将其脱敏。
 
 .. end-minio-ad-ldap-lookup-bind-password
 
@@ -215,12 +225,12 @@ Specify the password for the :ref:`Lookup-Bind
 
 .. versionadded:: RELEASE.2024-06-06T09-36-42Z
 
-Comma-separated list of user DN attributes.
+用户 DN 属性的逗号分隔列表。
 
-Some valid values include, ``uid,cn,mail,sshPublicKey``.
+一些有效值包括 ``uid,cn,mail,sshPublicKey``。
 
-To enable public authentication for LDAP users, pass ``sshPublicKey`` as a DN attribute.
-The user can then use the passed SSH Public Key to log in to SFTP servers.
+如果要为 LDAP 用户启用公钥认证，请将 ``sshPublicKey`` 作为 DN 属性传入。
+随后，用户即可使用传入的 SSH Public Key 登录 SFTP server。
 
 .. code-block:: text
    :class: copyable
@@ -231,29 +241,29 @@ The user can then use the passed SSH Public Key to log in to SFTP servers.
 
 .. start-minio-ad-ldap-user-dn-search-base-dn
 
-Specify the base Distinguished Name (DN) MinIO uses when querying for 
-user credentials matching those provided by an authenticating client.
+指定 MinIO 在查询与认证客户端所提供凭证相匹配的用户凭证时所使用的基础
+Distinguished Name (DN)。
 
-Separate multiple DNs with a semicolon (``;``).
+多个 DN 之间请使用分号（``;``）分隔。
 
-For example:
+例如：
 
 .. code-block:: shell
    :class: copyable
 
    cn=miniousers,dc=myldapserver,dc=net;ou=swengg,dc=min,dc=io
 
-Supports :ref:`Lookup-Bind  <minio-external-identity-management-ad-ldap-lookup-bind>` mode.
+支持 :ref:`Lookup-Bind <minio-external-identity-management-ad-ldap-lookup-bind>`
+模式。
 
 .. end-minio-ad-ldap-user-dn-search-base-dn
 
 .. start-minio-ad-ldap-user-dn-search-filter
 
-Specify the AD/LDAP search filter MinIO uses when querying for user credentials
-matching those provided by an authenticating client. 
+指定 MinIO 在查询与认证客户端所提供凭证相匹配的用户凭证时所使用的 AD/LDAP
+搜索过滤器。
 
-Use the ``%s`` substitution character to insert the client-specified
-username into the search string. For example:
+使用 ``%s`` 替换字符将客户端指定的用户名插入搜索字符串。例如：
 
 .. code-block:: shell
    :class: copyable
@@ -264,14 +274,12 @@ username into the search string. For example:
 
 .. start-minio-ad-ldap-group-search-filter
 
-Specify an AD/LDAP search filter for performing group lookups for the
-authenticated user
+指定用于为已认证用户执行组查询的 AD/LDAP 搜索过滤器。
 
-Use the ``%s`` substitution character to insert the client-specified username
-into the search string. Use the ``%d`` substitution character to insert the
-Distinguished Name of the client-specified username into the search string.
+使用 ``%s`` 替换字符将客户端指定的用户名插入搜索字符串。
+使用 ``%d`` 替换字符将客户端指定用户名对应的 Distinguished Name 插入搜索字符串。
 
-For example:
+例如：
 
 .. code-block:: shell
    :class: copyable
@@ -279,19 +287,20 @@ For example:
    (&(objectclass=groupOfNames)(memberUid=%s))
 
 
-When providing an AD/LDAP group search filter, configure a filter that returns the minimum number of relevant groups for the purpose of supporting authentication.
-Filters that return large group assignments increase the size of associated calls and resources.
-Functions sensitive to large request or response bodies may exhibit unexpected behaviors as a result.
+在提供 AD/LDAP 组搜索过滤器时，应将其配置为仅返回支持认证所需的最少相关组。
+返回大量组成员关系的过滤器会增加相关调用和资源的体量。
+对大请求体或大响应体敏感的功能可能因此出现意外行为。
 
 
 .. end-minio-ad-ldap-group-search-filter
 
 .. start-minio-ad-ldap-group-search-base-dn
 
-Specify a semicolon-separated (``;``) list of group search base `Distinguished Names <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names>`__
-MinIO uses when performing group lookups.
+指定 MinIO 在执行组查询时所使用的组搜索基础
+`Distinguished Names <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names>`__
+列表，多个值之间使用分号（``;``）分隔。
  
-For example:
+例如：
 
 .. code-block:: shell
    :class: copyable
@@ -302,90 +311,100 @@ For example:
 
 .. start-minio-ad-ldap-tls-skip-verify
 
-Specify ``on`` to trust the AD/LDAP server TLS certificates without 
-verification. This option may be required if the AD/LDAP server TLS certificates
-are signed by an untrusted Certificate Authority (e.g. self-signed). 
+指定 ``on`` 可在不验证的情况下信任 AD/LDAP server 的 TLS 证书。
+如果 AD/LDAP server 的 TLS 证书由不受信任的证书颁发机构签名
+（例如自签名），则可能需要此选项。
 
-Defaults to ``off``
+默认值为 ``off``
 
 .. end-minio-ad-ldap-tls-skip-verify
 
 .. start-minio-ad-ldap-server-insecure
 
-Specify ``on`` to allow unsecured (non-TLS encrypted) connections to
-the AD/LDAP server.
+指定 ``on`` 可允许与 AD/LDAP server 建立未加密的连接（非 TLS）。
 
-MinIO sends AD/LDAP user credentials in plain text to the AD/LDAP server, such
-that enabling TLS is *required* to prevent reading credentials over the wire.
-Using this option presents a security risk where any user with access to
-network traffic can observe the unencrypted plaintext credentials.
+MinIO 会以明文形式将 AD/LDAP 用户凭证发送到 AD/LDAP server，因此 *必须* 启用
+TLS，才能防止凭证在传输过程中被读取。
+启用此选项会带来安全风险，因为任何能够访问网络流量的用户都可能看到未加密的明文
+凭证。
 
-Defaults to ``off``.
+默认值为 ``off``。
 
 .. end-minio-ad-ldap-server-insecure
 
 .. start-minio-ad-ldap-server-starttls
 
-Specify ``on`` to enable ``StartTLS`` connections to an AD/LDAP server.
+指定 ``on`` 可启用到 AD/LDAP server 的 ``StartTLS`` 连接。
 
-Defaults to ``off``
+默认值为 ``off``
 
-For more about ``StartTLS``, refer to section 4.14 of the `LDAP RFC 4511 specification <https://docs.ldap.com/specs/rfc4511.txt>`__.
+有关 ``StartTLS`` 的更多信息，请参见
+`LDAP RFC 4511 specification <https://docs.ldap.com/specs/rfc4511.txt>`__
+第 4.14 节。
 
 .. end-minio-ad-ldap-server-starttls
 
 .. start-minio-ad-ldap-srv_record_name
 
-Specify the appropriate value to enable MinIO to select an AD/LDAP server using a `DNS SRV record <https://ldap.com/dns-srv-records-for-ldap>`__ request.
+指定适当的值，以允许 MinIO 通过
+`DNS SRV record <https://ldap.com/dns-srv-records-for-ldap>`__ 请求选择
+AD/LDAP server。
 
-When enabled, MinIO selects an AD/LDAP server by:
+启用后，MinIO 会通过以下方式选择 AD/LDAP server：
 
-- Constructing the target SRV record name following standard naming conventions.
-- Requesting a list of available AD/LDAP servers.
-- Choosing an appropriate target based on priority and weight.
+- 按标准命名约定构造目标 SRV 记录名称。
+- 请求可用的 AD/LDAP server 列表。
+- 根据优先级和权重选择合适的目标。
 
-The configuration examples below presume the AD/LDAP server address is set to ``example.com`` and the SRV record protocol is ``_tcp``.
+下面的配置示例假定 AD/LDAP server 地址设为 ``example.com``，SRV 记录协议为
+``_tcp``。
 
-For SRV record names beginning with ``_ldap``, specify ``ldap``.
-The constructed DNS SRV record name resembles the following:
+对于以 ``_ldap`` 开头的 SRV 记录名称，指定 ``ldap``。
+构造出的 DNS SRV 记录名称类似如下：
 
 .. code-block:: shell
 
    _ldap._tcp.example.com
 
-For SRV record names with beginning with ``_ldaps``, specify ``ldaps``.
-The constructed	DNS SRV	record name resembles the following:
+对于以 ``_ldaps`` 开头的 SRV 记录名称，指定 ``ldaps``。
+构造出的 DNS SRV 记录名称类似如下：
 
 .. code-block:: shell
 
    _ldaps._tcp.example.com
 
-If your DNS SRV record name uses alternate service or protocol names, specify ``on`` and provide the full record name as your LDAP server address.
-Example: ``_ldapserver._specialtcp.example.com``
+如果你的 DNS SRV 记录名称使用了其他 service 或 protocol 名称，请指定 ``on``，
+并将完整记录名称作为 LDAP server 地址提供。
+例如：``_ldapserver._specialtcp.example.com``
 
-For more about DNS SRV records, see `DNS SRV Records for LDAP <https://ldap.com/dns-srv-records-for-ldap>`__.
+有关 DNS SRV 记录的更多信息，请参见
+`DNS SRV Records for LDAP <https://ldap.com/dns-srv-records-for-ldap>`__。
  
-.. admonition:: Server address for DNS SRV record configurations
+.. admonition:: DNS SRV 记录配置中的 server 地址
    :class: important
 
-   The specified server name **must not** include a port number.
-   This is different from a standard AD/LDAP configuration, where the port number is required.
+   指定的 server 名称 **不得** 包含端口号。
+   这与标准 AD/LDAP 配置不同，后者要求提供端口号。
 
-   See :mc-conf:`~identity_ldap.server_addr` or :envvar:`MINIO_IDENTITY_LDAP_SERVER_ADDR` for more about configuring an AD/LDAP server address.
+   关于如何配置 AD/LDAP server 地址，请参见
+   :mc-conf:`~identity_ldap.server_addr` 或
+   :envvar:`MINIO_IDENTITY_LDAP_SERVER_ADDR`。
 
 .. end-minio-ad-ldap-srv_record_name
 
 .. start-minio-ad-ldap-comment
 
-Specify a comment to associate to the AD/LDAP configuration.
+指定要附加到 AD/LDAP 配置上的注释。
 
 .. end-minio-ad-ldap-comment
 
 .. start-minio-ad-ldap-console-enable
 
-#. Log in to the MinIO Console as either the :ref:`root <minio-users-root>` user or a MinIO user with the  :userpolicy:`consoleAdmin` policy.
-#. In the :guilabel:`Identity` section, select :guilabel:`LDAP` and then :guilabel:`Edit Configuration` to configure an Active Directory or LDAP server.
-   The minimum required settings are:
+#. 以 :ref:`root <minio-users-root>` 用户，或具有 :userpolicy:`consoleAdmin`
+   策略的 MinIO 用户身份登录 MinIO Console。
+#. 在 :guilabel:`Identity` 部分中，选择 :guilabel:`LDAP`，然后点击
+   :guilabel:`Edit Configuration`，以配置 Active Directory 或 LDAP server。
+   最低必需设置如下：
 
    - Server Address
    - Lookup Bind DN
@@ -393,72 +412,84 @@ Specify a comment to associate to the AD/LDAP configuration.
    - User DN Search Base
    - User DN Search Filter
 
-   Not all configuration options are available in the MinIO Console.
-   For additional settings, use :mc:`mc idp ldap` or :ref:`environment variables <minio-server-envvar-external-identity-management-ad-ldap>`.
+   并非所有配置项都可在 MinIO Console 中设置。
+   如需更多设置，请使用 :mc:`mc idp ldap` 或
+   :ref:`环境变量 <minio-server-envvar-external-identity-management-ad-ldap>`。
  
 .. end-minio-ad-ldap-console-enable
 
 .. start-minio-identity-management-plugin-url
 
-The webhook endpoint for the external identity management service (``https://authservice.example.net:8080/auth``).
+外部身份管理服务的 webhook endpoint
+（``https://authservice.example.net:8080/auth``）。
 
 .. end-minio-identity-management-plugin-url
 
 .. start-minio-identity-management-auth-token
 
-An authentication token to present to the configured webhook endpoint.
+提供给已配置 webhook endpoint 的认证令牌。
 
-Specify a supported HTTP `Authentication scheme <https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes>`__ as a string value, such as ``"Bearer TOKEN"``.
-MinIO sends the token using the HTTP `Authorization <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>`__ header.
+请以字符串形式指定受支持的 HTTP
+`Authentication scheme <https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes>`__，
+例如 ``"Bearer TOKEN"``。
+MinIO 会通过 HTTP
+`Authorization <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>`__
+头发送该令牌。
 
 .. end-minio-identity-management-auth-token
 
 .. start-minio-identity-management-role-policy
 
-Specify a comma-separated list of MinIO :ref:`policies <minio-policy>` to assign to authenticated users.
+指定要分配给已认证用户的 MinIO :ref:`策略 <minio-policy>` 列表，多个策略之间
+使用逗号分隔。
 
 .. end-minio-identity-management-role-policy
 
 .. start-minio-identity-management-role-id
 
-Specify a unique ID MinIO uses to generate an ARN for this identity manager.
-MinIO automatically adds an ``idmp-`` prefix to the specified ID when generating the ARN.
+指定 MinIO 用于为该 identity manager 生成 ARN 的唯一 ID。
+在生成 ARN 时，MinIO 会自动在指定 ID 前添加 ``idmp-`` 前缀。
 
-If omitted, MinIO automatically generates the ID and prints the full ARN to the server log.
+如果省略此项，MinIO 会自动生成该 ID，并将完整 ARN 输出到 server 日志中。
 
 .. end-minio-identity-management-role-id
 
 .. start-minio-identity-management-comment
 
-Specify a comment to associate to the identity configuration.
+指定要附加到身份配置上的注释。
 
 .. end-minio-identity-management-comment
 
 .. start-minio-access-management-plugin-url
 
-The webhook endpoint for the external access management service (``https://authzservice.example.net:8080/authz``).
+外部访问管理服务的 webhook endpoint
+（``https://authzservice.example.net:8080/authz``）。
 
 .. end-minio-access-management-plugin-url
 
 .. start-minio-access-management-plugin-auth-token
 
-An authentication token to present to the configured webhook endpoint.
+提供给已配置 webhook endpoint 的认证令牌。
 
-Specify a supported HTTP `Authentication scheme <https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes>`__ as a string value, such as ``"Bearer TOKEN"``.
-MinIO sends the token using the HTTP `Authorization <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>`__ header.
+请以字符串形式指定受支持的 HTTP
+`Authentication scheme <https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes>`__，
+例如 ``"Bearer TOKEN"``。
+MinIO 会通过 HTTP
+`Authorization <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>`__
+头发送该令牌。
 
 .. end-minio-access-management-plugin-auth-token
 
 .. start-minio-access-management-plugin-enable-http2
 
-Enable experimental HTTP2 support for connecting to the configure webhook service. 
+为连接已配置的 webhook 服务启用实验性的 HTTP2 支持。
 
-Defaults to off
+默认值为 ``off``
 
 .. end-minio-access-management-plugin-enable-http2
 
 .. start-minio-access-management-plugin-comment
 
-Specify a comment to associate to the external access management configuration.
+指定要附加到外部访问管理配置上的注释。
 
 .. end-minio-access-management-plugin-comment

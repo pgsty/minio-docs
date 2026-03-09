@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,7 +12,7 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   The following commands have moved to subcommands under :mc-cmd:`mc ilm rule`:
+   以下命令已移至 :mc-cmd:`mc ilm rule` 下的子命令：
 
    - :mc-cmd:`mc ilm add`
    - :mc-cmd:`mc ilm edit`
@@ -22,32 +22,32 @@
    - :mc-cmd:`mc ilm rm`
 
 
-Description
------------
+描述
+----
 
 .. start-mc-ilm-rule-desc
 
-The :mc:`mc ilm rule` command and its subcommands configure the rules used to transition objects between storage tiers in MinIO's Lifecycle Management. 
+:mc:`mc ilm rule` 命令及其子命令用于配置 MinIO 生命周期管理中对象在各存储层之间转换所使用的规则。
 
 .. end-mc-ilm-rule-desc
 
-Before creating rules with this command, use :mc-cmd:`mc ilm tier` and its subcommands to create the tier or tiers of other object storage locations where objects move.
+在使用此命令创建规则前，请先使用 :mc-cmd:`mc ilm tier` 及其子命令创建对象将要迁移到的其他对象存储位置对应的一个或多个存储层。
 
-For more information, see the overview of :ref:`lifecycle management <minio-lifecycle-management>`.
+有关更多信息，请参阅 :ref:`lifecycle management <minio-lifecycle-management>` 概述。
 
 
-Subcommands
------------
+子命令
+------
 
-:mc-cmd:`mc ilm rule` includes the following subcommands:
+:mc-cmd:`mc ilm rule` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc ilm rule add`
      - .. include:: /reference/minio-mc/mc-ilm-rule-add.rst
@@ -81,40 +81,36 @@ Subcommands
 
 .. _minio-mc-ilm-rule-permissions:
 
-Permissions
------------
+权限
+----
 
-MinIO requires the following permissions scoped to to the bucket or buckets for which you create lifecycle management rules.
+MinIO 要求具备以下权限，且权限范围应限定为创建生命周期管理规则的一个或多个存储桶。
 
 - :policy-action:`s3:PutLifecycleConfiguration`
 - :policy-action:`s3:GetLifecycleConfiguration`
 
-For example, the following policy provides permission for configuring object
-transition lifecycle management rules on any bucket in the cluster:.
+例如，以下策略提供了在集群任意存储桶上配置对象转换生命周期管理规则的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
    :class: copyable
 
-Transition Permissions
-~~~~~~~~~~~~~~~~~~~~~~
+转换权限
+~~~~~~~~
 
-Object transition lifecycle management rules require additional permissions
-on the remote storage tier. Specifically, MinIO requires the remote
-tier credentials provide read, write, list, and delete permissions.
+对象转换生命周期管理规则在远端存储层上需要额外权限。具体而言，
+MinIO 要求远端存储层凭证提供读取、写入、列举和删除权限。
 
-For example, if the remote storage tier implements AWS IAM policy-based
-access control, the following policy provides the necessary permission
-for transitioning objects into and out of the remote tier:
+例如，如果远端存储层使用基于 AWS IAM 策略的访问控制，
+则以下策略提供了对象迁入和迁出远端存储层所需的必要权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementUser.json
    :language: json
    :class: copyable
 
-Modify the ``Resource`` for the bucket into which MinIO tiers objects.
+请根据 MinIO 分层写入对象的目标存储桶修改 ``Resource``。
 
-Defer to the documentation for the supported tiering targets for more complete
-information on configuring users and permissions to support MinIO tiering:
+有关如何配置用户和权限以支持 MinIO 分层的完整信息，请参阅受支持分层目标的文档：
 
 - :aws-docs:`Amazon S3 Permissions <service-authorization/latest/reference/list_amazons3.html#amazons3-actions-as-permissions>`
 - `Google Cloud Storage Access Control <https://cloud.google.com/storage/docs/access-control>`__

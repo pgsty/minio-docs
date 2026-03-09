@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,31 +14,31 @@
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Syntax
-------
+语法
+----
 
 .. start-mc-support-top-net-desc
 
-The :mc:`mc support top net` command displays realtime network metrics.
+:mc:`mc support top net` 命令用于显示实时网络指标。
 
 .. end-mc-support-top-net-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command displays the current realtime network metrics for the :term:`alias` ``myminio`` deployment.
+      以下命令显示 :term:`alias` ``myminio`` 部署当前的实时网络指标。
 
       .. code-block:: shell
          :class: copyable
 
          mc support top net myminio/
 
-      The output returns information such as the server URL, network interface, receive rate, transmit rate, and system messages.
+      输出将返回服务器 URL、网络接口、接收速率、发送速率和系统消息等信息。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -51,25 +51,24 @@ The :mc:`mc support top net` command displays realtime network metrics.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the :ref:`alias <minio-mc-alias>` or :term:`prefix` where the command should run.
+   命令应运行的 :ref:`alias <minio-mc-alias>` 或 :term:`prefix` 的完整路径。
 
 .. mc-cmd:: --interval
    :optional:
 
-   The interval in seconds between metric requests.
+   两次指标请求之间的间隔（秒）。
 
-   By default, the command requests metrics every second.
+   默认情况下，命令每秒请求一次指标。
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
-

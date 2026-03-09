@@ -1,18 +1,20 @@
 .. start-kes-generate-kes-certs-desc
 
-The following commands creates two TLS certificates that expire within 30 days of creation:
+以下命令会创建两个在创建后 30 天内过期的 TLS 证书：
 
-- A TLS certificate for KES to secure communications between it and the KMS deployment
-- A TLS certificate for MinIO to perform mTLS authentication to KES.
+- 用于 KES 保护其与 KMS 部署之间通信的 TLS 证书。
+- 用于 MinIO 向 KES 执行 mTLS 认证的 TLS 证书。
 
-.. admonition:: Use Caution in Production Environments
+.. admonition:: 生产环境中请谨慎使用
    :class: important
 
-   **DO NOT** use the TLS certificates generated as part of this procedure for
-   any long-term development or production environments. 
+   **不要** 将本流程生成的 TLS 证书
+   用于任何长期开发环境或生产环境。
 
-   Defer to organization/industry best practices around TLS certificate generation and management. 
-   A complete guide to creating valid certificates (for example, well-formed, current, and trusted) is beyond the scope of this procedure.
+   请遵循所在组织或行业关于 TLS 证书生成和管理的最佳实践。
+   关于如何创建有效证书
+   （例如格式正确、未过期且受信任）的完整指南
+   不在本流程范围之内。
 
 .. code-block:: powershell
    :class: copyable
@@ -20,30 +22,38 @@ The following commands creates two TLS certificates that expire within 30 days o
 
    # These commands output the certificates to |kescertpath|
 
-   C:\kes.exe identity new \  
-     --key  |kescertpath|\kes-server.key \  
-     --cert |kescertpath|\kes-server.cert \  
-     --ip   "127.0.0.1" \  
+   C:\kes.exe identity new \
+     --key  |kescertpath|\kes-server.key \
+     --cert |kescertpath|\kes-server.cert \
+     --ip   "127.0.0.1" \
      --dns  localhost
 
-   C:\kes.exe identity new \  
-     --key  |miniocertpath|\minio-kes.key \  
-     --cert |miniocertpath|\minio-kes.cert \  
-     --ip   "127.0.0.1" \  
+   C:\kes.exe identity new \
+     --key  |miniocertpath|\minio-kes.key \
+     --cert |miniocertpath|\minio-kes.cert \
+     --ip   "127.0.0.1" \
      --dns  localhost
 
-The ``--ip`` and ``--dns`` parameters set the IP and DNS ``SubjectAlternativeName`` for the certificate.
-The above example assumes that all components (KMS, MinIO, and KES) deploy on the same local host machine accessible via ``localhost`` or ``127.0.0.1``.
-You can specify additional IP or Hostnames based on the network configuration of your local host.
+``--ip`` 和 ``--dns`` 参数用于设置证书的 IP 和 DNS
+``SubjectAlternativeName``。
+上述示例假定所有组件（KMS、MinIO 和 KES）
+都部署在同一台本地主机上，
+且可通过 ``localhost`` 或 ``127.0.0.1`` 访问。
+你可以根据本地主机的网络配置指定额外的 IP 或主机名。
 
-Depending on your KMS configuration, you may need to pass the ``kes-server.cert`` as a trusted Certificate Authority.
-Defer to the client documentation for your chosen :kes-docs:`supported KMS target <#supported-kms-targets>` for instructions on trusting a third-party CA.
+根据你的 KMS 配置，
+你可能需要将 ``kes-server.cert`` 作为受信任的 Certificate Authority 传递给客户端。
+关于如何信任第三方 CA，
+请参见你所选
+:kes-docs:`受支持 KMS 目标 <#supported-kms-targets>`
+的客户端文档。
 
 .. end-kes-generate-kes-certs-desc
 
 .. start-kes-minio-start-server-desc
 
-Run the following command in a terminal or shell to start the MinIO server as a foreground process.
+在终端或 shell 中运行以下命令，
+以前台进程方式启动 MinIO server。
 
 .. code-block:: powershell
    :class: copyable
@@ -56,10 +66,15 @@ Run the following command in a terminal or shell to start the MinIO server as a 
 
 .. start-kes-generate-key-desc
 
-MinIO requires that the |EK| exist on the root KMS *before* performing |SSE| operations using that key. 
-Use ``kes key create`` *or* :mc-cmd:`mc admin kms key create` to create a new |EK| for use with |SSE|.
+MinIO 要求在使用某个 |EK| 执行 |SSE| 操作之前，
+该 |EK| 必须已存在于根 KMS 中。
+使用 ``kes key create`` *或*
+:mc-cmd:`mc admin kms key create`
+为 |SSE| 创建新的 |EK|。
 
-The following command uses the ``kes key create`` command to create a new External Key (EK) stored on the root KMS server for use with encrypting the MinIO backend.
+以下命令使用 ``kes key create`` 命令，
+在根 KMS Server 上创建一个新的 External Key（EK），
+供加密 MinIO 后端时使用。
 
 .. code-block:: powershell
    :class: copyable
@@ -75,21 +90,27 @@ The following command uses the ``kes key create`` command to create a new Extern
 
 .. start-kes-new-existing-minio-deployment-desc
 
-This procedure provides instructions for modifying the startup environment variables of a MinIO deployment to enable |SSE| via KES and the root KMS.
-For instructions on new creating a new deployment, reference the :ref:`Single-Node Single-Drive <minio-snsd>` tutorial.
+本流程说明如何修改 MinIO 部署的启动环境变量，
+以便通过 KES 和根 KMS 启用 |SSE|。
+关于如何创建新部署，
+请参考 :ref:`Single-Node Single-Drive <minio-snsd>` 教程。
 
-When creating the environment file for the deployment, pause and switch back to this tutorial to include the necessary environment variables to support |SSE|.
+在为部署创建环境文件时，请暂停并返回本教程，
+加入支持 |SSE| 所需的环境变量。
 
-For existing MinIO Deployments, you can modify the existing environment file and restart the deployment as instructed during this procedure.
+对于现有 MinIO 部署，
+你可以修改现有环境文件，并按本流程说明重启部署。
 
 .. end-kes-new-existing-minio-deployment-desc
 
 .. start-kes-configuration-minio-desc
 
-Add the following lines to the MinIO Environment file on the Windows host.
-See the tutorials for :ref:`minio-snsd` for more detailed descriptions of a base MinIO environment file.
+将以下内容添加到 Windows 主机上的 MinIO 环境文件中。
+关于基础 MinIO 环境文件的更详细说明，
+请参见 :ref:`minio-snsd` 教程。
 
-This command assumes the ``minio-kes.cert``, ``minio-kes.key``, and ``kes-server.cert`` certificates are accessible at the specified location:
+以下命令假定 ``minio-kes.cert``、``minio-kes.key`` 和 ``kes-server.cert``
+证书在指定位置可访问：
 
 .. code-block:: powershell
    :class: copyable
@@ -104,15 +125,20 @@ This command assumes the ``minio-kes.cert``, ``minio-kes.key``, and ``kes-server
 
 
 .. note::
-   
-   - An API key is the preferred way to authenticate with the KES server, as it provides a streamlined and secure authentication process to the KES server.
 
-   - Alternatively, specify the :envvar:`MINIO_KMS_KES_KEY_FILE` and :envvar:`MINIO_KMS_KES_CERT_FILE` instead of :envvar:`MINIO_KMS_KES_API_KEY`.
-     
-     API keys are mutually exclusive with certificate-based authentication. 
-     Specify *either* the API key variable *or* the Key File and Cert File variables.
-   
-   - The documentation on this site uses API keys.
+   - API key 是与 KES Server 认证的首选方式，
+     因为它为 KES Server 提供了更精简且更安全的认证流程。
+
+   - 或者，你也可以指定
+     :envvar:`MINIO_KMS_KES_KEY_FILE` 和
+     :envvar:`MINIO_KMS_KES_CERT_FILE`，
+     而不是 :envvar:`MINIO_KMS_KES_API_KEY`。
+
+     API key 与基于证书的认证互斥。
+     二者只能指定其一：要么 API key 变量，
+     要么 Key File 和 Cert File 变量。
+
+   - 本站文档统一使用 API key。
 
    .. code-block:: shell
       :substitutions:
@@ -121,13 +147,15 @@ This command assumes the ``minio-kes.cert``, ``minio-kes.key``, and ``kes-server
       MINIO_KMS_KES_KEY_FILE=|miniocertpath|\minio-kes.key
 
 
-MinIO uses the :envvar:`MINIO_KMS_KES_KEY_NAME` key for the following cryptographic operations:
+MinIO 会将 :envvar:`MINIO_KMS_KES_KEY_NAME` 这个密钥
+用于以下加密操作：
 
-- Encrypting the MinIO backend (IAM, configuration, etc.)
-- Encrypting objects using :ref:`SSE-KMS <minio-encryption-sse-kms>` if the request does not include a specific |EK|.
-- Encrypting objects using :ref:`SSE-S3 <minio-encryption-sse-s3>`.
+- 加密 MinIO 后端（IAM、配置等）。
+- 在请求未包含特定 |EK| 时，
+  使用 :ref:`SSE-KMS <minio-encryption-sse-kms>` 加密对象。
+- 使用 :ref:`SSE-S3 <minio-encryption-sse-s3>` 加密对象。
 
-The ``minio-kes`` certificates enable mTLS between the MinIO deployment and the KES server *only*.
-They do not otherwise enable TLS for other client connections to MinIO.
+``minio-kes`` 证书仅用于 MinIO 部署与 KES Server 之间的 mTLS。
+它们不会为其他连接到 MinIO 的客户端启用 TLS。
 
 .. end-kes-configuration-minio-desc

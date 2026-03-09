@@ -1,14 +1,14 @@
-{# Import the theme's layout. #}
+{# 导入主题的 layout 模板。 #}
 {% extends "!layout.html" %}
 
-{# Custom CSS overrides #}
+{# 自定义 CSS 覆盖 #}
 
 {% block extrahead %}
    {%- include "head.html" %}
    {{ super() }}
 {% endblock %}
 
-{# Override content block #}
+{# 覆盖内容块 #}
 
 {%- macro miniosidebar() %}
    {%- if render_sidebar %}
@@ -23,7 +23,7 @@
                      <img
                         class="logo"
                         src="{{ pathto('_static/' + logo, 1)|e }}"
-                        alt="Logo"
+                        alt="徽标"
                      />
                   </a>
                </p>
@@ -31,12 +31,12 @@
          {%- endblock %}
 
          {%- if sidebars != None %}
-            {#- new style sidebar: explicitly include/exclude templates #}
+            {#- 新样式侧边栏：显式包含/排除模板 #}
             {%- for sidebartemplate in sidebars %}
                {%- include sidebartemplate %}
             {%- endfor %}
          {%- else %}
-            {#- old style sidebars: using blocks -- should be deprecated #}
+            {#- 旧样式侧边栏：使用 blocks，后续应废弃 #}
 
             {%- block sidebarrel %}
                {%- include "relations.html" %}
@@ -71,7 +71,7 @@
             <div class="hide-aside visible-rm">
                <button type="button" class="icon">
                      {%- include "icons/close.html" %}
-                     Close Doc Navigation
+                     关闭文档导航
                </button>
             </div>
 

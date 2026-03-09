@@ -8,35 +8,35 @@
 
 .. mc:: mc admin cluster bucket import
 
-Description
------------
+描述
+----
 
 .. versionadded:: RELEASE.2022-06-17T02-52-50Z
 
 .. start-mc-admin-cluster-bucket-import-desc
 
-The :mc:`mc admin cluster bucket import` command imports bucket metadata as created by the :mc:`mc admin cluster bucket export` command.
+:mc:`mc admin cluster bucket import` 命令用于导入由 :mc:`mc admin cluster bucket export` 命令生成的存储桶元数据。
 
 .. end-mc-admin-cluster-bucket-import-desc
 
-You can use this command to manually restore the metadata to the specified bucket on a MinIO deployment.
+你可以使用此命令将元数据手动恢复到 MinIO 部署中的指定存储桶。
 
-If you specify only the deployment as the target, this command applies the metadata objects to all matching buckets on the target.
+如果仅将部署指定为目标，此命令会将元数据对象应用到目标上所有匹配的存储桶。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command imports the specified metadata to the ``myminio`` deployment.
+      以下命令将指定的元数据导入到 ``myminio`` 部署。
   
       .. code-block:: shell  
          :class: copyable 
   
          mc admin cluster bucket import myminio ~/minio-metadata-backup/myminio-cluster.zip
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      命令语法如下：
   
       .. code-block:: shell  
          :class: copyable 
@@ -50,29 +50,29 @@ If you specify only the deployment as the target, this command applies the metad
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: METADATA.ZIP
    :required:
 
-   The path to the metadata file to import.
+   要导入的元数据文件路径。
    
-   Use :mc:`mc admin cluster bucket export` to export bucket metadata for use with this command.
+   使用 :mc:`mc admin cluster bucket export` 导出存储桶元数据，以供此命令使用。
 
 .. mc-cmd:: BUCKET
    :optional:
 
-   The bucket to apply the imported metadata to.
+   应用导入元数据的存储桶。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

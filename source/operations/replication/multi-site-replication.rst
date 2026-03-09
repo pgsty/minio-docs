@@ -1,237 +1,237 @@
 .. _minio-site-replication-overview:
 
-=========================
-Site Replication Overview
-=========================
+====================
+站点复制概览
+====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-Site replication configures multiple independent MinIO deployments as a cluster of replicas called peer sites.
+站点复制将多个相互独立的 MinIO 部署配置为一个由副本组成的集群，这些副本称为对等站点。
 
    .. figure:: /images/architecture/architecture-load-balancer-multi-site.svg
       :figwidth: 100%
       :alt: Diagram of a site replication deployment with two sites
 
-      A site replication deployment with two peer sites.
-      A load balancer manages routing operations to either of the two sites.
-      Data written to one site automatically replicates to the other peer site.
+      一个包含两个对等站点的站点复制部署。
+      负载均衡器负责将操作路由到两个站点中的任意一个。
+      写入一个站点的数据会自动复制到另一个对等站点。
 
-Site replication assumes the use of either the included MinIO identity provider (IDP) *or* an external IDP.
-All configured deployments must use the same IDP.
-Deployments using an external IDP must use the same configuration across sites.
+站点复制要求使用内置的 MinIO Identity Provider (IDP) *或* 外部 IDP。
+所有已配置的部署都必须使用同一个 IDP。
+使用外部 IDP 的部署必须在各站点之间使用相同的配置。
 
-For more information on site replication architecture and deployment concepts, see :ref:`Deployment Architecture: Replicated MinIO Deployments <minio-deployment-architecture-replicated>`.
+有关站点复制架构和部署概念的更多信息，请参阅 :ref:`Deployment Architecture: Replicated MinIO Deployments <minio-deployment-architecture-replicated>`。
 
-MinIO does not recommend using MacOS, Windows, or non-orchestrated Containerized deployments for site replication outside of early development, evaluation, or general experimentation.
-For production, use :minio-docs:`Linux <minio/linux/operations/install-deploy-manage/multi-site-replication.html>` or :minio-docs:`Kubernetes <minio/kubernetes/upstream/operations/install-deploy-manage/multi-site-replication.html>`
+除早期开发、评估或一般性实验外，MinIO 不建议在站点复制中使用 MacOS、Windows 或未编排的容器化部署。
+生产环境请使用 :minio-docs:`Linux <minio/linux/operations/install-deploy-manage/multi-site-replication.html>` 或 :minio-docs:`Kubernetes <minio/kubernetes/upstream/operations/install-deploy-manage/multi-site-replication.html>`
 
-Overview
---------
+概览
+----
 
 .. _minio-site-replication-what-replicates:
 
-What Replicates Across All Sites
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+所有站点之间会复制哪些内容
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-mc-admin-replicate-what-replicates
    :end-before: end-mc-admin-replicate-what-replicates
 
-What Does Not Replicate Across Sites
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+哪些内容不会在站点之间复制
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-mc-admin-replicate-what-does-not-replicate
    :end-before: end-mc-admin-replicate-what-does-not-replicate
 
 
-Initial Site Replication Process
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+站点复制的初始流程
+~~~~~~~~~~~~~~~~~~
 
-After enabling site replication, identity and access management (IAM) settings sync in the following order:
+启用站点复制后，身份与访问管理（IAM）设置会按以下顺序同步：
 
 .. tab-set::
 
    .. tab-item:: MinIO IDP
 
-      #. Policies
-      #. User accounts (for local users)
-      #. Groups
+      #. 策略
+      #. 用户账户（针对本地用户）
+      #. 组
       #. Access Keys
          
-         Access Keys for ``root`` do not sync.
+         ``root`` 的 Access Keys 不会同步。
 
-      #. Policy mapping for synced user accounts
-      #. Policy mapping for :ref:`Security Token Service (STS) users <minio-security-token-service>`
+      #. 已同步用户账户的策略映射
+      #. :ref:`Security Token Service (STS) users <minio-security-token-service>` 的策略映射
 
    .. tab-item:: OIDC
 
-      #. Policies
-      #. Access Keys associated to OIDC accounts with a valid :ref:`MinIO Policy <minio-policy>`. ``root`` access keys do not sync.
-      #. Policy mapping for synced user accounts
-      #. Policy mapping for :ref:`Security Token Service (STS) users <minio-security-token-service>`
+      #. 策略
+      #. 与具有有效 :ref:`MinIO Policy <minio-policy>` 的 OIDC 账户关联的 Access Keys。``root`` 的 Access Keys 不会同步。
+      #. 已同步用户账户的策略映射
+      #. :ref:`Security Token Service (STS) users <minio-security-token-service>` 的策略映射
 
    .. tab-item:: LDAP
 
-      #. Policies
-      #. Groups
-      #. Access Keys associated to LDAP accounts with a valid :ref:`MinIO Policy <minio-policy>`. ``root`` access keys do not sync.
-      #. Policy mapping for synced user accounts
-      #. Policy mapping for :ref:`Security Token Service (STS) users <minio-security-token-service>`
+      #. 策略
+      #. 组
+      #. 与具有有效 :ref:`MinIO Policy <minio-policy>` 的 LDAP 账户关联的 Access Keys。``root`` 的 Access Keys 不会同步。
+      #. 已同步用户账户的策略映射
+      #. :ref:`Security Token Service (STS) users <minio-security-token-service>` 的策略映射
 
-After the initial synchronization of data across peer sites, MinIO continually replicates and synchronizes :ref:`replicable data <minio-site-replication-what-replicates>` among all sites as they occur on any site.
+在对等站点之间完成初始数据同步后，MinIO 会持续在所有站点之间复制并同步任何站点上新发生的 :ref:`可复制数据 <minio-site-replication-what-replicates>`。
 
-Site Healing
-~~~~~~~~~~~~
+站点自愈
+~~~~~~~~
 
-Any MinIO deployment in the site replication configuration can resynchronize damaged :ref:`replica-eligible data <minio-site-replication-what-replicates>` from the peer with the most updated ("latest") version of that data.
+站点复制配置中的任意 MinIO 部署，都可以从拥有该数据最新版本的对等站点重新同步受损的 :ref:`可复制数据 <minio-site-replication-what-replicates>`。
 
 .. versionchanged:: RELEASE.2023-07-18T17-49-40Z
 
-   Site replication operations retry up to three (3) times.
+   站点复制操作最多重试三（3）次。
    
-   MinIO dequeues replication operations that fail to replicate after three attempts.
-   The :ref:`scanner <minio-concepts-scanner>` picks up those affected objects at a later time and requeues them for replication.
+   对于重试三次后仍复制失败的操作，MinIO 会将其移出队列。
+   :ref:`scanner <minio-concepts-scanner>` 会在稍后重新扫描这些受影响对象，并将其重新加入复制队列。
 
 .. versionchanged:: RELEASE.2022-08-11T04-37-28Z
 
-   Failed or pending replications requeue automatically when performing any ``GET`` or ``HEAD`` API method. 
-   For example, using :mc:`mc stat`, :mc:`mc cat`, or :mc:`mc ls` commands after a site comes back online prompts healing to requeue.
+   执行任意 ``GET`` 或 ``HEAD`` API 方法时，失败或待处理的复制会自动重新入队。
+   例如，某个站点恢复在线后，使用 :mc:`mc stat`、:mc:`mc cat` 或 :mc:`mc ls` 命令会触发自愈重新入队。
 
 .. versionchanged:: RELEASE.2022-12-02T23-48-47Z
 
-   If one site loses data for any reason, resynchronize the data from another healthy site with :mc-cmd:`mc admin replicate resync`.
-   This launches an active process that resynchronizes the data without waiting for the passive :ref:`MinIO scanner <minio-concepts-scanner>` to recognize the missing data.
+   如果某个站点因任何原因丢失数据，可使用 :mc-cmd:`mc admin replicate resync` 从另一个健康站点重新同步数据。
+   这会启动一个主动进程来重新同步数据，而无需等待被动的 :ref:`MinIO scanner <minio-concepts-scanner>` 识别缺失数据。
 
 .. include:: /includes/common/scanner.rst
    :start-after: start-scanner-speed-config
    :end-before: end-scanner-speed-config
 
-Synchronous vs Asynchronous Replication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+同步复制与异步复制
+~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-sync-vs-async
    :end-before: end-replication-sync-vs-async
 
-MinIO strongly recommends using the default asynchronous site replication.
-Synchronous site replication performance depends strongly on latency between sites, where higher latency can result in lower PUT performance and replication lag.
-To configure synchronous site replication use :mc-cmd:`mc admin replicate update` with the :mc-cmd:`~mc admin replicate update --mode` option.
+MinIO 强烈建议使用默认的异步站点复制。
+同步站点复制的性能高度依赖站点之间的延迟，较高的延迟可能导致更低的 PUT 性能和复制滞后。
+要配置同步站点复制，请使用 :mc-cmd:`mc admin replicate update` 并带上 :mc-cmd:`~mc admin replicate update --mode` 选项。
 
-Proxy to Other Sites
-~~~~~~~~~~~~~~~~~~~~
+代理到其他站点
+~~~~~~~~~~~~~~
 
-MinIO peer sites can proxy ``GET/HEAD`` requests for an object to other peers to check if it exists.
-This allows a site that is healing or lagging behind other peers to still return an object persisted to other sites.
+MinIO 对等站点可以将对象的 ``GET/HEAD`` 请求代理到其他对等站点，以检查该对象是否存在。
+这样一来，即使某个站点正在自愈或落后于其他对等站点，仍然可以返回已持久化到其他站点的对象。
 
-For example:
+例如：
 
-1. A client issues ``GET("data/invoices/january.xls")`` to ``Site1``
-2. ``Site1`` cannot locate the object
-3. ``Site1`` proxies the request to ``Site2``
-4. ``Site2`` returns the latest version of the requested object
-5. ``Site1`` returns the proxied object to the client
+1. 客户端向 ``Site1`` 发起 ``GET("data/invoices/january.xls")``
+2. ``Site1`` 无法定位该对象
+3. ``Site1`` 将请求代理到 ``Site2``
+4. ``Site2`` 返回请求对象的最新版本
+5. ``Site1`` 将代理返回的对象响应给客户端
 
-For ``GET/HEAD`` requests that do *not* include a unique version ID, the proxy request returns the *latest* version of that object on the peer site.
-This may result in retrieval of a non-current version of an object, such as if the responding peer site is also experiencing replication lag.
+对于*不*包含唯一版本 ID 的 ``GET/HEAD`` 请求，代理请求会返回该对象在对等站点上的*最新*版本。
+这可能导致取回对象的非当前版本，例如响应请求的对等站点本身也存在复制滞后时。
 
-MinIO does not proxy ``LIST``, ``DELETE``, and ``PUT`` operations.
+MinIO 不会代理 ``LIST``、``DELETE`` 和 ``PUT`` 操作。
 
-Prerequisites
--------------
+前提条件
+--------
 
-Back Up Cluster Settings First
+先备份集群设置
+~~~~~~~~~~~~~~
+
+在配置站点复制之前，使用 :mc:`mc admin cluster bucket export` 和 :mc:`mc admin cluster iam export` 命令分别对存储桶元数据和 IAM 配置进行快照。
+如果在配置站点复制过程中发生误配置，可以使用这些快照恢复存储桶/IAM 设置。
+
+初始化时仅允许一个站点包含数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc admin cluster bucket export` and :mc:`mc admin cluster iam export` commands to take a snapshot of the bucket metadata and IAM configurations respectively prior to configuring Site Replication.
-You can use these snapshots to restore bucket/IAM settings in the event of misconfiguration during site replication configuration.
+在初始化时，只允许*一个*站点包含数据。
+其他站点必须不包含任何存储桶和对象。
 
-One Site with Data at Setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+配置站点复制后，第一个部署上的所有数据都会复制到其他站点。
 
-Only *one* site can have data at the time of setup.
-The other sites must be empty of buckets and objects.
+所有站点必须使用相同的 IDP
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After configuring site replication, any data on the first deployment replicates to the other sites.
+所有站点都必须使用相同的 :ref:`Identity Provider <minio-authentication-and-identity-management>`。
+站点复制支持内置的 MinIO IDP、OIDC 或 LDAP。
 
-All Sites Must Use the Same IDP
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+所有站点必须使用相同的 MinIO Server 版本
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All sites must use the same :ref:`Identity Provider <minio-authentication-and-identity-management>`.
-Site replication supports the included MinIO IDP, OIDC, or LDAP.
+所有站点都必须使用一致且匹配的 MinIO Server 版本。
+在 MinIO Server 版本不匹配的站点之间配置复制，可能导致意外或不符合预期的复制行为。
 
-All Sites Must use the Same MinIO Server Version
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+还应确保用于配置复制的 :mc:`mc` 版本尽量与服务器版本保持接近。
 
-All sites must have a matching and consistent MinIO Server version. 
-Configuring replication between sites with mismatched MinIO Server versions may result in unexpected or undesired replication behavior.
+访问同一个加密服务
+~~~~~~~~~~~~~~~~~~
 
-You should also ensure the :mc:`mc` version used to configure replication closely matches the server version.
+如果通过 Key Management Service (KMS) 使用 :ref:`SSE-S3 <minio-encryption-sse-s3>` 或 :ref:`SSE-KMS <minio-encryption-sse-kms>` 加密，则所有站点都必须能够访问同一个中心化 KMS 部署。
 
-Access to the Same Encryption Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+可以通过一个中心化 KES 服务器，或多个 KES 服务器（例如每个站点一个）连接到同一个受支持的中心化 :ref:`key vault server <minio-sse>` 来实现。
 
-For :ref:`SSE-S3 <minio-encryption-sse-s3>` or :ref:`SSE-KMS <minio-encryption-sse-kms>` encryption via Key Management Service (KMS), all sites must have access to a central KMS deployment. 
+复制要求启用版本控制
+~~~~~~~~~~~~~~~~~~~~
 
-You can achieve this with a central KES server or multiple KES servers (say one per site) connected via a central supported :ref:`key vault server <minio-sse>`.
+站点复制*要求*启用 :ref:`minio-bucket-versioning`，并会自动为所有新建存储桶启用该功能。
+在站点复制部署中，不能禁用版本控制。
 
-Replication Requires Versioning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+对于存储桶中被排除在版本控制之外的前缀，MinIO 无法复制其中的对象。
 
-Site replication *requires* :ref:`minio-bucket-versioning` and enables it for all created buckets automatically.
-You cannot disable versioning in site replication deployments.
-
-MinIO cannot replicate objects in prefixes in the bucket that you excluded from versioning.
-
-Load Balancers Installed on Each Site
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+每个站点都应部署负载均衡器
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-mc-admin-replicate-load-balancing
    :end-before: end-mc-admin-replicate-load-balancing
 
-Switch to Site Replication from Bucket Replication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从存储桶复制切换到站点复制
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Bucket replication <minio-bucket-replication>` and multi-site replication are mutually exclusive.
-You cannot use both replication methods on the same deployments.
+:ref:`存储桶复制 <minio-bucket-replication>` 与多站点复制是互斥的。
+不能在同一组部署上同时使用这两种复制方式。
 
-If you previously set up bucket replication and wish to now use site replication, you must first delete all of the bucket replication rules on the deployment that has data when initializing site replication.
-Use :mc:`mc replicate rm` on the command line to remove bucket replication rules.
+如果此前已经配置了存储桶复制，而现在希望改用站点复制，则在初始化站点复制时，必须先删除包含数据的那个部署上的全部存储桶复制规则。
+可在命令行中使用 :mc:`mc replicate rm` 删除存储桶复制规则。
 
-Only one site can have data when setting up site replication.
-All other sites must be empty.
+设置站点复制时，只允许一个站点包含数据。
+其他所有站点都必须为空。
 
-Tutorials
----------
+教程
+----
 
 .. _minio-configure-site-replication:
 
-Configure Site Replication
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+配置站点复制
+~~~~~~~~~~~~
 
-The following steps create a new site replication configuration for three :ref:`distributed deployments <deploy-minio-distributed>`.
-One of the sites contains :ref:`replicable data <minio-site-replication-what-replicates>`.
+以下步骤将为三个 :ref:`分布式部署 <deploy-minio-distributed>` 创建一个新的站点复制配置。
+其中一个站点包含 :ref:`可复制数据 <minio-site-replication-what-replicates>`。
 
-The three sites use aliases, ``minio1``, ``minio2``, and ``minio3``, and only ``minio1`` contains any data.
+这三个站点分别使用别名 ``minio1``、``minio2`` 和 ``minio3``，且仅 ``minio1`` 包含数据。
 
-#. :ref:`Deploy <deploy-minio-distributed>` three or more separate MinIO sites, using the same :ref:`IDP <minio-authentication-and-identity-management>`
+#. 使用相同的 :ref:`IDP <minio-authentication-and-identity-management>`，:ref:`部署 <deploy-minio-distributed>` 三个或更多彼此独立的 MinIO 站点
 
-   Start with empty sites *or* have no more than one site with any :ref:`replicable data <minio-site-replication-what-replicates>`.
+   从空站点开始，*或* 确保最多只有一个站点包含任何 :ref:`可复制数据 <minio-site-replication-what-replicates>`。
 
-#. Configure an alias for each site
+#. 为每个站点配置别名
 
    .. include:: /includes/common-replication.rst
       :start-after: start-mc-admin-replicate-load-balancing
       :end-before: end-mc-admin-replicate-load-balancing
 
-   For example, for three MinIO sites, you might create aliases ``minio1``, ``minio2``, and ``minio3``.
+   例如，对于三个 MinIO 站点，可以创建别名 ``minio1``、``minio2`` 和 ``minio3``。
    
-   Use :mc:`mc alias set` to define the hostname or IP of the load balancer managing connections to the site.
+   使用 :mc:`mc alias set` 定义管理该站点连接的负载均衡器主机名或 IP。
 
    .. code-block:: shell
 
@@ -239,7 +239,7 @@ The three sites use aliases, ``minio1``, ``minio2``, and ``minio3``, and only ``
       mc alias set minio2 https://minio2.example.com:9000 adminuser adminpassword
       mc alias set minio3 https://minio3.example.com:9000 adminuser adminpassword
       
-   or define environment variables
+   或定义环境变量
 
    .. code-block:: shell
    
@@ -247,35 +247,35 @@ The three sites use aliases, ``minio1``, ``minio2``, and ``minio3``, and only ``
       export MC_HOST_minio2=https://adminuser:adminpassword@minio2.example.com
       export MC_HOST_minio3=https://adminuser:adminpassword@minio3.example.com
 
-#. Add site replication configuration
+#. 添加站点复制配置
 
    .. code-block:: shell
    
       mc admin replicate add minio1 minio2 minio3
 
-   If all sites are empty, the order of the aliases does not matter.
-   If one of the sites contains any :ref:`replicable data <minio-site-replication-what-replicates>`, you must list it first.
+   如果所有站点均为空，则别名顺序无关紧要。
+   如果其中一个站点包含任何 :ref:`可复制数据 <minio-site-replication-what-replicates>`，则必须将其列在第一位。
 
-   No more than one site can contain any replicable data.
+   最多只能有一个站点包含可复制数据。
 
-#. Query the site replication configuration to verify
+#. 查询站点复制配置进行验证
 
    .. code-block:: shell
    
       mc admin replicate info minio1
 
-   You can use the alias for any peer site in the site replication configuration.
+   可以使用站点复制配置中任意对等站点的别名。
 
-#. Query the site replication status to confirm any initial data has replicated to all peer sites.
+#. 查询站点复制状态，确认初始数据已复制到所有对等站点。
 
    .. code-block:: shell
 
       mc admin replicate status minio1
 
-   You can use the alias for any of the peer sites in the site replication configuration.
-   The output should say that all :ref:`replicable data <minio-site-replication-what-replicates>` is in sync.
+   可以使用站点复制配置中任意对等站点的别名。
+   输出应表明所有 :ref:`可复制数据 <minio-site-replication-what-replicates>` 均已同步。
 
-   The output could resemble the following:
+   输出可能类似如下：
 
    .. code-block:: shell
 
@@ -291,51 +291,51 @@ The three sites use aliases, ``minio1``, ``minio2``, and ``minio3``, and only ``
       Group replication status:
       No Groups present
 
-   For more on reviewing site replication, see the :ref:`Site Replication Status tutorial <minio-site-replication-status-tutorial>`.
+   有关检查站点复制的更多信息，请参阅 :ref:`站点复制状态教程 <minio-site-replication-status-tutorial>`。
 
 
 .. _minio-expand-site-replication:
 
-Expand Site Replication
-~~~~~~~~~~~~~~~~~~~~~~~
+扩展站点复制
+~~~~~~~~~~~~
 
-You can add more sites to an existing site replication configuration.
+可以向现有站点复制配置中添加更多站点。
 
-The new site must meet the following requirements:
+新站点必须满足以下要求：
 
-- Site is fully deployed and accessible by hostname or IP
-- Shares the IDP configuration as all other sites in the configuration
-- Uses the same root user credentials as other configured sites
-- Contains no bucket or object data
+- 站点已完成部署，并可通过主机名或 IP 访问
+- 与配置中的其他站点共享相同的 IDP 配置
+- 使用与其他已配置站点相同的 root 用户凭证
+- 不包含任何存储桶或对象数据
 
-#. Deploy the new MinIO peer site(s) following the stated requirements
+#. 按照上述要求部署新的 MinIO 对等站点
 
-#. Configure an alias for the new site
+#. 为新站点配置别名
 
    .. include:: /includes/common-replication.rst
       :start-after: start-mc-admin-replicate-load-balancing
       :end-before: end-mc-admin-replicate-load-balancing
 
-   To check the existing aliases, use :mc:`mc alias list`.
+   要检查现有别名，请使用 :mc:`mc alias list`。
 
-   Use :mc:`mc alias set` to define the hostname or IP of the load balancer managing connections to the new site(s).
+   使用 :mc:`mc alias set` 定义管理新站点连接的负载均衡器主机名或 IP。
 
    .. code-block:: shell
 
       mc alias set minio4 https://minio4.example.com:9000 adminuser adminpassword
 
-   or define environment variables
+   或定义环境变量
 
    .. code-block:: shell
    
       export MC_HOST_minio4=https://adminuser:adminpassword@minio4.example.com
 
-#. Add site replication configuration
+#. 添加站点复制配置
 
-   Use the :mc-cmd:`mc admin replicate add` command to expand the site replication configuration with the new peer site.
-   Specify the alias of *all* existing peer sites, then the alias of the new site to add.
+   使用 :mc-cmd:`mc admin replicate add` 命令，将新的对等站点加入站点复制配置中。
+   先指定*所有*现有对等站点的别名，再指定要添加的新站点别名。
 
-   For example, the following command adds the new peer site ``minio4`` to an existing site replication configuration that includes the existing sites ``minio1``, ``minio2``, and ``minio3``.
+   例如，以下命令将新的对等站点 ``minio4`` 添加到现有站点复制配置中，该配置已包含 ``minio1``、``minio2`` 和 ``minio3`` 三个站点。
 
    .. code-block:: shell
    
@@ -343,82 +343,82 @@ The new site must meet the following requirements:
 
    .. note::
 
-      If any of the sites are unreachable or permanently lost, you **must** first remove the unreachable site(s) with :mc-cmd:`mc admin replicate rm` before expanding with the new site.
+      如果任一站点不可达或已永久丢失，则在使用新站点进行扩展前，必须先使用 :mc-cmd:`mc admin replicate rm` 移除不可达站点。
 
-#. Query the site replication configuration to verify
+#. 查询站点复制配置进行验证
 
    .. code-block:: shell
    
       mc admin replicate info minio1
 
-Modify a Site's Endpoint
-~~~~~~~~~~~~~~~~~~~~~~~~
+修改站点的端点
+~~~~~~~~~~~~~~~~~~~
 
-If a peer site changes its hostname, you can modify the replication configuration to reflect the new hostname.
+如果某个对等站点变更了主机名，可以修改复制配置以反映新的主机名。
 
-#. Obtain the site's Deployment ID with :mc-cmd:`mc admin replicate info`
+#. 使用 :mc-cmd:`mc admin replicate info` 获取站点的 Deployment ID
 
    .. code-block:: shell
 
       mc admin replicate info <ALIAS>
    
 
-#. Update the site's endpoint with :mc-cmd:`mc admin replicate update`
+#. 使用 :mc-cmd:`mc admin replicate update` 更新站点的端点
 
    .. code-block:: shell
 
       mc admin replicate update ALIAS --deployment-id [DEPLOYMENT-ID] --endpoint [NEW-ENDPOINT]
 
-   Replace [DEPLOYMENT-ID] with the deployment ID of the site to update.
+   将 [DEPLOYMENT-ID] 替换为要更新站点的 deployment ID。
    
-   Replace [NEW-ENDPOINT] with the new endpoint for the site.
+   将 [NEW-ENDPOINT] 替换为该站点的新端点。
 
    .. include:: /includes/common-replication.rst
       :start-after: start-mc-admin-replicate-load-balancing
       :end-before: end-mc-admin-replicate-load-balancing
 
-Remove a Site from Replication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+从复制中移除站点
+~~~~~~~~~~~~~~~~
 
-You can remove a site from replication at any time.
-You can re-add the site at a later date, but you must first completely wipe bucket and object data from the site.
+可以随时将某个站点从复制中移除。
+后续也可以重新添加该站点，但必须先彻底清除该站点上的存储桶和对象数据。
 
-Use :mc-cmd:`mc admin replicate rm`:
+使用 :mc-cmd:`mc admin replicate rm`：
 
 .. code-block:: shell
 
    mc admin replicate rm ALIAS PEER_TO_REMOVE --force
 
-- Replace ``ALIAS`` with the :ref:`alias <alias>` of any peer site in the replication configuration.
+- 将 ``ALIAS`` 替换为复制配置中任意对等站点的 :ref:`alias <alias>`。
 
-- Replace ``PEER_TO_REMOVE`` with the alias of the peer site to remove.
+- 将 ``PEER_TO_REMOVE`` 替换为要移除的对等站点别名。
 
-All healthy peers in the site replication configuration update to remove the specified peer automatically.
+站点复制配置中的所有健康对等站点都会自动更新，以移除指定的对等站点。
 
-MinIO requires the ``--force`` flag to remove the peer from the site replication configuration.
+MinIO 要求使用 ``--force`` 标志，才能将该对等站点从站点复制配置中移除。
 
 .. _minio-site-replication-status-tutorial:
 
-Review Replication Status
-~~~~~~~~~~~~~~~~~~~~~~~~~
+查看复制状态
+~~~~~~~~~~~~
 
-MinIO provides information on replication across the sites for users, groups, policies, or buckets.
+MinIO 提供跨站点的用户、组、策略或存储桶复制信息。
 
-The summary information includes the number of **Synced** and **Failed** items for each category.
+汇总信息包括各类别中 **Synced** 和 **Failed** 项目的数量。
 
-Use :mc-cmd:`mc admin replicate status`:
+使用 :mc-cmd:`mc admin replicate status`：
 
 .. code-block:: shell
 
    mc admin replicate status <ALIAS> --<flag> <value>
 
-For example:
+例如：
 
 - ``mc admin replicate status minio3 --bucket images``
 
-  Displays the replication status for the ``images`` bucket on the ``minio3`` site.
+  显示 ``minio3`` 站点上 ``images`` 存储桶的复制状态。
   
-  The output resembles the following:
+  输出类似如下：
 
   .. code-block::
  
@@ -434,9 +434,9 @@ For example:
 
 - ``mc admin replicate status minio3 --all``
 
-  Displays the replication status summary for all replication sites of which ``minio3`` is part. 
+  显示 ``minio3`` 所属全部复制站点的复制状态摘要。
 
-  The output resembles the following:
+  输出类似如下：
 
   .. code-block::
 

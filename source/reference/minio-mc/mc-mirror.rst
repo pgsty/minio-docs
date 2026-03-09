@@ -4,47 +4,47 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc mirror
 
-Syntax
+语法
 ------
 
 .. start-mc-mirror-desc
 
-The :mc:`mc mirror` command synchronizes content to MinIO deployment, similar to the ``rsync`` utility.
-:mc:`mc mirror` supports filesystems, MinIO deployments, and other S3-compatible hosts as the synchronization source.
+:mc:`mc mirror` 命令用于将内容同步到 MinIO 部署，类似于 ``rsync`` 工具。
+:mc:`mc mirror` 支持以文件系统、MinIO 部署和其他 S3 兼容主机作为同步源。
 
 .. end-mc-mirror-desc
 
 .. note::
 
-   :mc:`mc mirror` only synchronizes the current object without any version information or metadata.
-   To synchronize an object's version history and metadata, consider using :mc:`mc replicate` for :ref:`bucket replication <minio-bucket-replication-serverside>` or :mc:`mc admin replicate` for :ref:`site replication <minio-site-replication-overview>`.
+   :mc:`mc mirror` 仅同步当前对象，不包含任何版本信息或元数据。
+   若要同步对象的版本历史和元数据，可考虑对 :ref:`bucket replication <minio-bucket-replication-serverside>` 使用 :mc:`mc replicate`，或对 :ref:`site replication <minio-site-replication-overview>` 使用 :mc:`mc admin replicate`。
 
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command synchronizes content from a local filesystem directory to the ``mydata`` bucket on the ``myminio`` MinIO deployment.
+      以下命令将本地文件系统目录中的内容同步到 ``myminio`` MinIO 部署上的 ``mydata`` 存储桶。
 
       .. code-block:: shell
          :class: copyable
 
          mc mirror --watch ~/mydata myminio/mydata
 
-      The command "watches" for files added or removed on the local filesystem and synchronizes those operations to MinIO until explicitly terminated. 
+      该命令会“监视”本地文件系统中新增或删除的文件，并将这些操作同步到 MinIO，直到显式终止。 
 
-      :mc-cmd:`mc mirror --watch` updates files changed on the local filesystem to MinIO (see :mc-cmd:`~mc mirror --overwrite`).
-      ``--watch`` does not remove other files from MinIO not present on the local filesystem (see :mc-cmd:`~mc mirror --remove`).
+      :mc-cmd:`mc mirror --watch` 会把本地文件系统中发生变更的文件更新到 MinIO（参见 :mc-cmd:`~mc mirror --overwrite`）。
+      ``--watch`` 不会删除 MinIO 中本地文件系统不存在的其他文件（参见 :mc-cmd:`~mc mirror --remove`）。
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -83,63 +83,63 @@ The :mc:`mc mirror` command synchronizes content to MinIO deployment, similar to
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: SOURCE
    :required:
 
-   The file(s) or object(s) to synchronize to the :mc-cmd:`~mc mirror TARGET` S3 host.
+   要同步到 :mc-cmd:`~mc mirror TARGET` S3 主机的文件或对象。
 
-   For objects on S3-compatible hosts, specify the path to the object as ``ALIAS/PATH``, where:
+   对于 S3 兼容主机上的对象，请将对象路径指定为 ``ALIAS/PATH``，其中：
 
-   - ``ALIAS`` is the :mc:`alias <mc alias>` of a configured S3-compatible host, *and*
+   - ``ALIAS`` 是已配置 S3 兼容主机的 :mc:`alias <mc alias>`，*并且*
 
-   - ``PATH`` is the path to the bucket or object. If specifying a bucket, :mc:`mc mirror` synchronizes all objects in the bucket.
+   - ``PATH`` 是存储桶或对象路径。若指定存储桶，:mc:`mc mirror` 会同步该存储桶中的所有对象。
 
    .. code-block:: shell
 
       mc mirror [FLAGS] play/mybucket/ myminio/mybucket
 
-   For files on a filesystem, specify the full filesystem path to the file or directory :
+   对于文件系统中的文件，请指定文件或目录的完整文件系统路径：
 
    .. code-block:: shell
 
       mc mirror [FLAGS] ~/data/ myminio/mybucket
 
-   If specifying a directory, :mc:`mc mirror` synchronizes all files in the directory.
+   若指定的是目录，:mc:`mc mirror` 会同步该目录中的所有文件。
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to bucket to which :mc:`mc mirror` synchronizes SOURCE objects. Specify the ``TARGET`` as ``ALIAS/PATH``, where:
+   :mc:`mc mirror` 用于同步 SOURCE 对象的目标存储桶完整路径。将 ``TARGET`` 指定为 ``ALIAS/PATH``，其中：
 
-   - ``ALIAS`` is the :mc:`alias <mc alias>` of a configured S3-compatible host, *and*
+   - ``ALIAS`` 是已配置 S3 兼容主机的 :mc:`alias <mc alias>`，*并且*
 
-   - ``PATH`` is the path to the bucket.
+   - ``PATH`` 是存储桶路径。
 
    .. code-block:: shell
 
       mc mirror SOURCE play/mybucket
 
-   :mc:`mc mirror` uses the object or file names from the :mc-cmd:`~mc mirror SOURCE` when synchronizing to the ``TARGET`` bucket.
+   :mc:`mc mirror` 在同步到 ``TARGET`` 存储桶时，会使用 :mc-cmd:`~mc mirror SOURCE` 中对象或文件的名称。
 
 .. mc-cmd:: --active-active
    :optional:
 
-   Establish active-active mirror activities between two sites.
-   The command must be repeated on each site.
+   在两个站点之间建立 active-active 镜像活动。
+   必须在每个站点上重复执行该命令。
 
-   For example:
+   例如：
 
-   On site A, to mirror from A to B
+   在站点 A 上，将 A 镜像到 B
    
    .. code-block::
       :class: copyable
 
       mc mirror --active-active siteA siteB
 
-   On site B, to mirror from B to A
+   在站点 B 上，将 B 镜像到 A
 
    .. code-block::
       :class: copyable
@@ -149,35 +149,35 @@ Parameters
 .. mc-cmd:: --attr
    :optional:
 
-   Add custom metadata for mirrored objects. Specify key-value pairs as ``KEY=VALUE\;``. 
-   For example, ``--attr key1=value1\;key2=value2\;key3=value3``.
+   为镜像对象添加自定义元数据。将键值对指定为 ``KEY=VALUE\;``。 
+   例如：``--attr key1=value1\;key2=value2\;key3=value3``。
 
 .. mc-cmd:: --checksum
    :optional:
 
    .. versionadded:: RELEASE.2024-10-02T08-27-28Z
 
-   Add a checksum to an uploaded object. 
+   为上传对象添加校验和。 
    
-   Valid values are: 
+   有效值为： 
    - ``MD5``
    - ``CRC32``
    - ``CRC32C``
    - ``SHA1``
    - ``SHA256``
 
-   The flag requires server trailing headers and works with AWS or MinIO targets.
+   该标志要求服务端支持 trailing headers，并适用于 AWS 或 MinIO 目标。
 
 .. mc-cmd:: --disable-multipart
    :optional:
 
-   Disables multipart upload for the synchronization session.
+   为本次同步会话禁用 multipart 上传。
 
 .. mc-cmd:: --dry-run
    :optional:
 
-   Perform a mock mirror operation.
-   Use this operation to test that the :mc:`mc mirror` operation will only mirror the desired objects or buckets.
+   执行一次模拟镜像操作。
+   使用该操作可测试 :mc:`mc mirror` 是否只会镜像预期的对象或存储桶。
 
 .. block include of enc-c , enc-s3, and enc-kms
 
@@ -188,22 +188,22 @@ Parameters
 .. mc-cmd:: --exclude
    :optional:
 
-   Exclude object(s) in the :mc-cmd:`~mc mirror SOURCE` path that match the specified object :ref:`name pattern <minio-wildcard-matching>`.
+   排除 :mc-cmd:`~mc mirror SOURCE` 路径中与指定对象 :ref:`name pattern <minio-wildcard-matching>` 匹配的对象。
 
 .. mc-cmd:: --exclude-bucket
    :optional:
 
    .. versionadded:: mc RELEASE.2024-03-03T00-13-08Z
 
-   Exclude bucket(s) in the :mc-cmd:`~mc mirror SOURCE` path that match the specified bucket :ref:`name pattern <minio-wildcard-matching>`.
+   排除 :mc-cmd:`~mc mirror SOURCE` 路径中与指定存储桶 :ref:`name pattern <minio-wildcard-matching>` 匹配的存储桶。
 
 .. mc-cmd:: --exclude-storageclass
    :optional:
 
-   Exclude object(s) on the :mc-cmd:`~mc mirror SOURCE` that have the specified storage class.
-   You can use this flag multiple times in a command to exclude objects from more than one storage class.
+   排除 :mc-cmd:`~mc mirror SOURCE` 上具有指定存储类的对象。
+   可在同一命令中多次使用该标志，以排除多个存储类中的对象。
 
-   Use this to exclude objects with storage classes that require rehydration or restoration of objects, such as migrating from an AWS S3 bucket where some objects have the ``GLACIER`` or ``DEEP_ARCHIVE`` storage classes.
+   可用于排除需要重新水化或恢复的存储类对象，例如从 AWS S3 存储桶迁移时，某些对象使用 ``GLACIER`` 或 ``DEEP_ARCHIVE`` 存储类。
 
 .. --limit-download and --limit-upload included here
 
@@ -214,187 +214,187 @@ Parameters
 .. mc-cmd:: --md5
    :optional:
 
-   Forces all uploads to calculate MD5 checksums.
+   强制所有上传计算 MD5 校验和。
 
 .. mc-cmd:: --monitoring-address
    :optional:
 
-   Creates a `Prometheus <https://prometheus.io/>`__ endpoint for monitoring mirroring activity. 
-   Specify the local network adapter and port address on which to create the scraping endpoint. 
-   Defaults to ``localhost:8081``).
+   创建一个用于监控镜像活动的 `Prometheus <https://prometheus.io/>`__ endpoint。
+   指定创建抓取 endpoint 的本地网络适配器和端口地址。
+   默认为 ``localhost:8081``)。
 
 .. mc-cmd:: --newer-than
    :optional:
 
-   Mirror object(s) newer than the specified number of days.
-   Specify a string in ``#d#hh#mm#ss`` format
-   For example: ``--newer-than 1d2hh3mm4ss``.
+   仅镜像比指定天数更新的对象。
+   以 ``#d#hh#mm#ss`` 格式指定字符串
+   例如：``--newer-than 1d2hh3mm4ss``。
 
 .. mc-cmd:: --older-than
    :optional:
 
-   Mirror object(s) older than the specified time limit.
-   Specify a string in ``#d#hh#mm#ss`` format.
-   For example: ``--older-than 1d2hh3mm4ss``.
+   仅镜像早于指定时间阈值的对象。
+   以 ``#d#hh#mm#ss`` 格式指定字符串。
+   例如：``--older-than 1d2hh3mm4ss``。
 
-   Defaults to ``0`` (all objects).
+   默认为 ``0``（所有对象）。
 
 .. mc-cmd:: --overwrite
    :optional:
 
-   Overwrites object(s) on the :mc-cmd:`~mc mirror TARGET`.
+   覆盖 :mc-cmd:`~mc mirror TARGET` 上的对象。
 
-   For example, consider an active ``mc mirror --overwrite`` synchronizing content from Source to Destination.
+   例如，设想一个正在运行的 ``mc mirror --overwrite``，将内容从 Source 同步到 Destination。
 
-   If an object on Source changes, ``mc mirror --overwrite`` synchronizes and overwrites any matching file on Destination.
+   如果 Source 上的对象发生变更，``mc mirror --overwrite`` 会同步并覆盖 Destination 上的同名文件。
 
-   Without ``--overwrite``, if an object already exists on the Destination, the mirror process fails to synchronize that object.
-   ``mc mirror`` logs an error and continues to synchronize other objects.
+   如果不使用 ``--overwrite``，当对象已存在于 Destination 时，镜像进程将无法同步该对象。
+   ``mc mirror`` 会记录错误并继续同步其他对象。
 
 .. mc-cmd:: --preserve, a
    :optional:
 
-   Preserve file system attributes and bucket policy rules of the :mc-cmd:`~mc mirror SOURCE` on the :mc-cmd:`~mc mirror TARGET`.
+   在 :mc-cmd:`~mc mirror TARGET` 上保留 :mc-cmd:`~mc mirror SOURCE` 的文件系统属性和存储桶策略规则。
 
 .. mc-cmd:: --region
    :optional:
 
-   Specify the ``string`` region when creating new bucket(s) on the target.
+   在目标端创建新存储桶时，指定 ``string`` 区域。
 
-   Defaults to ``"us-east-1"``.
+   默认为 ``"us-east-1"``。
 
 .. mc-cmd:: --remove
    :optional:
 
-   Removes object(s) on the Target that do not exist on the Source.
+   删除 Target 上 Source 中不存在的对象。
 
-   Use the ``--remove`` flag to have the same list of objects on both Source and Target.
+   使用 ``--remove`` 标志可使 Source 和 Target 拥有相同的对象列表。
 
-   For example, objects A, B, and C exist on Source.
-   Objects C, D, and E exist on Target.
+   例如，Source 上存在对象 A、B、C。
+   Target 上存在对象 C、D、E。
 
-   When running ``mc mirror --remove``, objects A and B synchronize to Target and objects D and E are removed from Target.
-   Since an object C already exists on both, nothing moves from Source to Target. 
+   运行 ``mc mirror --remove`` 时，对象 A 和 B 会同步到 Target，对象 D 和 E 会从 Target 删除。
+   由于对象 C 在两端都已存在，不会有任何内容从 Source 移动到 Target。 
 
-   After the action, only objects A, B, and C exist on both the Source and the Target.
+   操作完成后，Source 和 Target 上都只存在对象 A、B、C。
 
-   ``mc mirror --remove`` does not verify that the contents of object C are the same on both Source and Target, only that an object called `C` exists on both.
-   To ensure objects on the Source and Target match both names `and` content, use  :mc-cmd:`~mc mirror --overwrite` or :mc-cmd:`~mc mirror --watch`.
+   ``mc mirror --remove`` 不会校验对象 C 在 Source 和 Target 上的内容是否一致，只检查两端是否都存在名为 `C` 的对象。
+   若要确保 Source 与 Target 上对象的名称和内容都一致，请使用 :mc-cmd:`~mc mirror --overwrite` 或 :mc-cmd:`~mc mirror --watch`。
 
    .. versionchanged:: RELEASE.2023-05-04T18-10-16Z
 
-      ``mc mirror --remove`` returns an error if the target path is a local filesystem directory that does not exist.
+      如果目标路径是不存在的本地文件系统目录，``mc mirror --remove`` 会返回错误。
 
-      In prior versions, specifying ``/path/to/directory`` would result in the removal of the ``/path/to`` folder if ``directory`` did not exist.
+      在早期版本中，如果 ``directory`` 不存在，指定 ``/path/to/directory`` 会导致删除 ``/path/to`` 文件夹。
 
 .. mc-cmd:: --retry
    :optional:
 
-   In case of errors during mirror process, retry on each errored object.
+   镜像过程中出现错误时，对每个出错对象执行重试。
 
 .. mc-cmd:: --storage-class, sc
    :optional:
 
-   Set the storage class for the new object(s) on the :mc-cmd:`~mc mirror TARGET`. 
+   为 :mc-cmd:`~mc mirror TARGET` 上的新对象设置存储类。 
 
-   See the Amazon documentation on :aws-docs:`Storage Classes <AmazonS3/latest/dev/storage-class-intro.html>` for more information on S3 storage classses.
+   有关 S3 存储类的更多信息，请参阅 Amazon 文档：:aws-docs:`Storage Classes <AmazonS3/latest/dev/storage-class-intro.html>`。
 
 .. mc-cmd:: --skip-errors
    :optional:
 
    .. versionadded:: mc RELEASE.2024-01-28T16-23-14Z
 
-   Skip any objects that produce errors while mirroring.
+   跳过镜像过程中产生错误的对象。
 
 .. mc-cmd:: --summary
    :optional:
 
-   On completion, output a summary of the data that was synchronized.
+   完成后输出已同步数据的摘要。
 
 .. mc-cmd:: --watch, w
    :optional:
 
-   Use ``--watch`` flag to mirror objects from Source to Target, where the Target may also have additional objects not present on the Source.
+   使用 ``--watch`` 标志可将对象从 Source 镜像到 Target，且 Target 也可以包含 Source 中不存在的其他对象。
 
-   - ``--watch`` continuously synchronizes files from Source to Target until explicitly terminated
-   - The Target may have files that do not exist on Source
-   - ``--watch`` overwrites objects on the Target if a match exists on Source, like the :mc-cmd:`~mc mirror --overwrite` flag
+   - ``--watch`` 会持续将文件从 Source 同步到 Target，直到显式终止
+   - Target 可以包含 Source 中不存在的文件
+   - 若 Source 中存在同名对象，``--watch`` 会覆盖 Target 上的对象，行为类似 :mc-cmd:`~mc mirror --overwrite`
 
-   Defaults to ``0`` (all objects).
+   默认为 ``0``（所有对象）。
 
-   For example, object A and B exist on the watched Source.
-   Objects A, B, and C exist on the watched Target.
+   例如，被监视的 Source 上存在对象 A 和 B。
+   被监视的 Target 上存在对象 A、B、C。
 
-   A client writes object D to Source and removes object B.
+   某客户端向 Source 写入对象 D，并删除对象 B。
 
-   After the operation, objects A and D exist on the Source.
-   Objects A, C, and D exist on the Target.
+   操作后，Source 上存在对象 A 和 D。
+   Target 上存在对象 A、C、D。
 
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Mirror a Local Directory to an S3-Compatible Host
+将本地目录镜像到 S3 兼容主机
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mirror` to mirror files from a filesystem to an S3 Host:
+使用 :mc:`mc mirror` 将文件从文件系统镜像到 S3 主机：
 
 .. code-block::
    :class: copyable
 
    mc mirror FILEPATH ALIAS/PATH
 
-- Replace :mc-cmd:`FILEPATH <mc mirror SOURCE>` with the full file path to the directory to mirror.
+- 将 :mc-cmd:`FILEPATH <mc mirror SOURCE>` 替换为要镜像目录的完整文件路径。
 
-- Replace :mc-cmd:`ALIAS <mc mirror TARGET>` with the :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc mirror TARGET>` 替换为已配置 S3 兼容主机的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc mirror TARGET>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc mirror TARGET>` 替换为目标存储桶。
 
-Continuously Mirror a Local Directory to an S3-Compatible Host
+持续将本地目录镜像到 S3 兼容主机
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mirror` with :mc-cmd:`~mc mirror --watch` to continuously mirror files from a filesystem to an S3-compatible host where objects added to or deleted from the filesystem are added to or deleted from the host:
+将 :mc:`mc mirror` 与 :mc-cmd:`~mc mirror --watch` 一起使用，可持续将文件从文件系统镜像到 S3 兼容主机；文件系统中新增或删除的对象会在主机端同步新增或删除：
 
 .. code-block::
    :class: copyable
 
    mc mirror --watch FILEPATH ALIAS/PATH
 
-- Replace :mc-cmd:`FILEPATH <mc mirror SOURCE>` with the full file path to the directory to mirror.
+- 将 :mc-cmd:`FILEPATH <mc mirror SOURCE>` 替换为要镜像目录的完整文件路径。
 
-- Replace :mc-cmd:`ALIAS <mc mirror TARGET>` with the :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc mirror TARGET>` 替换为已配置 S3 兼容主机的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc mirror TARGET>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc mirror TARGET>` 替换为目标存储桶。
 
-Continuously Mirror S3 Bucket to an S3-Compatible Host
+持续将 S3 存储桶镜像到 S3 兼容主机
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mirror` with :mc-cmd:`~mc mirror --watch` to continuously mirror objects in a bucket on one S3-compatible host to another S3-compatible host where objects added to or deleted from the bucket are added to or deleted from the host.
+将 :mc:`mc mirror` 与 :mc-cmd:`~mc mirror --watch` 一起使用，可持续将一个 S3 兼容主机上某个存储桶中的对象镜像到另一个 S3 兼容主机；存储桶中新增或删除的对象会同步到目标主机。
 
 .. code-block::
    :class: copyable
 
    mc mirror --watch SRCALIAS/SRCPATH TGTALIAS/TGTPATH
 
-- Replace :mc-cmd:`SRCALIAS <mc mirror SOURCE>` with :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`SRCALIAS <mc mirror SOURCE>` 替换为已配置 S3 兼容主机的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`SRCPATH <mc mirror SOURCE>` with the bucket to mirror.
+- 将 :mc-cmd:`SRCPATH <mc mirror SOURCE>` 替换为要镜像的存储桶。
 
-- Replace :mc-cmd:`TGTALIAS <mc mirror TARGET>` with the :mc-cmd:`alias <mc alias>` of a configured S3-compatible host.
+- 将 :mc-cmd:`TGTALIAS <mc mirror TARGET>` 替换为已配置 S3 兼容主机的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`TGTPATH <mc mirror TARGET>` with the destination bucket.
+- 将 :mc-cmd:`TGTPATH <mc mirror TARGET>` 替换为目标存储桶。
 
-Mirror Objects from AWS S3 to MinIO Skipping Objects in GLACIER
+将对象从 AWS S3 镜像到 MinIO，并跳过 GLACIER 中的对象
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mirror` with :mc-cmd:`~mc mirror --exclude-storageclass` to mirror objects from AWS S3 to MinIO without mirroring objects in GLACIER or DEEP_ARCHIVE storage.
+将 :mc:`mc mirror` 与 :mc-cmd:`~mc mirror --exclude-storageclass` 一起使用，可将对象从 AWS S3 镜像到 MinIO，同时不镜像 GLACIER 或 DEEP_ARCHIVE 存储中的对象。
 
 .. code-block::
    :class: copyable
@@ -402,31 +402,31 @@ Use :mc:`mc mirror` with :mc-cmd:`~mc mirror --exclude-storageclass` to mirror o
    mc mirror --exclude-storageclass GLACIER  \
       --exclude-storageclass DEEP_ARCHIVE SRCALIAS/SRCPATH TGALIAS/TGPATH
 
-- Replace :mc-cmd:`SRCALIAS <mc mirror SOURCE>` with the :mc-cmd:`alias <mc alias>` of a configured S3 host.
+- 将 :mc-cmd:`SRCALIAS <mc mirror SOURCE>` 替换为已配置 S3 主机的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`SRCPATH <mc mirror SOURCE>` with the bucket to mirror.
+- 将 :mc-cmd:`SRCPATH <mc mirror SOURCE>` 替换为要镜像的存储桶。
 
-- Replace :mc-cmd:`TGTALIAS <mc mirror TARGET>` with the :mc-cmd:`alias <mc alias>` of a configured S3 host.
+- 将 :mc-cmd:`TGTALIAS <mc mirror TARGET>` 替换为已配置 S3 主机的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`TGTPATH <mc mirror TARGET>` with the destination bucket.
+- 将 :mc-cmd:`TGTPATH <mc mirror TARGET>` 替换为目标存储桶。
 
-Behavior
+行为
 --------
 
-Mirror Continues on Failed Object
+对象失败时镜像继续执行
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If an object of the same name exists on the target, MinIO outputs an error for the duplicate object.
-``mc mirror`` continues to mirror other objects from the source to the destination after the error.
+如果目标上存在同名对象，MinIO 会为重复对象输出错误。
+发生错误后，``mc mirror`` 会继续将其他对象从源端镜像到目标端。
 
-MinIO Trims Empty Prefixes on Object Removal
+对象删除时 MinIO 会裁剪空前缀
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :mc-cmd:`mc mirror --watch` command continuously synchronizes the source and destination targets for added and deleted objects. 
-This includes automatically removing objects on the destination if they are removed on the source.
+:mc-cmd:`mc mirror --watch` 命令会持续同步源端和目标端中新增与删除的对象。
+这也包括在源端删除对象时，自动删除目标端对应对象。
 
-For objects updated on the source to also update on the target, use `--overwrite`.
-To remove objects from the target that are not on the source, use `--remove`.
+如需将源端更新的对象同步更新到目标端，请使用 `--overwrite`。
+如需删除目标端中源端不存在的对象，请使用 `--remove`。
 
 .. |command| replace:: :mc-cmd:`mc mirror --watch`
 
@@ -438,7 +438,7 @@ To remove objects from the target that are not on the source, use `--remove`.
    :start-after: start-remove-api-trims-prefixes-fs
    :end-before: end-remove-api-trims-prefixes-fs
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

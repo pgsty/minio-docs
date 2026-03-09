@@ -1,12 +1,12 @@
 .. _minio-python-quickstart:
 
 =======================
-Python Quickstart Guide
+Python 快速入门指南
 =======================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 

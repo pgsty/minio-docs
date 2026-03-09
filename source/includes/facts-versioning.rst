@@ -1,47 +1,46 @@
 .. start-rewind-desc
 
-Directs |command| to operate only on the object version(s) that
-existed at specified point-in-time.
+指示 |command| 仅对指定时间点存在的对象版本执行操作。
 
-- To rewind to a specific date in the past, specify the date as an
-  ISO8601-formatted timestamp. For example: ``--rewind "2020.03.24T10:00"``.
+- 如需回溯到过去的特定日期，请将该日期指定为 ISO8601 格式的时间戳。
+  例如：``--rewind "2020.03.24T10:00"``。
 
-- To rewind a duration in time, specify the duration as a string in
-  ``#d#hh#mm#ss`` format. For example: ``--rewind "1d2hh3mm4ss"``.
+- 如需按时间长度回溯，请将该时长指定为 ``#d#hh#mm#ss`` 格式的字符串。
+  例如：``--rewind "1d2hh3mm4ss"``。
 
-|rewind| requires that the specified |alias| be an S3-compatible service
-that supports :ref:`minio-bucket-versioning`. For MinIO deployments, use
-:mc:`mc version` to enable or disable bucket versioning.
+|rewind| 要求指定的 |alias| 指向支持
+:ref:`minio-bucket-versioning` 的 S3 兼容服务。对于 MinIO 部署，
+请使用 :mc:`mc version` 启用或禁用存储桶版本控制。
 
 .. end-rewind-desc
 
 .. start-versions-desc
 
-Directs |command| to operate on all object versions that exist in the
-bucket.
+指示 |command| 对存储桶中存在的所有对象版本执行操作。
 
-|versions| requires that the specified |alias| be an S3-compatible service
-that supports :ref:`minio-bucket-versioning`. For MinIO deployments, use
-:mc:`mc version` to enable or disable bucket versioning.
+|versions| 要求指定的 |alias| 指向支持
+:ref:`minio-bucket-versioning` 的 S3 兼容服务。对于 MinIO 部署，
+请使用 :mc:`mc version` 启用或禁用存储桶版本控制。
 
 .. end-versions-desc
 
 .. start-version-id-desc
 
-Directs |command| to operate only on the specified object version.
+指示 |command| 仅对指定的对象版本执行操作。
 
-|versionid| requires that the specified |alias| be an S3-compatible service
-that supports :ref:`minio-bucket-versioning`. For MinIO deployments, use
-:mc:`mc version` to enable or disable bucket versioning.
+|versionid| 要求指定的 |alias| 指向支持
+:ref:`minio-bucket-versioning` 的 S3 兼容服务。对于 MinIO 部署，
+请使用 :mc:`mc version` 启用或禁用存储桶版本控制。
 
 .. end-version-id-desc
 
 .. start-versioning-admonition
 
-.. admonition:: Requires Versioning
+.. admonition:: 需要版本控制
    :class: note
 
-   |command| requires :ref:`bucket versioning <minio-bucket-versioning>` to
-   use this feature. Use :mc:`mc version` to enable versioning on a bucket.
+   要使用此功能，|command| 需要启用
+   :ref:`存储桶版本控制 <minio-bucket-versioning>`。
+   请使用 :mc:`mc version` 在存储桶上启用版本控制。
 
 .. end-versioning-admonition

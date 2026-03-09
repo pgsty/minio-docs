@@ -1,8 +1,7 @@
 .. start-create-transition-rule-desc
 
-Use the :mc:`mc ilm rule add` command to create a new transition rule
-for the bucket. The following example configures transition after the
-specified number of calendar days:
+使用 :mc:`mc ilm rule add` 命令为存储桶创建新的转移规则。
+以下示例将对象配置为在指定的日历天数后执行转移：
 
 .. code-block:: shell
    :class: copyable
@@ -13,62 +12,56 @@ specified number of calendar days:
    --noncurrent-transition-days NONCURRENT_DAYS
    --noncurrent-transition-tier TIERNAME
 
-The example above specifies the following arguments:
+上述示例指定了以下参数：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Argument
-     - Description
+   * - 参数
+     - 说明
 
    * - :mc-cmd:`ALIAS <mc ilm rule add ALIAS>`
-     - Specify the :mc:`alias <mc alias>` of the MinIO deployment for which
-       you are creating the lifecycle management rule.
+     - 指定要为其创建生命周期管理规则的 MinIO 部署
+       :mc:`alias <mc alias>`。
 
    * - :mc-cmd:`BUCKET <mc ilm rule add ALIAS>`
-     - Specify the full path to the bucket for which you are
-       creating the lifecycle management rule.
+     - 指定要为其创建生命周期管理规则的存储桶完整路径。
 
    * - :mc-cmd:`TIERNAME <mc ilm rule add --transition-tier>`
-     - The remote storage tier to which MinIO transitions objects. 
-       Specify the remote storage tier name created in the previous step.
+     - MinIO 将对象转移到的远程存储层。
+       指定在上一步中创建的远程存储层名称。
 
-       If you want to transition noncurrent object versions to a distinct
-       remote tier, specify a different tier name for 
-       :mc-cmd:`~mc ilm rule add --noncurrent-transition-tier`.
+       如果要将非当前对象版本转移到不同的远程层，
+       请为 :mc-cmd:`~mc ilm rule add --noncurrent-transition-tier`
+       指定另一个层名称。
 
    * - :mc-cmd:`DAYS <mc ilm rule add --transition-days>`
-     - The number of calendar days after which MinIO marks an object as 
-       eligible for transition. Specify the number of days as an integer,
-       e.g. ``30`` for 30 days.
+     - MinIO 在经过多少个日历天后将对象标记为可转移。
+       该值必须为整数，例如 ``30`` 表示 30 天。
 
    * - :mc-cmd:`NONCURRENT_DAYS <mc ilm rule add --noncurrent-transition-days>`
-     - The number of calendar days after which MinIO marks a noncurrent
-       object version as eligible for transition. MinIO specifically measures
-       the time since an object *became* non-current instead of the object
-       creation time. Specify the number of days as an integer,
-       e.g. ``90`` for 90 days.
-       
-       Omit this value to ignore noncurrent object versions.
+     - MinIO 在经过多少个日历天后将非当前对象版本标记为可转移。
+       MinIO 具体计算的是对象变为非当前版本后的时间，
+       而不是对象创建时间。该值必须为整数，
+       例如 ``90`` 表示 90 天。
 
-       This option has no effect on non-versioned buckets.
+       省略此值可忽略非当前对象版本。
 
-     
+       此选项对未启用版本控制的存储桶无效。
+
 .. end-create-transition-rule-desc
 
 .. start-create-transition-user-desc
 
-This step creates users and policies on the MinIO deployment for supporting
-lifecycle management operations. You can skip this step if the deployment
-already has users with the necessary |permissions|.
+此步骤会在 MinIO 部署上创建用于支持生命周期管理操作的用户和策略。
+如果该部署已经存在具备所需 |permissions| 的用户，则可以跳过此步骤。
 
-The following example uses ``Alpha`` as a placeholder :mc:`alias <mc alias>` for
-the MinIO deployment. Replace this value with the appropriate alias for the
-MinIO deployment on which you are configuring lifecycle management rules.
-Replace the password ``LongRandomSecretKey`` with a long, random, and secure
-secret key as per your organizations best practices for password generation.
+以下示例使用 ``Alpha`` 作为 MinIO 部署 :mc:`alias <mc alias>` 的占位符。
+请将其替换为配置生命周期管理规则时所使用的 MinIO 部署别名。
+同时，请按照所在组织的密码生成最佳实践，
+将密码 ``LongRandomSecretKey`` 替换为足够长、随机且安全的密钥。
 
 .. code-block:: shell
    :class: copyable
@@ -78,57 +71,65 @@ secret key as per your organizations best practices for password generation.
    mc admin user add Alpha alphaLifecycleAdmin LongRandomSecretKey
    mc admin policy attach Alpha LifecycleAdminPolicy --user=alphaLifecycleAdmin
 
-This example assumes that the specified
-aliases have the necessary permissions for creating policies and users
-on the deployment. See :ref:`minio-users` and :ref:`MinIO Policy Based Access Control <minio-policy>` for more
-complete documentation on MinIO users and policies respectively.
+此示例假定所指定的 alias 具有在该部署上创建策略和用户所需的权限。
+有关 MinIO 用户和策略的更完整文档，
+请分别参见 :ref:`minio-users`
+和 :ref:`MinIO Policy Based Access Control <minio-policy>`。
 
 .. end-create-transition-user-desc
 
 .. start-transition-bucket-access-desc
 
-MinIO *requires* exclusive access to the transitioned data on the remote storage tier.
-Object metadata on the "hot" MinIO source is strongly linked to the object data on the "warm/cold" remote tier.
-MinIO cannot retrieve object data without access to the remote, nor can the remote be used to restore lost metadata on the source.
+MinIO 要求对远程存储层上的已转移数据拥有独占访问权限。
+"hot" MinIO 源端上的对象元数据与远程 "warm/cold" 层上的对象数据紧密关联。
+如果无法访问远程层，MinIO 就无法检索对象数据；
+同样，远程层也不能用于恢复源端丢失的元数据。
 
-All access to the transitioned objects *must* occur through MinIO via S3 API operations only.
-Manually modifying a transitioned object - whether the metadata on the "hot" MinIO tier *or* the object data on the remote "warm/cold" tier - may result in loss of that object data.
+对已转移对象的所有访问都必须仅通过 MinIO 发起的 S3 API 操作完成。
+手动修改已转移对象时，无论修改的是 "hot" MinIO 层上的元数据，
+还是远程 "warm/cold" 层上的对象数据，都可能导致该对象的数据丢失。
 
-MinIO ignores any objects in the remote bucket or bucket prefix not explicitly managed by the MinIO deployment. 
-Automatic transition and transparent object retrieval depend on the following assumptions:
+对于远程存储桶或存储桶前缀中不受该 MinIO 部署明确管理的任何对象，
+MinIO 都会将其忽略。
+自动转移与透明对象检索依赖以下前提：
 
-- No external mutation, migration, or deletion of objects on the remote storage. 
-- No lifecycle management rules (e.g. transition or expiration) on the remote 
-  storage bucket.
+- 不会在远程存储上由外部修改、迁移或删除对象。
+- 远程存储桶上不存在生命周期管理规则
+  （例如转移或过期）。
 
-MinIO stores all transitioned objects in the remote storage bucket or resource under a unique per-deployment prefix value. 
-This value is not intended to support identifying the source deployment from the backend. 
-MinIO supports an additional optional human-readable prefix when configuring the remote target, which may facilitate operations related to diagnostics, maintenance, or disaster recovery. 
+MinIO 会将所有已转移对象存储在远程存储桶或资源下、
+每个部署唯一的前缀值之中。
+该值并非用于在后端识别源部署。
+在配置远程目标时，MinIO 还支持附加一个可选的人类可读前缀，
+这可能有助于诊断、维护或灾难恢复相关操作。
 
-MinIO recommends specifying this optional prefix for remote storage tiers which contain other data, including transitioned objects from other MinIO deployments.
-This tutorial includes the necessary syntax for setting this prefix.
+对于包含其他数据的远程存储层，
+包括来自其他 MinIO 部署的已转移对象，
+MinIO 建议指定此可选前缀。
+本教程包含设置此前缀所需的语法。
 
 .. end-transition-bucket-access-desc
 
 .. start-transition-data-loss-desc
 
-MinIO tiering behavior depends on the remote storage returning objects immediately (milliseconds to seconds) upon request.
-MinIO therefore *cannot* support remote storage which requires rehydration, wait periods, or manual intervention.
+MinIO 分层行为依赖远程存储在收到请求后立即返回对象
+（毫秒到秒级）。
+因此，MinIO 不支持需要 rehydration、等待窗口
+或人工干预的远程存储。
 
-MinIO creates metadata for each transitioned object that identifies its location on the remote storage. 
-Applications cannot trivially identify and access a transitioned object independent of MinIO.
-Availability of the transitioned data therefore depends on the same core
-protections that :ref:`erasure coding <minio-erasure-coding>` and distributed
-deployment topologies provide for all objects on the MinIO deployment. Using
-object transition does not provide any additional business continuity or
-disaster recovery benefits.
+MinIO 会为每个已转移对象创建元数据，用于标识其在远程存储中的位置。
+应用程序无法脱离 MinIO 直接识别和访问已转移对象。
+因此，已转移数据的可用性仍依赖于
+:ref:`纠删码 <minio-erasure-coding>` 和分布式部署拓扑
+为 MinIO 部署中所有对象提供的核心保护能力。
+使用对象转移不会带来任何额外的业务连续性或灾难恢复收益。
 
-Workloads that require :abbr:`BC/DR (Business Continuity/Disaster Recovery)`
-protections should implement MinIO :ref:`Server-Side replication
-<minio-bucket-replication-serverside>`. Replication ensures objects remains
-preserved on the remote replication site, such that you can resynchronize from
-the remote in the event of partial or total data loss. See
-:ref:`minio-replication-behavior-resync` for more complete documentation on
-using replication to recover after partial or total data loss.
+需要 :abbr:`BC/DR (Business Continuity/Disaster Recovery)`
+保护的工作负载应实现 MinIO :ref:`Server-Side replication
+<minio-bucket-replication-serverside>`。
+复制可确保对象保存在远程复制站点上，
+从而使用户能够在发生部分或全部数据丢失时从远端重新同步。
+有关如何使用复制在部分或全部数据丢失后恢复的更完整文档，
+请参见 :ref:`minio-replication-behavior-resync`。
 
 .. end-transition-data-loss-desc

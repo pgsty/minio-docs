@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,48 +14,48 @@
 
 .. versionchanged:: RELEASE.2023-05-26T23-31-54Z
 
-   ``mc admin idp ldap policy`` and its subcommands replaced by :mc-cmd:`mc idp ldap policy`.
+   ``mc admin idp ldap policy`` 及其子命令已由 :mc-cmd:`mc idp ldap policy` 替代。
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-idp-ldap-policy-desc
 
-The :mc-cmd:`mc admin idp ldap policy` command allows you to view the mapping relationships between policies and the associated groups or users.
+:mc-cmd:`mc admin idp ldap policy` 命令用于查看策略与关联组或用户之间的映射关系。
 
 .. end-mc-admin-idp-ldap-policy-desc
 
 
-The :mc-cmd:`mc admin idp ldap policy` command has the following subcommands:
+:mc-cmd:`mc admin idp ldap policy` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc-cmd:`mc admin idp ldap policy attach`
-     - Attach a policy to an entity
+     - 将策略附加到实体
 
    * - :mc-cmd:`mc admin idp ldap policy detach`
-     - Detach a policy from an entity
+     - 从实体分离策略
 
    * - :mc-cmd:`mc admin idp ldap policy entities`
-     - List policy entity mappings
+     - 列出策略与实体的映射
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: attach
 
-   Attach one or more polices to entity.
+   将一个或多个策略附加到实体。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLES
+      .. tab-item:: 示例
 
-         The following example attaches two policies, ``policy1`` and ``policy2``, to the ``projectb`` group on the ``myminio`` deployment. 
+         以下示例将两个策略 ``policy1`` 和 ``policy2`` 附加到 ``myminio`` 部署上的 ``projectb`` 组。
 
          .. code-block:: shell
             :class: copyable
@@ -66,7 +66,7 @@ Syntax
                                              --group='cn=projectb,ou=groups,ou=swengg,dc=min,dc=io'
 
 
-         The following example attaches the policy, ``userpolicy``, to the user ``bobfisher`` on the ``myminio`` deployment. 
+         以下示例将策略 ``userpolicy`` 附加到 ``myminio`` 部署上的用户 ``bobfisher``。
 
          .. code-block:: shell
             :class: copyable
@@ -75,9 +75,9 @@ Syntax
                                              mypolicy                                               \
                                              policy2                                                \
                                              --user='uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io'
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -89,23 +89,23 @@ Syntax
                                             [--user=`USER`]   \
                                             [--group=`GROUP`]
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for AD/LDAP integration.
-         - Replace ``POLICYNAME`` with the policy to attach to the entity.
-           You may list multiple policies to attach to the entity.
-         - Use must use one of either the ``--user`` or ``--group`` flag.
-           You may only use the flag once in the command.
-           You cannot use both flags in the same command.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于配置 AD/LDAP 集成。
+         - 将 ``POLICYNAME`` 替换为要附加到实体的策略。
+           你可以列出多个策略并附加到该实体。
+         - 必须使用 ``--user`` 或 ``--group`` 其中之一。
+           每个命令中只能使用一次该标志。
+           不能在同一命令中同时使用这两个标志。
 
 
 .. mc-cmd:: detach
 
-   Detach one or more policies from an entity.
+   从实体分离一个或多个策略。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLES
+      .. tab-item:: 示例
 
-         The following example detaches two policies, ``policy1`` and ``policy2``, from the ``projectb`` group on the ``myminio`` deployment. 
+         以下示例从 ``myminio`` 部署上的 ``projectb`` 组分离两个策略 ``policy1`` 和 ``policy2``。
 
          .. code-block:: shell
             :class: copyable
@@ -116,7 +116,7 @@ Syntax
                                              --group='cn=projectb,ou=groups,ou=swengg,dc=min,dc=io'
 
 
-         The following example detaches the policy, ``userpolicy``, from the user ``bobfisher`` on the ``myminio`` deployment. 
+         以下示例从 ``myminio`` 部署上的用户 ``bobfisher`` 分离策略 ``userpolicy``。
 
          .. code-block:: shell
             :class: copyable
@@ -125,9 +125,9 @@ Syntax
                                              mypolicy                                               \
                                              policy2                                                \
                                              --user='uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io'
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -139,27 +139,27 @@ Syntax
                                             [--user=`USER`]   \
                                             [--group=`GROUP`]
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for AD/LDAP integration.
-         - Replace ``POLICYNAME`` with the policy to detach from the entity.
-           You may list multiple policies to detach from the entity.
-         - Use must use one of either the ``--user`` or ``--group`` flag.
-           You may only use the flag once in the command.
-           You cannot use both flags in the same command.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于配置 AD/LDAP 集成。
+         - 将 ``POLICYNAME`` 替换为要从实体分离的策略。
+           你可以列出多个策略并从该实体分离。
+         - 必须使用 ``--user`` 或 ``--group`` 其中之一。
+           每个命令中只能使用一次该标志。
+           不能在同一命令中同时使用这两个标志。
 
 .. mc-cmd:: entities
 
-   Display a list of mappings for a user, group, and/or policy.
+   显示用户、组和/或策略的映射列表。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLES
+      .. tab-item:: 示例
 
-         The following example lists all mappings for a specific policy, a set of groups, and a selection of users on the ``myminio`` deployment.
+         以下示例列出 ``myminio`` 部署中某个特定策略、一组组以及部分用户的全部映射关系。
 
-         Specifically, it lists 
-         - Users mapped to the ``finteam-policy`` policy.
-         - Policies assigned to the ``uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io`` user
-         - Policies assigned to the ``cn=projectb,ou=groups,ou=swengg,dc=min,dc=io`` group
+         具体包括：
+         - 映射到 ``finteam-policy`` 策略的用户。
+         - 分配给用户 ``uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io`` 的策略
+         - 分配给组 ``cn=projectb,ou=groups,ou=swengg,dc=min,dc=io`` 的策略
 
          .. code-block:: shell
             :class: copyable
@@ -169,9 +169,9 @@ Syntax
                                           --user 'uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io'  \
                                           --group 'cn=projectb,ou=groups,ou=swengg,dc=min,dc=io' 
 
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -182,14 +182,14 @@ Syntax
                                             [--group `value`, -g `value`]  \
                                             [--policy value]
 
-         - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for AD/LDAP integration.
-         - You may use each of the ``--user``, ``--group``, and/or ``--policy`` flags as many times as desired in the command.
-         - For each flag, the output lists the entities mapped to the specified policy, user, or group.
-         - Omit all flags to return a list of mappings for all policies.
+         - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于配置 AD/LDAP 集成。
+         - 在命令中可按需多次使用 ``--user``、``--group`` 和/或 ``--policy`` 标志。
+         - 对于每个标志，输出会列出映射到指定策略、用户或组的实体。
+         - 省略所有标志可返回所有策略的映射列表。
 
 
-Global Flags
-------------
+全局标志
+--------
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

@@ -6,42 +6,42 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin user disable
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-user-disable-desc
 
-The :mc:`mc admin user disable` command disables a :ref:`MinIO user <minio-internal-idp>` on the target MinIO deployment.
+:mc:`mc admin user disable` 命令用于在目标 MinIO 部署上禁用 :ref:`MinIO 用户 <minio-internal-idp>`。
 
 .. end-mc-admin-user-disable-desc
 
-Clients cannot use the user credentials to authenticate to the MinIO deployment.
-Disabling a user does *not* remove that user from the deployment.
-Use :mc-cmd:`mc admin user enable` to enable a disabled user on a MinIO deployment.
+客户端不能使用该用户凭证向 MinIO 部署进行身份验证。
+禁用用户 *不会* 将该用户从部署中移除。
+使用 :mc-cmd:`mc admin user enable` 可在 MinIO 部署上启用已禁用的用户。
 
-To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :mc:`AD/LDAP <mc idp ldap>`.
+如需管理外部身份提供商用户，请参阅 :mc:`OIDC <mc idp openid>` 或 :mc:`AD/LDAP <mc idp ldap>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command disables user ``myuser`` on the ``myminio`` MinIO deployment:
+      以下命令会在 ``myminio`` MinIO 部署上禁用用户 ``myuser``：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin user disable myminio myuser
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -55,50 +55,50 @@ To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :m
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc:`alias <mc alias>` of the MinIO deployment with the user to disable.
+   要禁用用户所在 MinIO 部署的 :mc:`alias <mc alias>`。
 
 .. mc-cmd:: USERNAME
    :required:
 
-   The username of the user to disable.
+   要禁用的用户名。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Example
--------
+示例
+----
 
-Disable a User
-~~~~~~~~~~~~~~
+禁用用户
+~~~~~~~~
 
-Use :mc-cmd:`mc admin user disable` to disable a user on a MinIO deployment.
+使用 :mc-cmd:`mc admin user disable` 在 MinIO 部署上禁用用户。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user disable ALIAS USERNAME
 
-- Replace :mc-cmd:`ALIAS <mc admin user disable ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user disable ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`USERNAME <mc admin user disable USERNAME>` with the username of the user to disable.
+- 将 :mc-cmd:`USERNAME <mc admin user disable USERNAME>` 替换为要禁用的用户名。
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

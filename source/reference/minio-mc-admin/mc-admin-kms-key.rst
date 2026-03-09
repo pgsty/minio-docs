@@ -4,23 +4,23 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin kms key
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-kms-key-desc
 
-The :mc-cmd:`mc admin kms key` command performs cryptographic key management
-operations through the MinIO Key Encryption Service (KES).
+:mc-cmd:`mc admin kms key` 命令通过 MinIO Key Encryption Service (KES)
+执行加密密钥管理操作。
 
 .. end-mc-admin-kms-key-desc
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -29,82 +29,82 @@ operations through the MinIO Key Encryption Service (KES).
 
 .. TODO
 
-   Return to this section as part of the KES documentation. There's a lot here
-   that only makes sense once we can link to KES overview + config.
+   作为 KES 文档的一部分，后续需要回到本节继续完善。这里有大量内容
+   只有在能够链接到 KES 概览与配置后才有意义。
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: create
    :fullpath:
 
 
-   Creates a new master key on a Key Management System (KMS). 
+   在 Key Management System (KMS) 上创建一个新的主密钥。
 
-   The command has the following syntax:
+   该命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin kms key create TARGET [KEY_NAME]
 
-   The command accepts the following arguments:
+   该命令接受以下参数：
 
    .. mc-cmd:: TARGET
 
-      Specify the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment.
+      指定已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
       
-      The ``TARGET`` deployment **must** include a configured
-      MinIO Key Encryption Service (KES) server. 
+      ``TARGET`` 部署**必须**包含已配置的
+      MinIO Key Encryption Service (KES) 服务器。
 
    .. mc-cmd:: KEY_NAME
 
-      Specify the name of the new master key.
+      指定新主密钥的名称。
 
 .. mc-cmd:: status
    :fullpath:
 
-   Requests information on a Key Management System (KMS) master key.
+   请求 Key Management System (KMS) 主密钥的信息。
 
-   The command has the following syntax:
+   该命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin kms key status TARGET [KEY_NAME]
 
-   The command accepts the following arguments:
+   该命令接受以下参数：
 
    .. mc-cmd:: TARGET
 
-      Specify the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment.
+      指定已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-      The ``TARGET`` deployment **must** include a configured MinIO Key
-      Encryption Service (KES) server.
+      ``TARGET`` 部署**必须**包含已配置的 MinIO Key
+      Encryption Service (KES) 服务器。
 
    .. mc-cmd:: KEY_NAME
 
-      Specify the name of a master key on the KMS.
+      指定 KMS 上主密钥的名称。
 
-      Omit this argument to return the default master key on the
-      :mc-cmd:`~mc admin kms key status TARGET` deployment.
+      省略此参数可返回
+      :mc-cmd:`~mc admin kms key status TARGET` 所指部署上的默认主密钥。
 
 .. mc-cmd:: list
    :fullpath:
 
-   List all Key Management System (KMS) keys for a MinIO instance.
+   列出 MinIO 实例的所有 Key Management System (KMS) 密钥。
 
-   The command has the following syntax:
+   该命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin kms key list TARGET
 
-   The command accepts the following argument:
+   该命令接受以下参数：
 
    .. mc-cmd:: TARGET
 
-      Specify the :mc-cmd:`alias <mc alias>` of a configured MinIO deployment.
+      指定已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-      The ``TARGET`` deployment **must** include a configured MinIO Key Encryption Service (KES) server.
+      ``TARGET`` 部署**必须**包含已配置的 MinIO Key Encryption Service (KES) 服务器。

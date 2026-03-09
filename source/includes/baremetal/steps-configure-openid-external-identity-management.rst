@@ -1,26 +1,22 @@
-1. Set the OpenID Configuration Settings
+1. 设置 OpenID 配置项
 
-   You can configure the :abbr:`OIDC (OpenID Connect)` provider using either
-   environment variables *or* server runtime configuration settings. Both
-   methods require starting/restarting the MinIO deployment to apply changes. The
-   following tabs provide a quick reference of all required and optional
-   environment variables and configuration settings respectively:
+   你可以通过环境变量*或*服务端运行时配置设置来配置
+   :abbr:`OIDC (OpenID Connect)` 提供方。
+   这两种方式都需要启动或重启 MinIO 部署后才能生效。
+   以下选项卡分别给出了必需和可选环境变量及配置项的速查：
 
    .. tab-set::
 
-      .. tab-item:: Environment Variables
+      .. tab-item:: 环境变量
 
-         MinIO supports specifying the :abbr:`OIDC (OpenID Connect)` provider
-         settings using :ref:`environment variables
-         <minio-server-envvar-external-identity-management-openid>`. The 
-         :mc:`minio server` process applies the specified settings on its next
-         startup. For distributed deployments, specify these settings across all
-         nodes in the deployment using the *same* values consistently.
+         MinIO 支持使用 :ref:`环境变量 <minio-server-envvar-external-identity-management-openid>`
+         指定 :abbr:`OIDC (OpenID Connect)` 提供方设置。
+         :mc:`minio server` 进程会在下一次启动时应用这些设置。
+         对于分布式部署，请在所有节点上一致地使用*相同*的值设置这些变量。
 
-         The following example code sets *all* environment variables related to
-         configuring an :abbr:`OIDC (OpenID Connect)` provider for external
-         identity management. The minimum *required* variable is 
-         :envvar:`MINIO_IDENTITY_OPENID_CONFIG_URL`:
+         以下示例代码设置了外部身份管理所需的全部
+         :abbr:`OIDC (OpenID Connect)` 相关环境变量。
+         唯一必需的变量是 :envvar:`MINIO_IDENTITY_OPENID_CONFIG_URL`：
 
          .. code-block:: shell
             :class: copyable
@@ -34,24 +30,23 @@
             export MINIO_IDENTITY_OPENID_REDIRECT_URI="<string>"
             export MINIO_IDENTITY_OPENID_COMMENT="<string>"
 
-         Replace the ``MINIO_IDENTITY_OPENID_CONFIG_URL`` with the URL endpoint of
-         the :abbr:`OIDC (OpenID Connect)` provider discovery document. 
+         将 ``MINIO_IDENTITY_OPENID_CONFIG_URL`` 替换为
+         :abbr:`OIDC (OpenID Connect)` 提供方 discovery document 的 URL 端点。
 
-         For complete documentation on these variables, see
+         这些变量的完整文档请参阅
          :ref:`minio-server-envvar-external-identity-management-openid`
 
-      .. tab-item:: Configuration Settings
+      .. tab-item:: 配置项
 
-         MinIO supports specifying the :abbr:`OIDC (OpenID Connect)` provider
-         settings using :mc-conf:`configuration settings <identity_openid>`. The 
-         :mc:`minio server` process applies the specified settings on its next
-         startup. For distributed deployments, the :mc:`mc admin config`
-         command applies the configuration to all nodes in the deployment.
+         MinIO 支持使用 :mc-conf:`配置项 <identity_openid>`
+         指定 :abbr:`OIDC (OpenID Connect)` 提供方设置。
+         :mc:`minio server` 进程会在下一次启动时应用这些设置。
+         对于分布式部署，:mc:`mc admin config` 命令会将配置应用到部署中的所有节点。
 
-         The following example code sets *all* configuration settings related to
-         configuring an :abbr:`OIDC (OpenID Connect)` provider for external
-         identity management. The minimum *required* setting is 
-         :mc-conf:`identity_openid config_url <identity_openid.config_url>`:
+         以下示例代码设置了外部身份管理所需的全部
+         :abbr:`OIDC (OpenID Connect)` 相关配置项。
+         唯一必需的设置是
+         :mc-conf:`identity_openid config_url <identity_openid.config_url>`：
 
          .. code-block:: shell
             :class: copyable
@@ -65,48 +60,46 @@
                scopes="<string>" \
                redirect_uri="<string>" 
 
-         Replace the ``config_url`` with the URL endpoint of the 
-         :abbr:`OIDC (OpenID Connect)` provider discovery document. 
+         将 ``config_url`` 替换为
+         :abbr:`OIDC (OpenID Connect)` 提供方 discovery document 的 URL 端点。
 
-         For more complete documentation on these settings, see
-         :mc-conf:`identity_openid`.
+         这些设置的完整文档请参阅 :mc-conf:`identity_openid`。
 
-#. Restart the MinIO Deployment
+#. 重启 MinIO 部署
 
-   You must restart the MinIO deployment to apply the configuration changes. 
-   Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+   你必须重启 MinIO 部署，才能应用这些配置更改。
+   使用 :mc-cmd:`mc admin service restart` 命令重启部署。
 
    .. code-block:: shell
       :class: copyable
 
       mc admin service restart ALIAS
 
-   Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-   restart.
+   将 ``ALIAS`` 替换为要重启部署的 :ref:`alias <alias>`。
 
-#. Generate S3-Compatible Temporary Credentials using OIDC Credentials
+#. 使用 OIDC 凭证生成 S3 兼容临时凭证
 
-   MinIO requires clients authenticate using :s3-api:`AWS Signature Version 4
-   protocol <sig-v4-authenticating-requests.html>` with support for the deprecated
-   Signature Version 2 protocol. Specifically, clients must present a valid access
-   key and secret key to access any S3 or MinIO administrative API, such as
-   ``PUT``, ``GET``, and ``DELETE`` operations.
+   MinIO 要求客户端使用
+   :s3-api:`AWS Signature Version 4 协议 <sig-v4-authenticating-requests.html>`
+   进行认证，同时兼容已弃用的 Signature Version 2 协议。
+   具体来说，客户端必须提供有效的 access key 和 secret key，
+   才能访问任意 S3 或 MinIO 管理 API，例如 ``PUT``、``GET`` 和 ``DELETE``。
 
-   Applications can generate temporary access credentials as-needed using the 
-   :ref:`minio-sts-assumerolewithwebidentity` Security Token Service (STS)
-   API endpoint and the JSON Web Token (JWT) returned by the 
-   :abbr:`OIDC (OpenID Connect)` provider.
+   应用程序可以按需使用
+   :ref:`minio-sts-assumerolewithwebidentity` Security Token Service (STS) API 端点，
+   以及 :abbr:`OIDC (OpenID Connect)` 提供方返回的 JSON Web Token (JWT)
+   生成临时访问凭证。
 
-   The application must provide a workflow for logging into the 
-   :abbr:`OIDC (OpenID Connect)` provider and retrieving the 
-   JSON Web Token (JWT) associated to the authentication session. Defer to the
-   provider documentation for obtaining and parsing the JWT token after successful
-   authentication. MinIO provides an example Go application 
-   :minio-git:`web-identity.go <minio/blob/master/docs/sts/web-identity.go>` with
-   an example of managing this workflow.
+   应用程序必须提供一个工作流，用于登录
+   :abbr:`OIDC (OpenID Connect)` 提供方并获取与认证会话关联的
+   JSON Web Token (JWT)。
+   关于如何在认证成功后获取和解析 JWT token，请参阅提供方文档。
+   MinIO 提供了示例 Go 应用程序
+   :minio-git:`web-identity.go <minio/blob/master/docs/sts/web-identity.go>`，
+   用于演示该工作流。
 
-   Once the application retrieves the JWT token, use the 
-   ``AssumeRoleWithWebIdentity`` endpoint to generate the temporary credentials:
+   应用程序获取 JWT token 后，使用 ``AssumeRoleWithWebIdentity`` 端点
+   生成临时凭证：
 
    .. code-block:: shell
       :class: copyable
@@ -117,15 +110,17 @@
       &DurationSeconds=86400
       &Policy=Policy
 
-   - Replace the ``TOKEN`` with the JWT token returned in the previous step.
-   - Replace the ``DurationSeconds`` with the duration in seconds until the temporary credentials expire. The example above specifies a period of ``86400`` seconds, or 24 hours.
-   - Replace the ``Policy`` with an inline URL-encoded JSON :ref:`policy <minio-policy>` that further restricts the permissions associated to the temporary credentials. 
-   
-     Omit to use the policy associated to the OpenID user :ref:`policy claim <minio-external-identity-management-openid-access-control>`.
+   - 将 ``TOKEN`` 替换为上一步返回的 JWT token。
+   - 将 ``DurationSeconds`` 替换为临时凭证过期前的秒数。
+     上例指定为 ``86400`` 秒，也就是 24 小时。
+   - 将 ``Policy`` 替换为内联、经过 URL 编码的 JSON :ref:`policy <minio-policy>`，
+     以进一步限制这些临时凭证关联的权限。
 
-   The API response consists of an XML document containing the
-   access key, secret key, session token, and expiration date. Applications
-   can use the access key and secret key to access and perform operations on
-   MinIO.
+     如果省略，则会使用与 OpenID 用户
+     :ref:`policy claim <minio-external-identity-management-openid-access-control>`
+     关联的 policy。
 
-   See the :ref:`minio-sts-assumerolewithwebidentity` for reference documentation.
+   API 响应为 XML 文档，其中包含 access key、secret key、session token 和过期时间。
+   应用程序可使用 access key 和 secret key 访问 MinIO 并执行操作。
+
+   参考文档请参阅 :ref:`minio-sts-assumerolewithwebidentity`。

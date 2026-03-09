@@ -1,16 +1,16 @@
 .. _minio-drivers:
 
-===============================
-Software Development Kits (SDK)
-===============================
+================================
+软件开发工具包（SDK）
+================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO publishes the following Software Development Kits (SDK):
+MinIO 提供以下软件开发工具包（SDK）：
 
 - :ref:`Go <go-sdk>`
 - :ref:`Python <python-sdk>`
@@ -28,13 +28,13 @@ Go
 
 GitHub: `minio/minio-go <https://github.com/minio/minio-go>`__
 
-Latest Version: |go-sdk-version|
+最新版本：|go-sdk-version|
 
-Quickstart Guide: :doc:`/developers/go/minio-go`
+快速入门：:doc:`/developers/go/minio-go`
 
-Reference: :doc:`/developers/go/API`
+参考：:doc:`/developers/go/API`
 
-Download from GitHub
+通过 GitHub 下载
 
   .. code-block:: shell
      :class: copyable
@@ -49,13 +49,13 @@ Python
 
 GitHub: `minio/minio-py <https://github.com/minio/minio-py>`__
 
-Latest Version: |python-sdk-version|
+最新版本：|python-sdk-version|
 
-Quickstart Guide: :doc:`/developers/python/minio-py`
+快速入门：:doc:`/developers/python/minio-py`
 
-Reference: :doc:`/developers/python/API`
+参考：:doc:`/developers/python/API`
 
-Install Methods
+安装
   - pip
 
     .. code-block:: shell
@@ -63,7 +63,7 @@ Install Methods
 
        pip3 install minio
 
-  - source
+  - 源码
 
     .. code-block:: shell
        :class: copyable
@@ -80,13 +80,13 @@ Java
 
 GitHub: `minio/minio-java <https://github.com/minio/minio-java>`__
 
-Latest version: |java-sdk-version|
+最新版本：|java-sdk-version|
 
-Quickstart Guide: :ref:`minio-java-quickstart`
+快速入门：:ref:`minio-java-quickstart`
 
-Reference: :doc:`/developers/java/API`
+参考：:doc:`/developers/java/API`
 
-Install methods
+安装
   - Maven
 
     .. code-block:: java
@@ -111,7 +111,7 @@ Install methods
 
   - JAR
 
-    Download the latest JAR file for version |java-sdk-version| of the SDK from the `Sonatype Maven Central Repository <|java-jar-url|>`__.
+    从 `Sonatype Maven Central Repository <|java-jar-url|>`__ 下载与 SDK 版本 |java-sdk-version| 对应的最新 JAR 文件。
 
 .. _dotnet-sdk:
 
@@ -120,14 +120,14 @@ Install methods
 
 GitHub: `minio/minio-dotnet <https://github.com/minio/minio-dotnet>`__
 
-Latest Version: |dotnet-sdk-version|
+最新版本：|dotnet-sdk-version|
 
-Quickstart Guide: :doc:`/developers/dotnet/minio-dotnet`
+快速入门：:doc:`/developers/dotnet/minio-dotnet`
 
-Reference: :doc:`/developers/dotnet/API`
+参考：:doc:`/developers/dotnet/API`
 
-Download from NuGet
-  Run the following command in the NuGet Package Manager Console.
+从 NuGet 下载
+  在 NuGet Package Manager Console 中运行以下命令。
 
   .. code-block:: shell
      :class: copyable
@@ -142,13 +142,13 @@ JavaScript
 
 GitHub: `minio/minio-js <https://github.com/minio/minio-js>`__
 
-Latest Version: |javascript-sdk-version|
+最新版本：|javascript-sdk-version|
 
-Quickstart Guide: :doc:`/developers/javascript/minio-javascript`
+快速入门：:doc:`/developers/javascript/minio-javascript`
 
-Reference: :doc:`/developers/javascript/API`
+参考：:doc:`/developers/javascript/API`
 
-Install
+安装
   - NPM
 
     .. code-block:: shell
@@ -156,7 +156,7 @@ Install
 
        npm install --save minio
 
-  - Source
+  - 源码
 
     .. code-block:: shell
        :class: copyable
@@ -174,16 +174,16 @@ Haskell
 
 GitHub: `minio/minio-hs <https://github.com/minio/minio-hs>`__
 
-Latest Version: |haskell-sdk-version|
+最新版本：|haskell-sdk-version|
 
-Quickstart Guide: :doc:`/developers/haskell/minio-haskell`
+快速入门：:doc:`/developers/haskell/minio-haskell`
 
-Install
-  Add ``minio-hs`` to your project's ``.cabal`` dependencies section.
+安装
+  将 ``minio-hs`` 添加到项目 ``.cabal`` 的 ``dependencies`` 部分。
 
-  or
+  或
 
-  If you are using ``hpack``, add ``minio-hs`` to your ``package.yaml`` file.
+  如果你使用 ``hpack``，请将 ``minio-hs`` 添加到 ``package.yaml`` 文件中。
 
 
 .. _cpp-sdk:
@@ -193,9 +193,9 @@ C++
 
 GitHub: `minio/minio-cpp <https://github.com/minio/minio-cpp>`__
 
-Reference: `MinIO C++ SDK Reference <https://minio-cpp.min.io/>`__
+参考：`MinIO C++ SDK Reference <https://minio-cpp.min.io/>`__
 
-Install
+安装
   - ``vcpkg``
 
     .. code-block:: shell
@@ -203,7 +203,7 @@ Install
 
        vcpkg install minio-cpp
 
-  - Source
+  - 源码
 
     .. code-block:: shell
        :class: copyable
@@ -225,12 +225,12 @@ Rust
 
 GitHub: `minio/minio-rs <https://github.com/minio/minio-rs>`__
 
-Latest Version
+最新版本
   |rust-sdk-version|
 
-Reference: `MinIO Rust SDK Reference <https://docs.rs/minio/latest/minio/>`__
+参考：`MinIO Rust SDK Reference <https://docs.rs/minio/latest/minio/>`__
 
-Quickstart Guide: :doc:`/developers/rust/minio-rust`
+快速入门：:doc:`/developers/rust/minio-rust`
 
 .. toctree::
    :titlesonly:

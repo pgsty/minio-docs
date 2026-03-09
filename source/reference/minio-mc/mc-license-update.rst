@@ -4,38 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 .. mc:: mc license update
 
-Description
------------
+描述
+----
 
 .. start-mc-license-update-desc
 
-Use the :mc-cmd:`mc license update` command to replace a license key for a deployment.
+使用 :mc-cmd:`mc license update` 命令为部署替换许可证密钥。
 
 .. end-mc-license-update-desc
 
-For deployments registered for |SUBNET|, MinIO automatically checks for and updates the license every month.
+对于已在 |SUBNET| 注册的部署，MinIO 每月会自动检查并更新许可证。
 
-Examples
---------
+示例
+----
 
-Update the License Key for a Deployment with Alias ``minio1``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+更新别名为 ``minio1`` 的部署许可证密钥
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
    :class: copyable
 
    mc license update minio1 license.key
 
-Syntax
-------
+语法
+----
       
-The command has the following syntax:
+该命令具有以下语法：
 
 .. code-block:: shell
 
@@ -44,36 +44,36 @@ The command has the following syntax:
                             [LICENSE-FILE-WITH-PATH] \
                             [--airgap]
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment.
+   MinIO 部署的 :ref:`alias <alias>`。
 
 .. mc-cmd:: LICENSE-FILE-WITH-PATH
    :optional:
 
-   The path (relative to the current working directory) and file name of the key to use to update the deployment's license.
+   用于更新部署许可证的密钥文件路径（相对于当前工作目录）和文件名。
 
-   To download the API key from SUBNET:
+   从 SUBNET 下载 API key：
 
-   #. Log in to |SUBNET|
-   #. Go to the :guilabel:`Deployments` tab
-   #. Select the :guilabel:`API Key` button near the top of the page on the right side of the account statistics information box
-   #. Select copy button to the right of the key field to copy the key value to your clipboard
+   #. 登录 |SUBNET|
+   #. 转到 :guilabel:`Deployments` 选项卡
+   #. 在页面顶部、账户统计信息框右侧，选择 :guilabel:`API Key` 按钮
+   #. 选择 key 字段右侧的复制按钮，将 key 值复制到剪贴板
 
    
 .. mc-cmd:: --airgap
    :optional:
 
-   Use in environments without network access to SUBNET (for example, airgapped, firewalled, or similar configuration).
+   在无法通过网络访问 SUBNET 的环境中使用（例如 airgapped、firewalled 或类似配置）。
 
-   If the deployment is airgapped, but the local device where you are using the :ref:`minio client <minio-client>` has network access, you do not need to use the ``--airgap`` flag.
+   如果部署是 airgapped，但你使用 :ref:`minio client <minio-client>` 的本地设备有网络访问能力，则无需使用 ``--airgap`` 标志。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals

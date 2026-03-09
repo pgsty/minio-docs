@@ -4,35 +4,35 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc encrypt
 
 
-Description
------------
+描述
+----
 
 .. start-mc-encrypt-desc
 
-The :mc:`mc encrypt` commands set, update, or disable the default bucket Server-Side Encryption (SSE) mode. 
-MinIO automatically encrypts objects using the specified SSE mode.
+:mc:`mc encrypt` 命令用于设置、更新或禁用存储桶默认的服务端加密（SSE）模式。
+MinIO 会使用指定的 SSE 模式自动加密对象。
 
 .. end-mc-encrypt-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc encrypt` includes the following subcommands:
+:mc:`mc encrypt` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc encrypt clear`
      - .. include:: /reference/minio-mc/mc-encrypt-clear.rst

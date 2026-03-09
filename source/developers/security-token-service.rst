@@ -6,38 +6,38 @@ Security Token Service (STS)
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The MinIO Security Token Service (STS) APIs allow applications to generate temporary credentials for accessing the MinIO deployment.
+MinIO Security Token Service (STS) APIs 允许应用程序生成用于访问 MinIO 部署的临时凭证。
 
-The STS API is *required* for MinIO deployments configured to use external identity managers, as the API allows conversion of the external IDP credentials into AWS Signature v4-compatible credentials.
+对于配置为使用外部身份管理器的 MinIO 部署，STS API 是*必需*的，因为该 API 可将外部 IDP 凭证转换为兼容 AWS Signature v4 的凭证。
 
-STS API Endpoints
------------------
+STS API 端点
+------------
 
-MinIO supports the following STS API endpoints:
+MinIO 支持以下 STS API 端点：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 30 40
 
-   * - Endpoint
-     - Supported IDP
-     - Description
+   * - 端点
+     - 支持的 IDP
+     - 说明
 
    * - :ref:`AssumeRoleWithWebIdentity <minio-sts-assumerolewithwebidentity>`
      - OpenID Connect
-     - Generates an access key and secret key using the JWT token returned by the OIDC provider
+     - 使用 OIDC 提供方返回的 JWT token 生成 access key 和 secret key
 
    * - :ref:`AssumeRoleWithLDAPIdentity <minio-sts-assumerolewithldapidentity>`
      - Active Directory / LDAP
-     - Generates an access key and secret key using the AD/LDAP credentials specified to the API endpoint.
+     - 使用为该 API 端点指定的 AD/LDAP 凭证生成 access key 和 secret key。
 
    * - :ref:`AssumeRoleWithCustomToken <minio-sts-assumerolewithcustomtoken>`
      - MinIO Identity Plugin
-     - Generates a token for use with an external identity provider and the :ref:`MinIO Identity Plugin <minio-external-identity-management-plugin>`.
+     - 生成一个 token，用于外部身份提供方和 :ref:`MinIO Identity Plugin <minio-external-identity-management-plugin>`。
  
 
 .. toctree::

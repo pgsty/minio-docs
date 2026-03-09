@@ -1,64 +1,70 @@
 .. _deploy-minio-tenant-redhat-openshift:
 
-Deploy a Tenant using the OpenShift Web Console
------------------------------------------------
+使用 OpenShift Web Console 部署租户
+-----------------------------------
 
-1) Access the MinIO Operator Interface
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 访问 MinIO Operator 界面
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can find the MinIO Operator Interface from the :guilabel:`Operators` left-hand navigation header.
+你可以在左侧导航栏的 :guilabel:`Operators` 下找到 MinIO Operator 界面。
 
-1. Go to :guilabel:`Operators`, then :guilabel:`Installed Operators`. 
+1. 进入 :guilabel:`Operators`，然后选择 :guilabel:`Installed Operators`。
 
-2. For the :guilabel:`Project` dropdown, select :guilabel:`openshift-operators`.
+2. 在 :guilabel:`Project` 下拉框中选择 :guilabel:`openshift-operators`。
 
-3. Select :guilabel:`MinIO Operators` from the list of installed operators.
+3. 在已安装 Operator 列表中选择 :guilabel:`MinIO Operators`。
 
-Click :guilabel:`Create Tenant` to begin the Tenant Creation process.
+点击 :guilabel:`Create Tenant` 开始创建租户。
 
-2) Create the Tenant
-~~~~~~~~~~~~~~~~~~~~
-The :guilabel:`Form View` provides a user interface for configuring the new MinIO Tenant.
+2) 创建租户
+~~~~~~~~~~~
+:guilabel:`Form View` 提供了用于配置新 MinIO 租户的用户界面。
 
 .. image:: /images/openshift/minio-openshift-tenant-create-ui.png
    :align: center
    :width: 90%
    :class: no-scaled-link
-   :alt: OpenShift Tenant Creation UI View
+   :alt: OpenShift 租户创建 UI 视图
 
-- Ensure the :guilabel:`Tenant Secret -> Name` is set to the name of the MinIO Root User Kubernetes Secret created as part of the prerequisites. 
+- 确认 :guilabel:`Tenant Secret -> Name` 已设置为前提条件步骤中创建的
+  MinIO Root User Kubernetes Secret 名称。
 
-- Ensure the :guilabel:`Console -> Console Secret -> Name` is set to the name of the MinIO Console Kubernetes Secret created as part of the prerequisites.
+- 确认 :guilabel:`Console -> Console Secret -> Name` 已设置为前提条件步骤中创建的
+  MinIO Console Kubernetes Secret 名称。
 
-You can also use the YAML view to perform more granular configuration of the MinIO Tenant. 
-Refer to the :minio-git:`MinIO Custom Resource Definition Documentation <operator/blob/master/docs/tenant_crd.adoc>` for guidance on setting specific fields. 
-MinIO also publishes examples for additional guidance in creating custom Tenant YAML objects. 
-Note that the OperatorHub YAML view supports creating only the MinIO Tenant object. 
-Do not specify any other objects as part of the YAML input.
+你也可以使用 YAML 视图对 MinIO 租户进行更细粒度的配置。
+有关特定字段的设置指导，请参阅
+:minio-git:`MinIO Custom Resource Definition Documentation <operator/blob/master/docs/tenant_crd.adoc>`。
+MinIO 还提供了一些示例，可作为创建自定义租户 YAML 对象的补充参考。
+请注意，OperatorHub 的 YAML 视图只支持创建 MinIO 租户对象。
+不要在 YAML 输入中指定任何其他对象。
 
 .. image:: /images/openshift/minio-openshift-tenant-create-yaml.png
    :align: center
    :width: 90%
    :class: no-scaled-link
-   :alt: OpenShift Tenant Creation UI View
+   :alt: OpenShift 租户创建 UI 视图
 
-Changes to one view are reflected in the other. 
-For example, you can make modifications in the :guilabel:`YAML View` and see those changes in the :guilabel:`Form View`.
+其中一个视图中的更改会反映到另一个视图。
+例如，你可以在 :guilabel:`YAML View` 中修改，
+并在 :guilabel:`Form View` 中看到这些更改。
 
-.. admonition:: Security Context Configuration
+.. admonition:: 安全上下文配置
    :class: note
 
-   If your OpenShift cluster Security Context Configuration restricts the supported pod security contexts, open the YAML View and locate the ``spec.pools[n].securityContext`` and ``spec.console.securityContext`` objects. 
-   Modify the ``securityContext`` settings to use a supported UID based on the SCC of your OpenShift Cluster.
+   如果你的 OpenShift 集群 Security Context 配置限制了受支持的 Pod
+   安全上下文，请打开 YAML View，找到 ``spec.pools[n].securityContext``
+   和 ``spec.console.securityContext`` 对象。
+   根据 OpenShift 集群的 SCC，修改 ``securityContext`` 设置以使用受支持的 UID。
 
-Click :guilabel:`Create` to create the MinIO Tenant using the specified configuration. 
-Use the credentials specified as part of the MinIO Root User secret to access the MinIO Server.
+点击 :guilabel:`Create`，按指定配置创建 MinIO 租户。
+使用 MinIO Root User secret 中指定的凭证访问 MinIO Server。
 
-3) Connect to the Tenant
-~~~~~~~~~~~~~~~~~~~~~~~~
+3) 连接到租户
+~~~~~~~~~~~~~
 
-The MinIO Operator creates services for the MinIO Tenant. 
-Use the ``oc get svc -n NAMESPACE`` command to review the deployed services:
+MinIO Operator 会为 MinIO 租户创建服务。
+使用 ``oc get svc -n NAMESPACE`` 命令查看已部署的服务：
 
 .. code-block:: shell
    :class: copyable
@@ -75,21 +81,21 @@ Use the ``oc get svc -n NAMESPACE`` command to review the deployed services:
    minio-tenant-1-log-search-api      ClusterIP      10.103.5.235     <none>        8080/TCP         2d3h
    minio-tenant-1-prometheus-hl-svc   ClusterIP      None             <none>        9090/TCP         7h39m
 
-- The ``minio`` service corresponds to the MinIO Tenant service. 
-  Applications should use this service for performing operations against the MinIO Tenant.
+- ``minio`` 服务对应 MinIO 租户服务。
+  应用应使用该服务对 MinIO 租户执行操作。
  
-- The ``*-console`` service corresponds to the :minio-git:`MinIO Console <console>`. 
-  Administrators should use this service for accessing the MinIO Console and performing administrative operations on the MinIO Tenant.
+- ``*-console`` 服务对应 :minio-git:`MinIO Console <console>`。
+  管理员应使用该服务访问 MinIO Console，
+  并对 MinIO 租户执行管理操作。
 
-The remaining services support Tenant operations and are not intended for consumption by users or administrators.
+其余服务用于支撑租户运行，不面向用户或管理员直接使用。
  
-By default each service is visible only within the Kubernetes cluster. 
-Applications deployed inside the cluster can access the services using the ``CLUSTER-IP``. 
+默认情况下，每个服务仅在 Kubernetes 集群内部可见。
+部署在集群内部的应用可以通过 ``CLUSTER-IP`` 访问这些服务。
 
-Applications external to the Kubernetes cluster can access the services using the ``EXTERNAL-IP``. 
-This value is only populated for Kubernetes clusters configured for Ingress or a similar network access service. 
-Kubernetes provides multiple options for configuring external access to services. 
-See the Kubernetes documentation on 
+集群外部的应用可以通过 ``EXTERNAL-IP`` 访问这些服务。
+该值仅会在配置了 Ingress 或类似网络访问服务的 Kubernetes 集群中填充。
+Kubernetes 提供了多种服务外部访问配置方式。
+有关配置服务外部访问的更完整信息，请参阅 Kubernetes 文档中的
 :kube-docs:`Publishing Services (ServiceTypes) <concepts/services-networking/service/#publishing-services-service-types>` 
-and :kube-docs:`Ingress <concepts/services-networking/ingress/>` 
-for more complete information on configuring external access to services.
+和 :kube-docs:`Ingress <concepts/services-networking/ingress/>`。

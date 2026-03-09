@@ -1,272 +1,227 @@
 .. _minio-bucket-replication:
 
-==================
-Bucket Replication
-==================
+==========
+存储桶复制
+==========
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports server-side and client-side replication of objects between source
-and destination buckets.
+MinIO 支持在源存储桶与目标存储桶之间进行服务端和客户端对象复制。
 
 :ref:`Server-Side Bucket Replication <minio-bucket-replication-serverside>`
-  Configure per-bucket rules for automatically synchronizing objects between MinIO deployments.
-  The deployment where you configure the bucket replication rule acts as the "source" while the configured remote deployment acts as the "target".
-  MinIO applies rules as part of object write operations (e.g. ``PUT``) and automatically synchronizes new objects *and* object mutations, such as new object versions or changes to object metadata.
+  为每个存储桶配置规则，以便在 MinIO 部署之间自动同步对象。
+  配置存储桶复制规则的部署充当“源”，而配置的远端部署充当“目标”。
+  MinIO 会在对象写入操作（例如 ``PUT``）期间应用规则，并自动同步新对象以及对象变更，例如新的对象版本或对象元数据的变更。
   
-  MinIO server-side bucket replication only supports a MinIO cluster on an identical release for the remote replication target.
+  MinIO 服务端存储桶复制仅支持将处于相同发行版本的 MinIO 集群作为远端复制目标。
 
-Client-side Bucket Replication
-  Use the command process to synchronize objects between buckets within the same S3-compatible cluster *or* between two independent S3-compatible clusters. 
-  Client-side replication using :mc:`mc mirror` supports MinIO-to-S3 and similar replication configurations.
+客户端存储桶复制
+  使用命令流程在同一 S3 兼容集群内的存储桶之间，或在两个相互独立的 S3 兼容集群之间同步对象。
+  使用 :mc:`mc mirror` 的客户端复制支持 MinIO 到 S3 以及类似的复制配置。
 
-.. admonition:: Bucket vs Site Replication
+.. admonition:: 存储桶复制与站点复制
    :class: note
 
-   Bucket Replication is distinct from and mutually exclusive with :ref:`site replication <minio-site-replication-overview>`.
+   存储桶复制与 :ref:`站点复制 <minio-site-replication-overview>` 不同，且二者互斥。
 
-   - Bucket Replication synchronizes data at the bucket level, such as bucket prefix paths and objects.
+   - 存储桶复制在存储桶级别同步数据，例如存储桶前缀路径和对象。
 
-     You can configure bucket replication at any time, and the remote MinIO deployments may have pre-existing data on the replication target buckets.
+     你可以在任何时候配置存储桶复制，并且远端 MinIO 部署上的复制目标存储桶中可以预先存在数据。
 
-   - Site Replication extends bucket replication to include :ref:`IAM <minio-authentication-and-identity-management>`, security tokens, access keys, and bucket-level configurations.
+   - 站点复制在存储桶复制的基础上扩展到包含 :ref:`IAM <minio-authentication-and-identity-management>`、安全令牌、访问密钥以及存储桶级配置。
 
-     Site replication is typically configured when initially deploying the MinIO peer sites.
-     Only one site can hold any bucket or objects at the time of initial configuration.
+     站点复制通常在最初部署 MinIO 对等站点时配置。
+     在初始配置时，任意存储桶或对象只能由一个站点持有。
 
 
 .. _minio-bucket-replication-serverside:
 
-Server-Side Bucket Replication
-------------------------------
+服务端存储桶复制
+----------------
 
-MinIO server-side bucket replication is an automatic bucket-level configuration that synchronizes objects between a source and destination bucket. 
-MinIO server-side replication *requires* the source and destination bucket be two separate MinIO clusters running the same MinIO Server version.
+MinIO 服务端存储桶复制是一种自动化的存储桶级配置，用于在源存储桶和目标存储桶之间同步对象。
+MinIO 服务端复制 *要求* 源存储桶和目标存储桶分别位于两个独立的 MinIO 集群中，且运行相同的 MinIO Server 版本。
 
-For each write operation to the bucket, MinIO checks all configured replication rules for the bucket and applies the matching rule with highest configured priority. 
-MinIO synchronizes new objects *and* object mutations, such as new object versions or changes to object metadata. 
-This includes metadata operations such as enabling or modifying object locking or retention settings.
+对于写入存储桶的每次操作，MinIO 都会检查该存储桶上配置的所有复制规则，并应用已配置优先级最高的匹配规则。
+MinIO 会同步新对象以及对象变更，例如新的对象版本或对象元数据变更。
+这也包括启用或修改对象锁定或保留设置等元数据操作。
 
-MinIO server-side bucket replication is functionally similar to Amazon S3 replication while adding the following MinIO-only features:
+MinIO 服务端存储桶复制在功能上类似于 Amazon S3 replication，同时增加了以下 MinIO 专有特性：
 
-- Source and destination bucket names can match, supporting site-to-site use cases such as Splunk or Veeam BC/DR. 
+- 源存储桶和目标存储桶名称可以相同，从而支持 Splunk 或 Veeam BC/DR 等站点到站点用例。
 
-- Simplified implementation than S3 bucket replication configuration, removing the need to configure settings like AccessControlTranslation, Metrics, and SourceSelectionCriteria.
+- 相比 S3 存储桶复制配置，实现更简化，无需配置 AccessControlTranslation、Metrics 和 SourceSelectionCriteria 等设置。
 
-- Active-Active (Two-Way) replication of objects between source and destination buckets.
+- 支持源存储桶与目标存储桶之间对象的 Active-Active（双向）复制。
 
-- Multi-Site replication of objects between three or more MinIO deployments
+- 支持在三个或更多 MinIO 部署之间进行对象的多站点复制
 
 .. _minio-replication-behavior-resync:
 
-Resynchronization (Disaster Recovery)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+重新同步（灾难恢复）
+~~~~~~~~~~~~~~~~~~~~
 
-Resynchronization primarily supports recovery after partial or total loss of the
-data on a MinIO deployment using a healthy deployment in the replica
-configuration. Use the :mc:`mc replicate resync` command completely
-resynchronize the remote target (:mc:`mc admin bucket remote`) using the
-specified source bucket. 
+重新同步主要用于在副本配置中利用健康部署，在某个 MinIO 部署发生部分或全部数据丢失后进行恢复。
+使用 :mc:`mc replicate resync` 命令，可基于指定的源存储桶对远端目标（:mc:`mc admin bucket remote`）执行完整重新同步。
 
-The resynchronization process checks all objects in the source bucket against
-all configured replication rules that include :ref:`existing object replication
-<minio-replication-behavior-existing-objects>`. For each object which matches a
-rule, the resynchronization process places the object into the replication
-:ref:`queue <minio-replication-process>` regardless of the object's current
-:ref:`replication status <minio-replication-process>`. 
+重新同步过程会根据所有已配置且包含 :ref:`现有对象复制
+<minio-replication-behavior-existing-objects>` 的复制规则检查源存储桶中的所有对象。
+对于每个匹配规则的对象，重新同步过程都会将其放入复制
+:ref:`队列 <minio-replication-process>`，而不考虑该对象当前的
+:ref:`复制状态 <minio-replication-process>`。
 
-MinIO skips synchronizing those objects whose remote copy exactly match the
-source, including object metadata. MinIO otherwise does not prioritize or modify
-the queue with regards to the existing contents of the target.
+对于远端副本与源对象完全一致（包括对象元数据）的对象，MinIO 会跳过同步。
+除此之外，MinIO 不会基于目标端已有内容对队列进行优先级调整或修改。
 
-:mc:`mc replicate resync` operates at the bucket level and does
-*not* support prefix-level granularity. Initiating resynchronization on a large
-bucket may result in a significant increase in replication-related load
-and traffic. Use this command with caution and only when necessary.
+:mc:`mc replicate resync` 在存储桶级别运行，*不* 支持前缀级粒度。
+在大型存储桶上启动重新同步可能会显著增加与复制相关的负载和流量。
+请谨慎使用此命令，并仅在必要时使用。
 
-For buckets with :ref:`object transition (Tiering)
-<minio-lifecycle-management-tiering>` configured, replication resynchronization
-restores objects in a non-transitioned state with no associated transition
-metadata. Any data previously transitioned to the remote storage is therefore
-permanently disconnected from the remote MinIO deployment. For tiering
-configurations which specify an explicit human-readable prefix as part of the
-remote configuration, you can safely purge the transitioned data in that prefix
-to avoid costs associated to the "lost" data.
+对于已配置 :ref:`对象转换（分层）
+<minio-lifecycle-management-tiering>` 的存储桶，复制重新同步会以未转换状态恢复对象，且不包含任何关联的转换元数据。
+因此，任何先前已转换到远端存储的数据都会与远端 MinIO 部署永久断开关联。
+对于在远端配置中将明确的人类可读前缀作为一部分指定的分层配置，你可以安全地清除该前缀中的已转换数据，以避免与这些“丢失”数据相关的成本。
 
 .. _minio-replication-behavior-delete:
 
-Replication of Delete Operations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+删除操作的复制
+~~~~~~~~~~~~~~
 
-MinIO supports replicating :ref:`delete <minio-object-delete>` operations, where MinIO synchronizes
-deleting specific object versions *and* new 
-:s3-docs:`delete markers <delete-marker-replication.html>`. Delete operation
-replication uses the same :ref:`replication process <minio-replication-process>`
-as all other replication operations. 
+MinIO 支持复制 :ref:`删除 <minio-object-delete>` 操作，即同步删除特定对象版本以及新的
+:s3-docs:`删除标记 <delete-marker-replication.html>`。删除操作复制使用与其他所有复制操作相同的
+:ref:`复制流程 <minio-replication-process>`。
 
-MinIO requires explicitly enabling versioned deletes and delete marker
-replication . Use the :mc-cmd:`mc replicate add --replicate` field to
-specify both or either ``delete`` and ``delete-marker`` to enable versioned
-deletes and delete marker replication respectively. To enable both, specify both
-strings using a comma separator ``delete,delete-marker``.
+MinIO 要求显式启用带版本的删除和删除标记复制。
+使用 :mc-cmd:`mc replicate add --replicate` 字段，通过指定 ``delete`` 和/或 ``delete-marker`` 来分别启用带版本的删除和删除标记复制。
+若要同时启用两者，请使用逗号分隔符 ``delete,delete-marker`` 指定这两个字符串。
 
-For delete marker replication, MinIO begins the replication process after
-a delete operation creates the delete marker. MinIO uses the 
-``X-Minio-Replication-DeleteMarker-Status`` metadata field for tracking 
-delete marker replication status. In 
-:ref:`active-active <minio-bucket-replication-serverside-twoway>` 
-replication configurations, MinIO may produce duplicate delete markers if
-both clusters concurrently create a delete marker for an object *or* 
-if one or both clusters were down before the replication event synchronized.
+对于删除标记复制，MinIO 会在删除操作创建删除标记后启动复制流程。
+MinIO 使用 ``X-Minio-Replication-DeleteMarker-Status`` 元数据字段来跟踪删除标记复制状态。
+在 :ref:`active-active <minio-bucket-replication-serverside-twoway>` 复制配置中，如果两个集群同时为某个对象创建删除标记，或者在复制事件同步之前其中一个或两个集群处于宕机状态，MinIO 可能会产生重复的删除标记。
 
-For replicating the deletion of a specific object version, MinIO marks the
-object version as ``PENDING`` until replication completes. Once the remote
-target deletes that object version, MinIO deletes the object on the source.
-While this process ensures near-synchronized version deletion, it may result
-in listing operations returning the object version after the initial
-delete operation. MinIO uses the ``X-Minio-Replication-Delete-Status`` for
-tracking delete version replication status.
+对于复制删除某个特定对象版本的操作，在复制完成之前，MinIO 会将该对象版本标记为 ``PENDING``。
+一旦远端目标删除了该对象版本，MinIO 就会删除源端上的该对象。
+虽然这一过程可确保接近同步的版本删除，但它可能导致在初始删除操作之后，列表操作仍返回该对象版本。
+MinIO 使用 ``X-Minio-Replication-Delete-Status`` 跟踪删除版本的复制状态。
 
-MinIO only replicates explicit client-driven delete operations. MinIO does *not*
-replicate objects deleted from the application of  
-:ref:`lifecycle management expiration rules
-<minio-lifecycle-management-expiration>`. For :ref:`active-active
-<minio-bucket-replication-serverside-twoway>` configurations, set the same
-expiration rules on *all* of of the replication buckets to ensure consistent
-application of object expiration.
+MinIO 仅复制由客户端显式发起的删除操作。
+MinIO *不会* 复制因应用 :ref:`生命周期管理过期规则
+<minio-lifecycle-management-expiration>` 而删除的对象。
+对于 :ref:`active-active <minio-bucket-replication-serverside-twoway>` 配置，请在 *所有* 复制存储桶上设置相同的过期规则，以确保对象过期行为一致。
 
-.. admonition:: MinIO Trims Empty Object Prefixes on Source and Remote Bucket
+.. admonition:: MinIO 会在源存储桶和远端存储桶上裁剪空对象前缀
    :class: note, dropdown
 
-   If a delete operation removes the last object in a bucket prefix, MinIO
-   recursively removes each empty part of the prefix up to the bucket root.
-   MinIO only applies the recursive removal to prefixes created *implicitly* as
-   part of object write operations - that is, the prefix was not created using
-   an explicit directory creation command such as :mc:`mc mb`.
+   如果删除操作移除了某个存储桶前缀中的最后一个对象，MinIO 会递归删除该前缀中所有为空的部分，直到存储桶根目录。
+   MinIO 仅对在对象写入过程中 *隐式* 创建的前缀应用这种递归删除行为，也就是说，该前缀不是通过 :mc:`mc mb` 之类的显式目录创建命令创建的。
 
-   If a replication rule enables replication delete operations, the replication
-   process *also* applies the implicit prefix trimming behavior on the
-   destination MinIO cluster.
+   如果复制规则启用了删除操作复制，那么复制过程在目标 MinIO 集群上 *也会* 应用这种隐式前缀裁剪行为。
 
-   For example, consider a bucket ``photos`` with the following object prefixes:
+   例如，考虑一个名为 ``photos`` 的存储桶，其中包含以下对象前缀：
    
    - ``photos/2021/january/myphoto.jpg``
    - ``photos/2021/february/myotherphoto.jpg``
    - ``photos/NYE21/NewYears.jpg``
 
-   ``photos/NYE21`` is the *only* prefix explicitly created using :mc:`mc mb`.
-   All other prefixes were *implicitly* created as part of writing the object
-   located at that prefix. 
+   ``photos/NYE21`` 是 *唯一一个* 使用 :mc:`mc mb` 显式创建的前缀。
+   其他所有前缀都是在写入位于该前缀下的对象时 *隐式* 创建的。
    
-   - A command removes ``myphoto.jpg``. MinIO automatically trims the empty
-     ``/janaury`` prefix. 
+   - 某个命令删除了 ``myphoto.jpg``。MinIO 会自动裁剪空的 ``/janaury`` 前缀。
    
-   - A command then removes the ``myotherphoto.jpg``. MinIO automatically
-     trims the ``/february`` prefix *and* the now-empty ``/2021`` prefix. 
+   - 随后某个命令删除了 ``myotherphoto.jpg``。MinIO 会自动裁剪 ``/february`` 前缀以及此时已为空的 ``/2021`` 前缀。
    
-   - A command removes the ``NewYears.jpg`` object. MinIO leaves the 
-     ``/NYE21`` prefix remains in place since it was *explicitly* created.
+   - 某个命令删除了 ``NewYears.jpg`` 对象。MinIO 会保留 ``/NYE21`` 前缀，因为它是 *显式* 创建的。
 
 .. _minio-replication-behavior-existing-objects:
 
-Replication of Existing Objects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+现有对象的复制
+~~~~~~~~~~~~~~
 
-MinIO by default replicates existing objects in the source bucket to the configured remote, similar to `AWS: Replicating existing objects between S3 buckets <https://aws.amazon.com/blogs/storage/replicating-existing-objects-between-s3-buckets/>`__ without the overhead of contacting technical support.
+默认情况下，MinIO 会将源存储桶中的现有对象复制到配置好的远端，类似于 `AWS: Replicating existing objects between S3 buckets <https://aws.amazon.com/blogs/storage/replicating-existing-objects-between-s3-buckets/>`__，但无需联系技术支持的额外成本。
 
-MinIO marks all objects or object prefixes that satisfy the replication rules as eligible for synchronization to the remote cluster and bucket.
-MinIO only excludes those objects without a version ID, such as those objects written before enabling versioning on the bucket.
+MinIO 会将所有满足复制规则的对象或对象前缀标记为可同步到远端集群和存储桶。
+MinIO 仅排除没有版本 ID 的对象，例如在存储桶启用版本控制之前写入的对象。
 
-You can disable existing object replication while configuring or modifying the bucket replication rule.
-You must specify *all* desired replication features during creation or modification:
+你可以在配置或修改存储桶复制规则时禁用现有对象复制。
+在创建或修改时，必须指定 *所有* 需要的复制特性：
 
-- For new replication rules, exclude ``"existing-objects"`` from the list of replication features specified to :mc-cmd:`mc replicate add --replicate`.
+- 对于新的复制规则，不要将 ``"existing-objects"`` 包含在 :mc-cmd:`mc replicate add --replicate` 指定的复制特性列表中。
 
-- For existing replication rules, remove ``"existing-objects"`` from the list of existing replication features using :mc-cmd:`mc replicate update --replicate`. 
-  The new rule **replaces** the previous rule.
+- 对于现有复制规则，使用 :mc-cmd:`mc replicate update --replicate` 从现有复制特性列表中移除 ``"existing-objects"``。
+  新规则会 **替换** 旧规则。
 
-Disabling existing object replication does not remove any objects already replicated to the remote bucket.
+禁用现有对象复制不会移除任何已经复制到远端存储桶的对象。
 
 
-Synchronous vs Asynchronous Replication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+同步复制与异步复制
+~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-replication.rst
    :start-after: start-replication-sync-vs-async
    :end-before: end-replication-sync-vs-async
 
-You must explicitly enable synchronous replication when configuring the remote
-target target using the :mc-cmd:`mc admin bucket remote add` command with the
-:mc-cmd:`~mc admin bucket remote add` flag.
+在使用 :mc-cmd:`mc admin bucket remote add` 命令配置远端目标时，你必须通过
+:mc-cmd:`~mc admin bucket remote add` 标志显式启用同步复制。
 
-Replication Internals
-~~~~~~~~~~~~~~~~~~~~~
+复制内部机制
+~~~~~~~~~~~~
 
-This section documents internal replication behavior and is not critical to
-using or implementing replication. This documentation is provided strictly
-for learning and educational purposes.
+本节记录复制的内部行为，对使用或实现复制而言并非关键。
+本文档仅用于学习和教育目的。
 
 .. _minio-replication-process:
 
-Replication Process
-+++++++++++++++++++
+复制流程
+++++++++
 
-MinIO uses a replication queuing system with multiple concurrent replication
-workers operating on that queue. MinIO continuously works to replicate and
-remove objects from the queue while scanning for new unreplicated objects to
-add to the queue. 
+MinIO 使用一个复制排队系统，并由多个并发复制工作线程处理该队列。
+MinIO 会持续执行复制并从队列中移除对象，同时扫描新的未复制对象并将其加入队列。
 
 
 .. versionchanged:: RELEASE.2022-07-18T17-49-40Z
 
-   MinIO queues failed replication operations and retries those operations up to three (3) times.
+   MinIO 会将失败的复制操作加入队列，并最多重试三（3）次。
    
-   MinIO dequeues replication operations that fail to replicate after three attempts.
-   The scanner can pick up those affected objects at a later time and requeue them for replication.
+   对于在三次尝试后仍复制失败的操作，MinIO 会将其移出队列。
+   扫描器稍后可以再次发现这些受影响对象，并将其重新加入复制队列。
   
 .. versionchanged:: RELEASE.2022-08-11T04-37-28Z
 
-   Failed or pending replications requeue automatically when performing a list or any ``GET`` or ``HEAD`` API method. 
-   For example, using :mc:`mc stat`, :mc:`mc cat`,  or :mc:`mc ls` after a remote location comes back online requeues replication.
+   在执行列表操作或任何 ``GET``、``HEAD`` API 方法时，失败或待处理的复制会自动重新入队。
+   例如，在远端位置恢复在线后，使用 :mc:`mc stat`、:mc:`mc cat` 或 :mc:`mc ls` 会使复制重新入队。
 
-MinIO sets the ``X-Amz-Replication-Status`` metadata field according to the
-replication state of the object:
+MinIO 会根据对象的复制状态设置 ``X-Amz-Replication-Status`` 元数据字段：
 
 .. list-table::
    :header-rows: 1
    :width: 100%
    :widths: 30 70
 
-   * - Replication State
-     - Description
+   * - 复制状态
+     - 说明
 
    * - ``PENDING``
-     - The object has not yet been replicated. MinIO applies this state
-       if the object meets one of the configured replication rules on the
-       bucket. MinIO continuously scans for ``PENDING`` objects not yet in the
-       replication queue and adds them to the queue as space is available.
+     - 该对象尚未被复制。如果对象满足该存储桶上配置的某条复制规则，MinIO 就会应用此状态。
+       MinIO 会持续扫描尚未进入复制队列的 ``PENDING`` 对象，并在队列有可用空间时将其加入队列。
 
-       For multi-site replication, objects remain
-       in the ``PENDING`` state until replicated to *all* configured
-       remotes for that bucket or bucket prefix.
+       对于多站点复制，对象会一直保持 ``PENDING`` 状态，直到复制到该存储桶或存储桶前缀配置的 *所有* 远端。
 
    * - ``COMPLETED``
-     - The object has successfully replicated to the remote cluster.
+     - 该对象已成功复制到远端集群。
 
    * - ``FAILED``
-     - The object failed to replicate to the remote cluster. 
+     - 该对象复制到远端集群失败。
 
-       MinIO continuously scans for ``FAILED`` objects not yet in the
-       replication queue and adds them to the queue as space is available.
+       MinIO 会持续扫描尚未进入复制队列的 ``FAILED`` 对象，并在队列有可用空间时将其加入队列。
 
    * - ``REPLICA``
-     - The object is itself a replica from a remote source.
+     - 该对象本身就是来自远端源的副本。
 
-The replication process generally has one of the following flows:
+复制流程通常具有以下几种流转路径之一：
 
 - ``PENDING -> COMPLETED``
 - ``PENDING -> FAILED -> COMPLETED``

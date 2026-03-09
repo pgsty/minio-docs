@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,29 +14,29 @@
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Syntax
-------
+语法
+----
 
 .. start-mc-support-top-api-desc
 
-The :mc:`mc support top api` command summarizes the real-time API events on a MinIO deployment server.
+:mc:`mc support top api` 命令用于汇总 MinIO 部署服务器上的实时 API 事件。
 
 .. end-mc-support-top-api-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command displays the current in-progress S3 API calls on the :term:`alias` ``myminio``.
+      以下命令显示 :term:`alias` ``myminio`` 上当前正在进行的 S3 API 调用。
 
       .. code-block:: shell
          :class: copyable
 
          mc support top api myminio/
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -52,60 +52,60 @@ The :mc:`mc support top api` command summarizes the real-time API events on a Mi
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the alias, prefix, or object where the command should run.
-   The path must include at least an :ref:`ALIAS <minio-mc-alias>`.
+   命令应在其上运行的 alias、前缀或对象完整路径。
+   该路径至少必须包含一个 :ref:`ALIAS <minio-mc-alias>`。
 
 .. mc-cmd:: --name
    :optional:
 
-   Outputs a summary of current API calls matching the entered string.
+   输出与输入字符串匹配的当前 API 调用摘要。
 
 
 .. mc-cmd:: --path
    :optional:
 
-   Outputs a summary of current API calls for a specified path.
+   输出指定路径的当前 API 调用摘要。
 
 .. mc-cmd:: --node
    :optional:
 
-   Outputs a summary of the current API calls on matching servers.
+   输出匹配服务器上的当前 API 调用摘要。
 
 .. mc-cmd:: --errors, -e
    :optional:
 
-   Outputs a summary of current API calls returning errors.
+   输出返回错误的当前 API 调用摘要。
 
-Global Flags
-~~~~~~~~~~~~
+全局参数
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Display All Current In-progress S3 API Calls
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示当前所有正在进行的 S3 API 调用
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command displays all in-progress S3 calls for the ``myminio`` deployment:
+以下命令显示 ``myminio`` 部署中所有正在进行的 S3 API 调用：
 
 .. code-block:: shell
    :class: copyable
 
    mc support top api myminio/
 
-Display Current, In-progress ``s3.PutObject`` Calls
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示当前正在进行的 ``s3.PutObject`` 调用
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command displays all in-progress ``s3.PutObject`` calls for the ``myminio`` deployment:
+以下命令显示 ``myminio`` 部署中所有正在进行的 ``s3.PutObject`` 调用：
 
 .. code-block:: shell
    :class: copyable

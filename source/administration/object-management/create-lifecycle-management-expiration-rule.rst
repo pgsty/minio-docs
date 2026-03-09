@@ -1,96 +1,89 @@
 .. _minio-lifecycle-management-create-expiry-rule:
 
-===========================
-Automatic Object Expiration
-===========================
+================
+对象自动过期
+================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-Each procedure on this page creates a new object lifecycle management rule that
-expires objects on a MinIO bucket. This procedure supports use cases like
-removing "old" objects after a certain time period or calendar date.
+本页中的每个过程都会创建一条新的对象生命周期管理规则，用于让 MinIO
+存储桶中的对象过期。该过程适用于在特定时间段或日历日期之后删除“旧”对象
+等场景。
 
 .. todo: diagram
 
-Requirements
-------------
+要求
+----
 
-Install and Configure ``mc``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+安装并配置 ``mc``
+~~~~~~~~~~~~~~~~~
 
-This procedure uses :mc:`mc` for performing operations on the MinIO cluster.
-Install :mc:`mc` on a machine with network access to both source and destination
-clusters. See the ``mc`` :ref:`Installation Quickstart <mc-install>` for
-instructions on downloading and installing ``mc``.
+该过程使用 :mc:`mc` 对 MinIO 集群执行操作。请在一台可同时通过网络访问源集群
+和目标集群的机器上安装 :mc:`mc`。有关下载和安装 ``mc`` 的说明，请参阅 ``mc``
+:ref:`快速安装 <mc-install>`。
 
-Use the :mc:`mc alias set` command to create an alias for the source MinIO cluster
-and the destination S3-compatible service. Alias creation requires specifying an
-access key for a user on the source and destination clusters. The specified
-users must have :ref:`permissions
-<minio-lifecycle-management-create-expiry-rule-permissions>` for configuring
-and applying expiry operations.
+使用 :mc:`mc alias set` 命令为源 MinIO 集群和目标 S3 兼容服务创建别名。
+创建别名时，需要为源集群和目标集群上的用户指定访问密钥。指定的用户必须具备
+配置和应用过期操作所需的 :ref:`权限
+<minio-lifecycle-management-create-expiry-rule-permissions>`。
 
 .. _minio-lifecycle-management-create-expiry-rule-permissions:
 
-Required Permissions
-~~~~~~~~~~~~~~~~~~~~
+所需权限
+~~~~~~~~
 
-MinIO requires the following permissions scoped to the bucket or buckets 
-for which you are creating lifecycle management rules.
+MinIO 要求对创建生命周期管理规则的存储桶或多个存储桶授予以下权限。
 
 - :policy-action:`s3:PutLifecycleConfiguration`
 - :policy-action:`s3:GetLifecycleConfiguration`
 
-MinIO also requires the following administrative permissions on the cluster
-in which you are creating remote tiers for object transition lifecycle
-management rules:
+如果要在某个集群上为对象转换生命周期管理规则创建远程层，MinIO 还要求在该
+集群上具备以下管理权限：
 
 - :policy-action:`admin:SetTier`
 - :policy-action:`admin:ListTier`
 
-For example, the following policy provides permission for configuring object
-transition lifecycle management rules on any bucket in the cluster:.
+例如，以下策略授予了在该集群任意存储桶上配置对象转换生命周期管理规则的
+权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
    :class: copyable
 
-Expire Objects after Number of Days
------------------------------------
+按天数使对象过期
+----------------
 
-Use :mc:`mc ilm rule add` with :mc-cmd:`~mc ilm rule add --expire-days` to
-expire bucket contents a number of days after object creation:
+使用带有 :mc-cmd:`~mc ilm rule add --expire-days` 的 :mc:`mc ilm rule add`，
+可在对象创建若干天后使存储桶内容过期：
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm rule add ALIAS/PATH --expire-days "DAYS" 
 
-- Replace :mc-cmd:`ALIAS <mc ilm rule add ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc ilm rule add ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc ilm rule add ALIAS>` with the path to the bucket on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc ilm rule add ALIAS>` 替换为 S3 兼容主机上该存储桶的
+  路径。
 
-- Replace :mc-cmd:`DAYS <mc ilm rule add --expire-days>` with the number of days after
-  which to expire the object. For example, specify ``30`` to expire the
-  object 30 days after creation.
+- 将 :mc-cmd:`DAYS <mc ilm rule add --expire-days>` 替换为对象过期前的天数。
+  例如，指定 ``30`` 表示对象会在创建 30 天后过期。
 
-Expire Versioned Objects
-------------------------
+使已版本控制的对象过期
+----------------------
 
-Use :mc:`mc ilm rule add` to expiring noncurrent object versions and object
-delete markers: 
+使用 :mc:`mc ilm rule add` 使非当前对象版本和对象删除标记过期：
 
-- To expire noncurrent object versions after a specific duration in days,
-  include :mc-cmd:`~mc ilm rule add --noncurrent-expire-days`.
+- 若要让非当前对象版本在指定天数后过期，请包含
+  :mc-cmd:`~mc ilm rule add --noncurrent-expire-days`。
 
-- To expire delete markers for objects with no remaining versions, 
-  include :mc-cmd:`~mc ilm rule add --expire-delete-marker`.
+- 若要让没有剩余版本的对象的删除标记过期，请包含
+  :mc-cmd:`~mc ilm rule add --expire-delete-marker`。
 
 .. code-block:: shell
    :class: copyable
@@ -99,8 +92,9 @@ delete markers:
       --noncurrent-expire-days NONCURRENT_DAYS \
       --expire-delete-marker
 
-- To expire all versions of an object, include :mc-cmd:`~mc ilm rule add --expire-all-object-versions`.
-  This expiration only applies to objects without a ``DeleteMarker`` as the latest or current version.
+- 若要让对象的所有版本过期，请包含
+  :mc-cmd:`~mc ilm rule add --expire-all-object-versions`。此过期规则仅适用于
+  最新版本或当前版本不是 ``DeleteMarker`` 的对象。
 
   .. code-block:: shell
      :class: copyable
@@ -108,13 +102,12 @@ delete markers:
      mc ilm rule add ALIAS/PATH \ 
         --expire-all-object-versions
 
-- Replace :mc-cmd:`ALIAS <mc ilm rule add ALIAS>` with the 
-  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc ilm rule add ALIAS>` 替换为 S3 兼容主机的
+  :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc ilm rule add ALIAS>` with the path to the bucket on the
-  S3-compatible host.
+- 将 :mc-cmd:`PATH <mc ilm rule add ALIAS>` 替换为 S3 兼容主机上该存储桶的
+  路径。
 
-- Replace :mc-cmd:`NONCURRENT_DAYS 
-  <mc ilm rule add --noncurrent-expire-days>` with the number of days after
-  which to expire noncurrent object versions. For example, specify ``30d`` to
-  expire a version after it has been noncurrent for at least 30 days.
+- 将 :mc-cmd:`NONCURRENT_DAYS
+  <mc ilm rule add --noncurrent-expire-days>` 替换为非当前对象版本过期前的
+  天数。例如，指定 ``30d`` 表示某个版本在成为非当前版本至少 30 天后过期。

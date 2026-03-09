@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,29 +14,29 @@
 .. mc:: mc idp ldap accesskey enable
 
 
-Description
------------
+描述
+----
 
 .. start-mc-idp-ldap-accesskey-enable-desc
 
-The :mc:`mc idp ldap accesskey enable` enables the specified :ref:`access key <minio-id-access-keys>` on the local server.
+:mc:`mc idp ldap accesskey enable` 在本地服务器上启用指定的 :ref:`access key <minio-id-access-keys>`。
 
 .. end-mc-idp-ldap-accesskey-enable-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-         The following example enables the access key ``mykey`` from the ``minio`` deployment:
+         以下示例启用 ``minio`` 部署中的 access key ``mykey``：
 
       .. code-block:: shell
          :class: copyable
 
          mc idp ldap accesskey enable minio/ mykey
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -46,23 +46,23 @@ The :mc:`mc idp ldap accesskey enable` enables the specified :ref:`access key <m
                                           KEY
 
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment configured for AD/LDAP integration.
-      - Replace ``KEY`` with the access key to enable.
+      - 将 ``ALIAS`` 替换为配置了 AD/LDAP 集成的 MinIO 部署的 :ref:`alias <alias>`。
+      - 将 ``KEY`` 替换为要启用的 access key。
         
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment configured for AD/LDAP.
+   配置了 AD/LDAP 的 MinIO 部署的 :ref:`alias <alias>`。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -71,31 +71,31 @@ Parameters
 .. mc-cmd:: KEY
    :required:
 
-   The configured access key to enable.
+   要启用的已配置 access key。
 
-Example
-~~~~~~~
+示例
+~~~~
 
-Enable the access key ``mykey`` from the ``minio`` deployment.
+启用 ``minio`` 部署中的 access key ``mykey``。
 
 .. code-block:: shell
    :class: copyable
 
    mc idp ldap accesskey enable minio/ mykey
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

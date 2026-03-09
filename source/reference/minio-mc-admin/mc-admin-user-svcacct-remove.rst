@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -15,40 +15,40 @@
 
 .. important::
 
-   This command has been replaced and will be deprecated in a future MinIO Client release.
+   此命令已被替代，并将在未来的 MinIO Client 版本中弃用。
 
-   As of MinIO Client RELEASE.2024-10-08T09-37-26Z, use the :mc:`mc admin accesskey rm` command to delete access keys for built-in MinIO IDP users.
+   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey rm` 命令删除内置 MinIO IDP 用户的访问密钥。
 
-   For access keys for AD/LDAP users, use the :mc:`mc idp ldap accesskey rm` command.
+   对于 AD/LDAP 用户的访问密钥，请使用 :mc:`mc idp ldap accesskey rm` 命令。
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-svcacct-remove-desc
 
-The :mc:`mc admin user svcacct rm` command removes an access key associated to a user on the deployment.
+:mc:`mc admin user svcacct rm` 命令会删除部署中与某个用户关联的访问密钥。
 
 .. end-mc-admin-svcacct-remove-desc
 
-The :mc:`mc admin user svcacct remove` command has equivalent functionality to :mc:`mc admin user svcacct rm`.
+:mc:`mc admin user svcacct remove` 命令与 :mc:`mc admin user svcacct rm` 的功能等效。
    
-Applications can no longer authenticate using that access key after removal.
+删除后，应用程序将无法再使用该访问密钥进行身份验证。
    
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command removes the specified access key:
+      以下命令会删除指定的访问密钥：
   
       .. code-block:: shell  
          :class: copyable 
   
          mc admin user svcacct rm myminio myuserserviceaccount  
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      命令语法如下： 
   
       .. code-block:: shell  
          :class: copyable 
@@ -62,33 +62,33 @@ Applications can no longer authenticate using that access key after removal.
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: SERVICEACCOUNT
    :required:
 
-   The service account access key to remove.
+   要删除的服务账号访问密钥。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

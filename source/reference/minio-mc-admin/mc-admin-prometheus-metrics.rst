@@ -4,32 +4,32 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin prometheus metrics
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-prometheus-metrics-desc
 
-The :mc:`mc admin prometheus metrics` command prints Prometheus metrics for a cluster.
+:mc:`mc admin prometheus metrics` 命令用于输出集群的 Prometheus 指标。
 
 .. end-mc-admin-prometheus-metrics-desc
 
-The output includes additional information about each metric, such as if its value is a ``counter`` or ``gauge``.
+输出还包含每个指标的附加信息，例如其值类型是 ``counter`` 还是 ``gauge``。
 
-For more complete documentation on using MinIO with Prometheus, see :ref:`How to monitor MinIO server with Prometheus <minio-metrics-collect-using-prometheus>`
+有关将 MinIO 与 Prometheus 配合使用的完整文档，请参阅 :ref:`How to monitor MinIO server with Prometheus <minio-metrics-collect-using-prometheus>`
 
-Starting with MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` and MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z`, :ref:`metrics version 3 (v3) <minio-metrics-and-alerts>` provides additional endpoints and metrics.
-To print v3 metrics use the ``--api_version v3`` option.
+从 MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` 和 MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z` 开始，:ref:`metrics version 3 (v3) <minio-metrics-and-alerts>` 提供了额外的端点和指标。
+要输出 v3 指标，请使用 ``--api_version v3`` 选项。
 
-MinIO recommends new deployments use :ref:`version 3 (v3) <minio-metrics-and-alerts>`.
-Existing deployments can continue to use :ref:`metrics version 2 <minio-metrics-v2>`
+MinIO 建议新部署使用 :ref:`version 3 (v3) <minio-metrics-and-alerts>`。
+现有部署可以继续使用 :ref:`metrics version 2 <minio-metrics-v2>`。
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -38,18 +38,18 @@ Existing deployments can continue to use :ref:`metrics version 2 <minio-metrics-
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command prints cluster metrics from the deployment at :term:`alias` ``myminio``:
+      以下命令输出 :term:`alias` ``myminio`` 对应部署的集群指标：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin prometheus metrics myminio cluster
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -66,34 +66,34 @@ Existing deployments can continue to use :ref:`metrics version 2 <minio-metrics-
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc:`alias <mc alias>` of a configured MinIO deployment for which the command prints metrics.
+   已配置 MinIO 部署的 :mc:`alias <mc alias>`，命令将输出该部署的指标。
 
 .. mc-cmd:: --api-version
    :optional:
 
-   To print :ref:`version 3 (v3) <minio-metrics-and-alerts>` metrics, include an ``--api-version v3`` parameter.
-   ``v3`` is the only accepted value.
+   要输出 :ref:`version 3 (v3) <minio-metrics-and-alerts>` 指标，请添加 ``--api-version v3`` 参数。
+   ``v3`` 是唯一接受的值。
 
-   Omit ``--api-version`` to print :ref:`version 2 (v2) <minio-metrics-v2>` metrics.
+   省略 ``--api-version`` 则输出 :ref:`version 2 (v2) <minio-metrics-v2>` 指标。
 
 .. mc-cmd:: --bucket
    :optional:
 
-   Requires :mc-cmd:`~mc admin prometheus metrics --api-version`.
-   For v3 metric types that return bucket-level metrics, specify a bucket name.
+   需要 :mc-cmd:`~mc admin prometheus metrics --api-version`。
+   对于返回存储桶级指标的 v3 指标类型，需指定存储桶名称。
 
-   ``--bucket`` works for the following v3 metric types:
+   ``--bucket`` 适用于以下 v3 指标类型：
 
    - ``api``
    - ``replication``
 
-   The following example prints API metrics for the bucket ``mybucket``:
+   以下示例输出存储桶 ``mybucket`` 的 API 指标：
 
    .. code-block:: shell
       :class: copyable
@@ -103,9 +103,9 @@ Parameters
 .. mc-cmd:: TYPE
    :optional:
 
-   The type of metrics to print.
+   要输出的指标类型。
 
-      Valid values for metrics version 3 are:
+      metrics version 3 的有效值为：
 
       - ``api``
       - ``audit``
@@ -118,88 +118,88 @@ Parameters
       - ``scanner``
       - ``system``
 
-      If not specified, a ``v3`` command returns all metrics.
+      未指定时，``v3`` 命令返回所有指标。
 
-      Valid values for metrics version 2 are:
+      metrics version 2 的有效值为：
 
       - ``bucket``
       - ``cluster``
       - ``node``
       - ``resource``
 
-      If not specified, a ``v2`` command returns cluster metrics.
-      Cluster metrics include rollups of certain node metrics.
+      未指定时，``v2`` 命令返回集群指标。
+      集群指标包含部分节点指标的汇总值。
 
 
-Global flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Examples
---------
+示例
+----
 
-Print v3 metrics
-~~~~~~~~~~~~~~~~
+输出 v3 指标
+~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin prometheus metrics --api-version v3 <mc admin prometheus metrics --api-version>` to print all available v3 metrics and their current values for a MinIO deployment:
+使用 :mc-cmd:`mc admin prometheus metrics --api-version v3 <mc admin prometheus metrics --api-version>` 输出某个 MinIO 部署中所有可用的 v3 指标及其当前值：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus metrics ALIAS --api-version v3
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-To print a specific type of metrics, include the :mc-cmd:`~mc admin prometheus metrics TYPE`.
-The following prints all scanner metrics for a deployment:
+要输出特定类型的指标，请添加 :mc-cmd:`~mc admin prometheus metrics TYPE`。
+以下命令输出某个部署的全部 scanner 指标：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus metrics ALIAS scanner --api-version v3
 
-Print v3 API or bucket replication metrics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+输出 v3 API 或存储桶复制指标
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Certain v3 metric types accept a :mc-cmd:`~mc admin prometheus metrics --bucket` parameter to specify the bucket for which to print metrics.
-The following example prints v3 replication metrics for bucket ``mybucket``:
+某些 v3 指标类型接受 :mc-cmd:`~mc admin prometheus metrics --bucket` 参数，用于指定要输出指标的存储桶。
+以下示例输出存储桶 ``mybucket`` 的 v3 replication 指标：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus metrics ALIAS replication --bucket mybucket --api-version v3
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-To print API metrics for the bucket, replace ``replication`` with ``api``.
+要输出该存储桶的 API 指标，请将 ``replication`` 替换为 ``api``。
 
 
-Print v2 cluster metrics
-~~~~~~~~~~~~~~~~~~~~~~~~
+输出 v2 集群指标
+~~~~~~~~~~~~~~~~
 
-By default, :mc-cmd:`mc admin prometheus metrics` prints v2 cluster metrics:
+默认情况下，:mc-cmd:`mc admin prometheus metrics` 输出 v2 集群指标：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus metrics ALIAS
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 
-Print other types of v2 metrics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+输出其他类型的 v2 指标
+~~~~~~~~~~~~~~~~~~~~~~
 
-To print another type of v2 metrics, specify the desired :mc-cmd:`~mc admin prometheus metrics TYPE`.
-The following example prints v2 bucket metrics:
+要输出另一种 v2 指标类型，请指定所需的 :mc-cmd:`~mc admin prometheus metrics TYPE`。
+以下示例输出 v2 bucket 指标：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus metrics ALIAS bucket
 
-Accepted values are ``bucket``, ``cluster``, ``node``, and ``resource``.
+可接受的值为 ``bucket``、``cluster``、``node`` 和 ``resource``。

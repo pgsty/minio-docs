@@ -4,37 +4,37 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc sql
 
-Syntax
-------
+语法
+----
 
 .. start-mc-sql-desc
 
-The :mc:`mc sql` command provides an S3 Select interface for performing sql queries on objects in the specified MinIO deployment.
+:mc:`mc sql` 命令提供 S3 Select 接口，用于对指定 MinIO 部署中的对象执行 SQL 查询。
 
 .. end-mc-sql-desc
 
-See :s3-docs:`Selecting content from objects <selecting-content-from-objects>` for more information on S3 Select behavior and limitations.
+有关 S3 Select 的行为和限制，请参阅 :s3-docs:`Selecting content from objects <selecting-content-from-objects>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command queries all objects in the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会查询 ``myminio`` MinIO 部署中 ``mydata`` 存储桶内的所有对象：
 
       .. code-block:: shell
          :class: copyable
 
          mc sql --recursive --query "select * from S3Object" myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -55,15 +55,15 @@ See :s3-docs:`Selecting content from objects <selecting-content-from-objects>` f
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The full path to the bucket or object to run the SQL query against.
-   Specify the :ref:`alias <alias>` of a configured S3 service as the prefix to the ``ALIAS`` path.
-   For example:
+   要执行 SQL 查询的存储桶或对象的完整路径。
+   指定已配置 S3 服务的 :ref:`alias <alias>` 作为 ``ALIAS`` 路径前缀。
+   例如：
 
    .. code-block:: shell
 
@@ -72,51 +72,51 @@ Parameters
 .. mc-cmd:: --query, e
    :required:
 
-   The SQL statement to execute on the specified :mc-cmd:`~mc sql ALIAS` directory or object.
-   Wrap the entire SQL query in double quotes ``"``.
+   在指定 :mc-cmd:`~mc sql ALIAS` 目录或对象上执行的 SQL 语句。
+   将完整 SQL 查询用双引号 ``"`` 包裹。
 
-   Defaults to ``"select * from S3Object"``.
+   默认为 ``"select * from S3Object"``。
 
 .. mc-cmd:: --csv-input
    :optional:
 
-   The data format for ``.csv`` input objects.
-   Specify a string of comma-seperated ``key=value,...`` pairs.
-   See :ref:`mc-sql-csv-format` for more information on valid keys.
+   ``.csv`` 输入对象的数据格式。
+   指定由逗号分隔的 ``key=value,...`` 键值对字符串。
+   有效键的更多信息请参阅 :ref:`mc-sql-csv-format`。
 
 .. mc-cmd:: --compression
    :optional:
 
-   The compression type of the input object.
-   Specify one of the following supported values:
+   输入对象的压缩类型。
+   指定以下受支持值之一：
 
    - ``GZIP``
    - ``BZIP2``
-   - ``NONE`` (default)
+   - ``NONE``（默认）
 
-   Compression schemes supported by MinIO backend only:
+   仅 MinIO 后端支持以下压缩方案：
 
    - ``ZSTD`` `Zstandard <https://facebook.github.io/zstd/>`__
-   - ``LZ4`` `LZ4 <https://lz4.github.io/lz4/>`__ stream
-   - ``S2`` `S2 <https://github.com/klauspost/compress/tree/master/s2#s2-compression>`__ framed stream
-   - ``SNAPPY`` `Snappy <http://google.github.io/snappy/>`__ framed stream
+   - ``LZ4`` `LZ4 <https://lz4.github.io/lz4/>`__ 流
+   - ``S2`` `S2 <https://github.com/klauspost/compress/tree/master/s2#s2-compression>`__ 帧流
+   - ``SNAPPY`` `Snappy <http://google.github.io/snappy/>`__ 帧流
 
 .. mc-cmd:: --csv-output
    :optional:
 
-   The data format for ``.csv`` output.
-   Specify a string of comma-seperated ``key=value,...`` pairs.
-   See :ref:`mc-sql-csv-format` for more information on valid keys.
+   ``.csv`` 输出的数据格式。
+   指定由逗号分隔的 ``key=value,...`` 键值对字符串。
+   有效键的更多信息请参阅 :ref:`mc-sql-csv-format`。
 
-   See the S3 API :s3-api:`CSVOutput <API_CSVOutput.html>` for more information.
+   更多信息请参阅 S3 API :s3-api:`CSVOutput <API_CSVOutput.html>`。
 
 .. mc-cmd:: --csv-output-header
    :optional:
 
-   The header row of the ``.csv`` output file.
-   Specify a string of comma-separated fields as ``field1,field2,...``.
+   ``.csv`` 输出文件的表头行。
+   将逗号分隔的字段字符串指定为 ``field1,field2,...``。
 
-   Omit to output a ``.csv`` with no header row.
+   省略该参数则输出不包含表头行的 ``.csv``。
 
 .. block include of enc-c
 
@@ -127,80 +127,80 @@ Parameters
 .. mc-cmd:: --json-input
    :optional:
 
-   The data format for ``.json`` or ``.ndjson`` input objects.
-   Specify the type of the JSON contents as ``type=<VALUE>``.
-   The value can be either:
+   ``.json`` 或 ``.ndjson`` 输入对象的数据格式。
+   将 JSON 内容类型指定为 ``type=<VALUE>``。
+   值可以是：
 
-   - ``DOCUMENT`` - JSON `document <https://www.json.org/json-en.html>`__.
-   - ``LINES`` - JSON `lines <http://jsonlines.org/>`__.
+   - ``DOCUMENT`` - JSON `document <https://www.json.org/json-en.html>`__。
+   - ``LINES`` - JSON `lines <http://jsonlines.org/>`__。
 
-   See the S3 API :s3-api:`JSONInput <API_JSONInput.html>` for more information.
+   更多信息请参阅 S3 API :s3-api:`JSONInput <API_JSONInput.html>`。
 
 .. mc-cmd:: --json-output
    :optional:
 
-   The data format for the ``.json`` output.
-   Supports the ``rd=value`` key, where ``rd`` is the ``RecordDelimiter`` for the JSON document.
+   ``.json`` 输出的数据格式。
+   支持 ``rd=value`` 键，其中 ``rd`` 是 JSON 文档的 ``RecordDelimiter``。
 
-   Omit to use the default newline character ``\n``.
+   省略该参数则使用默认换行符 ``\n``。
 
-   See the S3 API :s3-api:`JSONOutput <API_JSONOutput.html>` for more information.
+   更多信息请参阅 S3 API :s3-api:`JSONOutput <API_JSONOutput.html>`。
 
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Recursively searches the specified :mc-cmd:`~mc sql ALIAS` directory using the :mc-cmd:`~mc sql --query` SQL statement.
+   使用 :mc-cmd:`~mc sql --query` SQL 语句递归搜索指定的 :mc-cmd:`~mc sql ALIAS` 目录。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Select all Columns in all Objects in a Bucket
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+选择存储桶内所有对象的所有列
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc sql` with the :mc-cmd:`~mc sql --recursive` and :mc-cmd:`~mc sql --query` options to apply the query to all objects  in a bucket:
+将 :mc:`mc sql` 与 :mc-cmd:`~mc sql --recursive` 和 :mc-cmd:`~mc sql --query` 选项结合使用，可将查询应用到存储桶中的所有对象：
 
 .. code-block:: shell
    :class: copyable
 
    mc sql --recursive --query "select * from S3Object" ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc sql ALIAS>` with the :ref:`alias <alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc sql ALIAS>` 替换为 MinIO 部署的 :ref:`alias <alias>`。
 
-- Replace :mc-cmd:`PATH <mc sql ALIAS>` with the path to the bucket on the MinIO deployment.
+- 将 :mc-cmd:`PATH <mc sql ALIAS>` 替换为 MinIO 部署上存储桶的路径。
 
-Run an Aggregation Query on an Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+在对象上运行聚合查询
+~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc sql` with the :mc-cmd:`~mc sql --query` option to query an object on an MinIO deployment:
+将 :mc:`mc sql` 与 :mc-cmd:`~mc sql --query` 选项结合使用，可查询 MinIO 部署上的对象：
 
 .. code-block:: shell
 
    mc sql --query "select count(s.power) from S3Object" ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc sql ALIAS>` with the :ref:`alias <alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc sql ALIAS>` 替换为 MinIO 部署的 :ref:`alias <alias>`。
 
-- Replace :mc-cmd:`PATH <mc sql ALIAS>` with the path to the object on the MinIO deployment.
+- 将 :mc-cmd:`PATH <mc sql ALIAS>` 替换为 MinIO 部署上对象的路径。
 
-Behavior
---------
+行为
+----
 
-Input Formats
-~~~~~~~~~~~~~
+输入格式
+~~~~~~~~
 
-:mc:`mc sql` supports the following input formats:
+:mc:`mc sql` 支持以下输入格式：
 
-.. list-table:: Input Format Types
+.. list-table:: 输入格式类型
    :header-rows: 1
 		 
-   * - Type
-     - ``content-type`` Value
+   * - 类型
+     - ``content-type`` 值
 
    * - ``.csv``
      - ``text/csv``
@@ -209,96 +209,96 @@ Input Formats
      - ``application/json``
 
    * - ``.parquet``
-     - none
+     - 无
 
-For ``.csv`` file types, use :mc-cmd:`mc sql --csv-input` to specify the CSV data format.
-See :ref:`mc-sql-csv-format` for more information on CSV formatting fields.
+对于 ``.csv`` 文件类型，使用 :mc-cmd:`mc sql --csv-input` 指定 CSV 数据格式。
+有关 CSV 格式字段的更多信息，请参阅 :ref:`mc-sql-csv-format`。
 
-For ``.json`` file types, use :mc-cmd:`mc sql --json-input` to specify the JSON data format.
+对于 ``.json`` 文件类型，使用 :mc-cmd:`mc sql --json-input` 指定 JSON 数据格式。
 
-For ``.parquet`` file types, :mc:`mc sql` automatically interprets the data format.
+对于 ``.parquet`` 文件类型，:mc:`mc sql` 会自动解析数据格式。
 
-:mc:`mc sql` determines the type by the file extension of the target object.
-For example, an object named ``data.json`` is interpreted as a JSON file.
+:mc:`mc sql` 通过目标对象的文件扩展名判断类型。
+例如，名为 ``data.json`` 的对象会被解释为 JSON 文件。
 
-You can query data of a supported type but a different extension if the object has the appropriate ``content-type``.
-For more information, see :mc-cmd:`mc cp --attr`.
+如果对象具有合适的 ``content-type``，你也可以查询受支持类型但扩展名不同的数据。
+更多信息请参阅 :mc-cmd:`mc cp --attr`。
 
 .. _mc-sql-csv-format:
 
-CSV Formatting Fields
-~~~~~~~~~~~~~~~~~~~~~
+CSV 格式字段
+~~~~~~~~~~~~
 
-The following table lists valid key-value pairs for use with :mc-cmd:`mc sql --csv-input` and :mc-cmd:`mc sql --csv-output`.
-Certain key pairs are only valid for :mc-cmd:`~mc sql --csv-input`.
-See the documentation for S3 API :s3-api:`CSVInput <API_CSVInput.html>` for more information on S3 CSV formatting.
+下表列出了可用于 :mc-cmd:`mc sql --csv-input` 和 :mc-cmd:`mc sql --csv-output` 的有效键值对。
+某些键值对仅适用于 :mc-cmd:`~mc sql --csv-input`。
+有关 S3 CSV 格式的更多信息，请参阅 S3 API :s3-api:`CSVInput <API_CSVInput.html>` 文档。
 
 .. list-table::
    :header-rows: 1
    :widths: 20 20 60
    :width: 100%
 
-   * - Key
-     - ``--csv-input`` Only
-     - Description
+   * - 键
+     - 仅 ``--csv-input``
+     - 说明
 
    * - ``rd``
      -
-     - The character that seperates each record (row) in the input ``.csv`` file.
+     - 用于分隔输入 ``.csv`` 文件中每条记录（行）的字符。
 
-       Corresponds to ``RecordDelimiter`` in the S3 API ``CSVInput``.
+       对应 S3 API ``CSVInput`` 中的 ``RecordDelimiter``。
 
    * - ``fd``
      -
-     - The character that seperates each field in a record. Defaults to ``,``.
+     - 用于分隔一条记录中各字段的字符。默认为 ``,``。
 
-       Corresponds to ``FieldDelimeter`` in the S3 API ``CSVInput``.
+       对应 S3 API ``CSVInput`` 中的 ``FieldDelimeter``。
 
    * - ``qc``
      -
-     - The character used for escaping when the ``fd`` character is part of a value. Defaults to ``"``.
+     - 当 ``fd`` 字符是字段值的一部分时，用于转义的字符。默认为 ``"``。
 
-       Corresponds to ``QuoteCharacter`` in the S3 API ``CSVInput``.
+       对应 S3 API ``CSVInput`` 中的 ``QuoteCharacter``。
 
    * - ``qec``
      -
-     - The character used for escaping a quotation mark ``"`` character inside an already escaped value. 
+     - 在已转义值内部，用于转义引号 ``"`` 字符的字符。
 
-       Corresponds to ``QuoteEscapeCharacter`` in the S3 API ``CSVInput``.
+       对应 S3 API ``CSVInput`` 中的 ``QuoteEscapeCharacter``。
 
    * - ``fh``
-     - Yes
-     - The content of the first line in the ``.csv`` file.
+     - 是
+     - ``.csv`` 文件第一行的内容类型。
 
-       Specify one of the following supported values:
+       指定以下受支持值之一：
 
-       - ``NONE`` - The first line is not a header.
-       - ``IGNORE`` - Ignore the first line.
-       - ``USE`` - The first line is a header.
+       - ``NONE`` - 第一行不是表头。
+       - ``IGNORE`` - 忽略第一行。
+       - ``USE`` - 第一行是表头。
 
-       For ``NONE`` or ``IGNORE``, you must specify column positions ``_#`` to identify a column in the :mc-cmd:`~mc sql --query` statement.
+       对于 ``NONE`` 或 ``IGNORE``，你必须在 :mc-cmd:`~mc sql --query` 语句中指定列位置 ``_#`` 来标识列。
 
-       For ``USE``, you can specify header values to identify a column in the :mc-cmd:`~mc sql --query` statement.
+       对于 ``USE``，你可以在 :mc-cmd:`~mc sql --query` 语句中指定表头值来标识列。
 
-       Corresponds to ``FieldHeaderInfo`` in the S3 API ``CSVInput``.
+       对应 S3 API ``CSVInput`` 中的 ``FieldHeaderInfo``。
 
    * - ``cc``
-     - Yes
-     - The character used to indicate a record should be ignored.
-       The character *must* appear at the beginning of the record.
+     - 是
+     - 用于指示应忽略某条记录的字符。
+       该字符 *必须* 出现在记录开头。
 
-       Corresponds to ``Comment`` in the S3 API ``CSVInput``.
+       对应 S3 API ``CSVInput`` 中的 ``Comment``。
 
    * - ``qrd``
-     - Yes
-     - Specify ``TRUE`` to indicate that fields may contain record delimiter values (``rd``).
+     - 是
+     - 指定 ``TRUE`` 表示字段中可以包含记录分隔符值（``rd``）。
 
-       Defaults to ``FALSE``.
+       默认为 ``FALSE``。
 
-       Corresponds to ``AllowQuotedRecordDelimiter`` in the S3 API ``CSVInput``.
+       对应 S3 API ``CSVInput`` 中的 ``AllowQuotedRecordDelimiter``。
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

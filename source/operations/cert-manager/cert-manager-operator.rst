@@ -1,54 +1,54 @@
 .. _minio-certmanager-operator:
 
-=========================
-cert-manager for Operator
-=========================
+========================================
+使用 cert-manager 管理 Operator 证书
+========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
 
-MinIO Operator manages TLS certificate issuing for the services hosted in the ``minio-operator`` namespace. 
+MinIO Operator 负责管理 ``minio-operator`` 命名空间中各服务的 TLS 证书签发。
 
-This page describes how to manage the Operator's TLS certificates with :ref:`cert-manager <minio-certmanager>`.
+本页说明如何使用 :ref:`cert-manager <minio-certmanager>` 管理 Operator 的 TLS 证书。
 
-Prerequisites
--------------
+前提条件
+--------
 
-- A `supported version of Kubernetes <https://kubernetes.io/releases/>`__. 
-- `kustomize <https://kustomize.io/>`__ installed
-- ``kubectl`` access to your ``k8s`` cluster
-- Completed the steps to :ref:`set up cert-manager <minio-setup-certmanager>`
-- The MinIO Operator must not yet be installed.
+- 使用受支持版本的 `Kubernetes <https://kubernetes.io/releases/>`__
+- 已安装 `kustomize <https://kustomize.io/>`__
+- 可以通过 ``kubectl`` 访问你的 ``k8s`` 集群
+- 已完成 :ref:`cert-manager 配置 <minio-setup-certmanager>`
+- MinIO Operator 尚未安装
 
 
-1) Create a CA Issuer for the ``minio-operator`` namespace
-----------------------------------------------------------
+1) 为 ``minio-operator`` 命名空间创建 CA Issuer
+-----------------------------------------------
 
-This guide **disables** the automatic generation of certificates in MinIO Operator and issues certificates using cert-manager instead.
+本指南将 **禁用** MinIO Operator 的自动证书生成功能，改为使用 cert-manager 签发证书。
 
-The ``minio-operator`` namespace must have its own certificate authority (CA), derived from the cluster's ``ClusterIssuer`` certificate created during :ref:`cert-manager setup <minio-certmanager>`.
-Create this CA certificate using cert-manager.
+``minio-operator`` 命名空间必须拥有自己的证书颁发机构（CA），该 CA 派生自你在 :ref:`配置 cert-manager <minio-certmanager>` 时创建的集群 ``ClusterIssuer`` 证书。
+请使用 cert-manager 创建此 CA 证书。
 
 .. important::
 
-   This CA certificate **must** exist *before* installing MinIO Operator.
+   该 CA 证书 **必须** 在安装 MinIO Operator *之前* 已存在。
 
-1. If it does not exist, create the ``minio-operator`` namespace
+1. 如果 ``minio-operator`` 命名空间尚不存在，请先创建：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl create ns minio-operator
 
-2. Request a new Certificate with ``spec.isCA: true`` specified. 
+2. 申请一个新的 ``Certificate``，并设置 ``spec.isCA: true``。
 
-   This certificate serves as the :abbr:`CA (Certificate Authority)` for the `minio-operator` namespace.
+   该证书将作为 ``minio-operator`` 命名空间的 :abbr:`CA (Certificate Authority)` 使用。
 
-   Create a file called ``operator-ca-tls-secret.yaml`` with the following contents:
+   创建一个名为 ``operator-ca-tls-secret.yaml`` 的文件，内容如下：
 
    .. code-block:: yaml
       :class: copyable
@@ -75,29 +75,29 @@ Create this CA certificate using cert-manager.
 
    .. important::
 
-      The ``spec.issueRef.name`` must match the name of the ``ClusterIssuer`` created when :ref:`setting up cert-manager <minio-cert-manager-create-cluster-issuer>`.
-      If you specified a different ``ClusterIssuer`` name or are using a different ``Issuer`` from the guide, modify the ``issuerRef`` to match your environment.
+      ``spec.issueRef.name`` 必须与 :ref:`配置 cert-manager <minio-cert-manager-create-cluster-issuer>` 时创建的 ``ClusterIssuer`` 名称一致。
+      如果你使用了不同的 ``ClusterIssuer`` 名称，或者使用了与本指南不同的 ``Issuer``，请根据你的环境调整 ``issuerRef``。
 
-3. Apply the resource:
+3. 应用该资源：
    
    .. code-block:: shell
       :class: copyable
 
       kubectl apply -f operator-ca-tls-secret.yaml
 
-Kubernetes creates a new secret with the name ``operator-ca-tls`` in the ``minio-operator`` namespace.
+Kubernetes 会在 ``minio-operator`` 命名空间中创建一个名为 ``operator-ca-tls`` 的新 Secret。
 
 .. important::
 
-   Make sure to trust this certificate in any applications that need to interact with the MinIO Operator.
+   任何需要与 MinIO Operator 交互的应用都必须信任此证书。
 
 
-2) Use the secret to create the ``Issuer``
-------------------------------------------
+2) 使用该 Secret 创建 ``Issuer``
+------------------------------------------------
 
-Use the ``operator-ca-tls`` secret to add an ``Issuer`` resource for the ``minio-operator`` namespace.
+使用 ``operator-ca-tls`` Secret 为 ``minio-operator`` 命名空间创建一个 ``Issuer`` 资源。
 
-1. Create a file called ``operator-ca-issuer.yaml`` with the following contents: 
+1. 创建一个名为 ``operator-ca-issuer.yaml`` 的文件，内容如下：
 
    .. code-block:: yaml
 
@@ -112,18 +112,18 @@ Use the ``operator-ca-tls`` secret to add an ``Issuer`` resource for the ``minio
           secretName: operator-ca-tls
 
 
-2. Apply the resource:
+2. 应用该资源：
    
    .. code-block:: shell
 
       kubectl apply -f operator-ca-issuer.yaml
 
-3) Create TLS certificate
--------------------------
+3) 创建 TLS 证书
+----------------
 
-Now that the ``Issuer`` exists in the ``minio-operator`` namespace, cert-manager can add a certificate.
+现在 ``Issuer`` 已存在于 ``minio-operator`` 命名空间中，cert-manager 可以开始签发证书。
 
-The certificate from cert-manager must be valid for the following DNS domains:
+cert-manager 签发的证书必须对以下 DNS 名称有效：
 
 - ``sts``
 - ``sts.minio-operator.svc.``
@@ -131,23 +131,23 @@ The certificate from cert-manager must be valid for the following DNS domains:
 
   .. important::
 
-      Replace ``<cluster domain>`` with the actual value for your MinIO tenant.
-      ``cluster domain`` is the internal root DNS domain assigned in your Kubernetes cluster. 
-      Typically, this is ``cluster.local``, but confirm the value by checking your CoreDNS configuration for the correct value for your Kubernetes cluster. 
+      将 ``<cluster domain>`` 替换为你的环境实际使用的值。
+      ``cluster domain`` 是 Kubernetes 集群内部的根 DNS 域。
+      该值通常为 ``cluster.local``，但你仍应检查 CoreDNS 配置，以确认 Kubernetes 集群实际使用的值。
       
-      For example:
+      例如：
 
       .. code-block:: shell
          :class: copyable
 
          kubectl get configmap coredns -n kube-system -o jsonpath="{.data}"
 
-      Different Kubernetes providers manage the root domain differently.
-      Check with your Kubernetes provider for more information.
+      不同 Kubernetes 发行版或托管平台对根域名的管理方式可能不同。
+      更多信息请参阅你的 Kubernetes 提供方文档。
 
-1. Create a ``Certificate`` for the specified domains:
+1. 为上述 DNS 名称创建一个 ``Certificate``：
 
-   Create a file named ``sts-tls-certificate.yaml`` with the following contents:
+   创建一个名为 ``sts-tls-certificate.yaml`` 的文件，内容如下：
 
    .. code-block:: yaml
       :class: copyable
@@ -170,38 +170,38 @@ The certificate from cert-manager must be valid for the following DNS domains:
 
    .. important::
    
-      The ``spec.secretName`` is not optional.
-   
-      The secret name **must** be ``sts-tls``.
-      Confirm this by setting ``spec.secretName: sts-tls`` as highlighted in the certificate YAML.
+      ``spec.secretName`` 不是可选项。
 
-2. Apply the resource:
+      Secret 名称 **必须** 为 ``sts-tls``。
+      请确认在证书 YAML 中按照高亮所示设置 ``spec.secretName: sts-tls``。
+
+2. 应用该资源：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl apply -f sts-tls-certificate.yaml
 
-This creates a secret called ``sts-tls`` in the ``minio-operator`` namespace.
+这会在 ``minio-operator`` 命名空间中创建一个名为 ``sts-tls`` 的 Secret。
 
 .. warning::
   
-   The STS service will not start if the ``sts-tls`` secret, containing the TLS certificate, is missing or contains an invalid ``key-value`` pair.
+   如果包含 TLS 证书的 ``sts-tls`` Secret 缺失，或者其中包含无效的 ``key-value`` 对，则 STS service 无法启动。
 
-4) Install Operator with Auto TLS disabled
-------------------------------------------
+4) 在禁用 Auto TLS 的情况下安装 Operator
+----------------------------------------
 
-You can now :ref:`install the MinIO Operator <minio-operator-installation>`.
+现在你可以 :ref:`安装 MinIO Operator <minio-operator-installation>`。
 
-When installing the Operator deployment, set the ``OPERATOR_STS_AUTO_TLS_ENABLED`` environment variable to ``off`` in the ``minio-operator`` container. 
+安装 Operator 时，请在 ``minio-operator`` 容器中将环境变量 ``OPERATOR_STS_AUTO_TLS_ENABLED`` 设置为 ``off``。
 
-Disabling this environment variable prevents the MinIO Operator from issuing the certificates.
-Instead, Operator relies on cert-manager to issue the TLS certificate.
+禁用该环境变量后，MinIO Operator 将不再自行签发证书。
+此时 Operator 将依赖 cert-manager 签发 TLS 证书。
 
-There are various methods to define an environment variable depending on how you install the Operator.
-The following steps define the variable with kustomize.
+环境变量的具体定义方式取决于你的 Operator 安装方式。
+以下步骤演示如何使用 kustomize 配置该变量。
 
-1. Create a kustomization patch file called ``kustomization.yaml`` with the following contents:
+1. 创建一个名为 ``kustomization.yaml`` 的 kustomization patch 文件，内容如下：
 
    .. code-block:: yaml
       :class: copyable
@@ -231,25 +231,25 @@ The following steps define the variable with kustomize.
                       - name: OPERATOR_STS_ENABLED
                         value: "on"
 
-2. Apply the kustomization resource to the cluster:
+2. 将该 kustomization 资源应用到集群：
 
    .. code-block:: shell
       :class: copyable
    
       kubectl apply -k minio-operator
 
-Migrate an existing MinIO Operator deployment to cert-manager
--------------------------------------------------------------
+将现有 MinIO Operator 部署迁移到 cert-manager
+---------------------------------------------
 
-To transition an existing MinIO Operator deployment from using AutoCert to cert-manager, complete the following steps:
+如果要将现有 MinIO Operator 部署从 AutoCert 迁移到 cert-manager，请完成以下步骤：
 
-1. Complete the steps for :ref:`installing cert-manager <minio-certmanager>`, including disabling auto-cert.
-2. Complete steps 1-3 on this page to generate the certificate authority for the Operator.
-3. When you get to the install step on this page, instead replace the existing Operator TLS certificate with the cert-manager issued certificate.
-4. Create new cert-manager certificates for each tenant, similar to the steps described on the :ref:`cert-manager for Tenants <minio-certmanager-tenants>` page.
-5. Replace the secrets in the MinIO Operator namespace for the tenants with secrets related to each tenant's cert-manager issued certificate.
+1. 完成 :ref:`安装 cert-manager <minio-certmanager>` 的步骤，并禁用 auto-cert。
+2. 完成本页步骤 1 到 3，为 Operator 创建证书颁发机构。
+3. 执行本页中的安装步骤时，不再使用原有的 Operator TLS 证书，而改用 cert-manager 签发的证书。
+4. 参照 :ref:`用于租户的 cert-manager <minio-certmanager-tenants>` 页面，为每个租户创建新的 cert-manager 证书。
+5. 使用每个租户对应的 cert-manager 证书 Secret，替换 MinIO Operator 命名空间中租户正在使用的 Secret。
 
-Next steps
-----------
+后续步骤
+--------
 
-Set up :ref:`cert-manager for a MinIO Tenant <minio-certmanager-tenants>`.
+继续配置 :ref:`用于 MinIO 租户的 cert-manager <minio-certmanager-tenants>`。

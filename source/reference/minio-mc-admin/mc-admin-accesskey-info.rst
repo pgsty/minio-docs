@@ -13,38 +13,38 @@
 .. mc:: mc admin accesskey info
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-accesskey-info-desc
 
-The :mc-cmd:`mc admin accesskey info` command returns a description of the specified :ref:`access key(s) <minio-id-access-keys>`.
+:mc-cmd:`mc admin accesskey info` 命令返回指定 :ref:`access key(s) <minio-id-access-keys>` 的描述信息。
 
 .. end-mc-admin-accesskey-info-desc
 
-The description output includes the following details, as available:
+描述输出会在可用时包含以下详细信息：
 
 - Access Key
-- Parent user of the specified access key
-- Access key status (``on`` or ``off``)
-- Policy or policies
-- Comment
-- Expiration
+- 指定访问密钥的父用户
+- 访问密钥状态（``on`` 或 ``off``）
+- 策略（单个或多个）
+- 注释
+- 过期时间
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command returns information on the specified access key:
+      以下命令返回指定访问密钥的信息：
   
       .. code-block:: shell  
          :class: copyable 
   
          mc admin accesskey info myminio myuseraccesskey 
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      命令语法如下：
   
       .. code-block:: shell  
          :class: copyable 
@@ -58,47 +58,47 @@ The description output includes the following details, as available:
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: ACCESSKEY
    :required:
 
-   The access key to display.
+   要显示的访问密钥。
 
-   Return information for multiple access keys by separating each access key with a space.
+   通过空格分隔多个访问密钥，可返回多个访问密钥的信息。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Display access key details
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示访问密钥详细信息
+~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin accesskey info` to display details of an access key on a MinIO deployment:
+使用 :mc-cmd:`mc admin accesskey info` 显示 MinIO 部署中某个访问密钥的详细信息：
 
 .. code-block:: shell
    :class: copyable
 
       mc admin accesskey info myminio myaccesskey
 
-- Replace ``myminio`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``myminio`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`myaccesskey <mc admin user svcacct info ACCESSKEY>` with the access key for which to display information.
-  List multiple keys by separating each with a space.
+- 将 :mc-cmd:`myaccesskey <mc admin user svcacct info ACCESSKEY>` 替换为要显示信息的访问密钥。
+  如需列出多个密钥，请使用空格分隔。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -109,11 +109,11 @@ The output resembles the following:
    Policy: implied
    Expiration: no-expiry
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

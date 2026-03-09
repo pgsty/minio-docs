@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,29 +14,29 @@
 .. mc:: mc admin accesskey ls
 
 
-Syntax
+语法
 ------
 
 .. start-mc-admin-accesskey-list-desc
 
-The :mc:`mc admin accesskey ls` command lists users, access keys, or temporary :ref:`security token service <minio-security-token-service>` keys managed by the MinIO deployment.
+:mc:`mc admin accesskey ls` 命令列出 MinIO 部署管理的用户、访问密钥或临时 :ref:`security token service <minio-security-token-service>` 密钥。
 
 .. end-mc-admin-accesskey-list-desc
 
-The alias :mc:`mc admin accesskey list` has equivalent functionality to :mc:`mc admin accesskey ls`.
+:mc:`mc admin accesskey list` 别名与 :mc:`mc admin accesskey ls` 功能等效。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command lists all access keys associated to the user with username ``admin1`` on the deployment at alias ``myminio``:
+      以下命令列出别名为 ``myminio`` 的部署中，用户名为 ``admin1`` 的用户关联的所有访问密钥：
 
       .. code-block:: shell  
          :class: copyable 
 
          mc admin accesskey ls myminio admin1
 
-      The output resembles the following:
+      输出如下所示：
    
       .. code-block:: shell
 
@@ -47,9 +47,9 @@ The alias :mc:`mc admin accesskey list` has equivalent functionality to :mc:`mc 
          HOXGL8ON3RG0IKYCHCUD | no-expiry
 
 	 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      该命令使用以下语法： 
   
       .. code-block:: shell  
          :class: copyable 
@@ -67,113 +67,113 @@ The alias :mc:`mc admin accesskey list` has equivalent functionality to :mc:`mc 
          :end-before: end-minio-syntax
 
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: USER
    :optional:
 
-   The username of the user(s) to display access keys for.
-   Separate multiple usernames with a space.
+   要显示其访问密钥的用户名称。
+   多个用户名之间使用空格分隔。
 
 .. mc-cmd:: --all
    :optional:
 
-   List all users and any access keys or temporary STS keys associated with them.
-   Requires admin privileges for the deployment.
+   列出所有用户及其关联的任意访问密钥或临时 STS 密钥。
+   需要具有该部署的管理员权限。
 
-   This flag is mutually exclusive with the other flags available for this command.
+   此标志与该命令的其他可用标志互斥。
 
 .. mc-cmd:: --svcacc-only
    :optional:
 
-   List temporary :ref:`Security Token Service (STS) keys <minio-security-token-service>` on the deployment.
+   列出部署上的临时 :ref:`Security Token Service (STS) keys <minio-security-token-service>`。
 
-   This flag is mutually exclusive with the other flags available for this command.
+   此标志与该命令的其他可用标志互斥。
 
 .. mc-cmd:: --self
    :optional:
 
-   List access keys and STS keys for the currently authenticated user.
+   列出当前已认证用户的访问密钥和 STS 密钥。
 
-   This flag is mutually exclusive with the other flags available for this command.
+   此标志与该命令的其他可用标志互斥。
 
 .. mc-cmd:: --temp-only
    :optional:
 
-   List users with their access keys.
-   This returns only users that have associated access keys.
+   列出用户及其访问密钥。
+   仅返回已关联访问密钥的用户。
 
-   This flag requires admin privileges for the user running the command.
+   运行命令的用户必须具有管理员权限才能使用此标志。
 
-   This flag is mutually exclusive with the other flags available for this command.
+   此标志与该命令的其他可用标志互斥。
 
 .. mc-cmd:: --users-only
    :optional:
 
-   List the MinIO users managed by the deployment.
-   Use in conjunction with the :mc-cmd:`~mc admin accesskey ls --all` flag to list all users on the deployment.
+   列出该部署管理的 MinIO 用户。
+   与 :mc-cmd:`~mc admin accesskey ls --all` 标志配合使用可列出部署上的所有用户。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-List all built-in users and associated access keys
+列出所有内置用户及其关联访问密钥
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists all users managed by the MinIO deployment at alias ``myminio`` and any associated access keys or temporary STS tokens.
+以下命令列出别名为 ``myminio`` 的 MinIO 部署所管理的所有用户，以及其关联的任意访问密钥或临时 STS 令牌。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey list myminio/ --all
 
-Return a list of access keys for the current authenticated user
+返回当前已认证用户的访问密钥列表
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command lists the access keys or temporary STS tokens associated with the currently authenticated user for the ``myminio`` deployment.
+以下命令列出 ``myminio`` 部署中与当前已认证用户关联的访问密钥或临时 STS 令牌。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey list myminio/ --self
 
-List all users created and managed by the deployment
+列出由部署创建并管理的所有用户
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command returns a list of all of the users on the current deployment.
-The list only includes MinIO IDP managed users, not users managed by a third party tool on a protocol like OpenID or Active Directory/LDAP.
+以下命令返回当前部署上的所有用户列表。
+该列表仅包含由 MinIO IDP 管理的用户，不包含通过 OpenID 或 Active Directory/LDAP 等协议由第三方工具管理的用户。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey ls myminio/ --all --users-only
 
-Return a list of access keys associated with the users ``miniouser1`` and ``miniouser2``
+返回与用户 ``miniouser1`` 和 ``miniouser2`` 关联的访问密钥列表
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command returns a list of access keys for two users on the ``myminio`` deployment.
+以下命令返回 ``myminio`` 部署上这两个用户的访问密钥列表。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey ls myminio/ miniouser1 miniouser2
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

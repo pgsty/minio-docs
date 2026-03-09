@@ -17,27 +17,26 @@
 .. |versionid| replace:: :mc-cmd:`~mc legalhold clear --version-id`
 .. |alias| replace:: :mc-cmd:`~mc legalhold clear ALIAS`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-legalhold-clear-desc
 
-The :mc:`mc legalhold clear` command removes the current :ref:`legal hold
-<minio-object-locking-legalhold>` setting for an object or objects.
+:mc:`mc legalhold clear` 命令会移除一个或多个对象当前的
+:ref:`legal hold <minio-object-locking-legalhold>` 设置。
 
 .. end-mc-legalhold-clear-desc
 
-Removing the legal hold on object(s) does *not* remove any other 
-:ref:`minio-object-locking-governance` and
-:ref:`minio-object-locking-compliance` retention settings in place for
-the object(s)
+移除对象的 legal hold *不会* 移除对象上已有的其他
+:ref:`minio-object-locking-governance` 和
+:ref:`minio-object-locking-compliance` 保留设置。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command removes the legal hold on all objects in the
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会移除 ``myminio`` MinIO 部署中 ``mydata`` 存储桶内
+      所有对象的 legal hold：
 
       .. code-block:: shell
          :class: copyable
@@ -46,7 +45,7 @@ the object(s)
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -62,14 +61,13 @@ the object(s)
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The MinIO :ref:`alias <alias>` and path to the object or
-   objects on which to remove the legal hold. For example:
+   MinIO :ref:`alias <alias>` 以及要移除 legal hold 的对象路径（可为单个或多个对象）。例如：
 
    .. code-block:: shell
       
@@ -78,8 +76,8 @@ Parameters
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Removes the legal hold on all objects in the 
-   :mc-cmd:`~mc legalhold clear ALIAS` bucket or bucket prefix.
+   移除 :mc-cmd:`~mc legalhold clear ALIAS` 指定存储桶或存储桶前缀下
+   所有对象的 legal hold。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -95,41 +93,40 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Retrieve the Legal Hold Status Objects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+获取对象的 Legal Hold 状态
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc legalhold clear` to retrieve the legal hold status of an object.
-Include :mc-cmd:`~mc legalhold clear --recursive` to return the legal hold
-status of the contents of a bucket:
+使用 :mc:`mc legalhold clear` 获取对象的 legal hold 状态。
+包含 :mc-cmd:`~mc legalhold clear --recursive` 可返回存储桶内容的
+legal hold 状态：
 
 .. code-block:: shell
    :class: copyable
 
    mc legalhold clear [--recursive] ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc legalhold clear ALIAS>` with the 
-  :ref:`alias <alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc legalhold clear ALIAS>` 替换为 S3 兼容主机的
+  :ref:`alias <alias>`。
 
-- Replace :mc-cmd:`PATH <mc legalhold clear ALIAS>` with the path to the bucket
-  or object on the S3-compatible host. If specifying the path to a bucket or
-  bucket prefix, include the :mc-cmd:`~mc legalhold clear --recursive`
-  option.
+- 将 :mc-cmd:`PATH <mc legalhold clear ALIAS>` 替换为 S3 兼容主机上的
+  存储桶或对象路径。若指定的是存储桶或存储桶前缀路径，请包含
+  :mc-cmd:`~mc legalhold clear --recursive` 选项。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

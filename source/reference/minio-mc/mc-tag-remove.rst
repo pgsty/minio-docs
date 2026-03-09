@@ -18,30 +18,29 @@
 .. |versionid| replace:: :mc-cmd:`~mc tag remove --version-id`
 .. |alias| replace:: :mc-cmd:`~mc tag remove ALIAS`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-tag-remove-desc
 
-The :mc:`mc tag remove` command removes all tags from a bucket or object.
+:mc:`mc tag remove` 命令用于移除存储桶或对象上的所有标签。
 
 .. end-mc-tag-remove-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
  
-      The following command removes tags for the ``mydata`` bucket on the
-      ``myminio`` MinIO deployment:
+      以下命令会移除 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的标签：
 
       .. code-block:: shell
          :class: copyable
 
          mc tag remove myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -55,18 +54,16 @@ The :mc:`mc tag remove` command removes all tags from a bucket or object.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-      :mc-cmd:`mc tag remove --version-id` is mutually exclusive with
-      multiple parameters. See the reference documentation for more information.
+      :mc-cmd:`mc tag remove --version-id` 与多个参数互斥。有关更多信息，请参阅参考文档。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` for a MinIO deployment and the
-   full path to the object on which to remove all tags (e.g. bucket and path to
-   object). For example:
+   MinIO 部署的 :ref:`alias <alias>`，以及要移除全部标签的对象完整路径
+   （例如存储桶和对象路径）。例如：
 
    .. code-block:: none
 
@@ -77,7 +74,7 @@ Parameters
 
    .. versionadded:: RELEASE.2023-05-04T18-10-16Z
 
-   Recursively removes all tags from all objects at the specified :mc:`ALIAS <mc tag remove ALIAS>`.
+   递归移除指定 :mc:`ALIAS <mc tag remove ALIAS>` 下所有对象的全部标签。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -93,9 +90,8 @@ Parameters
       :start-after: start-versions-desc
       :end-before: end-versions-desc
 
-   Use :mc-cmd:`~mc tag remove --versions` and 
-   :mc-cmd:`~mc tag remove --rewind` together to remove tags from all
-   object versions which existed at a specific point in time.
+   结合使用 :mc-cmd:`~mc tag remove --versions` 和
+   :mc-cmd:`~mc tag remove --rewind`，可移除某个特定时间点存在的所有对象版本上的标签。
 
 .. mc-cmd:: --version-id, vid
    :optional:
@@ -104,42 +100,42 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-   Mutually exclusive with the following parameters:
+   与以下参数互斥：
 
    - :mc-cmd:`~mc tag remove --rewind`
    - :mc-cmd:`~mc tag remove --versions`
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Remove Tags from a Bucket or Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+移除存储桶或对象上的标签
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc tag remove` to remove tags from a bucket or object:
+使用 :mc:`mc tag remove` 移除存储桶或对象上的标签：
 
 .. code-block:: shell
    :class: copyable
 
    mc tag remove ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc tag remove ALIAS>` with the 
-  :ref:`alias <alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc tag remove ALIAS>` 替换为 MinIO 部署的
+  :ref:`alias <alias>`。
 
-- Replace :mc-cmd:`PATH <mc tag remove ALIAS>` with the path to the bucket
-  or object on the MinIO deployment.
+- 将 :mc-cmd:`PATH <mc tag remove ALIAS>` 替换为 MinIO 部署中存储桶
+  或对象的路径。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

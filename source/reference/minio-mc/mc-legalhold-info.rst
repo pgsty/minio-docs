@@ -17,27 +17,25 @@
 .. |versionid| replace:: :mc-cmd:`~mc legalhold info --version-id`
 .. |alias| replace:: :mc-cmd:`~mc legalhold info ALIAS`
 
-Syntax
+语法
 ------
 
 .. start-mc-legalhold-info-desc
 
-The :mc:`mc legalhold info` command returns the current :ref:`legal hold
-<minio-object-locking-legalhold>` setting for an object or objects.
+:mc:`mc legalhold info` 命令返回一个或多个对象的当前 :ref:`legal hold
+<minio-object-locking-legalhold>` 设置。
 
 .. end-mc-legalhold-info-desc
 
-:mc:`mc legalhold` *requires* that the specified bucket has object locking
-enabled. You can **only** enable object locking at bucket creation. See
-:mc-cmd:`mc mb --with-lock` for documentation on creating buckets with
-object locking enabled. 
+:mc:`mc legalhold` *要求* 指定的存储桶已启用对象锁定。
+你**只能**在创建存储桶时启用对象锁定。有关创建启用对象锁定的存储桶，请参阅
+:mc-cmd:`mc mb --with-lock` 文档。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command retrieves the current legalhold status for objects
-      in the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令检索 ``myminio`` MinIO 部署中 ``mydata`` 存储桶内对象的当前 legal hold 状态：
 
       .. code-block:: shell
          :class: copyable
@@ -46,7 +44,7 @@ object locking enabled.
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -61,14 +59,13 @@ object locking enabled.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The MinIO :ref:`alias <alias>` and path to the object or
-   objects on which to enable the legal hold. For example:
+   MinIO :ref:`alias <alias>` 以及要为其启用 legal hold 的对象路径（或多个对象路径）。例如：
 
    .. code-block:: shell
       
@@ -77,8 +74,7 @@ Parameters
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Returns the legal hold status of all objects in the 
-   :mc-cmd:`~mc legalhold info ALIAS` bucket or bucket prefix.
+   返回 :mc-cmd:`~mc legalhold info ALIAS` 中存储桶或存储桶前缀下全部对象的 legal hold 状态。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -94,41 +90,39 @@ Parameters
       :start-after: start-version-id-desc
       :end-before: end-version-id-desc
 
-Global Flags
+全局参数
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Retrieve the Legal Hold Status Objects
+获取对象的 Legal Hold 状态
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc legalhold info` to retrieve the legal hold status of an object.
-Include :mc-cmd:`~mc legalhold info --recursive` to return the legal hold
-status of the contents of a bucket:
+使用 :mc:`mc legalhold info` 获取对象的 legal hold 状态。
+添加 :mc-cmd:`~mc legalhold info --recursive` 以返回存储桶内容的 legal hold 状态：
 
 .. code-block:: shell
    :class: copyable
 
    mc legalhold clear [--recursive] ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc legalhold info ALIAS>` with the 
-  :ref:`alias <alias>` of the S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc legalhold info ALIAS>` 替换为 S3 兼容主机的
+  :ref:`alias <alias>`。
 
-- Replace :mc-cmd:`PATH <mc legalhold info ALIAS>` with the path to the bucket
-  or object on the S3-compatible host. If specifying the path to a bucket or
-  bucket prefix, include the :mc-cmd:`~mc legalhold info --recursive`
-  option.
+- 将 :mc-cmd:`PATH <mc legalhold info ALIAS>` 替换为 S3 兼容主机上的存储桶或对象路径。
+  如果指定的是存储桶路径或存储桶前缀，请包含
+  :mc-cmd:`~mc legalhold info --recursive` 选项。
 
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

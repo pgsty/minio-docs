@@ -2,73 +2,73 @@
 .. _minio-metrics-and-alerts-alerting:
 .. _minio-metrics-and-alerts:
 
-==================
-Metrics and alerts
-==================
+============
+指标与告警
+============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 
-MinIO publishes metrics using the :prometheus-docs:`Prometheus Data Model <concepts/data_model/>`.
-You can use any scraping tool to pull metrics data from MinIO for further analysis and alerting.
+MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/>` 发布指标。
+你可以使用任意抓取工具从 MinIO 拉取指标数据，以执行进一步分析和配置告警。
 
-Starting with MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` and MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z`, metrics version 3 provides additional endpoints.
-MinIO recommends version 3 for new deployments.
+从 MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` 与 MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z` 开始，metrics version 3 提供了更多端点。
+对于新部署，MinIO 建议使用 version 3。
 
 .. admonition:: Metrics version 2
    :class: note
 
-   Existing deployments can continue to use version 2 :ref:`metrics <minio-metrics-v2>` and :ref:`Grafana dashboards <minio-grafana>`.
+   现有部署可以继续使用 version 2 :ref:`指标 <minio-metrics-v2>` 和 :ref:`Grafana 仪表板 <minio-grafana>`。
 
 
-Version 3 Endpoints
--------------------
+Version 3 端点
+--------------
 
-For metrics version 3, all metrics are available under the base ``/minio/metrics/v3`` endpoint.
-You can scrape the base endpoint to collect all metrics in a single operation, or append an optional path to return a specific category.
+对于 metrics version 3，所有指标都位于基础端点 ``/minio/metrics/v3`` 之下。
+你可以抓取该基础端点以一次性收集全部指标，也可以追加可选路径，仅返回特定类别的指标。
 
 .. important:: 
 
-   The V3 metrics on this page may have gaps, inaccuracies, or incorrect information.
-   Reference the `minio/minio <https://github.com/minio/minio>`_ repository and review the source code for the most accurate representation of metrics as available.
+   本页中的 V3 指标说明可能存在缺漏、不准确或错误信息。
+   如需最准确的指标定义，请参考 `minio/minio <https://github.com/minio/minio>`_ 仓库并审阅源代码。
 
-For example, the following endpoint returns audit metrics:
+例如，以下端点会返回 audit 指标：
 
 .. code-block:: shell
    :class: copyable
 
    http://HOSTNAME:PORT/minio/metrics/v3/audit
 
-Replace ``HOSTNAME:PORT`` with the :abbr:`FQDN (Fully Qualified Domain Name)` and port of the MinIO deployment.
-For deployments with a load balancer managing connections between MinIO nodes, specify the address of the load balancer.
+将 ``HOSTNAME:PORT`` 替换为 MinIO 部署的 :abbr:`FQDN (Fully Qualified Domain Name)` 与端口。
+对于使用负载均衡器管理 MinIO 节点间连接的部署，请指定负载均衡器地址。
 
-By default, MinIO requires authentication to scrape the metrics endpoints.
-To generate the needed bearer tokens, use :mc:`mc admin prometheus generate`.
-You can also disable metrics endpoint authentication by setting :envvar:`MINIO_PROMETHEUS_AUTH_TYPE` to ``public``.
+默认情况下，MinIO 要求在抓取指标端点时进行身份验证。
+如需生成所需的 bearer token，请使用 :mc:`mc admin prometheus generate`。
+你也可以将 :envvar:`MINIO_PROMETHEUS_AUTH_TYPE` 设置为 ``public``，以禁用指标端点认证。
 
-MinIO provides the following scraping endpoints, relative to the base URL:
+相对于基础 URL，MinIO 提供以下抓取端点：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Category
-     - Path
+   * - 类别
+     - 路径
 
    * - API
      - ``/api/requests``
        
        ``/bucket/api``
 
-   * - Audit
+   * - 审计
      - ``/audit``
 
-   * - Cluster
+   * - 集群
      - ``/cluster/config``
        
        ``/cluster/erasure-set``
@@ -81,27 +81,27 @@ MinIO provides the following scraping endpoints, relative to the base URL:
        
        ``/cluster/usage/objects``
 
-   * - Debug
+   * - 调试
      - ``/debug/go``
 
    * - ILM
      - ``/ilm``
 
-   * - Logger webhook
+   * - 日志 Webhook
      - ``/logger/webhook``
 
-   * - Notification
+   * - 通知
      - ``/notification``
 
-   * - Replication
+   * - 复制
      - ``/replication``
        
        ``/bucket/replication``
 
-   * - Scanner
+   * - 扫描器
      - ``/scanner``
 
-   * - System
+   * - 系统
      - ``/system/drive``
        
        ``/system/memory``
@@ -112,33 +112,33 @@ MinIO provides the following scraping endpoints, relative to the base URL:
        
        ``/system/process``
 
-For a complete list of metrics for each endpoint, see :ref:`Available version 3 metrics <minio-metrics-and-alerts-available-metrics>`.
+各端点对应的完整指标列表，请参见 :ref:`Available version 3 metrics <minio-metrics-and-alerts-available-metrics>`。
 
    
-To enable historical data visualization in MinIO Console, set the following environment variables on each node in the MinIO deployment:
+如需在 MinIO Console 中启用历史数据可视化，请在 MinIO 部署的每个节点上设置以下环境变量：
 
-- Set :envvar:`MINIO_PROMETHEUS_URL` to the URL of the Prometheus service
-- Set :envvar:`MINIO_PROMETHEUS_JOB_ID` to the unique job ID assigned to the collected metrics
+- 将 :envvar:`MINIO_PROMETHEUS_URL` 设置为 Prometheus 服务的 URL
+- 将 :envvar:`MINIO_PROMETHEUS_JOB_ID` 设置为分配给已采集指标的唯一 job ID
 
 .. _minio-metrics-and-alerts-available-metrics:
 
-Available version 3 metrics
----------------------------
+可用的 version 3 指标
+---------------------
 
-MinIO publishes a number of metrics for clusters, API requests, buckets, and other aspects of the MinIO service:
+MinIO 为集群、API 请求、存储桶以及 MinIO 服务的其他方面发布多类指标：
 
-- :ref:`API Metrics <minio-available-v3-api-metrics>`
-- :ref:`Audit Metrics <minio-available-v3-audit-metrics>`
-- :ref:`Cluster Metrics <minio-available-v3-cluster-metrics>`
-- :ref:`Debug Metrics <minio-available-v3-debug-metrics>`
-- :ref:`ILM Metrics <minio-available-v3-ilm-metrics>`
-- :ref:`Logger webhook Metrics <minio-available-v3-logger-webhook-metrics>`
-- :ref:`Notification Metrics <minio-available-v3-notification-metrics>`
-- :ref:`Replication Metrics <minio-available-v3-replication-metrics>`
-- :ref:`Scanner Metrics <minio-available-v3-scanner-metrics>`
-- :ref:`System Metrics <minio-available-v3-system-metrics>`
+- :ref:`API 指标 <minio-available-v3-api-metrics>`
+- :ref:`审计指标 <minio-available-v3-audit-metrics>`
+- :ref:`集群指标 <minio-available-v3-cluster-metrics>`
+- :ref:`调试指标 <minio-available-v3-debug-metrics>`
+- :ref:`ILM 指标 <minio-available-v3-ilm-metrics>`
+- :ref:`日志 Webhook 指标 <minio-available-v3-logger-webhook-metrics>`
+- :ref:`通知指标 <minio-available-v3-notification-metrics>`
+- :ref:`复制指标 <minio-available-v3-replication-metrics>`
+- :ref:`扫描器指标 <minio-available-v3-scanner-metrics>`
+- :ref:`系统指标 <minio-available-v3-system-metrics>`
 
-Many metrics include labels identifying the resource which generated that metric and other relevant details.
+许多指标都包含标签，用于标识生成该指标的资源及其他相关信息。
 
 .. _minio-available-v3-api-metrics:
 

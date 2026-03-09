@@ -1,57 +1,51 @@
 .. _minio-logging:
 
-===================================================
-Publish Server or Audit Logs to an External Service
-===================================================
+========================================
+将服务日志或审计日志发布到外部服务
+========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO publishes all :mc:`minio server` operations to the system console. 
-Reading these logs depends on how the server process is managed. 
-For example, if the server is managed through a ``systemd`` script, 
-you can read the logs using ``journalctl -u SERVICENAME.service``. Replace
-``SERVICENAME`` with the name of the MinIO service.
+MinIO 会将所有 :mc:`minio server` 操作输出到系统控制台。
+如何读取这些日志取决于 server 进程的管理方式。
+例如，如果 server 通过 ``systemd`` 脚本进行管理，
+你可以使用 ``journalctl -u SERVICENAME.service`` 读取日志。
+请将 ``SERVICENAME`` 替换为 MinIO 服务名称。
 
-MinIO also supports publishing server logs and audit logs to an HTTP webhook.
+MinIO 还支持将服务日志和审计日志发布到 HTTP Webhook。
 
-- :ref:`Server logs <minio-logging-publish-server-logs>` contain the same
-  :mc:`minio server` operations logged to the system console. Server logs
-  support general monitoring and troubleshooting of operations.
+- :ref:`服务日志 <minio-logging-publish-server-logs>` 包含与系统控制台中相同的
+  :mc:`minio server` 操作日志。服务日志适用于常规监控与运维排障。
 
-- :ref:`Audit logs <minio-logging-publish-audit-logs>` are more granular
-  descriptions of each operation on the MinIO deployment. Audit logging 
-  supports security standards and regulations which require detailed tracking
-  of operations.
+- :ref:`审计日志 <minio-logging-publish-audit-logs>` 会以更细粒度描述
+  MinIO 部署上的每一次操作。审计日志适用于要求对操作进行详细追踪的
+  安全标准与合规规范。
 
-MinIO publishes logs as a JSON document as a ``PUT`` request to each configured
-endpoint. The endpoint server is responsible for processing each JSON document.
-MinIO requires explicit configuration of each webhook endpoint and does *not*
-publish logs to a webhook by default.
+MinIO 会将日志作为 JSON 文档，通过 ``PUT`` 请求发送到每个已配置端点。
+端点服务器负责处理这些 JSON 文档。
+MinIO 要求显式配置每个 Webhook 端点，默认情况下 *不会* 向 Webhook 发布日志。
 
 .. _minio-logging-publish-server-logs:
 
-Publish Server Logs to HTTP Webhook
------------------------------------
+将服务日志发布到 HTTP Webhook
+----------------------------------------
 
-You can configure a new HTTP webhook endpoint to which MinIO publishes 
-:mc:`minio server` logs using either environment variables *or* by setting 
-runtime configuration settings. 
+你可以通过环境变量 *或* 运行时配置项，配置一个新的 HTTP Webhook 端点，
+让 MinIO 将 :mc:`minio server` 日志发布到该端点。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
 
-      MinIO supports specifying the :mc:`minio server` log HTTP webhook endpoint
-      and associated configuration settings using :ref:`environment variables
-      <minio-server-envvar-logging-regular>`.
+      MinIO 支持使用 :ref:`环境变量 <minio-server-envvar-logging-regular>`
+      指定 :mc:`minio server` 日志 HTTP Webhook 端点及其相关配置项。
 
-      The following example code sets *all* environment variables related to
-      configuring a log HTTP webhook endpoint. The minimum *required* variables
-      are:
+      下面的示例代码设置了配置日志 HTTP Webhook 端点所需的 *全部* 环境变量。
+      其中最少 *必须* 配置的变量为：
 
       - :envvar:`MINIO_LOGGER_WEBHOOK_ENABLE`
       - :envvar:`MINIO_LOGGER_WEBHOOK_ENDPOINT`
@@ -74,25 +68,23 @@ runtime configuration settings.
                export MINIO_LOGGER_WEBHOOK_ENDPOINT_<IDENTIFIER>="https://webhook-1.example.net"
                export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_<IDENTIFIER>="TOKEN"
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the 
-        HTTP webhook endpoint. Use the same ``<IDENTIFIER>`` for all environment
-        variables related to the new log HTTP webhook.
+      - 将 ``<IDENTIFIER>`` 替换为该 HTTP Webhook 端点的唯一描述字符串。
+        与新日志 HTTP Webhook 相关的所有环境变量都应使用同一个 ``<IDENTIFIER>``。
 
-        If the specified ``<IDENTIFIER>`` matches an existing log endpoint,
-        the new settings *override* any existing settings for that endpoint.
-        Use :mc-cmd:`mc admin config get logger_webhook <mc admin config get>`
-        to review the currently configured log HTTP webhook endpoints.
+        如果指定的 ``<IDENTIFIER>`` 与现有日志端点匹配，
+        新设置将 *覆盖* 该端点的现有设置。
+        可使用 :mc-cmd:`mc admin config get logger_webhook <mc admin config get>`
+        查看当前已配置的日志 HTTP Webhook 端点。
 
-      - Replace ``https://webhook-1.example.net`` with the URL of the HTTP
-        webhook endpoint.
+      - 将 ``https://webhook-1.example.net`` 替换为 HTTP Webhook 端点的 URL。
 
-      - Replace ``TOKEN`` with an authentication token of the appropriate type for the endpoint.
-        Omit for endpoints which do not require authentication.
+      - 将 ``TOKEN`` 替换为适用于该端点的认证令牌类型。
+        对于无需认证的端点，可省略该项。
 
-        To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-        Depending on the endpoint, you may need to include additional information.
+        为支持多种令牌类型，MinIO 会按 *原样* 使用该值创建请求认证头。
+        根据端点不同，你可能需要包含额外信息。
 
-        For example: for a Bearer token, prepend ``Bearer``:
+        例如，对于 Bearer token，请在前面加上 ``Bearer``：
 
         .. cond:: windows
         
@@ -106,8 +98,8 @@ runtime configuration settings.
 
               export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_myendpoint="Bearer 1a2b3c4f5e"
 
-        Modify the value according to the endpoint requirements.
-        A custom authentication format could resemble the following:
+        请根据端点要求调整该值。
+        自定义认证格式可能类似如下：
 
         .. cond:: windows
         
@@ -121,22 +113,20 @@ runtime configuration settings.
 
               export MINIO_LOGGER_WEBHOOK_AUTH_TOKEN_xyz="ServiceXYZ 1a2b3c4f5e"
 
-        Consult the documenation for the desired service for more details.
+        详情请参阅目标服务的文档。
 
-      Restart the MinIO server to apply the new configuration settings. You
-      must specify the same environment variables and settings on 
-      *all* MinIO servers in the deployment.
+      重启 MinIO server 以应用新的配置项。
+      你必须在部署中的 *所有* MinIO server 上指定相同的环境变量和设置。
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置项
 
-      MinIO supports adding or updating log HTTP webhook endpoints on a MinIO
-      deployment using the :mc-cmd:`mc admin config set` command and the
-      :mc-conf:`logger_webhook` configuration key. You must restart the
-      MinIO deployment to apply any new or updated configuration settings.
+      MinIO 支持在 MinIO 部署上使用 :mc-cmd:`mc admin config set` 命令和
+      :mc-conf:`logger_webhook` 配置键新增或更新日志 HTTP Webhook 端点。
+      应用任何新增或更新后的配置项都需要重启 MinIO 部署。
 
-      The following example code sets *all* settings related to configuring
-      a log HTTP webhook endpoint. The minimum *required* setting is 
-      :mc-conf:`logger_webhook endpoint <logger_webhook.endpoint>`:
+      下面的示例代码设置了配置日志 HTTP Webhook 端点相关的 *全部* 配置项。
+      其中最少 *必须* 配置的项为
+      :mc-conf:`logger_webhook endpoint <logger_webhook.endpoint>`：
 
       .. code-block:: shell
          :class: copyable
@@ -145,25 +135,23 @@ runtime configuration settings.
             endpoint="https://webhook-1.example.net"           \
             auth_token="TOKEN" 
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the 
-        HTTP webhook endpoint. Use the same ``<IDENTIFIER>`` for all environment
-        variables related to the new log HTTP webhook.
+      - 将 ``<IDENTIFIER>`` 替换为该 HTTP Webhook 端点的唯一描述字符串。
+        与新日志 HTTP Webhook 相关的所有环境变量都应使用同一个 ``<IDENTIFIER>``。
 
-        If the specified ``<IDENTIFIER>`` matches an existing log endpoint,
-        the new settings *override* any existing settings for that endpoint.
-        Use :mc-cmd:`mc admin config get logger_webhook <mc admin config get>`
-        to review the currently configured log HTTP webhook endpoints.
+        如果指定的 ``<IDENTIFIER>`` 与现有日志端点匹配，
+        新设置将 *覆盖* 该端点的现有设置。
+        可使用 :mc-cmd:`mc admin config get logger_webhook <mc admin config get>`
+        查看当前已配置的日志 HTTP Webhook 端点。
 
-      - Replace ``https://webhook-1.example.net`` with the URL of the HTTP
-        webhook endpoint.
+      - 将 ``https://webhook-1.example.net`` 替换为 HTTP Webhook 端点的 URL。
 
-      - Replace ``TOKEN`` with an authentication token of the appropriate type for the endpoint.
-        Omit for endpoints which do not require authentication.
+      - 将 ``TOKEN`` 替换为适用于该端点的认证令牌类型。
+        对于无需认证的端点，可省略该项。
 
-	To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-        Depending on the endpoint, you may need to include additional information.
+        为支持多种令牌类型，MinIO 会按 *原样* 使用该值创建请求认证头。
+        根据端点不同，你可能需要包含额外信息。
 
-        For example: for a Bearer token, prepend ``Bearer``:
+        例如，对于 Bearer token，请在前面加上 ``Bearer``：
 
         .. code-block:: shell
            :class: copyable
@@ -172,8 +160,8 @@ runtime configuration settings.
                endpoint="https://webhook-1.example.net"  \
                auth_token="Bearer 1a2b3c4f5e"
 
-        Modify the value according to the endpoint requirements.
-        A custom authentication format could resemble the following:
+        请根据端点要求调整该值。
+        自定义认证格式可能类似如下：
 
         .. code-block:: shell
            :class: copyable
@@ -182,28 +170,25 @@ runtime configuration settings.
               endpoint="https://webhook-1.example.net"  \
               auth_token="ServiceXYZ 1a2b3c4f5e"
 
-        Consult the documenation for the desired service for more details.
+        详情请参阅目标服务的文档。
 
 .. _minio-logging-publish-audit-logs:
 
-Publish Audit Logs to HTTP Webhook
-----------------------------------
+将审计日志发布到 HTTP Webhook
+----------------------------------------
 
-You can configure a new HTTP webhook endpoint to which MinIO publishes audit
-logs using either environment variables *or* by setting runtime configuration
-settings:
+你可以通过环境变量 *或* 运行时配置项，配置一个新的 HTTP Webhook 端点，
+让 MinIO 将审计日志发布到该端点：
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
 
-      MinIO supports specifying the audit log HTTP webhook endpoint and
-      associated configuration settings using :ref:`environment variables
-      <minio-server-envvar-logging-audit>`.
+      MinIO 支持使用 :ref:`环境变量 <minio-server-envvar-logging-audit>`
+      指定审计日志 HTTP Webhook 端点及其相关配置项。
 
-      The following example code sets *all* environment variables related to
-      configuring a audit log HTTP webhook endpoint. The minimum *required*
-      variables are:
+      下面的示例代码设置了配置审计日志 HTTP Webhook 端点所需的 *全部* 环境变量。
+      其中最少 *必须* 配置的变量为：
 
       - :envvar:`MINIO_AUDIT_WEBHOOK_ENABLE`
       - :envvar:`MINIO_AUDIT_WEBHOOK_ENDPOINT`
@@ -230,25 +215,23 @@ settings:
             export MINIO_AUDIT_WEBHOOK_CLIENT_CERT_<IDENTIFIER>="cert.pem"
             export MINIO_AUDIT_WEBHOOK_CLIENT_KEY_<IDENTIFIER>="cert.key"
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the 
-        HTTP webhook endpoint. Use the same ``<IDENTIFIER>`` for all environment
-        variables related to the new audit log HTTP webhook.
+      - 将 ``<IDENTIFIER>`` 替换为该 HTTP Webhook 端点的唯一描述字符串。
+        与新审计日志 HTTP Webhook 相关的所有环境变量都应使用同一个 ``<IDENTIFIER>``。
 
-        If the specified ``<IDENTIFIER>`` matches an existing log endpoint,
-        the new settings *override* any existing settings for that endpoint.
-        Use :mc-cmd:`mc admin config get audit_webhook <mc admin config get>`
-        to review the currently configured audit log HTTP webhook endpoints.
+        如果指定的 ``<IDENTIFIER>`` 与现有日志端点匹配，
+        新设置将 *覆盖* 该端点的现有设置。
+        可使用 :mc-cmd:`mc admin config get audit_webhook <mc admin config get>`
+        查看当前已配置的审计日志 HTTP Webhook 端点。
 
-      - Replace ``https://webhook-1.example.net`` with the URL of the HTTP
-        webhook endpoint.
+      - 将 ``https://webhook-1.example.net`` 替换为 HTTP Webhook 端点的 URL。
 
-      - Replace ``TOKEN`` with an authentication token of the appropriate type for the endpoint. 
-        Omit for endpoints which do not require authentication.
+      - 将 ``TOKEN`` 替换为适用于该端点的认证令牌类型。
+        对于无需认证的端点，可省略该项。
 
-        To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*. 
-        Depending on the endpoint, you may need to include additional information.
+        为支持多种令牌类型，MinIO 会按 *原样* 使用该值创建请求认证头。
+        根据端点不同，你可能需要包含额外信息。
 
-        For example: for a Bearer token, prepend ``Bearer``:
+        例如，对于 Bearer token，请在前面加上 ``Bearer``：
 
         .. cond:: windows
         
@@ -262,8 +245,8 @@ settings:
 
               export MINIO_AUDIT_WEBHOOK_AUTH_TOKEN_myendpoint="Bearer 1a2b3c4f5e"
 
-        Modify the value according to the endpoint requirements.
-        A custom authentication format could resemble the following:
+        请根据端点要求调整该值。
+        自定义认证格式可能类似如下：
 
         .. cond:: windows
         
@@ -277,27 +260,24 @@ settings:
 
               export MINIO_AUDIT_WEBHOOK_AUTH_TOKEN_xyz="ServiceXYZ 1a2b3c4f5e"
 
-        Consult the documenation for the desired service for more details.
+        详情请参阅目标服务的文档。
 
-      - Replace ``cert.pem`` and ``cert.key`` with the public and private key
-        of the x.509 TLS certificates to present to the HTTP webhook server.
-        Omit for endpoints which do not require clients to present TLS
-        certificates.
+      - 将 ``cert.pem`` 和 ``cert.key`` 替换为要向 HTTP Webhook server 提交的
+        x.509 TLS 证书公钥与私钥。
+        对于不要求客户端出示 TLS 证书的端点，可省略该项。
 
-      Restart the MinIO server to apply the new configuration settings. You
-      must specify the same environment variables and settings on 
-      *all* MinIO servers in the deployment.
+      重启 MinIO server 以应用新的配置项。
+      你必须在部署中的 *所有* MinIO server 上指定相同的环境变量和设置。
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置项
 
-      MinIO supports adding or updating audit log HTTP webhook endpoints on a
-      MinIO deployment using the :mc-cmd:`mc admin config set` command and the
-      :mc-conf:`audit_webhook` configuration key. You must restart the MinIO
-      deployment to apply any new or updated configuration settings.
+      MinIO 支持在 MinIO 部署上使用 :mc-cmd:`mc admin config set` 命令和
+      :mc-conf:`audit_webhook` 配置键新增或更新审计日志 HTTP Webhook 端点。
+      应用任何新增或更新后的配置项都需要重启 MinIO 部署。
 
-      The following example code sets *all* settings related to configuring
-      a audit log HTTP webhook endpoint. The minimum *required* setting is 
-      :mc-conf:`audit_webhook endpoint <audit_webhook.endpoint>`:
+      下面的示例代码设置了配置审计日志 HTTP Webhook 端点相关的 *全部* 配置项。
+      其中最少 *必须* 配置的项为
+      :mc-conf:`audit_webhook endpoint <audit_webhook.endpoint>`：
 
       .. code-block:: shell
          :class: copyable
@@ -308,25 +288,23 @@ settings:
             client_cert="cert.pem"                            \
             client_key="cert.key"
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the 
-        HTTP webhook endpoint. Use the same ``<IDENTIFIER>`` for all environment
-        variables related to the new audit log HTTP webhook.
+      - 将 ``<IDENTIFIER>`` 替换为该 HTTP Webhook 端点的唯一描述字符串。
+        与新审计日志 HTTP Webhook 相关的所有环境变量都应使用同一个 ``<IDENTIFIER>``。
 
-        If the specified ``<IDENTIFIER>`` matches an existing log endpoint,
-        the new settings *override* any existing settings for that endpoint.
-        Use :mc-cmd:`mc admin config get audit_webhook <mc admin config get>`
-        to review the currently configured audit log HTTP webhook endpoints.
+        如果指定的 ``<IDENTIFIER>`` 与现有日志端点匹配，
+        新设置将 *覆盖* 该端点的现有设置。
+        可使用 :mc-cmd:`mc admin config get audit_webhook <mc admin config get>`
+        查看当前已配置的审计日志 HTTP Webhook 端点。
 
-      - Replace ``https://webhook-1.example.net`` with the URL of the HTTP
-        webhook endpoint.
+      - 将 ``https://webhook-1.example.net`` 替换为 HTTP Webhook 端点的 URL。
 
-      - Replace ``TOKEN`` with an authentication token of the appropriate type for the endpoint.
-        Omit for endpoints which do not require authentication.
+      - 将 ``TOKEN`` 替换为适用于该端点的认证令牌类型。
+        对于无需认证的端点，可省略该项。
 
-        To allow for a variety of token types, MinIO creates the request authentication header using the value *exactly as specified*.
-        Depending on the endpoint, you may need to include additional information.
+        为支持多种令牌类型，MinIO 会按 *原样* 使用该值创建请求认证头。
+        根据端点不同，你可能需要包含额外信息。
 
-        For example: for a Bearer token, prepend ``Bearer``:
+        例如，对于 Bearer token，请在前面加上 ``Bearer``：
 
         .. code-block:: shell
            :class: copyable
@@ -335,8 +313,8 @@ settings:
                endpoint="https://webhook-1.example.net"  \
                auth_token="Bearer 1a2b3c4f5e"
 
-        Modify the value according to the endpoint requirements.
-        A custom authentication format could resemble the following:
+        请根据端点要求调整该值。
+        自定义认证格式可能类似如下：
 
         .. code-block:: shell
            :class: copyable
@@ -345,32 +323,27 @@ settings:
               endpoint="https://webhook-1.example.net"  \
               auth_token="ServiceXYZ 1a2b3c4f5e"
 
-        Consult the documenation for the desired service for more details.
+        详情请参阅目标服务的文档。
 
-      - Replace ``cert.pem`` and ``cert.key`` with the public and private key
-        of the x.509 TLS certificates to present to the HTTP webhook server.
-        Omit for endpoints which do not require clients to present TLS
-        certificates.
+      - 将 ``cert.pem`` 和 ``cert.key`` 替换为要向 HTTP Webhook server 提交的
+        x.509 TLS 证书公钥与私钥。
+        对于不要求客户端出示 TLS 证书的端点，可省略该项。
 
-Audit Log Structure
-~~~~~~~~~~~~~~~~~~~
+审计日志结构
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO audit logs resemble the following JSON document:
+MinIO 审计日志类似于以下 JSON 文档：
 
-- The ``api.timeToFirstByte`` and ``api.timeToResponse`` fields are expressed
-  in nanoseconds.
+- ``api.timeToFirstByte`` 和 ``api.timeToResponse`` 字段以纳秒表示。
 
-- For :ref:`erasure coded setups <minio-erasure-coding>` 
-  ``tags.objectErasureMap`` provides per-object details on the following:
+- 对于 :ref:`纠删码部署 <minio-erasure-coding>`，
+  ``tags.objectErasureMap`` 提供与对象相关的以下详细信息：
 
-  - The :ref:`Server Pool <minio-intro-server-pool>` on which the object
-    operation was performed.
+  - 执行该对象操作所在的 :ref:`Server Pool <minio-intro-server-pool>`。
 
-  - The :ref:`erasure set <minio-ec-erasure-set>` on which the object
-    operation was performed.
+  - 执行该对象操作所在的 :ref:`纠删码集合 <minio-ec-erasure-set>`。
 
-  - The list of drives in the erasure set which participated in the
-    object operation.
+  - 参与该对象操作的纠删码集合驱动器列表。
 
 .. code-block:: json
 

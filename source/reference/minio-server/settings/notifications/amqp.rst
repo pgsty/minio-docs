@@ -1,18 +1,18 @@
 .. _minio-server-envvar-bucket-notification-amqp:
 .. _minio-server-config-bucket-notification-amqp:
 
-==========================
-AMQP Notification Settings
-==========================
+==================
+AMQP 通知设置
+==================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for configuring an AMQP service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
-See :ref:`minio-bucket-notifications-publish-amqp` for a tutorial on using these settings.
+本文档说明了将 AMQP 服务配置为 :ref:`存储桶通知 <minio-bucket-notifications>` 目标的相关设置。
+有关如何使用这些设置的教程，请参阅 :ref:`minio-bucket-notifications-publish-amqp`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -22,33 +22,33 @@ See :ref:`minio-bucket-notifications-publish-amqp` for a tutorial on using these
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Multiple AMQP Targets
----------------------
+多个 AMQP 目标
+----------------
 
-You can specify multiple AMQP service endpoints by appending a unique identifier ``_ID`` for each set of related AMQP settings to the top level key. 
+可以通过在顶层键后为每组相关 AMQP 设置追加唯一标识符 ``_ID``，来指定多个 AMQP 服务端点。
 
-Examples
-~~~~~~~~
+示例
+~~~~
 
-For example, the following commands set two distinct AMQP service endpoints as ``PRIMARY`` and ``SECONDARY`` respectively:
+例如，以下命令分别将两个不同的 AMQP 服务端点设置为 ``PRIMARY`` 和 ``SECONDARY``：
 
 .. tab-set::
-   
-   .. tab-item:: Environment Variables
+
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
          :class: copyable
-      
+
          export MINIO_NOTIFY_AMQP_ENABLE_PRIMARY="on"
          export MINIO_NOTIFY_AMQP_URL_PRIMARY="amqp://user:password@amqp-endpoint.example.net:5672"
-      
+
          export MINIO_NOTIFY_AMQP_ENABLE_SECONDARY="on"
          export MINIO_NOTIFY_AMQP_URL_SECONDARY="amqp://user:password@amqp-endpoint.example.net:5672"
-   
-      For example, :envvar:`MINIO_NOTIFY_AMQP_ENABLE_PRIMARY <MINIO_NOTIFY_AMQP_ENABLE>` indicates the environment variable is associated to an AMQP service endpoint with ID of ``PRIMARY``.
-   
-   .. tab-item:: Configuration Settings
+
+      例如，:envvar:`MINIO_NOTIFY_AMQP_ENABLE_PRIMARY <MINIO_NOTIFY_AMQP_ENABLE>` 表示该环境变量关联到 ID 为 ``PRIMARY`` 的 AMQP 服务端点。
+
+   .. tab-item:: 配置设置
       :sync: config
 
       .. code-block:: shell
@@ -59,320 +59,320 @@ For example, the following commands set two distinct AMQP service endpoints as `
          mc admin config set notify_amqp:secondary \
             url="user:password@amqp://amqp-endpoint.example.net:5672" [ARGUMENT=VALUE ...]
 
-      Notice that for configuration settings, the unique identifier appends to ``amqp`` only, not to each individual argument.
+      请注意，对于配置设置，唯一标识符仅追加到 ``amqp``，而不是每个单独参数。
 
 
-Settings
---------
+设置
+----
 
-Enable
-~~~~~~
+启用
+~~~~
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :selected:
 
       .. envvar:: MINIO_NOTIFY_AMQP_ENABLE
 
-      Requires specifying :envvar:`MINIO_NOTIFY_AMQP_URL` if set to ``on``.
+      如果设置为 ``on``，则必须指定 :envvar:`MINIO_NOTIFY_AMQP_URL`。
 
-      Specify ``on`` to enable publishing bucket notifications to an AMQP endpoint.
+      指定 ``on`` 以启用向 AMQP 端点发布存储桶通知。
 
-      Defaults to ``off``.
+      默认值为 ``off``。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
 
       .. mc-conf:: notify_amqp
 
-      The top-level configuration key for defining an AMQP service endpoint for use with :ref:`MinIO bucket notifications <minio-bucket-notifications>`.
+      用于定义 AMQP 服务端点以供 :ref:`MinIO 存储桶通知 <minio-bucket-notifications>` 使用的顶层配置键。
 
-      Use :mc-cmd:`mc admin config set` to set or update an AMQP service endpoint. 
-      The :mc-conf:`~notify_amqp.url` argument is *required* for each target.
-      Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+      使用 :mc-cmd:`mc admin config set` 设置或更新 AMQP 服务端点。
+      对于每个目标，:mc-conf:`~notify_amqp.url` 参数都是*必需*的。
+      以空白字符（``" "``）分隔的列表形式指定其他可选参数。
 
       .. code-block:: shell
          :class: copyable
-   
+
          mc admin config set notify_amqp \ 
            url="amqp://user:password@endpoint:port" \
-           [ARGUMENT="VALUE"] ... 
+           [ARGUMENT="VALUE"] ...
 
 URL
 ~~~
-      
-*Required*
+
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_URL
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: notify_amqp url
          :delimiter: " "
 
-Specify the AMQP server endpoint to which MinIO publishes bucket events.
-For example, ``amqp://myuser:mypassword@localhost:5672``.
+指定 MinIO 发布存储桶事件的 AMQP 服务器端点。
+例如，``amqp://myuser:mypassword@localhost:5672``。
 
 .. include:: /includes/linux/minio-server.rst
    :start-after: start-notify-target-online-desc
    :end-before: end-notify-target-online-desc
 
-Exchange
-~~~~~~~~
+Exchange（交换机）
+~~~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_EXCHANGE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp exchange 
+      .. mc-conf:: notify_amqp exchange
          :delimiter: " "
 
-Specify the name of the AMQP exchange to use.
+指定要使用的 AMQP exchange 名称。
 
-Exchange Type
+Exchange 类型
 ~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_EXCHANGE_TYPE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp exchange_type 
+      .. mc-conf:: notify_amqp exchange_type
          :delimiter: " "
 
-Specify the type of the AMQP exchange.
+指定 AMQP exchange 的类型。
 
-Routing Key
-~~~~~~~~~~~
+路由键
+~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_ROUTING_KEY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp routing_key 
+      .. mc-conf:: notify_amqp routing_key
          :delimiter: " "
-   
-Specify the routing key for publishing events.
 
-Mandatory
-~~~~~~~~~
+指定用于发布事件的 routing key。
 
-*Optional*
+Mandatory（强制）
+~~~~~~~~~~~~~~~~
+
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_MANDATORY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp mandatory 
+      .. mc-conf:: notify_amqp mandatory
          :delimiter: " "
 
-Specify ``off`` to ignore undelivered messages errors. 
-Defaults to ``on``.
+指定 ``off`` 以忽略消息未送达错误。
+默认值为 ``on``。
 
-Durable
-~~~~~~~
+持久化
+~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_DURABLE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp durable 
+      .. mc-conf:: notify_amqp durable
          :delimiter: " "
 
-Specify ``on`` to persist the message queue across broker restarts. 
-Defaults to ``off``.
+指定 ``on`` 以在 broker 重启后保留消息队列。
+默认值为 ``off``。
 
-No Wait
-~~~~~~~
+No Wait（不等待）
+~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_NO_WAIT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp no_wait 
+      .. mc-conf:: notify_amqp no_wait
          :delimiter: " "
 
-Specify ``on`` to enable non-blocking message delivery. 
-Defaults to ``off``.
+指定 ``on`` 以启用非阻塞消息投递。
+默认值为 ``off``。
 
-Internal
-~~~~~~~~
+Internal（内部）
+~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_INTERNAL
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp internal 
+      .. mc-conf:: notify_amqp internal
          :delimiter: " "
 
-.. explanation is very unclear. Need to revisit this.
+.. 该说明目前不够清晰，后续需要进一步完善。
 
-Specify ``on`` to use the exchange only if it is bound to other exchanges. 
-See the RabbitMQ documentation on `Exchange to Exchange Bindings
-<https://www.rabbitmq.com/e2e.html>`__ for more information on AMQP exchange binding.
+指定 ``on`` 以仅在 exchange 绑定到其他 exchanges 时使用该 exchange。
+有关 AMQP exchange 绑定的更多信息，请参阅 RabbitMQ 文档中的 `Exchange to Exchange Bindings
+<https://www.rabbitmq.com/e2e.html>`__。
 
-Auto Deleted
-~~~~~~~~~~~~
+自动删除
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_AUTO_DELETED
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp auto_deleted 
+      .. mc-conf:: notify_amqp auto_deleted
          :delimiter: " "
 
-Specify ``on`` to automatically delete the message queue if there are no consumers. 
-Defaults to ``off``.
+指定 ``on`` 以在没有消费者时自动删除消息队列。
+默认值为 ``off``。
 
-Delivery Mode
-~~~~~~~~~~~~~
+投递模式
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_DELIVERY_MODE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp delivery_mode 
+      .. mc-conf:: notify_amqp delivery_mode
          :delimiter: " "
 
-Specify ``1`` for set the delivery mode to non-persistent queue.
+指定 ``1`` 以将投递模式设置为非持久化队列。
 
-Specify ``2`` to set the delivery mode to persistent queue.
+指定 ``2`` 以将投递模式设置为持久化队列。
 
-Queue Directory
-~~~~~~~~~~~~~~~
+队列目录
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_QUEUE_DIR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp queue_dir 
+      .. mc-conf:: notify_amqp queue_dir
          :delimiter: " "
 
-Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
+指定目录路径以启用 MinIO 对未送达消息的持久化事件存储，例如 ``/opt/minio/events``。
 
-MinIO stores undelivered events in the specified store while the AMQP service is offline and replays the stored events when connectivity resumes.
+当 AMQP 服务离线时，MinIO 会将未送达事件存储在指定存储中，并在连接恢复后重放这些已存储事件。
 
-Queue Limit
-~~~~~~~~~~~
+队列限制
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_QUEUE_LIMIT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp queue_limit 
+      .. mc-conf:: notify_amqp queue_limit
          :delimiter: " "
 
-Specify the maximum limit for undelivered messages. 
-Defaults to ``100000``.
+指定未送达消息的最大数量限制。
+默认值为 ``100000``。
 
-Comment
-~~~~~~~
+注释
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_NOTIFY_AMQP_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置设置
       :sync: config
 
-      .. mc-conf:: notify_amqp comment 
+      .. mc-conf:: notify_amqp comment
          :delimiter: " "
 
-Specify a comment for the AMQP configuration.
+为 AMQP 配置指定注释。

@@ -1,71 +1,69 @@
 .. _minio-external-identity-management-ad-ldap:
 
 =========================================
-Active Directory / LDAP Access Management
+Active Directory / LDAP 访问管理
 =========================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-MinIO supports configuring a single Active Directory or LDAP (AD/LDAP) service for external management of user identities.
-Enabling AD/LDAP external identity management disables the :ref:`MinIO internal IDP <minio-internal-idp>`.
+MinIO 支持配置单个 Active Directory 或 LDAP (AD/LDAP) 服务，用于对用户身份进行外部管理。
+启用 AD/LDAP 外部身份管理会禁用 :ref:`MinIO 内部 IDP <minio-internal-idp>`。
 
-For identities managed by the external AD/LDAP provider, MinIO uses the user's Distinguished Name and attempts to map it against an existing :ref:`policy <minio-policy>`.
+对于由外部 AD/LDAP 提供方管理的身份，MinIO 会使用用户的 Distinguished Name，并尝试将其映射到现有的 :ref:`策略 <minio-policy>`。
 
-If the AD/LDAP configuration includes the necessary settings to query the user's AD/LDAP group membership, MinIO *also* uses those group Distinguished Names and attempts to map each against an existing :ref:`policy <minio-policy>`.
+如果 AD/LDAP 配置中包含查询用户 AD/LDAP 组成员关系所需的设置，MinIO *还会* 使用这些组的 Distinguished Name，并尝试将每一个映射到现有的 :ref:`策略 <minio-policy>`。
 
-MinIO by default denies access to all actions or resources not explicitly allowed by a user's assigned or inherited :ref:`policies <minio-policy>`. 
-Users managed by an AD/LDAP provider must specify the necessary policies as part of the user profile data. 
-If no policies match either the user DN or group DNs, MinIO blocks all access to actions and resources on the deployment.
+默认情况下，MinIO 会拒绝访问所有未被用户已分配或继承的 :ref:`策略 <minio-policy>` 明确允许的操作或资源。
+由 AD/LDAP 提供方管理的用户，必须在用户配置文件数据中指定所需策略。
+如果没有任何策略与用户 DN 或组 DN 匹配，MinIO 会阻止该部署上对所有操作和资源的访问。
 
-The specific AD/LDAP queries MinIO issues to authenticate the user and retrieve it's group membership are configured as part of :ref:`deploying the cluster with Active Directory / LDAP identity management <minio-external-iam-ad-ldap>`.
-This page covers creation of MinIO policies to match the possible returned Distinguished Names.
+MinIO 用于认证用户并获取其组成员关系的具体 AD/LDAP 查询，是在 :ref:`使用 Active Directory / LDAP 身份管理部署集群 <minio-external-iam-ad-ldap>` 时配置的。
+本页介绍如何创建与可能返回的 Distinguished Name 相匹配的 MinIO 策略。
 
-Authentication and Authorization Flow
--------------------------------------
+认证与授权流程
+----------------
 
-The login flow for an application using Active Directory / LDAP 
-credentials is as follows:
+使用 Active Directory / LDAP
+凭证的应用程序登录流程如下：
 
-1. Specify the AD/LDAP credentials to the MinIO Security Token Service (STS)
-   :ref:`minio-sts-assumerolewithldapidentity` API endpoint.
+1. 将 AD/LDAP 凭证提供给 MinIO Security Token Service (STS)
+   :ref:`minio-sts-assumerolewithldapidentity` API 端点。
 
-2. MinIO verifies the provided credentials against the AD/LDAP server. 
+2. MinIO 针对 AD/LDAP 服务器校验所提供的凭证。
 
-3. MinIO checks for any :ref:`policy <minio-policy>` whose name matches the
-   user Distinguished Name (DN) and assigns that policy to the authenticated
-   user.
+3. MinIO 检查是否存在名称与用户 Distinguished Name (DN) 匹配的
+   :ref:`策略 <minio-policy>`，并将该策略分配给已认证用户。
 
-   If configured to perform group queries, MinIO also queries for a list of
-   AD/LDAP groups in which the user has membership. MinIO checks for any policy
-   whose name matches a returned group DN and assigns that
-   policy to the authenticated user.
+   如果配置为执行组查询，MinIO 还会查询该用户所属的 AD/LDAP 组列表。
+   MinIO 会检查是否存在名称与返回的组 DN 匹配的策略，并将该策略分配给
+   已认证用户。
    
-4. MinIO returns temporary credentials in the STS API response in the form of an
-   access key, secret key, and session token. The credentials have permissions
-   matching those policies whose name matches either the authenticated user DN
-   *or* a group DN.
+4. MinIO 会在 STS API 响应中返回临时凭证，其形式为 access key、
+   secret key 和 session token。这些凭证的权限与名称匹配已认证用户
+   DN *或* 某个组 DN 的那些策略一致。
 
-MinIO provides an example Go application
-:minio-git:`ldap.go <minio/blob/master/docs/sts/ldap.go>` that handles the
-full login flow. 
+MinIO 提供了一个示例 Go 应用程序
+:minio-git:`ldap.go <minio/blob/master/docs/sts/ldap.go>`，用于处理完整的
+登录流程。
 
-AD/LDAP users can alternatively create :ref:`access keys <minio-idp-service-account>` associated to their AD/LDAP user Distinguished Name. 
-Access Keys are long-lived credentials which inherit their privileges from the parent user. 
-The parent user can further restrict those privileges while creating the access keys. 
-Use either of the following methods to create a new access key:
+AD/LDAP 用户也可以创建与其 AD/LDAP 用户 Distinguished Name 关联的
+:ref:`访问密钥 <minio-idp-service-account>`。
+访问密钥是长期有效的凭证，会继承父用户的权限。
+父用户在创建访问密钥时还可以进一步限制这些权限。
+使用以下方法之一创建新的访问密钥：
 
-Use the :mc:`mc admin user svcacct add` command to create the access keys. 
-Specify the user Distinguished Name as the username to which to associate the access keys.
+使用 :mc:`mc admin user svcacct add` 命令创建访问密钥。
+将用户 Distinguished Name 指定为要关联访问密钥的用户名。
 
 
-Mapping Policies to User DN
----------------------------
+将策略映射到用户 DN
+-------------------
 
-The following commands use :mc:`mc idp ldap policy attach` to associate an existing MinIO :ref:`policy <minio-policy>` to an AD/LDAP User DN.
+以下命令使用 :mc:`mc idp ldap policy attach` 将现有 MinIO :ref:`策略 <minio-policy>` 关联到 AD/LDAP 用户 DN。
 
 .. code-block:: shell
 
@@ -75,22 +73,22 @@ The following commands use :mc:`mc idp ldap policy attach` to associate an exist
    mc idp ldap policy attach myminio readwrite,diagnostics \
      --user='cn=dax,cn=users,dc=example,dc=com'
 
-- MinIO would assign an authenticated user with DN matching 
-  ``cn=sisko,cn=users,dc=example,dc=com`` the :userpolicy:`consoleAdmin`
-  policy, granting complete access to the MinIO server.
+- MinIO 会将 :userpolicy:`consoleAdmin`
+  策略分配给 DN 匹配 ``cn=sisko,cn=users,dc=example,dc=com`` 的已认证用户，
+  从而授予其对 MinIO 服务器的完全访问权限。
 
-- MinIO would assign an authenticated user with DN matching
-  ``cn=dax,cn=users,dc=example,dc=com`` both the :userpolicy:`readwrite` and
-  :userpolicy:`diagnostics` policies, granting general read/write access to the
-  MinIO server *and* access to diagnostic administrative operations.
+- MinIO 会将 :userpolicy:`readwrite` 和
+  :userpolicy:`diagnostics` 两个策略分配给 DN 匹配
+  ``cn=dax,cn=users,dc=example,dc=com`` 的已认证用户，从而授予其对
+  MinIO 服务器的一般读写访问权限，*以及* 诊断性管理操作的访问权限。
 
-- MinIO would assign no policies to an authenticated user with DN matching 
-  ``cn=quark,cn=users,dc=example,dc=com`` and deny all access to API operations.
+- MinIO 不会为 DN 匹配 ``cn=quark,cn=users,dc=example,dc=com`` 的
+  已认证用户分配任何策略，并会拒绝其对所有 API 操作的访问。
 
-Mapping Policies to Group DN
-----------------------------
+将策略映射到组 DN
+-----------------
 
-The following commands use :mc:`mc idp ldap policy attach` to associate an existing MinIO :ref:`policy <minio-policy>` to an AD/LDAP Group DN.
+以下命令使用 :mc:`mc idp ldap policy attach` 将现有 MinIO :ref:`策略 <minio-policy>` 关联到 AD/LDAP 组 DN。
 
 .. code-block:: shell
 
@@ -100,12 +98,10 @@ The following commands use :mc:`mc idp ldap policy attach` to associate an exist
    mc idp ldap policy attach myminio diagnostics \
      --group='cn=engineering,cn=groups,dc=example,dc=com'
 
-- MinIO would assign any authenticating user with membership in the
-  ``cn=ops,cn=groups,dc=example,dc=com`` AD/LDAP group the
-  :userpolicy:`consoleAdmin` policy, granting complete access to the MinIO
-  server.
+- MinIO 会将 :userpolicy:`consoleAdmin` 策略分配给任何属于
+  ``cn=ops,cn=groups,dc=example,dc=com`` AD/LDAP 组的认证用户，从而授予其对
+  MinIO 服务器的完全访问权限。
 
-- MinIO would assign any authenticating user with membership in the
-  ``cn=engineering,cn=groups,dc=example,dc=com`` AD/LDAP group the
-  :userpolicy:`diagnostics` policy, granting access to diagnostic administrative
-  operations.
+- MinIO 会将 :userpolicy:`diagnostics` 策略分配给任何属于
+  ``cn=engineering,cn=groups,dc=example,dc=com`` AD/LDAP 组的认证用户，从而授予其对
+  诊断性管理操作的访问权限。

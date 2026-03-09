@@ -1,236 +1,238 @@
-=========================
-Core Operational Concepts
-=========================
+================
+核心运维概念
+================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-What are the components of a MinIO Deployment?
+MinIO 部署由哪些组件构成？
 ----------------------------------------------
 
-A MinIO deployment consists of a set of storage and compute resources running one or more :mc:`minio server` nodes that together act as a single object storage repository. 
+一个 MinIO 部署由一组存储和计算资源构成，这些资源运行一个或多个 :mc:`minio server` 节点，并共同作为单一对象存储库。
 
-A standalone instance of MinIO consists of a single Server Pool with a single :mc:`minio server` node. 
-Standalone instances are best suited for initial development and evaluation. 
+一个 standalone MinIO 实例由单个 Server Pool 和单个 :mc:`minio server` 节点组成。
+Standalone 实例最适合初期开发和评估。
 
-A MinIO deployment can run directly on a physical device in a ``bare metal`` or non-virtualized infrastructure.
-Or, MinIO might run within a virtual machine on a cloud service, such as using Docker, Podman, or Kubernetes.
-MinIO can run locally, on a private cloud, or in any of the many public clouds available on the market.
+MinIO 部署既可以直接运行在 ``bare metal`` 或非虚拟化基础设施中的物理设备上。
+MinIO 也可以运行在云服务中的虚拟机上，例如使用 Docker、Podman 或 Kubernetes。
+MinIO 可以运行在本地、私有云或市场上的众多公有云中。
 
-The specific way you design, architect, and build your system is called the system's ``topology``.
+你设计、架构和构建系统的具体方式称为系统的 ``topology``。
 
-What system topologies does MinIO support?
+MinIO 支持哪些系统拓扑？
 ------------------------------------------
 
-MinIO can deploy to three types of topologies:
+MinIO 可以部署到以下三种拓扑：
 
-#. :ref:`Single Node Single Drive <minio-snsd>`, one MinIO server with a single drive or folder for data
+#. :ref:`Single-Node Single-Drive <minio-snsd>`，单个 MinIO server，使用单个驱动器或文件夹存储数据
 
-   For example, testing on a local PC using a folder on the computer's hard drive. 
+   例如，在本地 PC 上使用硬盘中的一个文件夹进行测试。
 
-#. :ref:`Single Node Multi Drive <minio-snmd>`, one MinIO server with multiple mounted drives or folders for data
+#. :ref:`Single-Node Multi-Drive <minio-snmd>`，单个 MinIO server，使用多个挂载驱动器或文件夹存储数据
 
-   For example, a single container with two or more mounted volumes.
+   例如，一个挂载了两个或更多卷的单容器。
 
-#. :ref:`Multi Node Multi Drive <minio-mnmd>`, multiple MinIO servers with multiple mounted drives or volumes for data
+#. :ref:`Multi-Node Multi-Drive <minio-mnmd>`，多个 MinIO server，使用多个挂载驱动器或卷存储数据
 
-   For Baremetal infrastructure, you can install and manage distributed MinIO deployments using Ansible, Terraform, or manual processes  
+   对于 Baremetal 基础设施，你可以使用 Ansible、Terraform 或手动流程安装并管理分布式 MinIO 部署。
 
-   For Kubernetes infrastructure, use the MinIO Operator to manage and deploy distributed MinIO Tenants.
+   对于 Kubernetes 基础设施，请使用 MinIO Operator 来管理和部署分布式 MinIO Tenant。
 
-How does a distributed MinIO deployment work?
+分布式 MinIO 部署如何工作？
 ---------------------------------------------
 
-A distributed deployment makes use of the resources of more than one physical or virtual machine's compute and storage resources.
-In modern situations, this often means running MinIO in a private or public cloud environment, such as with Amazon Web Services, the Google Cloud Platform, Microsoft's Azure platform, or many others.
+分布式部署会利用多台物理机或虚拟机的计算和存储资源。
+在现代场景中，这通常意味着在私有云或公有云环境中运行 MinIO，例如 Amazon Web Services、Google Cloud Platform、Microsoft Azure 等。
 
 .. _minio-intro-server-pool:
 
-How does MinIO manage multiple virtual or physical servers?
+MinIO 如何管理多个虚拟或物理服务器？
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-While testing MinIO may only involve a single drive on a single computer, most production MinIO deployments use multiple compute and storage devices to create a high availability environment.
-A server pool is a set of :mc:`minio server` nodes that pool their drives and resources to support object storage write and retrieval requests.
+虽然测试 MinIO 可能只涉及一台计算机上的单个驱动器，但大多数生产级 MinIO 部署都会使用多个计算和存储设备来构建高可用环境。
+server pool 是一组 :mc:`minio server` 节点，它们汇聚各自的驱动器和资源，以支持对象存储写入和读取请求。
 
-MinIO supports adding one or more server pools to existing MinIO deployments for horizontal expansion.
-When MinIO has multiple server pools available, an individual object always writes to the same erasure set in the same server pool.
+MinIO 支持向现有部署中添加一个或多个 server pool，以实现横向扩容。
+当 MinIO 拥有多个可用 server pool 时，单个对象始终会写入同一个 server pool 中的同一个纠删码集合。
 
-If one server pool goes down, MinIO halts I/O to all pools until the cluster resumes normal operations. 
-You must restore the pool to working operation to resume I/O to the deployment.
-Objects written to other pools remain safe on disk while you perform repair operations.
-   
-The :mc-cmd:`~minio server HOSTNAME` argument passed to the :mc:`minio server` command represents a Server Pool:
+如果某个 server pool 发生故障，MinIO 会停止所有 pool 的 I/O，直到集群恢复正常运行。
+你必须将该 pool 恢复到可工作状态，部署的 I/O 才能恢复。
+在执行修复操作期间，写入其他 pool 的对象仍会安全保留在磁盘上。
 
-Consider the following example startup command, which creates a single Server Pool with 4 :mc:`minio server` nodes of 4 drives each for a total of 16 drives. 
+传递给 :mc:`minio server` 命令的 :mc-cmd:`~minio server HOSTNAME` 参数表示一个 Server Pool：
+
+请看下面的启动命令示例。该命令会创建一个单独的 Server Pool，其中包含 4 个 :mc:`minio server` 节点，每个节点有 4 块驱动器，总计 16 块驱动器。
 
 .. code-block:: shell
 
    minio server https://minio{1...4}.example.net/mnt/disk{1...4}
-                   
+
                 |                    Server Pool                |
 
-Starting server pools in the same :mc:`minio server` startup command enables awareness of all server pool peers.
+在同一条 :mc:`minio server` 启动命令中启动多个 server pool，可使各个 server pool 对等节点彼此可感知。
 
-See :mc:`minio server` for complete syntax and usage.
+有关完整语法和用法，请参阅 :mc:`minio server`。
 
 .. _minio-intro-cluster:
 
-How does MinIO link multiple server pools into a single MinIO cluster?
+MinIO 如何将多个 server pool 连接为单一 MinIO 集群？
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A cluster refers to an entire MinIO deployment consisting of one or more Server Pools. 
+cluster 指由一个或多个 Server Pool 组成的完整 MinIO 部署。
 
-Consider the command below that creates a cluster consisting of two Server Pools, each with 4 :mc:`minio server` nodes and 4 drives per node for a total of 32 drives. 
+请看下面的命令。它创建了一个由两个 Server Pool 组成的 cluster，每个 pool 都包含 4 个 :mc:`minio server` 节点，且每个节点有 4 块驱动器，总计 32 块驱动器。
 
 .. code-block:: shell
 
    minio server https://minio{1...4}.example.net/mnt/disk{1...4} \
                 https://minio{5...8}.example.net/mnt/disk{1...4}
-                   
+
                 |                    Server Pool                |
-   
-Each server pool has one or more :ref:`erasure sets <minio-ec-erasure-set>` depending on the number of drives and nodes in the pool.
 
-MinIO strongly recommends production clusters consist of a *minimum* of 4 :mc:`minio server` nodes in a Server Pool for proper high availability and durability guarantees.
+每个 server pool 根据其中的驱动器和节点数量，包含一个或多个 :ref:`纠删码集合 <minio-ec-erasure-set>`。
 
-Can I change the size of an existing MinIO deployment?
+MinIO 强烈建议生产集群中的每个 Server Pool 至少包含 4 个 :mc:`minio server` 节点，以获得恰当的高可用性和持久性保障。
+
+我可以更改现有 MinIO 部署的大小吗？
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO :ref:`distributed deployments <minio-mnmd>` support expansion and decommissioning as functions to increase or decrease the available storage.
+MinIO :ref:`分布式部署 <minio-mnmd>` 支持通过扩容和退役来增加或减少可用存储。
 
-Expansion consists of adding one or more :ref:`server pools <minio-intro-server-pool>` to an existing deployment.
-Each server pool consists of dedicated nodes and storage that contribute to the overall capacity of the deployment.
-Once you create a server pool you cannot change its size, but you can add or remove capacity at any time by adding or decommissioning pools.
+扩容是指向现有部署中添加一个或多个 :ref:`server pool <minio-intro-server-pool>`。
+每个 server pool 都由专用节点和存储组成，并为部署的总体容量作出贡献。
+server pool 一旦创建，其大小便无法更改，但你可以随时通过添加或退役 pool 来增加或移除容量。
 
-See :ref:`Baremetal: Expand a MinIO deployment <expand-minio-distributed>` and :ref:`Kubernetes: Expand a MinIO Tenant <minio-k8s-expand-minio-tenant>` for more information on expansion in Baremetal and Kubernetes infrastructures respectively.
+有关在 Baremetal 和 Kubernetes 基础设施上进行扩容的更多信息，请分别参阅 :ref:`Baremetal：扩展 MinIO 部署 <expand-minio-distributed>` 和 :ref:`Kubernetes：扩展 MinIO Tenant <minio-k8s-expand-minio-tenant>`。
 
-For deployments which have multiple server pools, you can :ref:`decommission <minio-decommissioning>` the older pools and migrate that data to the newer pools in the deployment.
-Once started, decommissioning cannot be stopped.
-MinIO intends decommissioning for use with removing older pools with aged hardware, and not as an operation performed regularly within any deployment.
+对于包含多个 server pool 的部署，你可以 :ref:`退役 <minio-decommissioning>` 较旧的 pool，并将其中的数据迁移到部署中的较新 pool。
+退役一旦开始就无法停止。
+MinIO 将退役功能设计为移除硬件老旧的 pool，而不是在任何部署中定期执行的操作。
 
 .. include:: /includes/common-installation.rst
    :start-after: start-pool-order-must-not-change
    :end-before: end-pool-order-must-not-change
 
-How do I manage one or more MinIO instances or clusters?
+如何管理一个或多个 MinIO 实例或集群？
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There are several options to manage your MinIO deployments and clusters:
+你可以通过多种方式管理 MinIO 部署和集群：
 
-- Use the command line with :mc:`mc` and :mc:`mc admin`
-- The :ref:`MinIO Console <minio-console>` graphical user interface for individual instances
+- 使用命令行工具 :mc:`mc` 和 :mc:`mc admin`
+- 使用 :ref:`MinIO Console <minio-console>` 图形用户界面管理单个实例
 
 .. Reference Enterprise Operator Console eventually
 
 .. _minio-rebalance:
 
-How do I manage object distribution across a MinIO deployment?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MinIO 如何管理对象在部署中的分布？
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO optimizes storage of objects across available pools by writing new objects (that is, objects with no existing versions) to the server pool with the most free space compared total amount of free space on all available server pools.
-MinIO does not perform the costly action of rebalancing objects from older pools to newer pools.
-Instead, new objects typically route to the new pool as it has the most free space.
-As that pool fills, new write operations eventually balance out across all pools in the deployment.
-For more information on write preference calculation logic, see :ref:`Writing Files <minio-writing-files>` below.
+MinIO 会根据各个 pool 的空闲空间占所有可用 server pool 总空闲空间的比例，将新对象（即没有现有版本的对象）写入空闲空间最多的 server pool。
+MinIO 不会执行将对象从旧 pool 重新平衡到新 pool 这类成本高昂的操作。
+相反，新对象通常会首先路由到新 pool，因为它拥有最多空闲空间。
+随着该 pool 逐渐填满，新的写操作最终会在部署中的所有 pool 之间趋于平衡。
+有关写入偏好计算逻辑的更多信息，请参阅下文 :ref:`写入文件 <minio-writing-files>`。
 
-Rebalancing data across all pools after an expansion is an expensive operation that requires scanning the entire deployment and moving objects between pools.
-This may take a long time to complete depending on the amount of data to move.
+扩容后在所有 pool 之间重新平衡数据是一项昂贵操作，需要扫描整个部署并在 pool 之间移动对象。
+完成所需时间取决于需要移动的数据量。
 
-Starting with MinIO Client version RELEASE.2022-11-07T23-47-39Z, you can manually initiate a rebalancing operation across all server pools using :mc:`mc admin rebalance`. 
+从 MinIO Client 版本 RELEASE.2022-11-07T23-47-39Z 开始，你可以使用 :mc:`mc admin rebalance` 手动在所有 server pool 之间发起重新平衡操作。
 
-Rebalancing does not block ongoing operations and runs in parallel to all other I/O. 
-This can result in reduced performance of regular operations. 
-Consider scheduling rebalancing operations during non-peak periods to avoid impacting production workloads. 
-You can start and stop rebalancing at any time
+重新平衡不会阻塞现有操作，而是与其他 I/O 并行运行。
+这可能导致常规操作性能下降。
+建议在非高峰时段安排重新平衡操作，以避免影响生产工作负载。
+你可以随时启动和停止重新平衡。
 
-How do I upload objects to MinIO?
+如何向 MinIO 上传对象？
 ---------------------------------
 
-You can use any S3-compatible SDK to upload objects to a MinIO deployment.
-Each SDK performs the equivalent of a PUT operation which transmits the object to MinIO for storage.
+你可以使用任何兼容 S3 的 SDK 向 MinIO 部署上传对象。
+每个 SDK 都会执行等价于 PUT 的操作，将对象传输到 MinIO 进行存储。
 
-MinIO also implements support for :s3-docs:`multipart uploads <mpuoverview.html>`, where clients can split an object into multiple parts for better throughput and reliability of transmission.
-MinIO reassembles these parts until it has a completed object, then stores that object at the specified path.
+MinIO 还支持 :s3-docs:`multipart uploads <mpuoverview.html>`。
+借助该机制，客户端可以将对象拆分为多个 part，以提高吞吐量和传输可靠性。
+MinIO 会重组这些 part，直到对象完整，然后将其存储到指定路径。
 
-How does MinIO provide availability, redundancy, and reliability?
+MinIO 如何提供可用性、冗余性和可靠性？
 -----------------------------------------------------------------
 
-MinIO Uses :ref:`Erasure Coding <minio-erasure-coding>` for Data Redundancy and Reliability
+MinIO 使用 :ref:`纠删码 <minio-erasure-coding>` 提供数据冗余和可靠性
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO Erasure Coding is a data redundancy and availability feature that allows MinIO deployments with multiple drives to automatically reconstruct objects on-the-fly despite the loss of multiple drives or nodes in the cluster. 
-Erasure Coding provides object-level :ref:`healing <minio-concepts-healing>` with significantly less overhead than adjacent technologies such as RAID or replication.
+MinIO 纠删码是一项数据冗余和可用性特性，可让具有多块驱动器的 MinIO 部署在集群中丢失多个驱动器或节点的情况下，仍然自动实时重建对象。
+与 RAID 或复制等同类技术相比，纠删码以显著更低的开销提供对象级 :ref:`自愈 <minio-concepts-healing>`。
 
 
-MinIO Implements Bit Rot Healing to Protect Data At Rest
+MinIO 通过 bit rot 自愈保护静态数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Bit rot is the random, silent corruption to data that can happen on any storage device.
-Bit rot corruption is not prompted by any activity from a user, nor does the system's operating system alone have awareness of the corruption to notify a user or administrator about a change to the data.
+bit rot 是一种可能发生在任何存储设备上的随机、静默数据损坏。
+bit rot 损坏并非由用户活动触发，系统本身的操作系统通常也无法感知该损坏，因此无法通知用户或管理员数据已发生变化。
 
-Some common reasons for bit rot include:
-     
-- ageing drives
-- current spikes
-- bugs in drive firmware
-- phantom writes
-- misdirected reads/writes
-- driver errors
-- accidental overwrites
+bit rot 的常见原因包括：
 
-MinIO uses a hashing algorithm to confirm the integrity of an object.
-This algorithm automatically applies at the time of any ``GET`` and ``HEAD`` operations for an object.
-For objects in a versioned bucket, a ``PUT`` operation can also trigger healing if MinIO identifies version inconsistencies.
-If an object becomes corrupted by bit rot, MinIO can automatically :ref:`heal <minio-concepts-healing>` the object depending on the availability of parity shards for the object.
+- 驱动器老化
+- 电流尖峰
+- 驱动器固件 bug
+- 幻写
+- 错误定向的读写
+- 驱动程序错误
+- 意外覆写
 
-MinIO can also perform bit rot checks and healing using the :ref:`MinIO Scanner <minio-concepts-scanner>`.
-However, scanner bit rot checking is **off** by default.
-Active bit rot healing during scanner has a high performance impact in comparison to the low probability of bit rot affecting multiple object shards distributed across multiple drives and nodes.
-The automatic checks during normal operations is generally sufficient for bit rot, and MinIO does not recommend using the scanner for this type of health check.
+MinIO 使用哈希算法确认对象完整性。
+该算法会在对象执行任何 ``GET`` 和 ``HEAD`` 操作时自动生效。
+对于启用了版本控制的存储桶，如果 MinIO 识别到版本不一致，``PUT`` 操作也可能触发自愈。
+如果对象因 bit rot 而损坏，MinIO 可根据该对象校验分片的可用性，自动 :ref:`自愈 <minio-concepts-healing>` 该对象。
 
-MinIO Distributes Data Across :ref:`Erasure Sets <minio-ec-erasure-set>` for High Availability and Resiliency
+MinIO 还可以使用 :ref:`MinIO 扫描器 <minio-concepts-scanner>` 执行 bit rot 检查和自愈。
+不过，扫描器的 bit rot 检查默认 **关闭**。
+与 bit rot 同时影响分布在多个驱动器和节点上的多个对象分片这一低概率事件相比，扫描期间主动执行 bit rot 自愈的性能影响较高。
+正常操作期间的自动检查通常已足够应对 bit rot，MinIO 不建议将扫描器用于这类健康检查。
+
+MinIO 将数据分布到 :ref:`纠删码集合 <minio-ec-erasure-set>` 中，以实现高可用性和韧性
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-An erasure set is a group of multiple drives that supports MinIO :ref:`Erasure Coding <minio-erasure-coding>`. 
-Erasure Coding provides high availability, reliability, and redundancy of data stored on a MinIO deployment.
+纠删码集合是一组支持 MinIO :ref:`纠删码 <minio-erasure-coding>` 的驱动器。
+纠删码为存储在 MinIO 部署上的数据提供高可用性、可靠性和冗余性。
 
-MinIO divides objects into chunks — called `shards` — and evenly distributes them among each drive in the Erasure Set. 
-MinIO can continue seamlessly serving read and write requests despite the loss of any single drive. 
-At the highest redundancy levels, MinIO can serve read requests with minimal performance impact despite the loss of up to half (:math:`N / 2`) of the total drives in the deployment.
+MinIO 会将对象拆分为称作 ``shards`` 的块，并将其均匀分布到纠删码集合中的各块驱动器上。
+即使任意单块驱动器丢失，MinIO 也可以继续无缝响应读写请求。
+在最高冗余级别下，即使部署中最多有一半 (:math:`N / 2`) 驱动器丢失，MinIO 仍能以很小的性能影响继续提供读取请求。
 
-MinIO calculates the size and number of Erasure Sets in a Server Pool based on the total number of drives in the set *and* the number of :mc:`minio` servers in the set. See :ref:`minio-ec-erasure-set` for more information.
+MinIO 会根据集合中的驱动器总数以及集合中的 :mc:`minio` server 数量，计算 Server Pool 中纠删码集合的大小和数量。
+更多信息请参阅 :ref:`minio-ec-erasure-set`。
 
-MinIO Automatically Heals Corrupt or Missing Data On-the-fly
+MinIO 自动实时自愈损坏或丢失的数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Healing <minio-concepts-healing>` is MinIO's ability to restore data after some event causes data loss.
-Data loss can come from bit rot, drive loss, or node loss.
+:ref:`自愈 <minio-concepts-healing>` 是 MinIO 在某些事件导致数据丢失后恢复数据的能力。
+数据丢失可能来自 bit rot、驱动器丢失或节点丢失。
 
-:ref:`Erasure coding <minio-erasure-coding>` provides continued read and write access if an object has been partially lost.
+如果对象只是部分丢失，:ref:`纠删码 <minio-erasure-coding>` 可继续提供读写访问。
 
 .. include:: /includes/common-admonitions.rst
    :start-after: start-exclusive-drive-access
    :end-before: end-exclusive-drive-access
 
-MinIO Writes Data Protection at the Object Level with Parity
+MinIO 使用校验在对象级提供数据保护
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A MinIO deployment with multiple drives divides the available drives into data drives and parity drives.
-MinIO Erasure Coding adds additional hashing information about the contents of an object to the parity drives when writing an object.
-MinIO uses the parity information to confirm the integrity of an object and, if necessary, to restore a lost, missing, or corrupted object shard on a given drive or set of drives.
+包含多块驱动器的 MinIO 部署会将可用驱动器划分为数据驱动器和校验驱动器。
+MinIO 纠删码会在写入对象时，将关于对象内容的附加哈希信息写入校验驱动器。
+MinIO 使用这些校验信息确认对象完整性，并在必要时恢复某个驱动器或某组驱动器上丢失、缺失或损坏的对象分片。
 
-MinIO can tolerate losing up to the total number of drives equal to the number of parity devices available in the erasure set while still providing full access to an object.
+即使丢失的驱动器总数达到纠删码集合中可用校验设备的数量，MinIO 仍可以继续提供对象的完整访问能力。
 
-Deliver Read and Write Functions with Quorum 
+通过仲裁提供读写能力
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A minimum number of drives that must be available to perform a task.
-MinIO has one quorum for reading data and a separate quorum for writing data.
+仲裁指执行某项任务所必须可用的最少驱动器数量。
+MinIO 为读取数据和写入数据分别定义了不同的仲裁值。
 
-Typically, MinIO requires a higher number of available drives to maintain the ability to write objects than what is required to read objects.
+通常，为保持写入对象的能力，MinIO 所需的可用驱动器数量会高于读取对象所需的数量。
 
 
 .. toctree::

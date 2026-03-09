@@ -12,99 +12,79 @@
 
 .. mc:: mc admin decommission
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-decommission-desc
 
-The :mc-cmd:`mc admin decommission` command starts the decommissioning process for a
-MinIO :ref:`server pools <minio-intro-server-pool>`. Decommissioning is designed
-for removing an older server pool whose hardware is no longer sufficient or
-performant compared to the pools in the deployment. MinIO automatically migrates
-data from the decommissioned pool to the remaining pools in the deployment based
-on the ratio of free space available in each pool.
+:mc-cmd:`mc admin decommission` 命令用于启动 MinIO :ref:`server pools <minio-intro-server-pool>`
+的下线流程。下线流程适用于移除较旧的服务器池，这些服务器池的硬件能力或性能已不再满足要求，
+或相较部署中的其他池表现不足。MinIO 会根据每个池可用空闲空间的比例，自动将数据从被下线
+的池迁移到部署中其余的池。
 
 .. end-mc-admin-decommission-desc
 
-See :ref:`minio-decommissioning` for a complete procedure on
-decommissioning a server pool.
+有关服务器池下线的完整操作流程，请参阅 :ref:`minio-decommissioning`。
 
-.. admonition:: Decommissioning is Permanent
+.. admonition:: 下线是永久性的
    :class: important
 
-   Once MinIO begins decommissioning a pool, it marks that pool as *permanently*
-   inactive ("draining"). Cancelling or otherwise interrupting the 
-   decommissioning procedure does **not** restore the pool to an active
-   state.
+   一旦 MinIO 开始下线某个池，就会将该池标记为*永久*非活动状态（“draining”）。
+   取消或以其他方式中断下线流程都**不会**将该池恢复为活动状态。
 
-   Decommissioning is a major administrative operation that requires care
-   in planning and execution, and is not a trivial or 'daily' task. 
+   下线是一项重要的管理操作，规划和执行都需要谨慎处理，不是轻量或“日常”任务。
 
-   `MinIO SUBNET <https://min.io/pricing?jmp=docs>`__ users can
-   `log in <https://subnet.min.io/>`__ and create a new issue related to
-   decommissioning. Coordination with MinIO Engineering via SUBNET can ensure
-   successful decommissioning, including performance testing and health
-   diagnostics.
+   `MinIO SUBNET <https://min.io/pricing?jmp=docs>`__ 用户可以
+   `log in <https://subnet.min.io/>`__ 并创建与下线相关的新 issue。通过 SUBNET 与
+   MinIO Engineering 协同可提高下线成功率，包括性能测试和健康诊断。
 
-   Community users can seek support on the `MinIO Community Slack
-   <https://slack.min.io>`__. Community Support is best-effort only and has
-   no SLAs around responsiveness.
+   社区用户可在 `MinIO Community Slack
+   <https://slack.min.io>`__ 寻求支持。社区支持仅为 best-effort，不提供响应 SLA。
 
 .. code-block:: shell
 
    mc admin [GLOBALFLAGS] decommission start|status|cancel ALIAS TARGET
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: start
 
-   *Required* Starts the decommissioning process for the server pool specified
-   to :mc-cmd:`~mc admin decommission TARGET`.
+   *必需* 启动 :mc-cmd:`~mc admin decommission TARGET` 指定服务器池的下线流程。
 
-   Requires specifying :mc-cmd:`~mc admin decommission TARGET`
+   必须指定 :mc-cmd:`~mc admin decommission TARGET`
 
 .. mc-cmd:: status
 
-   *Required* Returns the decommissioning status of all server pools on the
-   specified :mc-cmd:`~mc admin decommission ALIAS`:
+   *必需* 返回指定 :mc-cmd:`~mc admin decommission ALIAS` 上所有服务器池的下线状态：
 
-   - :guilabel:`Active` - The pool is active and not scheduled for
-     decommissioning.
+   - :guilabel:`Active` - 该池处于活动状态，且未计划下线。
 
-   - :guilabel:`Draining` - The pool is currently decommissioning.
+   - :guilabel:`Draining` - 该池当前正在下线。
 
-   - :guilabel:`Draining (Failed)` - The decommissioning process failed and
-     requires manually restart.
+   - :guilabel:`Draining (Failed)` - 下线流程失败，需要手动重启流程。
 
-   - :guilabel:`Draining (Cancelled)` - The decommissioning process was
-     manually cancelled.
+   - :guilabel:`Draining (Cancelled)` - 下线流程已被手动取消。
 
-   If the command includes a :mc-cmd:`~mc admin decommission TARGET`, 
-   the command output includes the rate of data migration *if*
-   decommissioning is in progress.
+   如果命令包含 :mc-cmd:`~mc admin decommission TARGET`，则在下线进行中时，
+   命令输出会包含数据迁移速率。
 
 .. mc-cmd:: cancel
 
-   *Required* Cancels an ongoing decommissioning process on the pool specified
-   to :mc-cmd:`~mc admin decommission TARGET`.
+   *必需* 取消 :mc-cmd:`~mc admin decommission TARGET` 指定池上的进行中下线流程。
 
-   Requires specifying :mc-cmd:`~mc admin decommission TARGET`.
+   必须指定 :mc-cmd:`~mc admin decommission TARGET`。
 
-   Cancelling a decommissioning process does not return the pool to an active
-   state. You must eventually complete the decommissioning process and remove
-   the pool from the deployment. You can resume the process by
-   running :mc-cmd:`mc admin decommission start` again against the pool.
+   取消下线流程不会使该池恢复为活动状态。最终仍必须完成下线流程并将该池从部署中移除。
+   可以再次对该池运行 :mc-cmd:`mc admin decommission start` 以恢复流程。
 
 .. mc-cmd:: ALIAS
 
-   *Required* The :ref:`alias <alias>` of the MinIO deployment on which to start
-   the decommissioning process.
+   *必需* 要启动下线流程的 MinIO 部署的 :ref:`alias <alias>`。
 
 .. mc-cmd:: TARGET
 
-   The full description of the server pool on which the command operates. For
-   example:
+   命令所操作服务器池的完整描述。例如：
 
    .. code-block:: shell
 
@@ -112,15 +92,14 @@ Parameters
 
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-See :ref:`minio-decommissioning` for a complete procedure on
-decommissioning a server pool.
+有关服务器池下线的完整操作流程，请参阅 :ref:`minio-decommissioning`。

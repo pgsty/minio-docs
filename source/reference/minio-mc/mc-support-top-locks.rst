@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,17 +14,17 @@
    :start-after: start-minio-only
    :end-before: end-minio-only
 
-Syntax
-------
+语法
+----
 
 .. start-mc-support-top-locks-desc
 
-The :mc:`mc support top locks` command lists the ten oldest :ref:`locks <minio-object-locking>` on a MinIO deployment.
+:mc:`mc support top locks` 命令列出 MinIO 部署中最旧的 10 个 :ref:`锁 <minio-object-locking>`。
 
 .. end-mc-support-top-locks-desc
 
-The command outputs the age of the lock, type of lock, owner, and resource.
-The output resembles the following:
+该命令输出锁的存在时长、锁类型、所有者和资源。
+输出类似如下：
 
 .. code-block:: shell
 
@@ -35,18 +35,18 @@ The output resembles the following:
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command displays the current in-progress S3 API calls on the :term:`alias` ``myminio``.
+      以下命令显示 :term:`alias` ``myminio`` 上当前进行中的 S3 API 调用。
 
       .. code-block:: shell
          :class: copyable
 
          mc support top locks myminio/
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令使用以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -59,41 +59,41 @@ The output resembles the following:
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the :ref:`alias <minio-mc-alias>` or prefix where the command should run.
+   命令应在其上运行的 :ref:`alias <minio-mc-alias>` 或前缀的完整路径。
 
 .. mc-cmd:: --stale
    :optional:
 
-   Return only stale locks.
+   仅返回陈旧锁。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Display the 10 Oldest Locks on the ``myminio`` Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示 ``myminio`` 部署中最旧的 10 个锁
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
    :class: copyable
 
    mc support top locks myminio/
 
-Display Stale Locks on the ``myminio`` Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示 ``myminio`` 部署中的陈旧锁
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command displays all in-progress ``s3.PutObject`` calls for the ``myminio`` deployment:
+以下命令显示 ``myminio`` 部署中所有进行中的 ``s3.PutObject`` 调用：
 
 .. code-block:: shell
    :class: copyable

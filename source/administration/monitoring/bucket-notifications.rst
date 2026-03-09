@@ -1,127 +1,127 @@
 .. _minio-bucket-notifications:
 
-====================
-Bucket notifications
-====================
+================
+存储桶通知
+================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-MinIO bucket notifications allow administrators to send notifications to supported external services on certain object or bucket events. 
-MinIO supports bucket and object-level S3 events similar to the 
-:s3-docs:`Amazon S3 Event Notifications <NotificationHowTo.html>`.
+MinIO 存储桶通知允许管理员在特定对象或存储桶事件发生时，将通知发送到受支持的外部服务。
+MinIO 支持与 :s3-docs:`Amazon S3 Event Notifications <NotificationHowTo.html>`
+类似的存储桶级和对象级 S3 事件。
 
-Supported notification targets
-------------------------------
+支持的通知目标
+--------------
 
-MinIO supports publishing event notifications to the following targets:
+MinIO 支持将事件通知发布到以下目标：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Target
-     - Description
+   * - 目标
+     - 说明
 
    * - :guilabel:`AMQP` (RabbitMQ)
-     - Publish notifications to an AMQP service such as 
+     - 将通知发布到 AMQP 服务，例如
        `RabbitMQ <https://www.rabbitmq.com>`__.
 
-       See :ref:`minio-bucket-notifications-publish-amqp` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-amqp`。
 
    * - :guilabel:`MQTT`
-     - Publish notifications to an `MQTT <https://www.mqtt.org/>`__ service.
+     - 将通知发布到 `MQTT <https://www.mqtt.org/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-mqtt` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-mqtt`。
 
    * - :guilabel:`NATS`
-     - Publish notifications to a `NATS <https://nats.io/>`__ service.
+     - 将通知发布到 `NATS <https://nats.io/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-nats` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-nats`。
 
    * - :guilabel:`NSQ`
-     - Publish notifications to a `NSQ <https://nsq.io/>`__ service.
+     - 将通知发布到 `NSQ <https://nsq.io/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-nsq` for a tutorial
+       教程参见 :ref:`minio-bucket-notifications-publish-nsq`
 
    * - :guilabel:`Elasticsearch`
-     - Publish notifications to a `Elasticsearch <https://www.elastic.co/>`__ service.
+     - 将通知发布到 `Elasticsearch <https://www.elastic.co/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-elasticsearch` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-elasticsearch`。
 
    * - :guilabel:`Kafka`
-     - Publish notifications to a `Kafka <https://kafka.apache.org/>`__ service.
+     - 将通知发布到 `Kafka <https://kafka.apache.org/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-kafka` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-kafka`。
 
    * - :guilabel:`MySQL`
-     - Publish notifications to a `MySQL <https://www.mysql.com/>`__ service.
+     - 将通知发布到 `MySQL <https://www.mysql.com/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-mysql` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-mysql`。
 
    * - :guilabel:`PostgreSQL`
-     - Publish notifications to a `PostgreSQL <https://www.postgresql.org/>`__ service.
+     - 将通知发布到 `PostgreSQL <https://www.postgresql.org/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-postgresql` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-postgresql`。
 
    * - :guilabel:`Redis`
-     - Publish notifications to a `Redis <https://redis.io/>`__ service.
+     - 将通知发布到 `Redis <https://redis.io/>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-redis` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-redis`。
 
    * - :guilabel:`webhook`
-     - Publish notifications to a `Webhook
-       <https://en.wikipedia.org/wiki/Webhook>`__ service.
+     - 将通知发布到 `Webhook
+       <https://en.wikipedia.org/wiki/Webhook>`__ 服务。
 
-       See :ref:`minio-bucket-notifications-publish-webhook` for a tutorial.
+       教程参见 :ref:`minio-bucket-notifications-publish-webhook`。
 
-Asynchronous vs synchronous bucket notifications
-------------------------------------------------
+异步与同步存储桶通知
+--------------------
 
 .. versionadded:: RELEASE.2023-06-23T20-26-00Z
 
-   MinIO supports either asynchronous (default) or synchronous bucket notifications for *all* remote targets.
+   对于 *所有* 远程目标，MinIO 支持异步（默认）或同步存储桶通知。
 
-With asynchronous delivery, MinIO fires the event at the configured remote and does *not* wait for a response before continuing to the next event.
-Asynchronous bucket notification prioritizes sending events with the risk of some events being lost if the remote target has a transient issue during transit or processing.
+使用异步传递时，MinIO 会将事件发送到已配置的远程目标，并且在继续处理下一个事件之前 *不会* 等待响应。
+异步存储桶通知优先保证发送速率，但如果远程目标在传输或处理期间出现瞬时问题，则存在部分事件丢失的风险。
 
-With synchronous delivery, MinIO fires the event at the configured remote and then waits for the remote to confirm a successful receipt before continuing to the next event.
-Synchronous bucket notification prioritizes delivery of events with the risk of a slower event-send rate and queue fill.
+使用同步传递时，MinIO 会将事件发送到已配置的远程目标，然后等待远程目标确认已成功接收后，才继续处理下一个事件。
+同步存储桶通知优先保证事件可送达，但代价是事件发送速率较慢且队列更容易被填满。
 
-To enable synchronous bucket notifications for *all configured remote targets*, use either of the following settings:
+要为 *所有已配置的远程目标* 启用同步存储桶通知，请使用以下任一设置：
 
-- Set the :envvar:`MINIO_API_SYNC_EVENTS` environment variable to ``on`` and restart the MinIO deployment.
+- 将 :envvar:`MINIO_API_SYNC_EVENTS` 环境变量设置为 ``on``，然后重启 MinIO 部署。
 
-- Set the :mc-conf:`api.sync_events` configuration setting to ``on`` and restart the MinIO deployment.
+- 将 :mc-conf:`api.sync_events` 配置项设置为 ``on``，然后重启 MinIO 部署。
 
 .. note::
 
-   For synchronous and asynchronous events, MinIO maintains a per-remote queue where it stores unsent and pending events.
-   The queue limit defaults to ``100000``.
+   对于同步和异步事件，MinIO 都会为每个远程目标维护一个队列，用于存储尚未发送和待处理的事件。
+   队列上限默认为 ``100000``。
 
-   MinIO discards new events when the queue is full.
+   队列已满时，MinIO 会丢弃新事件。
 
-   You can increase the queue size as necessary to better accommodate the rate of event send and processing of the MinIO deployment and remote target.
-   Use the ``QUEUE_LIMIT`` environment variable or configuration setting for your notification method to modify this limit.
+   可按需增大队列大小，以更好地适配 MinIO 部署与远程目标的事件发送和处理速率。
+   使用对应通知方法的 ``QUEUE_LIMIT`` 环境变量或配置项来修改该限制。
 
-   For asynchronous events, MinIO allows a maximum of ``50000`` concurrent ``send`` calls.
+   对于异步事件，MinIO 最多允许 ``50000`` 个并发 ``send`` 调用。
 
 .. _minio-bucket-notifications-event-types:
 
-Supported S3 event types
-------------------------
+支持的 S3 事件类型
+------------------
 
-MinIO bucket notifications are compatible with :s3-docs:`Amazon S3 Event Notifications <NotificationHowTo.html>`. 
-This section lists all supported events.
+MinIO 存储桶通知与 :s3-docs:`Amazon S3 Event Notifications <NotificationHowTo.html>` 兼容。
+本节列出所有受支持的事件。
 
-Object events
-~~~~~~~~~~~~~
+对象事件
+~~~~~~~~
 
-MinIO supports triggering notifications on the following S3 object events:
+MinIO 支持在以下 S3 对象事件上触发通知：
 
 .. data:: s3:ObjectAccessed:Get
 .. data:: s3:ObjectAccessed:GetLegalHold
@@ -138,24 +138,24 @@ MinIO supports triggering notifications on the following S3 object events:
 .. data:: s3:ObjectRemoved:Delete
 .. data:: s3:ObjectRemoved:DeleteMarkerCreated
 
-Specify the wildcard ``*`` character to select all events related to a prefix:
+指定通配符 ``*`` 可选择与某个前缀相关的所有事件：
 
 .. data:: s3:ObjectAccessed:*
 
-   Selects all ``s3:ObjectAccessed``\ -prefixed events.
+   选择所有以 ``s3:ObjectAccessed`` 为前缀的事件。
    
 .. data:: s3:ObjectCreated:*
 
-   Selects all ``s3:ObjectCreated``\ -prefixed events.
+   选择所有以 ``s3:ObjectCreated`` 为前缀的事件。
 
 .. data:: s3:ObjectRemoved:*
 
-   Selects all ``s3:ObjectRemoved``\ -prefixed events.
+   选择所有以 ``s3:ObjectRemoved`` 为前缀的事件。
 
-Replication events
-~~~~~~~~~~~~~~~~~~
+复制事件
+~~~~~~~~
 
-MinIO supports triggering notifications on the following S3 replication events:
+MinIO 支持在以下 S3 复制事件上触发通知：
 
 .. data:: s3:Replication:OperationCompletedReplication
 .. data:: s3:Replication:OperationFailedReplication
@@ -163,48 +163,48 @@ MinIO supports triggering notifications on the following S3 replication events:
 .. data:: s3:Replication:OperationNotTracked
 .. data:: s3:Replication:OperationReplicatedAfterThreshold
 
-Specify the wildcard ``*`` character to select all ``s3:Replication`` events:
+指定通配符 ``*`` 可选择所有 ``s3:Replication`` 事件：
 
 .. data:: s3:Replication:*
 
-ILM transition events
-~~~~~~~~~~~~~~~~~~~~~
+ILM 转换事件
+~~~~~~~~~~~~
 
-MinIO supports triggering notifications on the following S3 ILM transition events:
+MinIO 支持在以下 S3 ILM 转换事件上触发通知：
 
 .. data:: s3:ObjectRestore:Post
 .. data:: s3:ObjectRestore:Completed
 .. data:: s3:ObjectTransition:Failed
 .. data:: s3:ObjectTransition:Complete
 
-Specify the wildcard ``*`` character to select all events related to a prefix:
+指定通配符 ``*`` 可选择与某个前缀相关的所有事件：
 
 .. data:: s3:ObjectTransition:*
 
-   Selects all ``s3:ObjectTransition``\ -prefixed events.
+   选择所有以 ``s3:ObjectTransition`` 为前缀的事件。
 
 .. data:: s3:ObjectRestore:*
 
-   Selects all ``s3:ObjectRestore``\ -prefixed events.
+   选择所有以 ``s3:ObjectRestore`` 为前缀的事件。
 
-Scanner events
-~~~~~~~~~~~~~~
+Scanner 事件
+~~~~~~~~~~~~
 
-MinIO supports triggering notifications on the following S3 :ref:`scanner <minio-concepts-scanner>` transition events:
+MinIO 支持在以下 S3 :ref:`scanner <minio-concepts-scanner>` 转换事件上触发通知：
 
 .. data:: s3:Scanner:ManyVersions
 
-   :ref:`Scanner <minio-concepts-scanner>` finds objects with more than 1,000 versions.
+   :ref:`Scanner <minio-concepts-scanner>` 发现具有超过 1,000 个版本的对象。
 
 .. data:: s3:Scanner:BigPrefix
 
-   :ref:`Scanner <minio-concepts-scanner>` finds prefixes with more than 50,000 sub-folders.
+   :ref:`Scanner <minio-concepts-scanner>` 发现具有超过 50,000 个子文件夹的前缀。
 
-Global events
-~~~~~~~~~~~~~
+全局事件
+~~~~~~~~
 
-MinIO supports triggering notifications on the following global events. 
-You can only listen to these events through the `ListenNotification <https://minio.pigsty.io/developers/go/API.html#listennotification-context-context-context-prefix-suffix-string-events-string-chan-notification-info>`__ API:
+MinIO 支持在以下全局事件上触发通知。
+只能通过 `ListenNotification <https://minio.pigsty.io/developers/go/API.html#listennotification-context-context-context-prefix-suffix-string-events-string-chan-notification-info>`__ API 监听这些事件：
 
 .. data:: s3:BucketCreated
 .. data:: s3:BucketRemoved
@@ -212,11 +212,11 @@ You can only listen to these events through the `ListenNotification <https://min
 .. todo
 
 
-Payload schema
---------------
+负载模式
+--------
 
-All notification payloads use the same overall schema.
-Depending on the type of notification, some fields may be omitted or have null values.
+所有通知负载都使用相同的整体模式。
+根据通知类型的不同，某些字段可能会省略或为 null。
 
 .. code-block:: json
 
@@ -265,10 +265,10 @@ Depending on the type of notification, some fields may be omitted or have null v
    }
 
 
-Example
-~~~~~~~
+示例
+~~~~
 
-The following example is a notification for an ``s3:ObjectCreated:Put`` event:
+以下示例是 ``s3:ObjectCreated:Put`` 事件的通知：
 
 .. code-block:: json
 

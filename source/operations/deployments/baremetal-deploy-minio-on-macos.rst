@@ -1,8 +1,8 @@
 .. _deploy-minio-macos:
 
-=====================
-Deploy MinIO on MacOS
-=====================
+========================
+在 MacOS 上部署 MinIO
+========================
 
 .. default-domain:: minio
 
@@ -12,54 +12,54 @@ Deploy MinIO on MacOS
    
    - `How to Connect to MinIO with JavaScript <https://www.youtube.com/watch?v=yUR4Fvx0D3E&list=PLFOIsHSSYIK3Dd3Y_x7itJT1NUKT5SxDh&index=5>`__
 
-This page documents deploying MinIO onto Apple MacOS hosts.
+本页介绍如何在 Apple MacOS 主机上部署 MinIO。
 
-MinIO officially supports MacOS operating systems in service status, which is typically 3 years from initial release.
-At the time of writing, that includes:
+MinIO 正式支持仍处于服务期内的 MacOS 操作系统，该期限通常为自首次发布起 3 年。
+在撰写本文时，包括：
 
-- macOS 14 (Sonoma) (**Recommended**)
+- macOS 14 (Sonoma)（**推荐**）
 - macOS 13 (Ventura)
 - macOS 12 (Monterey) 
 
-MinIO *may* run on older or out-of-support macOS releases, with limited support or troubleshooting from either MinIO or RedHat.
+MinIO *可能* 也能在更旧或已停止支持的 macOS 版本上运行，但 MinIO 或 RedHat 仅能提供有限的支持或故障排查。
 
-MinIO supports both Intel and ARM-based macOS hardware and provides distinct binaries for each architecture.
-Ensure you download the correct binary as per the documentation for your host system.
+MinIO 同时支持基于 Intel 和 ARM 的 macOS 硬件，并为每种架构分别提供二进制文件。
+请根据主机系统文档下载正确的二进制文件。
 
-The procedure includes guidance for deploying Single-Node Multi-Drive (SNMD) and Single-Node Single-Drive (SNSD) topologies in support of early development and evaluation environments.
+本步骤包含对 Single-Node Multi-Drive (SNMD) 和 Single-Node Single-Drive (SNSD) 拓扑的指导，适用于早期开发和评估环境。
 
-MinIO does not officially support Multi-Node Multi-Drive (MNMD) "Distributed" configurations on MacOS hosts.
+MinIO 不正式支持在 MacOS 主机上运行 Multi-Node Multi-Drive (MNMD)“Distributed”配置。
 
-Considerations
---------------
+注意事项
+--------
 
-Review Checklists
-~~~~~~~~~~~~~~~~~
+检查清单
+~~~~~~~~
 
-Ensure you have reviewed our published Hardware, Software, and Security checklists before attempting this procedure.
+在执行本步骤前，请先阅读我们发布的硬件、软件和安全检查清单。
 
-Erasure Coding Parity
-~~~~~~~~~~~~~~~~~~~~~
+纠删码校验
+~~~~~~~~~~
 
-MinIO automatically determines the default :ref:`erasure coding <minio-erasure-coding>` configuration for the cluster based on the total number of nodes and drives in the topology.
-You can configure the per-object :term:`parity` setting when you set up the cluster *or* let MinIO select the default (``EC:4`` for production-grade clusters).
+MinIO 会根据拓扑中的节点和驱动器总数，自动为集群确定默认的 :ref:`纠删码 <minio-erasure-coding>` 配置。
+你可以在设置集群时配置按对象生效的 :term:`parity`，也可以让 MinIO 选择默认值（生产级集群默认为 ``EC:4``）。
 
-Parity controls the relationship between object availability and storage on disk. 
-Use the MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ for guidance in selecting the appropriate erasure code parity level for your cluster.
+校验值决定了对象可用性与磁盘存储占用之间的关系。
+可使用 MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ 选择适合你集群的纠删码校验级别。
 
-While you can change erasure parity settings at any time, objects written with a given parity do **not** automatically update to the new parity settings.
+虽然你可以随时更改纠删码校验设置，但以既有校验值写入的对象 **不会** 自动更新为新的校验设置。
 
-Procedure
----------
+步骤
+----
 
-1. Download the MinIO Binary
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. 下载 MinIO 二进制文件
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
    
       .. tab-item:: Homebrew
 
-         Open a Terminal and run the following command to install the latest stable MinIO package using `Homebrew <https://brew.sh>`_.
+         打开终端，并运行以下命令使用 `Homebrew <https://brew.sh>`_ 安装最新稳定版 MinIO 软件包。
 
          .. code-block:: shell
             :class: copyable
@@ -68,7 +68,7 @@ Procedure
 
          .. important::
 
-            If you previously installed the MinIO server using ``brew install minio``, then we recommend that you reinstall from ``minio/stable/minio`` instead.
+            如果你之前使用 ``brew install minio`` 安装过 MinIO server，建议改为从 ``minio/stable/minio`` 重新安装。
 
             .. code-block:: shell
                :class: copyable
@@ -78,7 +78,7 @@ Procedure
 
       .. tab-item:: Binary - arm64
          
-         Open a Terminal, then use the following commands to download the latest stable MinIO binary, set it to executable, and install it to the system ``$PATH``:
+         打开终端，然后使用以下命令下载最新稳定版 MinIO 二进制文件、赋予执行权限，并将其安装到系统 ``$PATH``：
 
             .. code-block:: shell
                :class: copyable
@@ -89,7 +89,7 @@ Procedure
 
       .. tab-item:: Binary - amd64
          
-         Open a Terminal, then use the following commands to download the latest stable MinIO binary, set it to executable, and install it to the system ``$PATH``:
+         打开终端，然后使用以下命令下载最新稳定版 MinIO 二进制文件、赋予执行权限，并将其安装到系统 ``$PATH``：
 
             .. code-block:: shell
                :class: copyable
@@ -98,16 +98,16 @@ Procedure
                chmod +x ./minio
                sudo mv ./minio /usr/local/bin/
 
-2. Enable TLS Connectivity
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+2. 启用 TLS 连接
+~~~~~~~~~~~~~~~~
 
-You can skip this step to deploy without TLS enabled. 
-MinIO strongly recommends *against* non-TLS deployments outside of early development.
+你可以跳过此步骤，以在未启用 TLS 的情况下部署。
+MinIO 强烈 *不建议* 在早期开发之外的场景中进行非 TLS 部署。
 
-Create or provide :ref:`Transport Layer Security (TLS) <minio-tls>` certificates to MinIO to automatically enable HTTPS-secured connections between the server and clients.
+为 MinIO 创建或提供 :ref:`传输层安全 (TLS) <minio-tls>` 证书，以自动启用 server 与客户端之间的 HTTPS 安全连接。
 
-MinIO expects the default certificate names of ``private.key`` and ``public.crt`` for the private and public keys respectively.
-Place the certificates in a dedicated directory:
+MinIO 要求私钥和公钥证书的默认文件名分别为 ``private.key`` 和 ``public.crt``。
+请将证书放入专用目录：
 
 .. code-block:: shell
    :class: copyable
@@ -118,38 +118,38 @@ Place the certificates in a dedicated directory:
    cp public.crt /opt/minio/certs
 
 
-MinIO verifies client certificates against the OS/System's default list of trusted Certificate Authorities.
-To enable verification of third-party or internally-signed certificates, place the CA file in the ``/opt/minio/certs/CAs`` folder.
-The CA file should include the full chain of trust from leaf to root to ensure successful verification.
+MinIO 会根据操作系统/系统默认的受信任证书颁发机构列表来验证客户端证书。
+若要启用对第三方证书或内部签发证书的验证，请将 CA 文件放入 ``/opt/minio/certs/CAs`` 目录。
+CA 文件应包含从叶子证书到根证书的完整信任链，以确保验证成功。
 
-For more specific guidance on configuring MinIO for TLS, including multi-domain support via Server Name Indication (SNI), see :ref:`minio-tls`. 
+有关为 MinIO 配置 TLS 的更具体指导，包括通过 Server Name Indication (SNI) 支持多域名，请参阅 :ref:`minio-tls`。
 
-.. dropdown:: Certificates for Early Development
+.. dropdown:: 早期开发环境证书
 
-   For local testing or development environments, you can use the MinIO :minio-git:`certgen <certgen>` to mint self-signed certificates.
-   For example, the following command generates a self-signed certificate with a set of IP and DNS Subject Alternate Names (SANs) associated to the MinIO Server hosts:
+   对于本地测试或开发环境，你可以使用 MinIO :minio-git:`certgen <certgen>` 生成自签名证书。
+   例如，以下命令会生成一组带有 IP 和 DNS Subject Alternate Names (SANs) 的自签名证书，这些 SAN 与 MinIO Server 主机关联：
 
    .. code-block:: shell
 
       certgen -host "localhost,minio-*.example.net"
 
-   Place the generated ``public.crt`` and ``private.key`` into the ``/path/to/certs`` directory to enable TLS for the MinIO deployment.
-   Applications can use the ``public.crt`` as a trusted Certificate Authority to allow connections to the MinIO deployment without disabling certificate validation.
+   将生成的 ``public.crt`` 和 ``private.key`` 放入 ``/path/to/certs`` 目录，以为 MinIO 部署启用 TLS。
+   应用程序可以将 ``public.crt`` 作为受信任的证书颁发机构，从而在不禁用证书校验的情况下连接到 MinIO 部署。
 
-3. Create the MinIO Environment File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3. 创建 MinIO 环境文件
+~~~~~~~~~~~~~~~~~~~~~~
 
-Create an environment file at ``/etc/default/minio``. 
-The MinIO service uses this file as the source of all :ref:`environment variables <minio-server-environment-variables>` used by MinIO *and* the ``minio.service`` file.
+在 ``/etc/default/minio`` 创建环境文件。
+MinIO 服务将该文件作为 MinIO *以及* ``minio.service`` 文件所用全部 :ref:`环境变量 <minio-server-environment-variables>` 的来源。
 
-Modify the example to reflect your deployment topology. 
+请根据你的部署拓扑修改示例。
 
 .. tab-set::
 
    .. tab-item:: Single-Node Multi-Drive
 
-      Use Single-Node Multi-Drive deployments in development and evaluation environments.
-      You can also use them for smaller storage workloads which can tolerate data loss or unavailability due to node downtime.
+      在开发和评估环境中使用 Single-Node Multi-Drive 部署。
+      对于能够容忍节点停机带来数据丢失或不可用的小型存储工作负载，也可以使用该拓扑。
 
       .. code-block:: shell
          :class: copyable
@@ -191,8 +191,8 @@ Modify the example to reflect your deployment topology.
 
    .. tab-item:: Single-Node Single-Drive
 
-      Use Single-Node Single-Drive ("Standalone") deployments in early development and evaluation environments.
-      MinIO does not recommend Standalone deployments in production, as the loss of the node or its storage medium results in data loss.
+      在早期开发和评估环境中使用 Single-Node Single-Drive（“Standalone”）部署。
+      MinIO 不建议在生产环境中使用 Standalone 部署，因为节点或其存储介质丢失会导致数据丢失。
 
       .. code-block:: shell
          :class: copyable
@@ -226,12 +226,12 @@ Modify the example to reflect your deployment topology.
 
          MINIO_ROOT_PASSWORD=minio-secret-key-CHANGE-ME
 
-Specify any other :ref:`environment variables <minio-server-environment-variables>` or server command-line options as required by your deployment. 
+请根据部署需要，指定其他 :ref:`环境变量 <minio-server-environment-variables>` 或 server 命令行选项。
 
-4. Start the MinIO Server
-~~~~~~~~~~~~~~~~~~~~~~~~~
+4. 启动 MinIO Server
+~~~~~~~~~~~~~~~~~~~~
 
-The following command starts the MinIO Server attached to the current terminal/shell window:
+以下命令会启动附着在当前终端/shell 窗口上的 MinIO Server：
 
 .. code-block:: shell
    :class: copyable
@@ -239,7 +239,7 @@ The following command starts the MinIO Server attached to the current terminal/s
    export MINIO_CONFIG_ENV_FILE=/etc/default/minio
    minio server --console-address :9001
 
-The command output resembles the following:
+命令输出类似如下：
 
 .. code-block:: shell
 
@@ -264,52 +264,50 @@ The command output resembles the following:
    Docs: https://minio.pigsty.io/index.html
    Status:         1 Online, 0 Offline. 
 
-The ``API`` block lists the network interfaces and port on which clients can access the MinIO S3 API.
-The ``Console`` block lists the network interfaces and port on which clients can access the MinIO Web Console.
+``API`` 区块列出了客户端可访问 MinIO S3 API 的网络接口和端口。
+``Console`` 区块列出了客户端可访问 MinIO Web Console 的网络接口和端口。
 
-To run the MinIO server process in the background or as a daemon, defer to your MacOS OS documentation for best practices and procedures.
+若要在后台运行 MinIO server 进程或以守护进程方式运行，请参阅 MacOS 操作系统文档中的最佳实践和操作步骤。
 
-5. Connect to the Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5. 连接到部署
+~~~~~~~~~~~~~~
 
 .. tab-set::
 
    .. tab-item:: Console
 
-      Open your browser and access any of the MinIO hostnames at port ``:9001`` to open the :ref:`MinIO Console <minio-console>` login page. 
-      For example, ``https://minio1.example.com:9001``.
+      打开浏览器，并通过任一 MinIO 主机名的 ``:9001`` 端口访问 :ref:`MinIO Console <minio-console>` 登录页。
+      例如：``https://minio1.example.com:9001``。
 
-      Log in with the :guilabel:`MINIO_ROOT_USER` and :guilabel:`MINIO_ROOT_PASSWORD`
-      from the previous step.
+      使用上一步中的 :guilabel:`MINIO_ROOT_USER` 和 :guilabel:`MINIO_ROOT_PASSWORD` 登录。
 
       .. image:: /images/minio-console/console-login.png
          :width: 600px
-         :alt: MinIO Console Login Page
+         :alt: MinIO Console 登录页
          :align: center
 
-      You can use the MinIO Console for general administration tasks like Identity and Access Management, Metrics and Log Monitoring, or Server Configuration. 
-      Each MinIO server includes its own embedded MinIO Console.
+      你可以使用 MinIO Console 执行常规管理任务，例如身份与访问管理、指标和日志监控，或 Server 配置。
+      每个 MinIO server 都包含自身内嵌的 MinIO Console。
 
    .. tab-item:: CLI
 
-      Follow the :ref:`installation instructions <mc-install>` for ``mc`` on your local host.
-      Run ``mc --version`` to verify the installation.
+      请按照本地主机上的 ``mc`` :ref:`安装说明 <mc-install>` 完成安装。
+      运行 ``mc --version`` 验证安装结果。
 
-      If your MinIO deployment uses third-party or self-signed TLS certificates, copy the :abbr:`CA (Certificate Authority)` files to ``~/.mc/certs/CAs`` to allow ``mc`` 
+      如果你的 MinIO 部署使用第三方或自签名 TLS 证书，请将 :abbr:`CA (Certificate Authority)` 文件复制到 ``~/.mc/certs/CAs``，以便 ``mc`` 信任该证书链。
 
-
-      Once installed, create an alias for the MinIO deployment:
+      安装完成后，为该 MinIO 部署创建一个别名：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set myminio https://minio-1.example.net:9000 USERNAME PASSWORD
 
-      Change the hostname, username, and password to reflect your deployment.
-      The hostname can be any MinIO node in the deployment.
-      You can also specify the hostname load balancer, reverse proxy, or similar network control plane that handles connections to the deployment.
+      请根据你的部署修改主机名、用户名和密码。
+      主机名可以是部署中的任意一个 MinIO 节点。
+      你也可以指定负责处理部署连接的负载均衡器、反向代理或类似网络控制平面的主机名。
 
-6. Next Steps
-~~~~~~~~~~~~~
+6. 后续步骤
+~~~~~~~~~~~
 
-TODO
+待补充

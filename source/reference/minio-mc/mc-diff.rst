@@ -6,40 +6,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc diff
 
-Syntax
-------
+语法
+----
 
 .. start-mc-diff-desc
 
-The :mc:`mc diff` mc computes the differences between two filesystem directories
-or MinIO buckets. :mc:`mc diff` lists only those objects which are missing or
-which differ in size. :mc:`mc diff` does **not** compare the contents of
-objects.
+:mc:`mc diff` 命令用于计算两个文件系统目录或 MinIO 存储桶之间的差异。
+:mc:`mc diff` 仅列出缺失的对象或大小不同的对象。:mc:`mc diff`
+**不会**比较对象内容。
 
 .. end-mc-diff-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command computes the difference between an object on
-      a local filesystem and an object in the ``mydata`` bucket on the
-      ``myminio`` MinIO deployment:
+      以下命令用于比较本地文件系统中的一个对象与 ``myminio`` MinIO
+      部署中 ``mydata`` 存储桶内一个对象之间的差异：
 
       .. code-block:: shell
          :class: copyable
 
          mc diff ~/mydata/myobject.txt myminio/mydata/myobject.txt
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc diff` command has the following syntax:
+      :mc:`mc diff` 命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -50,24 +48,23 @@ objects.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: SOURCE
 
-   *Required* The object to compare to the ``TARGET``.
+   *必需* 要与 ``TARGET`` 比较的对象。
 
-   For an object from MinIO,
-   specify the :mc:`alias <mc alias>` and the full path to that 
-   object (e.g. bucket and path to object). For example:
+   对于来自 MinIO 的对象，
+   指定 :mc:`alias <mc alias>` 以及该对象的完整路径
+   （例如存储桶和对象路径）。例如：
 
    .. code-block:: none
 
       mc diff play/mybucket/object.txt ~/mydata/object.txt
 
 
-   For an object from a local filesystem, specify the full
-   path to that object. For example:
+   对于来自本地文件系统的对象，指定该对象的完整路径。例如：
 
    .. code-block:: none
 
@@ -75,33 +72,32 @@ Parameters
 
 .. mc-cmd:: TARGET
 
-   *Required* The object to compare to the ``SOURCE``.
+   *必需* 要与 ``SOURCE`` 比较的对象。
 
-   For an object from MinIO,
-   specify the :mc:`alias <mc alias>` and the full path to that 
-   object (e.g. bucket and path to object). For example:
+   对于来自 MinIO 的对象，
+   指定 :mc:`alias <mc alias>` 以及该对象的完整路径
+   （例如存储桶和对象路径）。例如：
 
    .. code-block:: none
 
       mc diff play/mybucket/object.txt ~/mydata/object.txt
 
 
-   For an object from a local filesystem, specify the full
-   path to that object. For example:
+   对于来自本地文件系统的对象，指定该对象的完整路径。例如：
 
    .. code-block:: none
 
       mc diff ~/mydata/object.txt play/mybucket/object.txt
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
 .. include:: /includes/play-alias-available.rst
    :start-after: play-alias-only
@@ -112,22 +108,22 @@ Examples
 
    mc diff play/bucket1 play/bucket2
 
-Behavior
---------
+行为
+----
 
-Output Legend
-~~~~~~~~~~~~~
+输出图例
+~~~~~~~~
 
-:mc:`mc diff` uses the following legend when formatting the diff output:
+:mc:`mc diff` 在格式化 diff 输出时使用以下图例：
 
 .. code-block:: none
    
-   FIRST < SECOND - object exists only in FIRST 
-   FIRST > SECOND - object exists only in SECOND 
-   FIRST ! SECOND - Newer object exists in FIRST
+   FIRST < SECOND - 对象仅存在于 FIRST
+   FIRST > SECOND - 对象仅存在于 SECOND
+   FIRST ! SECOND - FIRST 中存在较新的对象
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

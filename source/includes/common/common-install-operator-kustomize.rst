@@ -1,21 +1,24 @@
 .. _minio-k8s-deploy-operator-kustomize-repo-2:
 
-Install the MinIO Operator using Kustomize
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用 Kustomize 安装 MinIO Operator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following procedure uses ``kubectl -k`` to install the Operator from the MinIO Operator GitHub repository.
-``kubectl -k`` and ``kubectl --kustomize`` are aliases that perform the same command.
+以下流程使用 ``kubectl -k`` 从 MinIO Operator GitHub 仓库安装 Operator。
+``kubectl -k`` 和 ``kubectl --kustomize`` 是执行同一命令的别名。
 
 .. important::
 
-   If you use Kustomize to install the Operator, you must use Kustomize to manage or upgrade that installation.
-   Do not use ``kubectl krew``, a Helm chart, or similar methods to manage or upgrade a MinIO Operator installation deployed with Kustomize.
+   如果你使用 Kustomize 安装 Operator，
+   则必须继续使用 Kustomize 来管理或升级该安装。
+   不要使用 ``kubectl krew``、Helm chart 或类似方法，
+   去管理或升级通过 Kustomize 部署的 MinIO Operator。
 
-   You can, however, use Kustomize to upgrade a previous version of Operator (5.0.14 or earlier) installed with the MinIO Kubernetes Plugin.
+   不过，你可以使用 Kustomize 升级先前通过 MinIO Kubernetes Plugin
+   安装的旧版本 Operator（5.0.14 或更早版本）。
 
-#. Install the latest version of Operator
+#. 安装最新版本的 Operator
 
-   The following command installs the Operator to the ``minio-operator`` namespace:
+   以下命令会将 Operator 安装到 ``minio-operator`` 命名空间：
 
    .. code-block:: shell
       :class: copyable
@@ -23,16 +26,16 @@ The following procedure uses ``kubectl -k`` to install the Operator from the Min
 
       kubectl apply -k "github.com/minio/operator?ref=v|operator-version-stable|"
 
-   The command outputs a list of installed resources.
+   该命令会输出已安装资源列表。
 
-#. Verify the Operator pods are running:
+#. 验证 Operator pod 是否正在运行：
 
    .. code-block:: shell
       :class: copyable
 
       kubectl get pods -n minio-operator
 
-   The output resembles the following:
+   输出类似如下：
 
    .. code-block:: shell
 
@@ -40,23 +43,27 @@ The following procedure uses ``kubectl -k`` to install the Operator from the Min
       minio-operator-6c758b8c45-nkhlx   1/1     Running   0          2m42s
       minio-operator-6c758b8c45-dgd8n   1/1     Running   0          2m42s
 
-   In this example, the ``minio-operator`` pod is MinIO Operator and the ``console`` pod is the Operator Console.
+   在这个示例中，``minio-operator`` pod 对应 MinIO Operator，
+   ``console`` pod 对应 Operator Console。
 
-   You can modify your Operator deployment by applying kubectl patches.
-   You can find examples for common configurations in the `Operator GitHub repository <https://github.com/minio/operator/tree/master/examples/kustomization>`__.
+   你可以通过应用 kubectl patch 来修改 Operator 部署。
+   常见配置示例可在
+   `Operator GitHub repository <https://github.com/minio/operator/tree/master/examples/kustomization>`__
+   中找到。
 
    .. _minio-k8s-deploy-operator-access-console:
 
-#. Verify the Operator installation
+#. 验证 Operator 安装
 
-   Check the contents of the specified namespace (``minio-operator``) to ensure all pods and services have started successfully.
+   检查指定命名空间（``minio-operator``）中的内容，
+   确认所有 pod 和 service 都已成功启动。
 
    .. code-block:: shell
       :class: copyable
 
       kubectl get all -n minio-operator
 
-   The response should resemble the following:
+   返回结果应类似如下：
 
    .. code-block:: shell
 
@@ -74,10 +81,12 @@ The following procedure uses ``kubectl -k`` to install the Operator from the Min
       NAME                                        DESIRED   CURRENT   READY   AGE
       replicaset.apps/minio-operator-6c758b8c45   2         2         2       5m20s
 
-#. Next Steps
+#. 后续步骤
 
-   You can deploy MinIO tenants using the :ref:`MinIO CRD and Kustomize. <minio-k8s-deploy-minio-tenant>`
-   MinIO also provides a :ref:`Helm chart for deploying Tenants <deploy-tenant-helm>`. 
+   你可以使用 :ref:`MinIO CRD 和 Kustomize <minio-k8s-deploy-minio-tenant>`
+   来部署 MinIO 租户。
+   MinIO 也提供了 :ref:`用于部署 Tenant 的 Helm chart <deploy-tenant-helm>`。
 
-   MinIO recommends using the same method of Tenant deployment and management used to install the Operator.
-   Mixing Kustomize and Helm for Operator or Tenant management may increase operational complexity.
+   MinIO 建议对 Tenant 的部署和管理沿用安装 Operator 时所使用的同一种方法。
+   在 Operator 或 Tenant 管理中混用 Kustomize 和 Helm
+   可能会增加运维复杂度。

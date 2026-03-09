@@ -1,12 +1,12 @@
 .. _minio-rust-quickstart:
 
-=====================
-Rust Quickstart Guide
-=====================
+====================
+Rust 快速入门指南
+====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 

@@ -6,33 +6,33 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc idp ldap policy entities
 
 
-Description
------------
+说明
+----
 
 .. start-mc-idp-ldap-policy-entities-desc
 
-The :mc:`mc idp ldap policy entities` command displays a list of mappings for a user, group, and/or policy.
+:mc:`mc idp ldap policy entities` 命令显示用户、组和/或策略的映射关系列表。
 
 .. end-mc-idp-ldap-policy-entities-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following example lists all mappings for a specific policy, a set of groups, and a selection of users on the ``myminio`` deployment.
+      以下示例列出 ``myminio`` 部署中某个特定策略、一组用户组以及部分用户的所有映射关系。
 
-      Specifically, it lists:
+      具体包括：
 
-      - Users mapped to the ``finteam-policy`` policy.
-      - Policies assigned to the ``uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io`` user.
-      - Policies assigned to the ``cn=projectb,ou=groups,ou=swengg,dc=min,dc=io`` group.
+      - 映射到 ``finteam-policy`` 策略的用户。
+      - 分配给 ``uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io`` 用户的策略。
+      - 分配给 ``cn=projectb,ou=groups,ou=swengg,dc=min,dc=io`` 组的策略。
 
       .. code-block:: shell
          :class: copyable
@@ -42,9 +42,9 @@ The :mc:`mc idp ldap policy entities` command displays a list of mappings for a 
                                      --user 'uid=bobfisher,ou=people,ou=hwengg,dc=min,dc=io'  \
                                      --group 'cn=projectb,ou=groups,ou=swengg,dc=min,dc=io'
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -55,25 +55,25 @@ The :mc:`mc idp ldap policy entities` command displays a list of mappings for a 
                                           [--policy value]               \
                                           [--user `value`, -u `value`]
 
-      - Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment to configure for AD/LDAP integration.
-      - You may use each of the ``--user``, ``--group``, and/or ``--policy`` flags as many times as desired in the command.
-      - For each flag, the output lists the entities mapped to the specified policy, user, or group.
-      - Omit all flags to return a list of mappings for all policies.
+      - 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`alias <alias>`，用于配置 AD/LDAP 集成。
+      - 在命令中可按需多次使用 ``--user``、``--group`` 和/或 ``--policy`` 标志。
+      - 对于每个标志，输出会列出映射到指定策略、用户或组的实体。
+      - 省略所有标志将返回所有策略的映射关系列表。
 
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment for which to display the entity mappings.
+   要显示实体映射关系的 MinIO 部署 :ref:`alias <alias>`。
 
-   For example:
+   例如：
 
    .. code-block:: none
 
@@ -82,27 +82,27 @@ Parameters
 .. mc-cmd:: --group
    :optional:
 
-   Returns a list of users and policies associated with the specified group.
-   Repeat the flag to return a list for multiple groups.
+   返回与指定组关联的用户和策略列表。
+   重复此标志可返回多个组的列表。
 
 .. mc-cmd:: --policies
    :optional:
 
-   Returns a list of users and groups associated with the specified policy.
-   Repeat the flag to return a list for multiple policies.
+   返回与指定策略关联的用户和组列表。
+   重复此标志可返回多个策略的列表。
 
 .. mc-cmd:: --user
    :optional:
 
-   Returns a list of groups to which the user belongs and the policies associated with each group.
-   The output includes only groups assigned to policies.
+   返回该用户所属的组列表，以及与每个组关联的策略。
+   输出仅包含已分配策略的组。
 
-   Repeat the flag to return a list for multiple users.
+   重复此标志可返回多个用户的列表。
 
-Example
-~~~~~~~
+示例
+~~~~
 
-The following example lists the entities mapped to each of two policies, ``policy1`` and ``policy2`` and entities mapped to the ``projectb`` group on the ``myminio`` deployment:
+以下示例列出 ``myminio`` 部署中映射到两个策略 ``policy1`` 和 ``policy2`` 的实体，以及映射到 ``projectb`` 组的实体：
 
 .. code-block:: shell
    :class: copyable
@@ -113,19 +113,19 @@ The following example lists the entities mapped to each of two policies, ``polic
                              --group='cn=projectb,ou=groups,ou=swengg,dc=min,dc=io'
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

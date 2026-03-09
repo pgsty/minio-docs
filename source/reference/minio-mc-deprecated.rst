@@ -1,31 +1,31 @@
-===================
-Deprecated Commands
-===================
+============
+弃用命令
+============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-The following table lists the commands deprecated by MinIO.
-The table includes:
+下表列出了 MinIO 已弃用的命令。
+该表包含：
 
-- Deprecated Command
-- Replacement command (if applicable)
-- Version of deprecation
+- 已弃用命令
+- 替代命令（如适用）
+- 弃用版本
 
-Table of Deprecated Commands
-----------------------------
+弃用命令表
+----------
 
 .. list-table::
    :header-rows: 1
    :widths: 30 30 40
    :width: 100%
 
-   * - Deprecated Command
-     - Replacement Command
-     - Version of Change
+   * - 已弃用命令
+     - 替代命令
+     - 弃用版本
 
    * - ``mc ilm add``
      - :mc-cmd:`mc ilm rule add`
@@ -52,19 +52,19 @@ Table of Deprecated Commands
      - mc RELEASE.2022-12-24T15-21-38Z
 
    * - ``mc quota``
-     - None
+     - 无
      - mc RELEASE.2024-07-31T15-58-33Z
 
    * - ``mc quota clear``
-     - None
+     - 无
      - mc RELEASE.2024-07-31T15-58-33Z
 
    * - ``mc quota info``
-     - None
+     - 无
      - mc RELEASE.2024-07-31T15-58-33Z
 
    * - ``mc quota set``
-     - None
+     - 无
      - mc RELEASE.2024-07-31T15-58-33Z
 
    * - ``mc replicate diff``
@@ -72,17 +72,17 @@ Table of Deprecated Commands
      - mc RELEASE.2023-07-18T21-05-38Z
 
 
-Table of Deprecated Admin Commands
-----------------------------------
+弃用管理命令表
+--------------
 
 .. list-table::
    :header-rows: 1
    :widths: 30 30 40
    :width: 100%
 
-   * - Deprecated Command
-     - Replacement Command
-     - Version of Change
+   * - 已弃用命令
+     - 替代命令
+     - 弃用版本
 
    * - ``mc admin bucket remote``
      - :mc-cmd:`mc replicate`
@@ -185,7 +185,7 @@ Table of Deprecated Admin Commands
      - mc RELEASE.2023-03-20T17-17-53Z 
 
    * - ``mc admin policy update``
-     - :mc-cmd:`mc admin policy attach` or :mc-cmd:`mc admin policy detach`
+     - :mc-cmd:`mc admin policy attach` 或 :mc-cmd:`mc admin policy detach`
      - mc RELEASE.2023-03-20T17-17-53Z 
 
    * - ``mc admin profile``

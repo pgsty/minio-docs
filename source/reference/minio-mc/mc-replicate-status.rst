@@ -12,31 +12,30 @@
 
 .. mc:: mc replicate status
 
-Syntax
-------
+语法
+----
 
 .. start-mc-replicate-status-desc
 
-The :mc:`mc replicate status` command displays the :ref:`replication status <minio-bucket-replication-serverside>` of a MinIO bucket.
-The status also lists the remote target path or location.
+:mc:`mc replicate status` 命令显示 MinIO 存储桶的 :ref:`复制状态 <minio-bucket-replication-serverside>`。
+该状态还会列出远程目标路径或位置。
 
 .. end-mc-replicate-status-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command displays the current replication status of the
-      ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令显示 ``myminio`` MinIO 部署上 ``mydata`` 存储桶的当前复制状态：
 
       .. code-block:: shell
          :class: copyable
 
          mc replicate status myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -50,14 +49,14 @@ The status also lists the remote target path or location.
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :ref:`alias <alias>` of the MinIO deployment and full path to the bucket or bucket prefix for which to display the replication status. 
-   For example:
+   MinIO 部署的 :ref:`alias <alias>`，以及要显示复制状态的存储桶或存储桶前缀的完整路径。
+   例如：
 
    .. code-block:: none
 
@@ -66,84 +65,84 @@ Parameters
 .. mc-cmd:: --limit-download
    :optional:
 
-   Limit download rates to no more than a specified rate in KiB/s, MiB/s, or GiB/s.
-   Valid units include: 
+   将下载速率限制为不超过指定值，单位可为 KiB/s、MiB/s 或 GiB/s。
+   有效单位包括：
    
-   - ``B`` for bytes
-   - ``K`` for kilobytes
-   - ``G`` for gigabytes
-   - ``T`` for terabytes
-   - ``Ki`` for kibibytes
-   - ``Gi`` for gibibytes
-   - ``Ti`` for tebibytes
+   - ``B`` 表示 bytes
+   - ``K`` 表示 kilobytes
+   - ``G`` 表示 gigabytes
+   - ``T`` 表示 terabytes
+   - ``Ki`` 表示 kibibytes
+   - ``Gi`` 表示 gibibytes
+   - ``Ti`` 表示 tebibytes
 
-   For example, to limit download rates to no more than 1 GiB/s, use the following:
+   例如，要将下载速率限制为不超过 1 GiB/s，可使用以下参数：
 
    .. code-block::
 
       --limit-download 1G
 
-   If not specified, MinIO uses an unlimited download rate.
+   如果未指定，MinIO 使用不限速的下载速率。
 
 .. mc-cmd:: --limit-upload
    :optional:
 
-   Limit upload rates to no more than the specified rate in KiB/s, MiB/s, or GiB/s.
-   Valid units include: 
+   将上传速率限制为不超过指定值，单位可为 KiB/s、MiB/s 或 GiB/s。
+   有效单位包括：
    
-   - ``B`` for bytes
-   - ``K`` for kilobytes
-   - ``G`` for gigabytes
-   - ``T`` for terabytes
-   - ``Ki`` for kibibytes
-   - ``Gi`` for gibibytes
-   - ``Ti`` for tebibytes
+   - ``B`` 表示 bytes
+   - ``K`` 表示 kilobytes
+   - ``G`` 表示 gigabytes
+   - ``T`` 表示 terabytes
+   - ``Ki`` 表示 kibibytes
+   - ``Gi`` 表示 gibibytes
+   - ``Ti`` 表示 tebibytes
 
-   For example, to limit upload rates to no more than 1 GiB/s, use the following:
+   例如，要将上传速率限制为不超过 1 GiB/s，可使用以下参数：
 
    .. code-block::
 
       --limit-upload 1G
 
-   If not specified, MinIO uses an unlimited upload rate.
+   如果未指定，MinIO 使用不限速的上传速率。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Display Replication Status
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示复制状态
+~~~~~~~~~~~~
 
-Use :mc:`mc replicate status` to show bucket replication status:
+使用 :mc:`mc replicate status` 显示存储桶复制状态：
 
 .. code-block:: shell
    :class: copyable
 
    mc replicate status ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc replicate status ALIAS>` with the :mc:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc replicate status ALIAS>` 替换为 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc replicate status ALIAS>` with the path to the bucket or bucket prefix.
+- 将 :mc-cmd:`PATH <mc replicate status ALIAS>` 替换为存储桶或存储桶前缀路径。
 
-Behavior
---------
+行为
+----
 
-Removed and Re-added ARNs
-~~~~~~~~~~~~~~~~~~~~~~~~~
+移除并重新添加的 ARN
+~~~~~~~~~~~~~~~~~~~
 
 .. versionchanged:: mc RELEASE.2023-03-20T17-17-53Z
 
-The standard output of this command does not display ARNs previously removed from a replication configuration.
+该命令的标准输出不会显示此前已从复制配置中移除的 ARN。
 
-To list all ARNs, including ARNs no longer part of the replication, use the ``--json`` flag.
-The ``json`` output continues to show data replicated under old ARNs.
-This may be valuable if an ARN was removed and re-added for the same bucket.
+如需列出所有 ARN（包括不再属于当前复制配置的 ARN），请使用 ``--json`` 标志。
+``json`` 输出会持续显示在旧 ARN 下复制的数据。
+如果某个 ARN 在同一存储桶上被移除后又重新添加，这些信息会很有价值。
 
-New ARNs do **not** cause re-replication of previously synced objects.
+新的 ARN **不会**触发对先前已同步对象的重新复制。

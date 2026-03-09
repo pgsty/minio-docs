@@ -6,34 +6,34 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin accesskey create
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-accesskey-create-desc
 
-The :mc-cmd:`mc admin accesskey create` command adds a new access key and secret key pair for an existing MinIO user.
+:mc-cmd:`mc admin accesskey create` 命令为现有 MinIO 用户添加新的 access key 和 secret key 对。
 
 .. end-mc-admin-accesskey-create-desc
 
-.. admonition:: Access keys for OpenID Connect or AD/LDAP users
+.. admonition:: OpenID Connect 或 AD/LDAP 用户的访问密钥
    :class: note
 
-   This command is for access keys for users created directly on the MinIO deployment and not managed by a third party solution.
+   此命令用于为直接在 MinIO 部署上创建、且不由第三方方案管理的用户创建访问密钥。
 
-   To generate access keys for :ref:`Active Directory/LDAP users <minio-external-identity-management-ad-ldap>`, use :mc:`mc idp ldap accesskey create`.
+   要为 :ref:`Active Directory/LDAP users <minio-external-identity-management-ad-ldap>` 生成访问密钥，请使用 :mc:`mc idp ldap accesskey create`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command creates a new access key associated to an existing MinIO user:
+      以下命令会创建一个与现有 MinIO 用户关联的新访问密钥：
 
       .. code-block:: shell                                                                 
          :class: copyable
@@ -44,11 +44,11 @@ The :mc-cmd:`mc admin accesskey create` command adds a new access key and secret
             --secret-key myusersecretkey  \
             --policy /path/to/policy.json 
                                                                                    
-      The command returns the access key and secret key for the new account.
+      该命令会返回新账户的 access key 和 secret key。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -69,42 +69,42 @@ The :mc-cmd:`mc admin accesskey create` command adds a new access key and secret
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: USER
    :optional:
 
-   The username of the user to which MinIO adds the new access key.
-   If not specified, MinIO generates an access key/secret key pair for the authenticated user.
+   MinIO 要为其添加新访问密钥的用户名。
+   如果未指定，MinIO 会为已认证用户生成 access key/secret key 对。
 
 .. mc-cmd:: --access-key
    :optional:
 
-   A string to use as the access key for this account.
-   Omit to let MinIO autogenerate a random 20 character value.
+   作为此账户 access key 使用的字符串。
+   若省略，MinIO 会自动生成一个随机的 20 字符值。
 
-   Access Key names *must* be unique across all users.
+   Access Key 名称在所有用户之间*必须*唯一。
 
 .. mc-cmd:: --description
    :optional:
 
-   Add a description for the access key.
-   For example, you might specify the reason the access key exists.
+   为访问密钥添加描述。
+   例如，可以说明该访问密钥存在的原因。
 
 .. mc-cmd:: --expiry
    :optional:
 
-   Set an expiration date for the access key.
-   The date must be in the future.
-   You may not set an expiration date that has already passed.
+   为访问密钥设置过期日期。
+   该日期必须是未来时间。
+   不可设置已经过去的过期日期。
 
-   Allowed date and time formats:
+   允许的日期和时间格式：
 
    - ``2024-10-24``
    - ``2024-10-24T10:00``
@@ -112,79 +112,79 @@ Parameters
    - ``2024-10-24T10:00:00Z``
    - ``2024-10-24T10:00:00-07:00``
    
-   Mutually exclusive with :mc-cmd:`~mc admin accesskey create --expiry-duration`.
+   与 :mc-cmd:`~mc admin accesskey create --expiry-duration` 互斥。
 
 .. mc-cmd:: --expiry-duration
    :optional:
 
-   Length of time for which the accesskey remains valid.
-   Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+   access key 保持有效的时长。
+   有效时间单位为 "ns"、"us"（或 "µs"）、"ms"、"s"、"m"、"h"。
 
-   The following expires the credentials after 30 days:
+   以下示例会让凭证在 30 天后过期：
 
    .. code-block::
 
       --expiry-duration 720h
 
-   Mutually exclusive with :mc-cmd:`~mc admin accesskey create --expiry`.
+   与 :mc-cmd:`~mc admin accesskey create --expiry` 互斥。
 
 .. mc-cmd:: --name
    :optional:
 
-   Add a human-readable name for the access key.
+   为访问密钥添加人类可读名称。
 
 .. mc-cmd:: --policy
    :optional:
 
-   The readable path to a :ref:`policy document <minio-policy>` to attach to the new access key, with a maximum size of 2048 characters.
-   The attached policy cannot grant access to any action or resource not explicitly allowed by the parent user's policy or group policies
+   要附加到新访问密钥上的 :ref:`policy document <minio-policy>` 的可读路径，最大大小为 2048 字符。
+   所附加策略不得授予父用户策略或组策略未明确允许的任何操作或资源访问权限。
 
 .. mc-cmd:: --secret-key
    :optional:
 
-   The secret key to associate with the new account.
-   Omit to let MinIO autogenerate a random 40-character value.
+   与新账户关联的 secret key。
+   若省略，MinIO 会自动生成一个随机的 40 字符值。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Examples
---------
+示例
+----
 
-Create access key / secret key pair for the authenticated user
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为已认证用户创建 access key / secret key 对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command generates a new, random access key and secret key pair for the user currently logged in to MinIO deployment at the alias ``myminio``.
-The access key and secret key have the same access policies as the authenticated user.
+以下命令会为当前登录到别名为 ``myminio`` 的 MinIO 部署的用户生成新的随机 access key 和 secret key 对。
+该 access key 和 secret key 与已认证用户具有相同的访问策略。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey create myminio/
 
-Create a custom access key / secret key pair for the authenticated user
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为已认证用户创建自定义 access key / secret key 对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key and secret key pair for the user currently logged in to MinIO at the alias ``myminio``.
-The access key and secret key have the same access policies as the authenticated user.
+以下命令会为当前登录到别名为 ``myminio`` 的 MinIO 的用户创建新的 access key 和 secret key 对。
+该 access key 和 secret key 与已认证用户具有相同的访问策略。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey create myminio/ --access-key myaccesskey --secret-key mysecretkey 
 
-Create an access key / secret key pair for another user with limited duration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为另一位用户创建有时长限制的 access key / secret key 对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key and secret key pair for a user, ``miniouser`` on the alias ``myminio``.
-The access key and secret key have the same access policies as ``miniouser``.
-The credentials remain valid for 24 hours after creation.
+以下命令会为别名 ``myminio`` 上的用户 ``miniouser`` 创建新的 access key 和 secret key 对。
+该 access key 和 secret key 与 ``miniouser`` 具有相同的访问策略。
+这些凭证在创建后 24 小时内有效。
 
 .. code-block:: shell
    :class: copyable
@@ -192,39 +192,39 @@ The credentials remain valid for 24 hours after creation.
    mc admin accesskey create myminio/ miniouser --expiry-duration 24h
 
 
-Create access key / secret key pair for the authenticated user that expires
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为已认证用户创建会过期的 access key / secret key 对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command generates a new and random access key and random secret key pair for the user currently logged in to MinIO deployment at the alias ``myminio``.
-The access key and secret key have the same access policies as the authenticated user.
-The credentials expire on the fifteenth day of January, 2025.
+以下命令会为当前登录到别名 ``myminio`` 的 MinIO 部署的用户生成新的随机 access key 和随机 secret key 对。
+该 access key 和 secret key 与已认证用户具有相同的访问策略。
+这些凭证将于 2025 年 1 月 15 日过期。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey create myminio/ --expiry 2025-01-15
 
-The date specified **must** be a future date.
-For valid datetime formats, see the :mc-cmd:`~mc admin accesskey create --expiry` flag.
+指定的日期**必须**是未来日期。
+有关有效的日期时间格式，请参见 :mc-cmd:`~mc admin accesskey create --expiry` 标志。
 
-Create access key / secret key pair for a different user with custom access
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为不同用户创建具有自定义访问权限的 access key / secret key 对
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following command creates a new access key and secret key pair for the user, ``miniouser`` on the alias ``myminio``.
-The access key and secret key have a more limited set of access than ``miniouser``, as specified in the policy JSON file.
+以下命令会为别名 ``myminio`` 上的用户 ``miniouser`` 创建新的 access key 和 secret key 对。
+该 access key 和 secret key 的访问权限比 ``miniouser`` 更受限，具体由策略 JSON 文件指定。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin accesskey create myminio/ miniouser --policy /path/to/policy.json 
 
-The specified policy file **must not** grant access to anything to which ``miniouser`` does not already have access.
+指定的策略文件**不得**授予 ``miniouser`` 当前尚未拥有的任何访问权限。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

@@ -6,62 +6,58 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc ilm tier remove
 .. mc:: mc ilm tier rm
 
-Description
------------
+描述
+----
 
 .. start-mc-ilm-tier-rm-desc
 
-The :mc:`mc ilm tier rm` command removes an remote tier that has not been used to transition any objects. 
+:mc:`mc ilm tier rm` 命令用于移除尚未用于转换任何对象的远程层。
 
 .. end-mc-ilm-tier-rm-desc
 
-The :mc:`mc ilm tier remove` command has equivalent functionality to :mc:`mc ilm tier rm`
+:mc:`mc ilm tier remove` 命令与 :mc:`mc ilm tier rm` 具有等效功能。
 
-.. note:: 
+.. note::
 
-   Once a tier has transitioned objects, it cannot be removed.
+   一旦某个层已经转换过对象，则无法将其移除。
 
-Required Permissions
-~~~~~~~~~~~~~~~~~~~~
+所需权限
+~~~~~~~~
 
-MinIO requires the following permissions scoped to to the bucket or buckets 
-for which you are creating lifecycle management rules.
+MinIO 要求具备以下权限，且权限范围限定为你要创建生命周期管理规则的一个或多个存储桶。
 
 - :policy-action:`s3:PutLifecycleConfiguration`
 - :policy-action:`s3:GetLifecycleConfiguration`
 
-MinIO also requires the following administrative permissions on the cluster
-in which you are creating remote tiers for object transition lifecycle
-management rules:
+MinIO 还要求在集群上具备以下管理权限，该集群用于为对象转换生命周期管理规则创建远程层：
 
 - :policy-action:`admin:SetTier`
 - :policy-action:`admin:ListTier`
 
-For example, the following policy provides permission for configuring object
-transition lifecycle management rules on any bucket in the cluster:.
+例如，以下策略提供了在集群中任意存储桶上配置对象转换生命周期管理规则的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
    :class: copyable
 
-Syntax
-------
+语法
+----
 
-The command has the following syntax:
+该命令具有以下语法：
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following example removes an existing remote tier called ``WARM-TIER`` on the ``myminio`` deployment.
-      No objects have transitioned to the ``WARM-TIER`` tier.
+      以下示例在 ``myminio`` 部署上移除名为 ``WARM-TIER`` 的现有远程层。
+      没有对象被转换到 ``WARM-TIER`` 层。
       
       .. code-block:: shell
          :class: copyable
@@ -69,50 +65,50 @@ The command has the following syntax:
           mc ilm tier rm myminio WARM-TIER
 
 
-   .. tab-item:: SYNTAX
-   
-      The command has the following syntax:
+   .. tab-item:: 语法
+
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
 
-         mc ilm tier info TARGET TIER_NAME 
+         mc ilm tier info TARGET TIER_NAME
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
-The command accepts the following arguments:
+该命令接受以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which the desired tier exists.
-      
+   目标层所在的已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
+
 .. mc-cmd:: TIER_NAME
    :required:
 
-   The name of an existing remote tier to remove. 
+   要移除的现有远程层名称。
 
-   You **must** specify the tier in all-caps, e.g. ``WARM_TIER``.
+   你**必须**使用全大写指定该层，例如 ``WARM_TIER``。
 
-   No object can have transitioned to the tier.
-   
+   不能有任何对象已转换到该层。
 
-Global Flags
-~~~~~~~~~~~~
+
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
 
-Required Permissions
---------------------
+所需权限
+--------
 
-For permissions required to remove a tier, refer to the :ref:`required permissions <minio-mc-ilm-tier-permissions>` on the parent command.
+有关移除层所需的权限，请参阅父命令中的 :ref:`required permissions <minio-mc-ilm-tier-permissions>`。

@@ -6,54 +6,50 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc ilm tier info
 
-Description
------------
+描述
+----
 
 .. start-mc-ilm-tier-info-desc
 
-The :mc:`mc ilm tier info` command outputs statistics about a tier or all tiers for a deployment. 
+:mc:`mc ilm tier info` 命令可输出某个层级或某个部署上所有层级的统计信息。
 
 .. end-mc-ilm-tier-info-desc
 
-Required Permissions
-~~~~~~~~~~~~~~~~~~~~
+所需权限
+~~~~~~~~
 
-MinIO requires the following permissions scoped to to the bucket or buckets 
-for which you are creating lifecycle management rules.
+MinIO 要求具备以下权限，且权限范围限定为你要创建生命周期管理规则的一个或多个存储桶。
 
 - :policy-action:`s3:PutLifecycleConfiguration`
 - :policy-action:`s3:GetLifecycleConfiguration`
 
-MinIO also requires the following administrative permissions on the cluster
-in which you are creating remote tiers for object transition lifecycle
-management rules:
+此外，在为对象转换生命周期管理规则创建远程层级时，MinIO 还要求在对应集群上具备以下管理权限：
 
 - :policy-action:`admin:SetTier`
 - :policy-action:`admin:ListTier`
 
-For example, the following policy provides permission for configuring object
-transition lifecycle management rules on any bucket in the cluster:.
+例如，以下策略授予在集群中任意存储桶上配置对象转换生命周期管理规则的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
    :class: copyable
 
-Syntax
-------
+语法
+----
 
-The command has the following syntax:
+该命令的语法如下：
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following example outputs the configuration for an existing remote tier called ``WARM-TIER`` on the ``myminio`` deployment.
+      以下示例输出 ``myminio`` 部署上名为 ``WARM-TIER`` 的现有远程层级的配置信息。
       
       .. code-block:: shell
          :class: copyable
@@ -61,73 +57,73 @@ The command has the following syntax:
           mc ilm tier info myminio WARM-TIER
 
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
    
-      The command has the following syntax:
+      该命令的语法如下：
 
       .. code-block:: shell
          :class: copyable
 
          mc ilm tier info TARGET TIER_NAME 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
-The command accepts the following arguments:
+该命令接受以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which the desired tier exists.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，且目标层级存在于该部署上。
       
 .. mc-cmd:: TIER_NAME
    :optional:
 
-   The name of an existing remote tier to display. 
+   要显示的现有远程层级名称。
 
-   You **must** specify the tier in all-caps, e.g. ``WARM_TIER``.
+   你**必须**使用全大写指定层级，例如 ``WARM_TIER``。
 
-   If not specified, MinIO lists statistics for all existing tiers on the deployment.
+   如果未指定，MinIO 会列出该部署上所有现有层级的统计信息。
    
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Example
--------
+示例
+----
 
-Display the Statistics for an Existing Tier
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示现有层级的统计信息
+~~~~~~~~~~~~~~~~~~~~~~
 
-The following example displays the statistics of the tier ``WARM-TIER`` on the ``myminio`` deployment.
+以下示例显示 ``myminio`` 部署上 ``WARM-TIER`` 层级的统计信息。
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm tier info myminio WARM-TIER 
 
-Display the Statistics for all Existing Tiers on a Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+显示部署上所有现有层级的统计信息
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example displays the statistics of all existing tiers on the ``myminio`` deployment.
+以下示例显示 ``myminio`` 部署上所有现有层级的统计信息。
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm tier info myminio
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
 
-Required Permissions
---------------------
+所需权限
+--------
 
-For permissions required to review a tier, refer to the :ref:`required permissions <minio-mc-ilm-tier-permissions>` on the parent command.
+有关查看层级所需的权限，请参阅父命令中的 :ref:`required permissions <minio-mc-ilm-tier-permissions>`。

@@ -1,39 +1,36 @@
 :orphan:
 
-===========
-Design Page
-===========
+========
+设计页
+========
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-Overview
+概览
+----
+
+此页面旨在辅助 MinIO 文档的 UI/UX 工作。你可以将其视为一个汇集了各类对象和标题的“厨房水槽”页面，以便更直观地查看当前所有元素的呈现效果。凡是出现在本页上的内容，都会在文档的其他位置存在。
+
+如果你并未参与 MinIO 的 UI/UX 工作，那么此页面没有任何有用内容。
+请返回 :doc:`索引 </index>`。
+
+常用标记
 --------
 
-This page is designed to assist MinIO UI/UX work on the documentation. Think of
-it like a 'kitchen-sink' of various objects and headers to more easily see
-what everything looks liker right now. If it's on this page, it exists
-somewhere else in the documentation.
+文本标记
+~~~~~~~~
 
-If you are not working on MinIO UI/UX, this page has no useful content. 
-Head back to the :doc:`Index </index>`. 
+*这是斜体文本*
 
-Common Markup
--------------
+**这是粗体文本**
 
-Text Markup
-~~~~~~~~~~~
+``这是等宽文本``
 
-*This is italics text*
-
-**This is bold text**
-
-``This is monospaced text``
-
-`This is hyperlink text <https://min.io>`__
+`这是超链接文本 <https://min.io>`__
 
 .. code-block:: shell
    :class: copyable
@@ -42,13 +39,13 @@ Text Markup
 
    echo "Syntax highlighting is automatic via pygments."
 
-Containers
-~~~~~~~~~~
+容器
+~~~~
 
 .. container::
 
-   This text is in a container. Containers can be helpful for custom rendering
-   of text. Add a custom class to the container to test the CSS:
+   此文本位于一个容器中。容器有助于对文本进行自定义渲染。
+   你可以为容器添加自定义 class 来测试 CSS：
 
    .. code-block:: shell
 
@@ -58,101 +55,100 @@ Containers
 Sphinx Design
 -------------
 
-The following components come from 
+以下组件来自
 :github:`sphinx-design <executablebooks/sphinx-design>`
 
-Tabs
-~~~~
+选项卡
+~~~~~~
 
-MinIO uses the ExecutableBooks 
-:github:`sphinx-design <executablebooks/sphinx-design>`  library for tabs.
+MinIO 使用 ExecutableBooks 的
+:github:`sphinx-design <executablebooks/sphinx-design>` 库来实现选项卡。
 
 .. tab-set::
 
-   .. tab-item:: Plain Text
+   .. tab-item:: 纯文本
 
-      This is plain text content
+      这是纯文本内容
 
-   .. tab-item:: Text and Code
+   .. tab-item:: 文本与代码
 
-      This is plain text content with code:
+      这是带有代码的纯文本内容：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin info ALIAS
 
-You can keep tabs in sync. For example, if you have several procedures on a page that have Console and CLI tabs.
-Use the `:sync: key1` option on teach `tab-item`.
-When someone selects a tab for one or the other, all of the other tabs available on the page with the same key change to that tab, too.
+你可以让选项卡保持同步。例如，如果页面上有多个包含 Console 和 CLI 选项卡的步骤说明，
+则可以在每个 `tab-item` 上使用 `:sync: key1` 选项。
+当用户选择其中一个选项卡时，页面上所有其他带有相同 key 的选项卡也会同步切换。
 
 .. tab-set::
 
    .. tab-item:: Console
       :sync: gui
 
-      This is plain text content
+      这是纯文本内容
 
-   .. tab-item:: Command Line
+   .. tab-item:: 命令行
       :sync: cli
 
-      This is plain text content with code:
+      这是带有代码的纯文本内容：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin info ALIAS
 
-Cards
-~~~~~
+卡片
+~~~~
 
-.. card:: Title of the card
+.. card:: 卡片标题
 
-   This is the header of the card
+   这是卡片头部
    ^^^
-   This is content inside of the card.
+   这是卡片内部的内容。
 
-   The card can contain varying content. 
+   卡片可以包含不同类型的内容。
 
    .. code-block:: shell
 
       echo "This is some code block"
 
    +++
-   This is the footer of the card
+   这是卡片底部
 
-.. card:: This card is clickable
+.. card:: 此卡片可点击
    :link: https://min.io
 
-   Clicking this card will take you to https://min.io
+   点击此卡片会跳转到 https://min.io
 
-.. card:: This card is clickable
+.. card:: 此卡片可点击
    :link: objects
    :link-type: ref
 
-   Clicking this card will take you to the location of the ``objects`` reference
-   anchor.
+   点击此卡片会跳转到 ``objects`` 引用锚点所在的位置。
 
 .. card-carousel:: 4
 
-   .. card:: Card Carousel 1
+   .. card:: 轮播卡片 1
 
-      This is the first item in the carousel
+      这是轮播中的第一项
 
-   .. card:: Card Carousel 2
+   .. card:: 轮播卡片 2
 
-      This is the second item in the carousel
+      这是轮播中的第二项
 
-   .. card:: Card Carousel 3
+   .. card:: 轮播卡片 3
 
-      This is the third item in the carousel
+      这是轮播中的第三项
 
-   .. card:: Card Carousel 4
+   .. card:: 轮播卡片 4
 
-      This is the fourth item in the carousel
+      这是轮播中的第四项
 
-Grids
-~~~~~
+网格
+~~~~
 
 .. grid:: 1 1 3 3
    :outline:
@@ -160,41 +156,41 @@ Grids
 
    .. grid-item::
 
-      The first item in the grid
+      网格中的第一项
 
    .. grid-item::
 
-      The second item in the grid
+      网格中的第二项
 
    .. grid-item::
 
-      The third item in the grid
+      网格中的第三项
 
       .. grid:: 1 1 1 1
          :outline:
 
          .. grid-item::
 
-            SubGrid Item 1
+            子网格项 1
 
          .. grid-item::
 
-            SubGrid Item 2
+            子网格项 2
 
          .. grid-item::
 
-            SubGrid Item 3
+            子网格项 3
 
 .. grid:: 2 2 3 3
    :gutter: 3
 
-   .. grid-item-card:: Card 1
+   .. grid-item-card:: 卡片 1
 
-      Card 1 content
+      卡片 1 内容
 
-   .. grid-item-card:: Card 2
+   .. grid-item-card:: 卡片 2
 
-      Card 2 content
+      卡片 2 内容
 
    .. grid-item::
       :child-direction: row
@@ -204,56 +200,55 @@ Grids
          :gutter: 3
          :padding: 0
 
-         .. grid-item-card:: SubCard 1
+         .. grid-item-card:: 子卡片 1
 
-            SubCard 1 content
+            子卡片 1 内容
 
-         .. grid-item-card:: SubCard 2
+         .. grid-item-card:: 子卡片 2
 
-            SubCard 2 content
+            子卡片 2 内容
 
-         .. grid-item-card:: SubCard 3
+         .. grid-item-card:: 子卡片 3
 
-            SubCard 3 content
+            子卡片 3 内容
 
-Header 1
---------
+标题 1
+------
 
 .. cond:: mindocs
 
    .. include:: /includes/common/common-design.rst
 
-This is content under a level 1 header. The header includes an 
-anchor tag for linking. The table of contents for this page is 
-configured to display up to 2 header levels. The header title should
-display in the right hand TOC.
+这是一级标题下的内容。该标题包含一个用于链接的锚点标签。
+本页的目录配置为最多显示 2 级标题。
+该标题应显示在右侧 TOC 中。
 
-Header 2
-~~~~~~~~
+标题 2
+~~~~~~
 
-This is content under a level 2 header. The header includes an anchor tag
-for linking. The table of contents for this page is configured to display up
-to 2 header levels. The header title should display in the right hand TOC
+这是二级标题下的内容。该标题包含一个用于链接的锚点标签。
+本页的目录配置为最多显示 2 级标题。
+该标题应显示在右侧 TOC 中。
 
-Header 3
-++++++++
+标题 3
+++++++
 
-This is content under a level 3 header. The header includes an anchor tag
-for linking. The table of contents for this page is configured to display up to
-2 header levels. The header title should *not* display in the right hand TOC.
+这是三级标题下的内容。该标题包含一个用于链接的锚点标签。
+本页的目录配置为最多显示 2 级标题。
+该标题*不应*显示在右侧 TOC 中。
 
-Header 4
-========
+标题 4
+======
 
-This is content under a level 4 header. The header includes an anchor tag
-for linking. The table of contents for this page is configured to display up to
-2 header levels. The header title should *not* display in the right hand TOC.
+这是四级标题下的内容。该标题包含一个用于链接的锚点标签。
+本页的目录配置为最多显示 2 级标题。
+该标题*不应*显示在右侧 TOC 中。
 
-Admonitions
------------
+提示块
+------
 
-The MinIO documentation uses the following admonition types. 
-Admonition HTML code resembles the following:
+MinIO 文档使用以下提示块类型。
+提示块的 HTML 代码大致如下：
 
 .. code-block:: shell
 
@@ -261,245 +256,241 @@ Admonition HTML code resembles the following:
       <p class="admonition-title"></p>
    </div>
 
-The additional class is set when defining the admonition and can be
-any arbitrary string. Sphinx has defaults around ``warning``, 
-``note``, and ``custom``.
+附加 class 会在定义提示块时设置，并且可以是任意字符串。
+Sphinx 为 ``warning``、``note`` 和 ``custom`` 提供了默认样式。
 
-Note Admonition
-~~~~~~~~~~~~~~~
+Note 提示块
+~~~~~~~~~~~
 
-The note admonition renders as the following:
+note 提示块的渲染效果如下：
 
 .. note::
 
-   This text is in the note body. It includes some 
-   ``monospaced``, **bold**, and *italics*. 
+   此文本位于 note 正文中。其中包含一些
+   ``monospaced``、**bold** 和 *italics*。
 
-   This is a :doc:`link </index>` to another page in the documentation.
+   这是一个指向文档中其他页面的 :doc:`链接 </index>`。
 
-   This is a `link <https://min.io>`__ to an external page. 
+   这是一个指向外部页面的 `链接 <https://min.io>`__。
 
-You can set custom text for the note title:
+你可以为 note 标题设置自定义文本：
 
-.. admonition:: Custom title with ``monospaced`` text
+.. admonition:: 带有 ``monospaced`` 文本的自定义标题
    :class: note
 
-   This text is in the note body. It includes some 
-   ``monospaced``, **bold**, and *italics*. 
+   此文本位于 note 正文中。其中包含一些
+   ``monospaced``、**bold** 和 *italics*。
 
-   This is a :doc:`link </index>` to another page in the documentation.
+   这是一个指向文档中其他页面的 :doc:`链接 </index>`。
 
-   This is a `link <https://min.io>`__ to an external page. 
+   这是一个指向外部页面的 `链接 <https://min.io>`__。
 
-To note a version change:
+用于标记版本变更：
 
 .. versionchanged:: RELEASE.2022-07-15T09-20-55Z
 
-   ``mc license register`` replaces the ``mc support register`` command.
+   ``mc license register`` 取代了 ``mc support register`` 命令。
 
-Important Admonition
-~~~~~~~~~~~~~~~~~~~~
+Important 提示块
+~~~~~~~~~~~~~~~~
 
-The important admonition renders as follows:
+important 提示块的渲染效果如下：
 
 .. important::
 
-   This text is in the important body. It includes some 
-   ``monospaced``, **bold**, and *italics*. 
+   此文本位于 important 正文中。其中包含一些
+   ``monospaced``、**bold** 和 *italics*。
 
-   This is a :doc:`link </index>` to another page in the documentation.
+   这是一个指向文档中其他页面的 :doc:`链接 </index>`。
 
-   This is a `link <https://min.io>`__ to an external page. 
+   这是一个指向外部页面的 `链接 <https://min.io>`__。
 
 
-You can set custom text for the important title:
+你可以为 important 标题设置自定义文本：
 
-.. admonition:: This is the important title with ``monospaced`` text
+.. admonition:: 带有 ``monospaced`` 文本的 important 标题
    :class: important
 
-   This text is in the important body. It includes some 
-   ``monospaced``, **bold**, and *italics*. 
+   此文本位于 important 正文中。其中包含一些
+   ``monospaced``、**bold** 和 *italics*。
 
-   This is a :doc:`link </index>` to another page in the documentation.
+   这是一个指向文档中其他页面的 :doc:`链接 </index>`。
 
-   This is a `link <https://min.io>`__ to an external page. 
+   这是一个指向外部页面的 `链接 <https://min.io>`__。
 
-Warning Admonition
-~~~~~~~~~~~~~~~~~~
+Warning 提示块
+~~~~~~~~~~~~~~
 
-The warning admonition renders as follows:
+warning 提示块的渲染效果如下：
 
 .. warning::
 
-   This text is in the warning body. It includes some 
-   ``monospaced``, **bold**, and *italics*. 
+   此文本位于 warning 正文中。其中包含一些
+   ``monospaced``、**bold** 和 *italics*。
 
-   This is a :doc:`link </index>` to another page in the documentation.
+   这是一个指向文档中其他页面的 :doc:`链接 </index>`。
 
-   This is a `link <https://min.io>`__ to an external page. 
+   这是一个指向外部页面的 `链接 <https://min.io>`__。
 
 
-You can set custom text for the warning title:
+你可以为 warning 标题设置自定义文本：
 
-.. admonition:: This is the warning title with ``monospaced`` text
+.. admonition:: 带有 ``monospaced`` 文本的 warning 标题
    :class: warning
 
-   This text is in the warning body. It includes some 
-   ``monospaced``, **bold**, and *italics*. 
+   此文本位于 warning 正文中。其中包含一些
+   ``monospaced``、**bold** 和 *italics*。
 
-   This is a :doc:`link </index>` to another page in the documentation.
+   这是一个指向文档中其他页面的 :doc:`链接 </index>`。
 
-   This is a `link <https://min.io>`__ to an external page. 
+   这是一个指向外部页面的 `链接 <https://min.io>`__。
 
-Generic Admonition
-~~~~~~~~~~~~~~~~~~
+通用提示块
+~~~~~~~~~~
 
-The generic admonition can apply any arbitrary class. This may be 
-useful if we want to display an admonition using very specific designs.
+通用提示块可以应用任意 class。
+如果我们希望以非常具体的设计来展示提示块，这会很有用。
 
 
 .. admonition:: admonition-title
    :class: class-name
 
-   This text is in the admonition body. It includes some 
-   ``monospaced``, **bold**, and *italics*. 
+   此文本位于提示块正文中。其中包含一些
+   ``monospaced``、**bold** 和 *italics*。
 
-   This is a :doc:`link </index>` to another page in the documentation.
+   这是一个指向文档中其他页面的 :doc:`链接 </index>`。
 
-   This is a `link <https://min.io>`__ to an external page. 
+   这是一个指向外部页面的 `链接 <https://min.io>`__。
 
-Lists
------
+列表
+----
 
-List Table
-~~~~~~~~~~
+列表表格
+~~~~~~~~
 
-Sphinx has special markup for producing clean tables, vs ascii-style table
-definitions.
+Sphinx 提供了专门的标记语法来生成整洁的表格，而不是使用 ASCII 风格的表格定义。
 
-The following ``.. list-table`` has a single header row and multiple columns:
+下面的 ``.. list-table`` 具有单个表头行和多列：
 
 .. list-table::
    :header-rows: 1
    :widths: 25 25 25 25
    :width: 100%
 
-   * - Row Title 1
-     - Row Title 2
-     - Row Title 3
-     - Row Title 4
+   * - 行标题 1
+     - 行标题 2
+     - 行标题 3
+     - 行标题 4
 
-   * - Column Item 1
-     - Column Item 2
-     - Column Item 3
-     - Column Item 4
+   * - 列项 1
+     - 列项 2
+     - 列项 3
+     - 列项 4
 
-   * - Column Item 1
-     - Column Item 2
-     - Column Item 3
-     - Column Item 4
+   * - 列项 1
+     - 列项 2
+     - 列项 3
+     - 列项 4
 
-   * - Column Item 1
-     - Column Item 2
-     - Column Item 3
-     - Column Item 4
+   * - 列项 1
+     - 列项 2
+     - 列项 3
+     - 列项 4
 
-The following ``.. list-table`` uses a stub column, where the first column
-contains the "header" or title:
+下面的 ``.. list-table`` 使用了 stub 列，其中第一列包含“header”或标题：
 
 .. list-table::
    :stub-columns: 1
    :widths: 25 25 25 25
    :width: 100%
 
-   * - Row Title 1
-     - Column Item 1
-     - Column Item 2
-     - Column Item 3
+   * - 行标题 1
+     - 列项 1
+     - 列项 2
+     - 列项 3
 
-   * - Row Title 2
-     - Column Item 1
-     - Column Item 2
-     - Column Item 3
+   * - 行标题 2
+     - 列项 1
+     - 列项 2
+     - 列项 3
 
-   * - Row Title 3
-     - Column Item 1
-     - Column Item 2
-     - Column Item 3
+   * - 行标题 3
+     - 列项 1
+     - 列项 2
+     - 列项 3
 
-   * - Row Title 4
-     - Column Item 1
-     - Column Item 2
-     - Column Item 3
+   * - 行标题 4
+     - 列项 1
+     - 列项 2
+     - 列项 3
 
-Bullets and Numbered Lists
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+无序列表与有序列表
+~~~~~~~~~~~~~~~~~~
 
-This is a bullet list:
+这是一个无序列表：
 
-- Item A
-- Item B
-   - Item B.1
-   - Item B.2
-- Item C
-   - Item C.1
-   - Item C.2
-   - Item C.3
-      - Item C.3.1
-      - Item C.3.2
+- 条目 A
+- 条目 B
+   - 条目 B.1
+   - 条目 B.2
+- 条目 C
+   - 条目 C.1
+   - 条目 C.2
+   - 条目 C.3
+      - 条目 C.3.1
+      - 条目 C.3.2
 
-This is a numbered list:
+这是一个有序列表：
 
-1) Item A
+1) 条目 A
 
-2) Item B
+2) 条目 B
 
-  1) Item B.1
+  1) 条目 B.1
 
-  2) Item B.2
+  2) 条目 B.2
 
-3) Item C
+3) 条目 C
 
-  3) Item C.1
+  3) 条目 C.1
 
-  4) Item C.2
+  4) 条目 C.2
 
-  5) Item C.3
+  5) 条目 C.3
 
-    1) Item C.3.1
+    1) 条目 C.3.1
 
-    2) Item C.3.2
+    2) 条目 C.3.2
 
-Definition Lists
-~~~~~~~~~~~~~~~~
+定义列表
+~~~~~~~~
 
-Sphinx markup includes syntax for producing a Description List and
-various Description Details. These typically are *not* anchored, so their
-usefulness is somewhat limited. They can be a nice way of creating visually
-distinct lists for quick scrolling and view. They are used frequently
-in the reference documentation.
+Sphinx 标记语法包含用于生成描述列表（Description List）及各类描述细节的语法。
+这类内容通常*不会*带有锚点，因此用途会受到一定限制。
+不过，它们适合用来创建视觉上区分明显的列表，便于快速滚动浏览。
+它们在参考文档中使用得很频繁。
 
-Description List Title 1
-  This is the description body for this title.
+描述列表标题 1
+  这是该标题的描述正文。
 
-  Another paragraph in this definition list
+  定义列表中的另一段内容
 
-Description List Title 2
-  This is the description body for this title.
+描述列表标题 2
+  这是该标题的描述正文。
 
-  Another paragraph in this definition list
+  定义列表中的另一段内容
 
-Description List Title 3
-  This is the description body for this title.
+描述列表标题 3
+  这是该标题的描述正文。
 
-  Another paragraph in this definition list
+  定义列表中的另一段内容
 
-Reference Definition
---------------------
+引用定义
+--------
 
-Sphinx supports creating customized reference-type directives. We use
-several throughout the docs. The following section includes some example
-definitions. The initial table links to each definition.
+Sphinx 支持创建自定义的引用类型 directive。
+我们在整个文档中使用了其中若干种。
+下面的章节包含一些定义示例，开头的列表会链接到各个定义。
 
 - :mc:`foo`
 - :mc-cmd:`foo bar`
@@ -511,47 +502,45 @@ definitions. The initial table links to each definition.
 
 .. mc:: foo
 
-There's actually a top-level definition here for linking, but not
-for display. This is intentional (For now). 
+这里实际上有一个用于链接但不用于显示的顶层定义。
+这是有意为之（至少目前如此）。
 
 .. mc-cmd:: bar
    :fullpath:
 
-   Used for defining CLI commands.
+   用于定义 CLI 命令。
 
    .. mc-cmd:: bin
 
-      Used for defining various arguments to a CLI command
+      用于定义 CLI 命令的各种参数
 
    .. mc-cmd:: baz
-      
 
-      Used for defining an option to a CLI command
+      用于定义 CLI 命令的某个选项
 
 .. data:: foo
 
-   A generic bit of data we can reference.
+   一个可供引用的通用数据项。
 
    .. data:: bar
 
-      These are nested and linked.
+      这些定义是嵌套的，并且可以链接。
 
 .. std:option:: --foo
 
-   Used for defining global arguments for CLI commands.
+   用于定义 CLI 命令的全局参数。
 
-   Example:
+   示例：
 
    .. code-block::
 
       :std:option:`--json <mc.--json>`
 
 
-Images
-------
+图片
+----
 
 .. image:: /images/minio-console/minio-console.png
    :width: 600px
-   :alt: MinIO Console Landing Page provides a view of the Object Browser for the authenticated user
+   :alt: MinIO Console Landing Page 为已认证用户提供对象浏览器视图
    :align: center
-

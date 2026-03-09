@@ -1,56 +1,56 @@
 .. _minio-batch-framework:
 
 ===============
-Batch Framework
+批处理框架
 ===============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 
 
-Overview
---------
+概述
+----
 
-The MinIO Batch Framework allows you to create, manage, monitor, and execute jobs using a YAML-formatted job definition file (a "batch file").
-The batch jobs run directly on the MinIO deployment to take advantage of the server-side processing power without constraints of the local machine where you run the :ref:`MinIO Client <minio-client>`.
+MinIO 批处理框架允许使用 YAML 格式的作业定义文件（“batch file”）来创建、管理、监控和执行作业。
+批处理作业直接在 MinIO 部署上运行，从而利用服务端处理能力，而不受运行 :ref:`MinIO Client <minio-client>` 的本地机器限制。
 
-A batch file defines one job task.
+一个批处理文件定义一个作业任务。
 
-Once started, MinIO starts processing the job.
-Time to completion depends on the resources available to the deployment.
+启动后，MinIO 会开始处理该作业。
+完成所需时间取决于部署可用的资源。
 
-If any portion of the job fails, MinIO retries the job up to the number of times defined in the job definition.
+如果作业的任何部分失败，MinIO 会按照作业定义中指定的次数上限重试该作业。
 
-The MinIO Batch Framework supports the following job types:
+MinIO 批处理框架支持以下作业类型：
 
 .. list-table:: 
    :header-rows: 1
    :widths: 30 70
    :width: 100%   
 
-   * - Job Type
-     - Description
+   * - 作业类型
+     - 说明
 
    * - :ref:`replicate <minio-batch-framework-replicate-job>`
-     - Perform a one-time replication procedure from one MinIO location to another MinIO location.
+     - 执行一次性复制流程，将数据从一个 MinIO 位置复制到另一个 MinIO 位置。
 
    * - :ref:`keyrotate <minio-batch-framework-keyrotate-job>`
-     - Perform a one-time process to cycle the :ref:`sse-s3 or sse-kms <minio-sse-data-encryption>` cryptographic keys on objects.
+     - 执行一次性流程，轮换对象上的 :ref:`sse-s3 or sse-kms <minio-sse-data-encryption>` 加密密钥。
 
    * - :ref:`expire <minio-batch-framework-expire-job>`
-     - Perform a one-time immediate expiration of objects in a bucket.
+     - 对存储桶中的对象执行一次性立即过期操作。
 
-MinIO Batch CLI
----------------
+MinIO 批处理 CLI
+-----------------
 
-- Install the :ref:`MinIO Client <minio-client>`
-- Define an :mc:`alias <mc alias set>` for the MinIO deployment
+- 安装 :ref:`MinIO Client <minio-client>`
+- 为 MinIO 部署定义一个 :mc:`alias <mc alias set>`
 
-The :mc:`mc batch` commands include
+:mc:`mc batch` 命令包括：
 
 .. list-table::
    :widths: 30 70
@@ -83,39 +83,39 @@ The :mc:`mc batch` commands include
 
 .. _minio-batch-framework-access:
 
-Access to ``mc batch``
-----------------------
+``mc batch`` 的访问权限
+-----------------------
 
-Each batch job executes using the credentials specified in the batch definition.
-The success of a given batch job depends on those credentials having the appropriate :ref:`permissions <minio-policy>` to perform all requested actions.
+每个批处理作业都使用批处理定义中指定的凭证执行。
+批处理作业能否成功，取决于这些凭证是否具有执行所有请求操作所需的适当 :ref:`权限 <minio-policy>`。
 
-The user executing the batch job must have the following permissions. 
-You can alternatively restrict users from accessing these functions by blocking or limiting access to these actions:
+执行批处理作业的用户必须具有以下权限。
+也可以通过阻止或限制对这些操作的访问，来限制用户使用这些功能：
 
 ``admin:ListBatchJobs``
-  Grants the user the ability to see batch jobs currently in process.
+  授予用户查看当前正在处理的批处理作业的能力。
 
 ``admin:DescribeBatchJobs``
-  Grants the user the ability to see the definition details of batch job currently in process.
+  授予用户查看当前正在处理的批处理作业定义详情的能力。
 
 ``admin:StartBatchJob``
-  Grants the user the ability to start a batch job.
-  The job may be further restricted by the credentials the job uses to access either the source or target deployments.
+  授予用户启动批处理作业的能力。
+  该作业还可能受到其用于访问源部署或目标部署的凭证进一步限制。
 
 ``admin:CancelBatchJob``
-  Allows the user to stop a batch job currently in progress.
+  允许用户停止当前正在进行的批处理作业。
 
-You can assign any of these actions to users independently or in any combination.
+可以将这些操作中的任意一个单独分配给用户，也可以任意组合分配。
 
-The built-in ``ConsoleAdmin`` policy includes sufficient access to perform all of these types of batch job actions.
+内置的 ``ConsoleAdmin`` 策略包含执行所有这些类型批处理作业操作所需的充分访问权限。
 
 .. _minio-batch-local:
 
-``Local`` Deployment
---------------------
+``Local`` 部署
+--------------
 
-You run a batch job against a particular deployment by passing an ``alias`` to the :mc:`mc batch` command.
-The deployment you specify in the command becomes the ``local`` deployment within the context of that batch job.
+可通过向 :mc:`mc batch` 命令传递一个 ``alias``，对特定部署运行批处理作业。
+命令中指定的部署会在该批处理作业的上下文中成为 ``local`` 部署。
 
 .. toctree::
    :titlesonly:

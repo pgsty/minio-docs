@@ -1,7 +1,7 @@
 :orphan:
 
 ==============
-Page Not Found
+页面未找到
 ==============
 
-The page you are looking for has moved, been deleted, or does not exist.
+你访问的页面已移动、已删除，或不存在。

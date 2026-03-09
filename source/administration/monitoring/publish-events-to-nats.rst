@@ -1,56 +1,56 @@
 .. _minio-bucket-notifications-publish-nats:
 
-======================
-Publish Events to NATS
-======================
+=================
+将事件发布到 NATS
+=================
 
 .. default-domain:: minio
 
 .. |ARN| replace:: ``arn:minio:sqs::primary:nats``
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports publishing :ref:`bucket notification <minio-bucket-notifications>` events to a `NATS <https://nats.io/>`__ service endpoint.
+MinIO 支持将 :ref:`存储桶通知 <minio-bucket-notifications>` 事件发布到 `NATS <https://nats.io/>`__ 服务端点。
 
-.. admonition:: NATS Streaming Deprecated
+.. admonition:: NATS Streaming 已弃用
    :class: important
 
-   NATS Streaming is deprecated.
-   Migrate to `JetStream <https://docs.nats.io/nats-concepts/jetstream>`__ instead. 
+   NATS Streaming 已弃用。
+   请改为迁移到 `JetStream <https://docs.nats.io/nats-concepts/jetstream>`__。
 
-   The related MinIO configuration options and environment variables are deprecated. 
+   相关的 MinIO 配置选项和环境变量也已弃用。
 
 
-Add a NATS Endpoint to a MinIO Deployment
------------------------------------------
+向 MinIO 部署添加 NATS 端点
+---------------------------
 
-The following procedure adds a new NATS service endpoint for supporting :ref:`bucket notifications <minio-bucket-notifications>` in a MinIO deployment.
+以下过程会在 MinIO 部署中添加一个新的 NATS 服务端点，以支持 :ref:`存储桶通知 <minio-bucket-notifications>`。
 
-Prerequisites
-~~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-MinIO ``mc`` Command Line Tool
-++++++++++++++++++++++++++++++
+MinIO ``mc`` 命令行工具
++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+此过程中的某些操作需要使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`快速入门 <mc-install>`。
 
-1) Add the NATS Endpoint to MinIO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 将 NATS 端点添加到 MinIO
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can configure a new NATS service endpoint using either environment variables *or* by setting runtime configuration settings.
+你可以通过环境变量 *或* 运行时配置设置来配置新的 NATS 服务端点。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
 
-      MinIO supports specifying the NATS service endpoint and associated configuration settings using :ref:`environment variables <minio-server-envvar-bucket-notification-nats>`. 
-      The :mc:`minio server` process applies the specified settings on its next startup.
-      
-      The following example code sets *all*  environment variables related to configuring an NATS service endpoint. 
-      The minimum *required* variables are :envvar:`MINIO_NOTIFY_NATS_ADDRESS` and :envvar:`MINIO_NOTIFY_NATS_SUBJECT`:
+      MinIO 支持使用 :ref:`环境变量 <minio-server-envvar-bucket-notification-nats>` 指定 NATS 服务端点及其相关配置设置。
+      :mc:`minio server` 进程会在下次启动时应用这些指定设置。
+
+      以下示例代码设置了与配置 NATS 服务端点相关的 *全部* 环境变量。
+      最低 *必需* 的变量是 :envvar:`MINIO_NOTIFY_NATS_ADDRESS` 和 :envvar:`MINIO_NOTIFY_NATS_SUBJECT`：
 
       .. cond:: windows
       
@@ -96,30 +96,30 @@ You can configure a new NATS service endpoint using either environment variables
                export MINIO_NOTIFY_NATS_COMMENT_<IDENTIFIER>="<string>"
                export MINIO_NOTIFY_NATS_JETSTREAM_<IDENTIFIER>="<string>"
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the NATS service endpoint. 
-        Use the same ``<IDENTIFIER>`` value for all environment variables related to the new target service endpoint.
-        The following examples assume an identifier of ``PRIMARY``.
+      - 将 ``<IDENTIFIER>`` 替换为该 NATS 服务端点的唯一描述性字符串。
+        对新目标服务端点相关的所有环境变量使用相同的 ``<IDENTIFIER>`` 值。
+        以下示例假设标识符为 ``PRIMARY``。
 
-        If the specified ``<IDENTIFIER>`` matches an existing NATS service endpoint on the MinIO deployment, the new settings *override* any existing settings for that endpoint. 
-        Use :mc-cmd:`mc admin config get notify_nats <mc admin config get>` to review the currently configured NATS endpoints on the MinIO deployment.
+        如果指定的 ``<IDENTIFIER>`` 与 MinIO 部署中现有的 NATS 服务端点匹配，新设置将 *覆盖* 该端点的任何现有设置。
+        使用 :mc-cmd:`mc admin config get notify_nats <mc admin config get>` 查看 MinIO 部署中当前配置的 NATS 端点。
 
-      - Replace ``<ENDPOINT>`` with the hostname and port of the NATS service endpoint.
-        For example: ``nats-endpoint.example.com:4222``
+      - 将 ``<ENDPOINT>`` 替换为 NATS 服务端点的主机名和端口。
+        例如：``nats-endpoint.example.com:4222``
 
-      See :ref:`NATS Service for Bucket Notifications <minio-server-envvar-bucket-notification-nats>` for complete documentation on each environment variable.
+      有关每个环境变量的完整文档，请参见 :ref:`用于存储桶通知的 NATS 服务 <minio-server-envvar-bucket-notification-nats>`。
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
 
-      MinIO supports adding or updating NATS endpoints on a running 
-      :mc:`minio server` process using the :mc-cmd:`mc admin config set` command 
-      and the :mc-conf:`notify_nats` configuration key. You must restart the 
-      :mc:`minio server` process to apply any new or updated configuration
-      settings.
+      MinIO 支持在正在运行的 :mc:`minio server` 进程上使用
+      :mc-cmd:`mc admin config set` 命令和 :mc-conf:`notify_nats`
+      配置键来添加或更新 NATS 端点。你必须重启
+      :mc:`minio server` 进程，才能应用任何新增或更新的配置
+      设置。
 
-      The following example code sets *all*  settings related to configuring an
-      NATS service endpoint. The minimum *required* setting are
-      :mc-conf:`notify_nats address <notify_nats.address>` and 
-      :mc-conf:`notify_nats subject <notify_nats.subject>`:
+      以下示例代码设置了与配置 NATS 服务端点相关的 *全部* 设置。
+      最低 *必需* 的设置是
+      :mc-conf:`notify_nats address <notify_nats.address>` 和
+      :mc-conf:`notify_nats subject <notify_nats.subject>`：
 
       .. code-block:: shell
          :class: copyable
@@ -142,50 +142,47 @@ You can configure a new NATS service endpoint using either environment variables
             comment="<string>"
 
 
-      - Replace ``IDENTIFIER`` with a unique descriptive string for the NATS service endpoint. 
-        The following examples in this procedure assume an identifier of ``PRIMARY``.
+      - 将 ``IDENTIFIER`` 替换为该 NATS 服务端点的唯一描述性字符串。
+        本过程中的以下示例假设标识符为 ``PRIMARY``。
 
-        If the specified ``IDENTIFIER`` matches an existing NATS service endpoint on the MinIO deployment, the new settings *override* any existing settings for that endpoint. 
-        Use :mc-cmd:`mc admin config get notify_nats <mc admin config get>` to review the currently configured NATS endpoints on the MinIO deployment.
+        如果指定的 ``IDENTIFIER`` 与 MinIO 部署中现有的 NATS 服务端点匹配，新设置将 *覆盖* 该端点的任何现有设置。
+        使用 :mc-cmd:`mc admin config get notify_nats <mc admin config get>` 查看 MinIO 部署中当前配置的 NATS 端点。
 
-      - Replace ``ENDPOINT`` with the hostname and port of the NATS service endpoint.
-        For example: ``nats-endpoint.example.com:4222``.
+      - 将 ``ENDPOINT`` 替换为 NATS 服务端点的主机名和端口。
+        例如：``nats-endpoint.example.com:4222``。
 
-      See :ref:`NATS Bucket Notification Configuration Settings <minio-server-config-bucket-notification-nats>` for complete       documentation on each setting.
+      有关每个设置的完整文档，请参见 :ref:`NATS 存储桶通知配置设置 <minio-server-config-bucket-notification-nats>`。
 
-1) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署以应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`别名 <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured NATS
-target similar to the following:
+:mc:`minio server` 进程会在启动时为每个已配置的 NATS
+目标输出一行内容，类似如下：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:nats
 
-You must specify the ARN resource when configuring bucket notifications with
-the associated NATS deployment as a target.
+将相关 NATS 部署配置为目标时，你必须在配置存储桶通知时指定 ARN 资源。
 
 .. include:: /includes/common-bucket-notifications.rst
    :start-after: start-bucket-notification-find-arn
    :end-before: end-bucket-notification-find-arn
 
-3) Configure Bucket Notifications using the NATS Endpoint as a Target
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 将 NATS 端点作为目标来配置存储桶通知
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc event add` command to add a new bucket notification 
-event with the configured NATS service as a target:
+使用 :mc:`mc event add` 命令添加新的存储桶通知事件，并将已配置的 NATS 服务作为目标：
 
 .. code-block:: shell
    :class: copyable
@@ -193,84 +190,80 @@ event with the configured NATS service as a target:
    mc event add ALIAS/BUCKET arn:minio:sqs::primary:nats \
      --event EVENTS
 
-- Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment.
-- Replace ``BUCKET`` with the name of the bucket in which to configure the 
-  event.
-- Replace ``EVENTS`` with a comma-separated list of :ref:`events 
-  <mc-event-supported-events>` for which MinIO triggers notifications.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`别名 <alias>`。
+- 将 ``BUCKET`` 替换为要配置事件的存储桶名称。
+- 将 ``EVENTS`` 替换为以逗号分隔的 :ref:`事件 <mc-event-supported-events>` 列表，
+  MinIO 会针对这些事件触发通知。
 
-Use :mc:`mc event ls` to view all configured bucket events for 
-a given notification target:
+使用 :mc:`mc event ls` 查看给定通知目标的所有已配置存储桶事件：
 
 .. code-block:: shell
    :class: copyable
 
    mc event ls ALIAS/BUCKET arn:minio:sqs::primary:nats
 
-4) Validate the Configured Events
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证已配置的事件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Perform an action on the bucket for which you configured the new event and 
-check the NATS service for the notification data. The action required
-depends on which :mc-cmd:`events <mc event add --event>` were specified
-when configuring the bucket notification.
+对已配置新事件的存储桶执行某个操作，并检查 NATS 服务中的通知数据。
+所需操作取决于在配置存储桶通知时指定了哪些
+:mc-cmd:`事件 <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the 
-``s3:ObjectCreated:Put`` event, you can use the 
-:mc:`mc cp` command to create a new object in the bucket and trigger 
-a notification.
+例如，如果存储桶通知配置包含 ``s3:ObjectCreated:Put`` 事件，
+你可以使用 :mc:`mc cp` 命令在存储桶中创建新对象并触发通知。
 
 .. code-block:: shell
    :class: copyable
 
    mc cp ~/data/new-object.txt ALIAS/BUCKET
 
-Update an NATS Endpoint in a MinIO Deployment
----------------------------------------------
+更新 MinIO 部署中的 NATS 端点
+------------------------------
 
-The following procedure updates an existing NATS service endpoint for supporting
-:ref:`bucket notifications <minio-bucket-notifications>` in a MinIO
-deployment.
+以下过程会更新 MinIO 部署中现有的 NATS 服务端点，以支持
+:ref:`存储桶通知 <minio-bucket-notifications>`。
 
-Prerequisites
-~~~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-MinIO ``mc`` Command Line Tool
-++++++++++++++++++++++++++++++
+MinIO ``mc`` 命令行工具
++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+此过程中的某些操作需要使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`快速入门 <mc-install>`。
 
 
-1) List Configured NATS Endpoints In The Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 列出部署中已配置的 NATS 端点
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config get` command to list the currently configured NATS service endpoints in the deployment:
+使用 :mc-cmd:`mc admin config get` 命令列出部署中当前配置的 NATS 服务端点：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config get ALIAS/ notify_nats
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO deployment.
+将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`别名 <alias>`。
 
-The command output resembles the following:
+命令输出类似如下：
 
 .. code-block:: shell
 
    notify_nats:primary password="yoursecret" subject="" address="nats-endpoint.example.com:4222"  token="" username="yourusername" ping_interval="0" queue_limit="0" tls="off" tls_skip_verify="off" queue_dir="" streaming_enable="on" nats_jetstream="on"
    notify_nats:secondary password="yoursecret" subject="" address="nats-endpoint.example.com:4222"  token="" username="yourusername" ping_interval="0" queue_limit="0" tls="off" tls_skip_verify="off" queue_dir="" streaming_enable="on" nats_jetstream="on"
 
-The :mc-conf:`notify_nats` key is the top-level configuration key for an :ref:`minio-server-config-bucket-notification-nats`. 
-The :mc-conf:`address <notify_nats.address>` key specifies the NATS service endpoint for the given ``notify_nats`` key. 
-The ``notify_nats:<IDENTIFIER>`` suffix describes the unique identifier for that NATS service endpoint.
+:mc-conf:`notify_nats` 键是 :ref:`minio-server-config-bucket-notification-nats`
+的顶层配置键。
+:mc-conf:`address <notify_nats.address>` 键为给定的 ``notify_nats`` 键指定
+NATS 服务端点。
+``notify_nats:<IDENTIFIER>`` 后缀表示该 NATS 服务端点的唯一标识符。
 
-Note the identifier for the NATS service endpoint you want to update for the next step. 
+记下你要更新的 NATS 服务端点标识符，以便在下一步中使用。
 
-2) Update the NATS Endpoint
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 更新 NATS 端点
+~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config set` command to set the new configuration for the NATS service endpoint:
+使用 :mc-cmd:`mc admin config set` 命令为 NATS 服务端点设置新配置：
 
 .. code-block:: shell
    :class: copyable
@@ -292,36 +285,39 @@ Use the :mc-cmd:`mc admin config set` command to set the new configuration for t
       queue_limit="<string>" \
       comment="<string>"
 
-The :mc-conf:`notify_nats address <notify_nats.address>` configuration setting is the *minimum* required for an NATS service endpoint. 
-All other configuration settings are *optional*. 
-See :ref:`minio-server-config-bucket-notification-nats` for a complete list of NATS configuration settings.
+:mc-conf:`notify_nats address <notify_nats.address>` 配置设置是 NATS 服务端点的
+*最低* 必需项。
+所有其他配置设置均为 *可选*。
+有关 NATS 配置设置的完整列表，请参见 :ref:`minio-server-config-bucket-notification-nats`。
 
-3) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署以应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`别名 <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured NATS target similar to the following:
+:mc:`minio server` 进程会在启动时为每个已配置的 NATS 目标输出一行内容，类似如下：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:nats
 
-4) Validate the Changes
-~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证更改
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Perform an action on a bucket which has an event configuration using the updated NATS service endpoint and check the NATS service for the notification data. 
-The action required depends on which :mc-cmd:`events <mc event add --event>` were specified when configuring the bucket notification.
+对使用更新后 NATS 服务端点进行事件配置的存储桶执行某个操作，
+并检查 NATS 服务中的通知数据。
+所需操作取决于在配置存储桶通知时指定了哪些 :mc-cmd:`事件 <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the ``s3:ObjectCreated:Put`` event, you can use the :mc:`mc cp` command to create a new object in the bucket and trigger a notification.
+例如，如果存储桶通知配置包含 ``s3:ObjectCreated:Put`` 事件，
+你可以使用 :mc:`mc cp` 命令在存储桶中创建新对象并触发通知。
 
 .. code-block:: shell
    :class: copyable

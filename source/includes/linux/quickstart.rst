@@ -2,30 +2,33 @@
 
 .. |OS| replace:: Linux
 
-This procedure deploys a :ref:`Standalone <minio-installation-comparison>` MinIO server onto |OS| for early development and evaluation of MinIO Object Storage and its S3-compatible API layer. 
+本流程会在 |OS| 上部署一个 :ref:`Standalone <minio-installation-comparison>` MinIO server，
+用于 MinIO 对象存储及其 S3 兼容 API 层的早期开发和评估。
 
-For instructions on deploying to production environments, see :ref:`deploy-minio-distributed`.
+如需面向生产环境的部署说明，请参阅 :ref:`deploy-minio-distributed`。
 
-Prerequisites
--------------
+前提条件
+--------
 
-- Read, Write and Execute permissions on your local user folder (e.g. ``~/minio``).
-- Permission to install binaries to the system ``PATH`` (e.g. access to ``/usr/local/bin``).
-- Familiarity with the Linux terminal or shell (Bash, ZSH, etc.).
-- A 64-bit Linux OS (e.g. RHEL 8, Ubuntu LTS releases).
+- 对本地用户目录（例如 ``~/minio``）具有读、写和执行权限。
+- 具有将二进制安装到系统 ``PATH`` 的权限（例如可写入 ``/usr/local/bin``）。
+- 熟悉 Linux terminal 或 shell（Bash、ZSH 等）。
+- 使用 64 位 Linux 操作系统（例如 RHEL 8、Ubuntu LTS）。
 
-Procedure
----------
+流程
+----
 
-#. **Install the MinIO Server**
+#. **安装 MinIO Server**
 
    .. include:: /includes/linux/common-installation.rst
       :start-after: start-install-minio-binary-desc
       :end-before: end-install-minio-binary-desc
 
-#. **Launch the MinIO Server**
+#. **启动 MinIO Server**
 
-   Run the following command from the system terminal or shell to start a local MinIO instance using the ``~/minio`` folder. You can replace this path with another folder path on the local machine:
+   在系统 terminal 或 shell 中运行以下命令，
+   使用 ``~/minio`` 文件夹启动本地 MinIO 实例。
+   你也可以将该路径替换为本机上的其他文件夹路径：
 
    .. code-block:: shell
       :class: copyable
@@ -33,12 +36,13 @@ Procedure
       mkdir ~/minio
       minio server ~/minio --console-address :9001
 
-   The ``mkdir`` command creates the folder explicitly at the specified path.
+   ``mkdir`` 命令会在指定路径显式创建该文件夹。
 
-   The ``minio server`` command starts the MinIO server. The path argument
-   ``~/minio`` identifies the folder in which the server operates.
+   ``minio server`` 命令用于启动 MinIO server。
+   路径参数 ``~/minio`` 指定了 server 使用的工作目录。
 
-   The :mc:`minio server` process prints its output to the system console, similar to the following:
+   :mc:`minio server` 进程会将输出打印到系统控制台，
+   其内容类似如下：
 
    .. code-block:: shell
 
@@ -57,23 +61,26 @@ Procedure
 
       WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables.
 
-#. **Connect Your Browser to the MinIO Server**
+#. **将浏览器连接到 MinIO Server**
 
-   Open http://127.0.0.1:9000 in a web browser to access the :ref:`MinIO Console <minio-console>`. 
-   You can alternatively enter any of the network addresses specified as part of the server command output.
-   For example, :guilabel:`Console: http://192.0.2.10:9001 http://127.0.0.1:9001` in the example output indicates two possible addresses to use for connecting to the Console.
+   在浏览器中打开 http://127.0.0.1:9000 即可访问 :ref:`MinIO Console <minio-console>`。
+   你也可以使用 server 命令输出中列出的任意网络地址。
+   例如，示例输出中的 :guilabel:`Console: http://192.0.2.10:9001 http://127.0.0.1:9001`
+   就表示有两个可用于连接 Console 的地址。
 
-   While the port ``9000`` is used for connecting to the API, MinIO automatically redirects browser access to the MinIO Console.
+   虽然端口 ``9000`` 用于连接 API，
+   但 MinIO 会自动将浏览器访问重定向到 MinIO Console。
 
-   Log in to the Console with the ``RootUser`` and ``RootPass`` user credentials displayed in the output.
-   These default to ``minioadmin | minioadmin``.
+   使用输出中显示的 ``RootUser`` 和 ``RootPass`` 用户凭证登录 Console。
+   它们默认是 ``minioadmin | minioadmin``。
 
-#. `(Optional)` **Install the MinIO Client**
+#. `(Optional)` **安装 MinIO Client**
 
-   The :ref:`MinIO Client <minio-client>` allows you to work with your MinIO server from the commandline.
+   :ref:`MinIO Client <minio-client>` 允许你在命令行中操作 MinIO server。
 
-   Download the :mc:`mc` client and install it to a location on your system ``PATH`` such as 
-   ``/usr/local/bin``. You can alternatively run the binary from the download location.
+   下载 :mc:`mc` 客户端，并将其安装到系统 ``PATH`` 中的某个位置，
+   例如 ``/usr/local/bin``。
+   你也可以直接在下载目录运行该二进制文件。
 
    .. code-block:: shell
       :class: copyable
@@ -82,8 +89,8 @@ Procedure
       chmod +x mc
       sudo mv mc /usr/local/bin/mc
 
-   Use :mc:`mc alias set` to create a new alias associated to your local deployment.
-   You can run :mc-cmd:`mc` commands against this alias:
+   使用 :mc:`mc alias set` 创建与本地部署关联的新别名。
+   之后你就可以针对该别名执行 :mc-cmd:`mc` 命令：
 
    .. code-block:: shell
       :class: copyable
@@ -91,21 +98,21 @@ Procedure
       mc alias set local http://127.0.0.1:9000 minioadmin minioadmin
       mc admin info local
 
-   The :mc:`mc alias set` takes four arguments:
+   :mc:`mc alias set` 需要四个参数：
 
-   - The name of the alias
-   - The hostname or IP address and port of the MinIO server
-   - The Access Key for a MinIO :ref:`user <minio-users>`
-   - The Secret Key for a MinIO :ref:`user <minio-users>`
+   - 别名名称
+   - MinIO server 的主机名或 IP 地址及端口
+   - MinIO :ref:`user <minio-users>` 的 Access Key
+   - MinIO :ref:`user <minio-users>` 的 Secret Key
 
-   The example above uses the :ref:`root user <minio-users-root>`.
+   上述示例使用的是 :ref:`root user <minio-users-root>`。
 
 .. rst-class:: section-next-steps
 
-Next Steps
-----------
+后续步骤
+--------
 
-- :ref:`Connect your applications to MinIO <minio-drivers>`
-- :ref:`Configure Object Retention <minio-object-retention>`
-- :ref:`Configure Security <minio-authentication-and-identity-management>`
-- :ref:`Deploy MinIO for Production Environments <deploy-minio-distributed>`
+- :ref:`将应用连接到 MinIO <minio-drivers>`
+- :ref:`配置对象保留 <minio-object-retention>`
+- :ref:`配置安全能力 <minio-authentication-and-identity-management>`
+- :ref:`为生产环境部署 MinIO <deploy-minio-distributed>`

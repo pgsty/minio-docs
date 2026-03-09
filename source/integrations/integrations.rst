@@ -1,17 +1,17 @@
-============
-Integrations
-============
+====
+集成
+====
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The following pages provide integration guides between MinIO and select third-party software.
-The guides on this page were previously hosted under the :guilabel:`Cookbook` heading of our legacy documentation.
+以下页面提供 MinIO 与部分第三方软件的集成指南。
+本页中的指南此前托管在旧版文档的 :guilabel:`Cookbook` 栏目下。
 
-All provided guides assume familiarity with the third-party integration software, and do not replace the official documentation for that software.
+所有提供的指南均假定读者已熟悉相关第三方软件，这些指南不能替代对应软件的官方文档。
 
 .. toctree::
    :titlesonly:
@@ -23,4 +23,3 @@ All provided guides assume familiarity with the third-party integration software
    /integrations/setup-nginx-proxy-with-minio
    /integrations/presigned-put-upload-via-browser.md
    /integrations/generate-lets-encrypt-certificate-using-certbot-for-minio.md
-

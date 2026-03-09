@@ -1,16 +1,16 @@
 .. _minio-server-envvar-core:
 
 =============
-Core Settings
+核心设置
 =============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page covers settings that control core behavior of the MinIO process.
+本页介绍用于控制 MinIO 进程核心行为的设置。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -20,26 +20,26 @@ This page covers settings that control core behavior of the MinIO process.
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-MinIO Server CLI Options
+MinIO Server CLI 选项
 ------------------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_OPTS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
-      There is no configuration setting for this variable, as these settings apply at server startup.
+      此变量没有对应的配置项，因为这些设置在服务器启动时生效。
 
-*Optional*
+*可选*
 
-Set a string of :ref:`parameters <minio-server-parameters>` to use when starting the MinIO Server.
+设置一个 :ref:`参数 <minio-server-parameters>` 字符串，在启动 MinIO Server 时使用。
 
-For Unix-like systems using the recommended MinIO ``systemd`` service, use the ``/etc/default/minio`` file and create an environment variable ``MINIO_OPTS`` for specifying parameters to append to the ``minio`` systemd process:
+对于采用推荐 MinIO ``systemd`` 服务的类 Unix 系统，请使用 ``/etc/default/minio`` 文件并创建环境变量 ``MINIO_OPTS``，用于指定要附加到 ``minio`` systemd 进程的参数：
 
 .. code-block:: shell
    :class: copyable
@@ -48,8 +48,8 @@ For Unix-like systems using the recommended MinIO ``systemd`` service, use the `
 
    MINIO_OPTS=' --console-address=":9001" --ftp="address=:8021" --ftp="passive-port-range=30000-40000" '
 
-For systems running ``minio`` on the command line, ``MINIO_OPTS`` is optional.
-To use it, declare the environment variable using standard shell semantics, then reference the environment variable when starting up the MinIO Server:
+对于在命令行运行 ``minio`` 的系统，``MINIO_OPTS`` 是可选项。
+如需使用，请按标准 shell 语义声明该环境变量，然后在启动 MinIO Server 时引用该环境变量：
 
 .. code-block:: shell
    :class: copyable
@@ -65,96 +65,96 @@ To use it, declare the environment variable using standard shell semantics, then
 
 .. important::
 
-   The ``minio server`` command does not read ``$MINIO_OPTS`` directly.
-   The variable only functions if used as described above.
+   ``minio server`` 命令不会直接读取 ``$MINIO_OPTS``。
+   该变量仅在按上述方式使用时才会生效。
 
-Storage Volumes
+存储卷
 ---------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_VOLUMES
 
-         The directories or drives the :mc:`minio server` process uses as the storage backend.
+         :mc:`minio server` 进程用作存储后端的目录或磁盘。
 
-         Functionally equivalent to setting :mc-cmd:`minio server DIRECTORIES`.
-         Use this value when configuring MinIO to run using an environment file.
+         在功能上等价于设置 :mc-cmd:`minio server DIRECTORIES`。
+         在通过环境文件配置 MinIO 运行时使用此值。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
       .. include:: /includes/common-mc-admin-config.rst
          :start-after: start-minio-settings-no-config-option
          :end-before: end-minio-settings-no-config-option
 
-Environment Variable File Path
+环境变量文件路径
 ------------------------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_CONFIG_ENV_FILE
 
-         Specifies the full path to the file the MinIO server process uses for loading environment variables.
+         指定 MinIO server 进程用于加载环境变量的文件完整路径。
 
-         For ``systemd``-managed files, set this value to the path of the environment file (``/etc/default/minio``) to direct MinIO to reload changes to that file when using :mc-cmd:`mc admin service restart` to restart the deployment.
+         对于由 ``systemd`` 管理的文件，将该值设置为环境文件路径（``/etc/default/minio``），以便在使用 :mc-cmd:`mc admin service restart` 重启部署时，指示 MinIO 重新加载该文件中的变更。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
       .. include:: /includes/common-mc-admin-config.rst
          :start-after: start-minio-settings-no-config-option
          :end-before: end-minio-settings-no-config-option
 
-Workers for Expiration
+过期处理工作线程
 ----------------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_ILM_EXPIRY_WORKERS
 
-         Specifies the number of workers to make available to expire objects configured with ILM rules for expiration.
-         When not set, MinIO defaults to using up to half of the available processing cores available.
+         指定用于处理按 ILM 过期规则配置对象过期任务的工作线程数。
+         未设置时，MinIO 默认最多使用可用处理器核心数的一半。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. include:: /includes/common-mc-admin-config.rst
          :start-after: start-minio-settings-no-config-option
          :end-before: end-minio-settings-no-config-option
 
-Domain
+域名
 ------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_DOMAIN
 
-         Enables Virtual Host-style requests to the MinIO deployment.
-         Set the value to the Fully Qualified Domain Name (FQDN) for MinIO to accept incoming virtual host requests.
+         为 MinIO 部署启用 Virtual Host 风格请求。
+         将该值设置为完全限定域名（FQDN），使 MinIO 能够接受传入的虚拟主机请求。
 
-         Omitting this setting directs MinIO to only accept the default path-style requests.
+         省略此设置时，MinIO 仅接受默认的 path-style 请求。
 
-         For example, consider a MinIO deployment with an assigned FQDN of ``minio.example.net``.
+         例如，某个 MinIO 部署分配的 FQDN 为 ``minio.example.net``。
 
-         - With path-style lookups, applications can access the bucket using its full path as ``minio.example.net/mybucket``.
-         - With virtual-host lookups, application can access the bucket as a virtual host as ``mybucket.minio.example.net/``.
+         - 使用 path-style 访问时，应用可通过完整路径 ``minio.example.net/mybucket`` 访问存储桶。
+         - 使用 virtual-host 访问时，应用可通过虚拟主机 ``mybucket.minio.example.net/`` 访问存储桶。
 
          .. important::
 
-            If you configure ``MINIO_DOMAIN``, you **must** consider all subdomains of the specified FQDN as exclusively assigned for use as bucket names.
-            Any MinIO services which conflict with those domains, such as replication targets, may exhibit unexpected or undesired behavior as a result of the collision.
+            如果配置了 ``MINIO_DOMAIN``，你**必须**将指定 FQDN 的所有子域名视为专用于存储桶名称。
+            任何与这些域名冲突的 MinIO 服务（例如复制目标）都可能因为冲突而表现出意外或非预期行为。
 
-            For example, if setting ``MINIO_DOMAIN=minio.example.net``, you **cannot** assign any subdomains of ``minio.example.net`` (in the form of ``*.minio.example.net``) to any MinIO service or target.
-            This includes hostnames for use with :ref:`bucket <minio-bucket-replication>`, :ref:`batch <minio-batch-framework-replicate-job>`, or :ref:`site replication <minio-site-replication-overview>`.
+            例如，若设置 ``MINIO_DOMAIN=minio.example.net``，则**不能**将 ``minio.example.net`` 的任何子域名（即 ``*.minio.example.net`` 形式）分配给任何 MinIO 服务或目标。
+            这包括用于 :ref:`bucket <minio-bucket-replication>`、:ref:`batch <minio-batch-framework-replicate-job>` 或 :ref:`site replication <minio-site-replication-overview>` 的主机名。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
       .. include:: /includes/common-mc-admin-config.rst
          :start-after: start-minio-settings-no-config-option
@@ -162,239 +162,239 @@ Domain
 
 .. _minio-scanner-speed-options:
 
-Scanner Speed
+扫描器速度
 -------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_SCANNER_SPEED
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: scanner speed
          :delimiter: " "
 
-Manage the maximum wait period for the :ref:`scanner <minio-concepts-scanner>` when balancing MinIO read/write performance to scanner processes.
+用于在平衡 MinIO 读写性能与扫描进程时，管理 :ref:`scanner <minio-concepts-scanner>` 的最大等待周期。
 
 .. include:: /includes/common/scanner.rst
    :start-after: start-scanner-speed-values
    :end-before: end-scanner-speed-values
 
-Batch Replication
+批量复制
 -----------------
 
 .. tab-set::
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
       .. include:: /includes/common-mc-admin-config.rst
          :start-after: start-minio-settings-no-config-option
          :end-before: end-minio-settings-no-config-option
 
 
-Data Compression
+数据压缩
 ----------------
 
-The following section documents settings for enabling data compression for objects.
-See :ref:`minio-data-compression` for tutorials on using these configuration settings.
+以下部分记录用于为对象启用数据压缩的设置。
+有关如何使用这些配置设置的教程，请参见 :ref:`minio-data-compression`。
 
-All of the settings in this section fall under the following top-level key:
+本节中的所有设置都归属于以下顶层键：
 
 .. mc-conf:: compression
 
-Enable Compression
+启用压缩
 ~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_COMPRESSION_ENABLE
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: compression enable
          :delimiter: " "
 
-*Optional*
+*可选*
 
-Set to ``on`` to enable data compression for new objects.
-Defaults to ``off``.
+设置为 ``on`` 以对新对象启用数据压缩。
+默认为 ``off``。
 
-Enabling or disabling data compression does not change existing objects.
+启用或禁用数据压缩不会更改现有对象。
 
-Allow Encryption
+允许加密
 ~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_COMPRESSION_ALLOW_ENCRYPTION
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: compression allow_encryption
          :delimiter: " "
 
-*Optional*
+*可选*
 
-Set to ``on`` to encrypt objects after compressing them.
-Defaults to ``off``.
+设置为 ``on`` 以在压缩后对对象进行加密。
+默认为 ``off``。
 
-.. admonition:: Encrypting compressed objects may compromise security
+.. admonition:: 对压缩对象加密可能会削弱安全性
    :class: warning
 
-   MinIO strongly recommends against encrypting compressed objects.
-   If you require encryption, carefully evaluate the risk of potentially leaking information about the contents of encrypted objects.
+   MinIO 强烈不建议对压缩对象进行加密。
+   如果你需要加密，请仔细评估可能泄露加密对象内容信息的风险。
 
-Compression Extensions
+压缩扩展名
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_COMPRESSION_EXTENSIONS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: compression extensions
          :delimiter: " "
 
-*Optional*
+*可选*
 
-Comma-separated list of the file extensions to compress.
-Setting a new list of file extensions replaces the previously configured list.
-Defaults to ``".txt, .log, .csv, .json, .tar, .xml, .bin"``.
+要压缩的文件扩展名列表，以逗号分隔。
+设置新的扩展名列表会替换先前已配置的列表。
+默认为 ``".txt, .log, .csv, .json, .tar, .xml, .bin"``。
 
 .. versionchanged:: RELEASE.2024-03-15T01-07-19Z
 
-   Specify ``"*"`` to direct MinIO to compress all supported file types.
+   可指定 ``"*"`` 以指示 MinIO 压缩所有受支持的文件类型。
 
-MinIO does not support compressing file types on the :ref:`Excluded File Types <minio-data-compression-excluded-types>` list, even if explicitly specified in this argument.
+即使在此参数中显式指定，MinIO 也不支持压缩 :ref:`Excluded File Types <minio-data-compression-excluded-types>` 列表中的文件类型。
 
-Compression MIME Types
+压缩 MIME 类型
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_COMPRESSION_MIME_TYPES
 
-   .. tab-item:: Configuration Variable
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: compression mime_types
          :delimiter: " "
 
-*Optional*
+*可选*
 
-Comma-separated list of the MIME types to compress.
-Setting	a new list of types replaces the previously configured list.
-Defaults to ``"text/*, application/json, application/xml, binary/octet-stream"``.
+要压缩的 MIME 类型列表，以逗号分隔。
+设置新的类型列表会替换先前已配置的列表。
+默认为 ``"text/*, application/json, application/xml, binary/octet-stream"``。
 
-.. admonition:: Default excluded files
+.. admonition:: 默认排除文件
    :class: note
 
-   Some	types of files cannot be significantly reduced in size.
-   MinIO will *not* compress these, even if specified in an :mc-conf:`~compression.mime_types` argument.
-   See :ref:`Excluded types <minio-data-compression-excluded-types>` for details.
+   某些类型的文件无法显著减小体积。
+   MinIO *不会* 压缩这些文件，即使它们在 :mc-conf:`~compression.mime_types` 参数中被指定。
+   详见 :ref:`Excluded types <minio-data-compression-excluded-types>`。
 
-Comments
+注释
 ~~~~~~~~
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
-      This setting does not have an environment variable option.
-      Use the configuration setting instead.
+      此设置没有环境变量选项。
+      请改用配置项。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :selected:
 
       .. envvar:: compression comment
 
-*Optional*
+*可选*
 
-Specify a comment to associate with the data compression configuration.
+指定一个与数据压缩配置关联的注释。
 
-Erasure Stripe Size
+纠删码条带大小
 -------------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_ERASURE_SET_DRIVE_COUNT
 
-   .. tab-item:: Configuration Variable
+   .. tab-item:: 配置项
       :sync: config
 
       .. include:: /includes/common-mc-admin-config.rst
          :start-after: start-minio-settings-no-config-option
          :end-before: end-minio-settings-no-config-option
 
-*Optional*
+*可选*
 
-The :ref:`erasure set size <minio-ec-basics>` to apply for all drives in a given :term:`server pool`.
+应用于指定 :term:`server pool` 中所有驱动器的 :ref:`erasure set size <minio-ec-basics>`。
 
-If you set this value, you **must** do so *before* you initialize the cluster
-The selected stripe size is **immutable** after the cluster has been initialized and affects any future server pools added to the cluster.
+如果设置此值，你**必须**在初始化集群*之前*完成设置。
+集群初始化后，所选条带大小为**不可变**，并会影响后续添加到集群中的所有 server pool。
 
-|subnet| users should log in and open an issue to discuss stripe size settings prior to implementing them in any environment.
+|subnet| 用户应先登录并提交 issue，讨论条带大小设置后再在任何环境中实施。
 
 .. warning::
 
-   **Do not** change the stripe size setting unless directed to by MinIO engineering.
+   除非 MinIO 工程团队明确指导，否则**不要**更改条带大小设置。
 
-   Changes to stripe size have significant impact to deployment functionality, availability, performance, and behavior.
-   MinIO's stripe selection algorithms set appropriate defaults for the majority of workloads.
-   Changing the stripe size from this default is unusual and generally not necessary or advised.
+   条带大小变更会对部署功能、可用性、性能和行为产生重大影响。
+   MinIO 的条带选择算法已为大多数工作负载设置了适当默认值。
+   偏离该默认值来调整条带大小并不常见，通常也没有必要或不被建议。
 
-Maximum Object Versions
+最大对象版本数
 -----------------------
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_API_OBJECT_MAX_VERSIONS
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: api object_max_versions
          :delimiter: " "
 
-*Optional*
+*可选*
 
-Defines the default maximum versions to allow per object.
+定义每个对象允许的默认最大版本数。
 
-By default, MinIO allows up to the maximum value of an Int64 versions per object, or over 9.2 quintillion.
+默认情况下，MinIO 允许每个对象的版本数最高达到 Int64 的最大值，即超过 9.2 quintillion。
 
 .. note::
 
-   MinIO versions from ``RELEASE.2023-08-04T17-40-21Z``to ``RELEASE.2024-03-26T22-10-45Z`` had a default limit of 10,000 object versions.
-   This setting can be used to override that limit to another value.
+   ``RELEASE.2023-08-04T17-40-21Z`` 到 ``RELEASE.2024-03-26T22-10-45Z`` 之间的 MinIO 版本，默认上限为 10,000 个对象版本。
+   可使用此设置将该上限覆盖为其他值。
 
-Arbitrarily high versions per objects may cause performance degradation on some operations, such as ``LIST``.
-This is especially true on systems running budget hardware or spinning drives (HDD).
-Applications or workloads which produce thousands or more versions per object may require design or architecture review to mitigate potential performance degradations.
+为对象设置任意高的版本数可能导致某些操作（如 ``LIST``）性能下降。
+在使用低成本硬件或机械硬盘（HDD）的系统上，这一点尤为明显。
+对于每个对象会生成数千个或更多版本的应用或工作负载，可能需要进行设计或架构评审，以缓解潜在的性能下降。
 
-Setting a limit of no more than ``100`` should provide enough versions for most typical use cases.
+将上限设置为不超过 ``100``，通常可满足大多数常见使用场景。

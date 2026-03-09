@@ -10,36 +10,36 @@
 
 .. mc:: mc admin policy attach
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-policy-attach-desc
 
-Attaches one or more IAM policies to either a :ref:`MinIO-managed user or a group <minio-users>`. 
+将一个或多个 IAM 策略附加到 :ref:`MinIO 管理的用户或组 <minio-users>`。
 
 .. end-mc-admin-policy-attach-desc
 
 .. versionchanged:: RELEASE.2023-05-27T05-56-19Z
 
-   To successfully attach a policy, the referenced user or group must exist.
+   要成功附加策略，所引用的用户或组必须存在。
 
-Exactly one :mc-cmd:`~mc admin policy attach --user` or one :mc-cmd:`~mc admin policy attach --group` is required.
+必须且只能指定 :mc-cmd:`~mc admin policy attach --user` 或 :mc-cmd:`~mc admin policy attach --group` 二者之一。
 
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command attaches the ``readonly`` policy to the user ``james`` on the deployment at :term:`alias` ``myminio``.
+      以下命令将 ``readonly`` 策略附加到 :term:`alias` 为 ``myminio`` 的部署中的用户 ``james``。
 
       .. code-block:: shell
          :class: copyable
 
          mc admin policy attach myminio readonly --user james  
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令使用以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -57,30 +57,30 @@ Exactly one :mc-cmd:`~mc admin policy attach --user` or one :mc-cmd:`~mc admin p
 
 .. important::
 
-   This command is intended for managing policy associations for :ref:`MinIO-managed <minio-users>` users only.
+   此命令仅用于管理 :ref:`MinIO 管理 <minio-users>` 用户的策略关联。
 
-   For attaching policies to OpenID-managed users, see :ref:`minio-external-identity-management-openid`.
+   如需为 OpenID 管理的用户附加策略，请参见 :ref:`minio-external-identity-management-openid`。
 
-   For attaching policies to Active Directory/LDAP users or groups, use :mc-cmd:`mc idp ldap policy attach`.
+   如需为 Active Directory/LDAP 用户或组附加策略，请使用 :mc-cmd:`mc idp ldap policy attach`。
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
-The :mc-cmd:`mc admin policy attach` command accepts the following arguments:
+:mc-cmd:`mc admin policy attach` 命令接受以下参数：
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment with the user or group for which you want to attach one or more policies.
+   已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，该部署中包含要附加一个或多个策略的用户或组。
 
 .. mc-cmd:: POLICY
    :required:
 
-   The name of the policy to attach to either the user or the group. 
+   要附加到用户或组的策略名称。 
       
-   You may attach multiple policies at once by separating each policy name with a space.
+   你可以通过空格分隔每个策略名称，一次附加多个策略。
 
-   MinIO deployments include the following :ref:`built-in policies <minio-policy-built-in>` by default:
+   MinIO 部署默认包含以下 :ref:`内置策略 <minio-policy-built-in>`：
 
    - :userpolicy:`readonly` 
    - :userpolicy:`readwrite`
@@ -90,41 +90,41 @@ The :mc-cmd:`mc admin policy attach` command accepts the following arguments:
 .. mc-cmd:: --user
    :optional:
 
-   The username of the identity you want to attach the policy or policies to.
-   You may only list one user.
+   要附加一个或多个策略的用户身份名称。
+   只能指定一个用户。
 
-   You must include either the ``--user`` flag or the ``--group`` flag.
-   You may not use the ``--user`` flag at the same time as the ``--group`` flag.
+   你必须包含 ``--user`` 或 ``--group`` 标志之一。
+   ``--user`` 标志不能与 ``--group`` 标志同时使用。
 
 .. mc-cmd:: --group
    :optional:
 
-   The name of the group identity you want to attach the policy or policies to.
-   You may only list one group.
+   要附加一个或多个策略的组身份名称。
+   只能指定一个组。
 
-   All users with membership in the group inherit the policies associated to the group.
+   属于该组的所有用户都会继承与该组关联的策略。
 
-   You must include either the ``--group`` flag or the ``--user`` flag.
-   You may not use the ``--group`` flag at the same time as the ``--user`` flag.
+   你必须包含 ``--group`` 或 ``--user`` 标志之一。
+   ``--group`` 标志不能与 ``--user`` 标志同时使用。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Attach the ``readonly`` policy to user ``james`` on the deployment at alias ``myminio``.
+将 ``readonly`` 策略附加到 alias 为 ``myminio`` 的部署中的用户 ``james``。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin policy attach myminio readonly --user james
 
-Attach the ``audit-policy`` and ``acct-policy`` policies to group ``legal`` on the deployment at alias ``myminio``.
+将 ``audit-policy`` 和 ``acct-policy`` 策略附加到 alias 为 ``myminio`` 的部署中的组 ``legal``。
 
 .. code-block:: shell
    :class: copyable

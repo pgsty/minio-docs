@@ -1,181 +1,181 @@
 .. _minio-object-delete:
 
 ===============
-Object Deletion
+对象删除
 ===============
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-Overview
---------
+概述
+----
 
-This page summarizes how a ``DELETE`` operation affects objects depending on the configuration of the bucket that contains the object.
+本页概述 ``DELETE`` 操作会如何影响对象，具体取决于包含该对象的存储桶配置。
 
-Any combination of the following factors may impact how ``DELETE`` operations function:
+以下因素的任意组合都可能影响 ``DELETE`` 操作的行为：
 
-- :ref:`Bucket versioning <minio-bucket-versioning>`
-- :ref:`Object locking rules <minio-object-locking>`
-- :ref:`Object Lifecycle Management rules <minio-lifecycle-management>`
-- :ref:`Object tiering <minio-lifecycle-management-tiering>`
-- :ref:`Site <minio-site-replication-overview>` or :ref:`bucket <minio-replication-behavior-delete>` replication
-- :ref:`Scanner <minio-concepts-scanner>`
+- :ref:`存储桶版本控制 <minio-bucket-versioning>`
+- :ref:`对象锁定规则 <minio-object-locking>`
+- :ref:`对象生命周期管理规则 <minio-lifecycle-management>`
+- :ref:`对象分层 <minio-lifecycle-management-tiering>`
+- :ref:`站点 <minio-site-replication-overview>` 或 :ref:`存储桶 <minio-replication-behavior-delete>` 复制
+- :ref:`扫描器 <minio-concepts-scanner>`
 
-Permissions
------------
+权限
+----
 
-MinIO uses a :ref:`policy based access control <minio-policy>` system for access management.
-The user or service account must provide the correct policy action and conditions to allow a ``DELETE`` for the bucket and object.
+MinIO 使用 :ref:`基于策略的访问控制 <minio-policy>` 系统进行访问管理。
+用户或服务账号必须提供正确的策略操作和条件，才能对该存储桶和对象执行 ``DELETE``。
 
-Unversioned Objects
--------------------
+未启用版本控制的对象
+--------------------
 
-When performing a ``DELETE`` operation on an object in a bucket that does not have versioning enabled, the operation is straightforward.
-After verifying the user or service account has permission to perform the ``DELETE`` operation, MinIO permanently removes the object.
+如果对未启用版本控制的存储桶中的对象执行 ``DELETE`` 操作，其行为比较直接。
+在确认用户或服务账号具有执行 ``DELETE`` 操作的权限后，MinIO 会永久删除该对象。
 
-The user or service account requesting the delete action the action must have the :policy-action:`s3:DeleteObject` action permission for the bucket and object.
+请求删除操作的用户或服务账号必须对该存储桶和对象具有 :policy-action:`s3:DeleteObject` 操作权限。
 
-Versioned Objects
------------------
+已启用版本控制的对象
+--------------------
 
-``DELETE`` operations work differently when an object is versioned.
+启用版本控制后，``DELETE`` 操作的行为会有所不同。
 
-The user or service account must have the :policy-action:`s3:DeleteObjectVersion` action permission for the bucket and object.
+用户或服务账号必须对该存储桶和对象具有 :policy-action:`s3:DeleteObjectVersion` 操作权限。
 
-Delete operations on the current version
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+删除当前版本
+~~~~~~~~~~~~
 
-A ``DELETE`` operation on a versioned object that does not specify a version UUID results in the creation of a ``DeleteMarker`` placed as the ``head`` of the object.
+如果对已启用版本控制的对象执行 ``DELETE`` 操作，但未指定版本 UUID，则会创建一个 ``DeleteMarker``，并将其置为该对象的 ``head``。
 
-In this scenario, MinIO does not actually remove the object or any of its versions from the disk.
-All existing versions of the object remain available to access by specifying the version's UUID.
-When a ``DeleteMarker`` is the head for the object, MinIO does not serve the object for ``GET`` requests that do not specify a version ID.
-Instead, MinIO returns a ``404``-like response. 
+在这种情况下，MinIO 实际上不会从磁盘中删除该对象或其任何版本。
+该对象的所有现有版本仍可通过指定对应版本的 UUID 进行访问。
+当 ``DeleteMarker`` 成为该对象的 head 时，MinIO 不会为未指定版本 ID 的 ``GET`` 请求返回该对象。
+相反，MinIO 会返回类似 ``404`` 的响应。
 
-You can find the UUID of object versions with :mc-cmd:`mc ls --versions`.
+可以使用 :mc-cmd:`mc ls --versions` 查找对象版本的 UUID。
 
-To remove the current version of the object from the drive, find the UUID of the version, and then use :mc-cmd:`mc rm --version-id=UUID ... <mc rm --version-id>` to delete the current version.
-In this scenario, the immediately preceding version of the object then becomes the current version of the object served for ``GET`` requests of the object with no UUID specified.
-
-.. warning::
-
-   Specifying a ``version-id`` in a DELETE operation is irreversible.
-   MinIO removes the specified version from the drive and **cannot** retrieve it.
-
-Delete operations on a prior version
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To delete prior versions of an object, specify the version's UUID.
-You can retrieve the version UUID with :mc-cmd:`mc ls --versions`. 
-When the ``DELETE`` request specifies a ``version-id`` and the user has the correct permissions to delete the object version`, MinIO permanently removes the specified version from the drive.
+如需从驱动器中删除对象的当前版本，请先找到该版本的 UUID，然后使用 :mc-cmd:`mc rm --version-id=UUID ... <mc rm --version-id>` 删除当前版本。
+在这种情况下，该对象紧邻的前一个版本将成为当前版本，并用于响应未指定 UUID 的该对象 ``GET`` 请求。
 
 .. warning::
 
-   Specifying a ``version-id`` in a DELETE operation is irreversible.
-   MinIO removes the specified version from the drive and **cannot** retrieve it.
+   在 DELETE 操作中指定 ``version-id`` 是不可逆的。
+   MinIO 会从驱动器中删除指定版本，并且**无法**恢复。
 
-Delete all versions
-~~~~~~~~~~~~~~~~~~~
+删除先前版本
+~~~~~~~~~~~~
 
-Use :mc-cmd:`mc rm --versions` to delete *all* versions of an object.
-This is irreversible.
+如需删除对象的先前版本，请指定该版本的 UUID。
+可以使用 :mc-cmd:`mc ls --versions` 获取版本 UUID。
+当 ``DELETE`` 请求指定 ``version-id``，且用户具有删除该对象版本的正确权限时，MinIO 会从驱动器中永久删除指定版本。
 
-Lifecycle Management Expiration
--------------------------------
+.. warning::
 
-You can define one or more :ref:`lifecycle management expiration rule(s) <minio-lifecycle-management-create-expiry-rule>` to expire objects after a certain version number count or a certain period of time.
-When more versions exist than the rule specifies, or when a version is older than specified, MinIO permanently removes the object version from the drive.
+   在 DELETE 操作中指定 ``version-id`` 是不可逆的。
+   MinIO 会从驱动器中删除指定版本，并且**无法**恢复。
 
-These rules rely on the :ref:`scanner <minio-concepts-scanner>` to process the rule on the bucket.
-The scanner operates as a lower priority continuous process where ``READ`` and ``WRITE`` actions are preferred.
-Because of this, object versions that meet the requirements for expiration may not immediately be removed from MinIO.
+删除所有版本
+~~~~~~~~~~~~
 
-See the :ref:`scanner <minio-concepts-scanner>` page for more details on how the scanner works and configuration options.
+使用 :mc-cmd:`mc rm --versions` 删除对象的*所有*版本。
+此操作不可逆。
 
-``DeleteMarkers`` are their own objects.
-Lifecycle rules can remove ``DeleteMarkers`` that are the only remaining versions of their objects.
+生命周期管理过期
+----------------
+
+可以定义一个或多个 :ref:`生命周期管理过期规则 <minio-lifecycle-management-create-expiry-rule>`，使对象在达到指定的版本数量或经过指定时间后过期。
+当版本数量超过规则指定值，或某个版本的时间早于指定阈值时，MinIO 会从驱动器中永久删除该对象版本。
+
+这些规则依赖 :ref:`扫描器 <minio-concepts-scanner>` 在存储桶上处理规则。
+扫描器以较低优先级持续运行，系统会优先处理 ``READ`` 和 ``WRITE`` 操作。
+因此，满足过期条件的对象版本可能不会立即从 MinIO 中移除。
+
+有关扫描器工作方式和配置选项的更多信息，请参阅 :ref:`扫描器 <minio-concepts-scanner>` 页面。
+
+``DeleteMarkers`` 本身也是对象。
+生命周期规则可以删除作为对象唯一剩余版本的 ``DeleteMarkers``。
 
 .. versionchanged:: MinIO RELEASE.2024-05-01T01-11-10Z
 
-With ``JSON``, lifecycle rules can remove all versions of a deleted object after a specified number of days.
+使用 ``JSON`` 时，生命周期规则可以在指定天数后删除已删除对象的所有版本。
 
-Retained Objects
-----------------
+受保留规则保护的对象
+--------------------
 
-MinIO protects objects subject to a :ref:`locking rule <minio-object-locking>` from being overwritten or deleted.
-These rules require that objects be retained until either the rule expires or is removed.
+MinIO 会保护受 :ref:`锁定规则 <minio-object-locking>` 约束的对象，防止其被覆盖或删除。
+这些规则要求对象在规则过期或被移除之前必须予以保留。
 
-``DELETE`` operations on locked objects without a specified version result in the creation of a `DeleteMarker` for the object.
-However, the object versions themselves are retained as required by the lock.
+对已锁定对象执行未指定版本的 ``DELETE`` 操作，会为该对象创建一个 ``DeleteMarker``。
+但对象各版本本身仍会按锁定要求予以保留。
 
-``DELETE`` operations that specify an object version are subject to the retention rules.
-MinIO protects object versions subject to a lock from being overwritten or deleted until the lock expires or is removed.
+指定对象版本的 ``DELETE`` 操作受保留规则约束。
+对于受锁定保护的对象版本，MinIO 会在锁定过期或被移除之前防止其被覆盖或删除。
 
-Replicated Objects
-------------------
+已复制对象
+----------
 
-Replication duplicates objects from one location to another.
-MinIO supports replication at the bucket level or the cluster ("site") level.
+复制会将对象从一个位置复制到另一个位置。
+MinIO 支持存储桶级别或集群（“site”）级别的复制。
 
-Delete operations may or may not replicate, depending on the type of replication and how the replication is configured.
+删除操作是否会被复制，取决于复制类型以及复制配置方式。
 
-Site Replication
-~~~~~~~~~~~~~~~~
+站点复制
+~~~~~~~~
 
-For clusters with :ref:`multi-site replication <minio-site-replication-overview>` enabled, MinIO replicates all ``delete`` operations performed on any cluster to each of the other clusters in the peer group.
+对于启用了 :ref:`多站点复制 <minio-site-replication-overview>` 的集群，MinIO 会将任一集群上执行的所有 ``delete`` 操作复制到对等组中的其他每个集群。
 
-Delete behavior on any single peer follows the same processes as any MinIO deployment.
+任一单个对等节点上的删除行为，都遵循普通 MinIO 部署相同的处理流程。
 
-Bucket Replication
-~~~~~~~~~~~~~~~~~~
+存储桶复制
+~~~~~~~~~~
 
-With :ref:`bucket replication <minio-bucket-replication>`, MinIO supports replicating delete operations between a source bucket and a configured remote bucket.
-MinIO synchronizes deleting specific object versions *and* new  :s3-docs:`delete markers <delete-marker-replication.html>`. 
-Delete operation replication uses the same :ref:`replication process <minio-replication-process>` as all other replication operations. 
+通过 :ref:`存储桶复制 <minio-bucket-replication>`，MinIO 支持在源存储桶与配置好的远程存储桶之间复制删除操作。
+MinIO 会同步删除特定对象版本以及新的 :s3-docs:`delete markers <delete-marker-replication.html>`。
+删除操作复制使用与其他所有复制操作相同的 :ref:`复制流程 <minio-replication-process>`。
 
-MinIO requires *explicitly enabling* versioned deletes and delete marker replication. 
-Use the :mc-cmd:`mc replicate add --replicate` field to specify either ``delete`` and ``delete-marker`` or both to enable versioned deletes and delete marker replication, respectively. 
-To enable both, specify both strings using a comma separator: ``delete,delete-marker``.
+MinIO 要求*显式启用*带版本删除和 delete marker 复制。
+使用 :mc-cmd:`mc replicate add --replicate` 字段指定 ``delete``、``delete-marker`` 或两者，以分别启用带版本删除和 delete marker 复制。
+如需同时启用两者，请使用逗号分隔这两个字符串：``delete,delete-marker``。
 
-For delete marker replication, MinIO begins the replication process after a delete operation creates the delete marker. 
-MinIO uses the ``X-Minio-Replication-DeleteMarker-Status`` metadata field for tracking  delete marker replication status. 
-In :ref:`active-active <minio-bucket-replication-serverside-twoway>` replication configurations, MinIO may produce duplicate delete markers if both clusters concurrently create a delete marker for an object *or* if one or both clusters were down before the replication event synchronized.
+对于 delete marker 复制，MinIO 会在删除操作创建 delete marker 后启动复制流程。
+MinIO 使用 ``X-Minio-Replication-DeleteMarker-Status`` 元数据字段跟踪 delete marker 的复制状态。
+在 :ref:`active-active <minio-bucket-replication-serverside-twoway>` 复制配置中，如果两个集群并发为某个对象创建 delete marker，或者在复制事件同步前一个或两个集群处于宕机状态，MinIO 可能会产生重复的 delete marker。
 
-For replicating the deletion of a specific object version, MinIO marks the object version as ``PENDING`` until replication completes. 
-Once the remote target deletes that object version, MinIO deletes the object version on the source.
-While this process ensures near-synchronized version deletion, it may result in listing operations returning the object version after the initial delete operation. 
-MinIO uses the ``X-Minio-Replication-Delete-Status`` for tracking delete version replication status.
+对于复制特定对象版本的删除，MinIO 会将该对象版本标记为 ``PENDING``，直到复制完成。
+一旦远程目标删除了该对象版本，MinIO 就会删除源端的该对象版本。
+虽然此过程可确保版本删除近似同步，但它也可能导致在初始删除操作之后，列表操作仍返回该对象版本。
+MinIO 使用 ``X-Minio-Replication-Delete-Status`` 跟踪删除版本的复制状态。
 
-MinIO only replicates explicit client-driven delete operations. 
-MinIO does *not* replicate objects deleted by :ref:`lifecycle management expiration rules <minio-lifecycle-management-expiration>`. 
-For :ref:`active-active <minio-bucket-replication-serverside-twoway>` configurations, set the same expiration rules on *all* of of the replication buckets to ensure consistent application of object expiration.
+MinIO 只复制由客户端显式触发的删除操作。
+MinIO *不会* 复制由 :ref:`生命周期管理过期规则 <minio-lifecycle-management-expiration>` 删除的对象。
+对于 :ref:`active-active <minio-bucket-replication-serverside-twoway>` 配置，应在*所有*复制存储桶上设置相同的过期规则，以确保对象过期行为一致。
 
-.. admonition:: MinIO Trims Empty Object Prefixes on Source and Remote Bucket
+.. admonition:: MinIO 会清理源存储桶和远程存储桶中的空对象前缀
    :class: note, dropdown
 
-   If a delete operation removes the last object in a bucket prefix, MinIO recursively removes each empty part of the prefix up to the bucket root.
-   MinIO only applies the recursive removal to prefixes created *implicitly* as part of object write operations.
-   MinIO does not recursively remove prefixes created using an explicit directory creation command, such as :mc:`mc mb`.
+   如果某次删除操作移除了某个存储桶前缀中的最后一个对象，MinIO 会递归删除该前缀中直到存储桶根为止的每一个空层级。
+   MinIO 仅对作为对象写入操作一部分而*隐式*创建的前缀执行这种递归删除。
+   对于使用显式目录创建命令（例如 :mc:`mc mb`）创建的前缀，MinIO 不会递归删除。
 
-   If a replication rule enables replication delete operations, the replication process *also* applies the implicit prefix trimming behavior on the destination MinIO cluster.
+   如果复制规则启用了删除操作复制，则复制过程在目标 MinIO 集群上*同样*会应用这种隐式前缀清理行为。
 
-   For example, consider a bucket ``photos`` with the following object prefixes:
+   例如，考虑一个名为 ``photos`` 的存储桶，其中包含以下对象前缀：
    
-   - ``photos/2021/january/myphoto.jpg`` // ``2021/january/`` created implicitly based on the object name
-   - ``photos/2021/february/myotherphoto.jpg``  // ``2021/february/`` created implicitly based on the object name
-   - ``photos/NYE21/NewYears.jpg``  // ``NYE21/`` explicitly created in the bucket
+   - ``photos/2021/january/myphoto.jpg`` // ``2021/january/`` 根据对象名隐式创建
+   - ``photos/2021/february/myotherphoto.jpg``  // ``2021/february/`` 根据对象名隐式创建
+   - ``photos/NYE21/NewYears.jpg``  // ``NYE21/`` 在存储桶中显式创建
 
-   ``photos/NYE21`` is the *only* prefix explicitly created using :mc:`mc mb`.
-   All other prefixes were *implicitly* created as part of writing the object located at that prefix. 
+   ``photos/NYE21`` 是*唯一*使用 :mc:`mc mb` 显式创建的前缀。
+   其他所有前缀都是在写入位于该前缀下的对象时*隐式*创建的。
    
-   - A command removes ``myphoto.jpg``. 
-     MinIO automatically trims the empty ``/january/`` prefix. 
+   - 某个命令删除了 ``myphoto.jpg``。
+     MinIO 会自动清理空的 ``/january/`` 前缀。
    
-   - A command then removes the ``myotherphoto.jpg``. 
-     MinIO automatically trims the ``/february/`` prefix *and* the now-empty ``/2021`` prefix. 
+   - 某个命令随后删除了 ``myotherphoto.jpg``。
+     MinIO 会自动清理 ``/february/`` 前缀，以及此时已为空的 ``/2021`` 前缀。
    
-   - A command removes the ``NewYears.jpg`` object. 
-     MinIO leaves the ``/NYE21/`` prefix remains in place since it was *explicitly* created.
+   - 某个命令删除了 ``NewYears.jpg`` 对象。
+     由于 ``/NYE21/`` 是*显式*创建的，MinIO 会保留该前缀。

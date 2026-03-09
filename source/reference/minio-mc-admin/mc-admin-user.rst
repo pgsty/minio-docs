@@ -4,47 +4,47 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin user
 
-Description
------------
+说明
+----
 
 .. start-mc-admin-user-desc
 
-The :mc:`mc admin user` command and its subcommands manage :ref:`MinIO users <minio-internal-idp>`.
+:mc:`mc admin user` 命令及其子命令用于管理 :ref:`MinIO 用户 <minio-internal-idp>`。
 
 .. end-mc-admin-user-desc
 
-Clients *must* authenticate to the MinIO deployment with the access key and secret key associated to a user on the deployment.
-MinIO users constitute a key component in MinIO Identity and Access Management.
+客户端 *必须* 使用与该部署中某个用户关联的 access key 和 secret key 对 MinIO 部署进行认证。
+MinIO 用户是 MinIO 身份与访问管理中的关键组成部分。
 
-To manage users who authenticate using a 3rd party IDP, use the command for the appropriate provider:
+要管理使用第三方 IDP 进行认证的用户，请使用对应提供方的命令：
 
-- For AD/LDAP, use :mc:`mc idp ldap`
-- For OpenID Connect (OIDC) compatible providers, use :mc:`mc idp openid`
+- 对于 AD/LDAP，请使用 :mc:`mc idp ldap`
+- 对于兼容 OpenID Connect (OIDC) 的提供方，请使用 :mc:`mc idp openid`
 
-.. admonition:: Use ``mc idp`` commands on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc idp`` 命令
    :class: note
 
-   :mc:`mc idp ldap` and :mc:`mc idp openid` and their subcommands are only supported against MinIO deployments.
+   :mc:`mc idp ldap` 和 :mc:`mc idp openid` 及其子命令仅支持对 MinIO 部署使用。
 
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc admin user` includes the following subcommands:
+:mc:`mc admin user` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc admin user add`
      - .. include:: /reference/minio-mc-admin/mc-admin-user-add.rst

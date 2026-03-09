@@ -1,12 +1,12 @@
-1) Pull the Latest Stable Image of MinIO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 拉取最新稳定版 MinIO 镜像
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/container/common-deploy.rst
    :start-after: start-common-deploy-pull-latest-minio-image
    :end-before: end-common-deploy-pull-latest-minio-image
 
-2) Create the Environment Variable File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 创建环境变量文件
+~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common/common-deploy.rst
    :start-after: start-common-deploy-create-environment-file-single-drive 
@@ -16,16 +16,16 @@
    :start-after: start-common-deploy-create-unique-root-credentials 
    :end-before: end-common-deploy-create-unique-root-credentials
 
-3) Create and Run the Container
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 创建并运行容器
+~~~~~~~~~~~~~~~~~
 
-Select the container management interface of your choice for the relevant command syntax.
+选择你偏好的容器管理接口，以查看对应命令语法。
 
 .. tab-set::
 
    .. tab-item:: Podman
 
-      Copy the command to a text file for further modification.
+      将命令复制到文本文件中，以便进一步修改。
 
       .. code-block:: shell
          :class: copyable
@@ -38,11 +38,12 @@ Select the container management interface of your choice for the relevant comman
            --name "minio_local"                          \
            minio server --console-address ":9001"
 
-      Specify any other :podman-docs:`options <markdown/podman-run.1.html>` to ``podman run`` as necessary for your local environment.
+      根据本地环境需要，为 ``podman run`` 补充其他
+      :podman-docs:`选项 <markdown/podman-run.1.html>`。
 
    .. tab-item:: Docker
 
-      Copy the command to a text file for further modification.
+      将命令复制到文本文件中，以便进一步修改。
 
       .. code-block:: shell
          :class: copyable
@@ -55,72 +56,76 @@ Select the container management interface of your choice for the relevant comman
            --name "minio_local"                          \
            minio server --console-address ":9001"
 
-      Specify any other `options <https://docs.docker.com/engine/reference/commandline/run/>`__ to ``docker run`` as necessary for your local environment.
+      根据本地环境需要，为 ``docker run`` 补充其他
+      `选项 <https://docs.docker.com/engine/reference/commandline/run/>`__。
 
-      For running Docker in Rootless mode, you may need to set the following additional Docker CLI options:
+      如果以 Rootless 模式运行 Docker，
+      你可能还需要设置以下额外 Docker CLI 选项：
 
       Linux
-         ``--user $(id -u):$(id -g)`` - directs the container to run as the currently logged in user.
+         ``--user $(id -u):$(id -g)`` - 指示容器以当前登录用户身份运行。
       
       Windows
-         ``--security-opt "credentialspec=file://path/to/file.json"`` - directs the container to run using a Windows `Group Managed Service Account <https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/manage-serviceaccounts>`_.
+         ``--security-opt "credentialspec=file://path/to/file.json"`` - 指示容器使用 Windows `Group Managed Service Account <https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/manage-serviceaccounts>`_ 运行。
 
-The following table describes each line of the command and provides additional configuration instructions:
+下表说明了命令各行的含义，并提供额外配置指引：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
    :width: 100%
 
-   * - Line
-     - Description
+   * - 行
+     - 说明
 
    * - | ``podman run -dt``
        | ``docker run -dt``
-     - Directs Podman/Docker to create and start the container as a detached (``-d``) background process with a pseudo-TTY (``-t``).
-       This allows the container to run in the background with an open TTY for bash-like access.
+     - 指示 Podman/Docker 以 detached（``-d``）后台进程并带 pseudo-TTY（``-t``）的方式创建并启动容器。
+       这样容器就可以在后台运行，同时保留一个可供 bash 类交互访问的 TTY。
 
    * - ``-p 9000:9000 -p 9001:9001``
-     - Binds the ports ``9000`` and ``9001`` on the local machine to the same ports on the container.
-       This allows access to the container through the local machine.
+     - 将本机上的 ``9000`` 和 ``9001`` 端口绑定到容器中的同名端口。
+       这样即可通过本地机器访问容器。
 
    * - ``-v PATH:/data/minio``
-     - Binds the storage volume ``PATH`` on the local machine to the ``/data`` path on the container.
-       Replace this value with the full path to a storage volume or folder on the local machine.
-       For example:
+     - 将本机上的存储卷 ``PATH`` 绑定到容器中的 ``/data`` 路径。
+       请将该值替换为本机上存储卷或文件夹的完整路径。
+       例如：
 
-       Linux or macOS
+       Linux 或 macOS
          ``~/minio/data/``
        
        Windows
          ``C:\minio\data``
 
    * - ``-v /etc/default/minio:/etc/config.env``
-     - Mounts the environment file created in the previous step to the ``/etc/config.env`` path on the Container.
-       For Windows hosts, specify the Windows-style path ``-v C:\minio\config:/etc/config.env``.
+     - 将上一步创建的环境文件挂载到容器中的 ``/etc/config.env`` 路径。
+       对于 Windows 主机，请指定 Windows 风格路径 ``-v C:\minio\config:/etc/config.env``。
          
-       The MinIO Server uses this environment file for configuration.
+       MinIO Server 使用该环境文件进行配置。
          
    * - ``-e "MINIO_CONFIG_ENV_FILE=/etc/config.env"``
-     - Sets a MinIO environment variable pointing to the container-mounted path of the environment file.
+     - 设置一个 MinIO 环境变量，指向容器内挂载后的环境文件路径。
 
    * - ``--name "minio_local"``
-     - Sets a custom name for the container. 
-       Omit this value to allow Podman/Docker to automatically generate a container name.
-       You can replace this value to best reflect your requirements.
+     - 为容器设置自定义名称。
+       如果省略该值，Podman/Docker 会自动生成容器名。
+       你可以按需替换为更合适的名称。
 
    * - ``minio server --console-address ":9001"``
-     - Starts the MinIO server using the ``minio:minio`` image pulled from an earlier step.
-       The :mc-cmd:`minio server --console-address ":9001" <minio server --console-address>` option directs the server to set a static port for the MinIO Console Web Interface.
-       This option is *required* for containerized environments.
+     - 使用前一步拉取的 ``minio:minio`` 镜像启动 MinIO server。
+       :mc-cmd:`minio server --console-address ":9001" <minio server --console-address>`
+       选项会指示 server 为 MinIO Console Web Interface 设置固定端口。
+       该选项在容器化环境中 *必需*。
 
-       If you modify this value, ensure you set the proper port mapping using the ``-p`` flag to Podman/Docker to ensure traffic forwarding between the local host and the container.
+       如果你修改该值，请确保同时通过 Podman/Docker 的 ``-p`` 参数设置正确的端口映射，
+       以保证本地主机与容器之间的流量转发正常。
 
-Once you have applied any further customizations to the command, run it in your preferred terminal or shell environment.
-The command should return a unique ID for the created container.
+完成其他必要定制后，请在你偏好的 terminal 或 shell 环境中运行该命令。
+命令应返回新建容器的唯一 ID。
 
-4) Validate the Container Status
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证容器状态
+~~~~~~~~~~~~~~
 
 .. include:: /includes/container/common-deploy.rst
    :start-after: start-common-deploy-validate-container-status
@@ -141,15 +146,16 @@ The command should return a unique ID for the created container.
 
    Documentation: https://minio.pigsty.io/operations/deployments/baremetal-deploy-minio-as-a-container.html
 
-.. admonition:: Container Networks May Not Be Accessible Outside of the Host
+.. admonition:: 容器网络在主机外部可能不可访问
 
-   The ``API`` and ``CONSOLE`` blocks may include the network interfaces for the container.
-   Clients outside of the container network cannot access the MinIO API or Console using these addresses.
+   ``API`` 和 ``CONSOLE`` 区块中可能包含容器的网络接口地址。
+   容器网络之外的客户端无法通过这些地址访问 MinIO API 或 Console。
 
-   External access requires using a network address for the container host machine and assumes the host firewall allows access to the related ports (``9000`` and ``9001`` in the examples).
+   如需外部访问，必须使用容器宿主机的网络地址，
+   并且假定宿主机防火墙允许访问相关端口（示例中为 ``9000`` 和 ``9001``）。
 
-5) Connect to the MinIO Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5) 连接到 MinIO 服务
+~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/container/common-deploy.rst
    :start-after: start-common-deploy-connect-to-minio-service

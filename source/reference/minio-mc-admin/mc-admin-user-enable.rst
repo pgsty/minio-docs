@@ -6,41 +6,41 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin user enable
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-user-enable-desc
 
-The :mc:`mc admin user enable` command enables a :ref:`MinIO user <minio-internal-idp>` on the target MinIO deployment.
+:mc:`mc admin user enable` 命令用于在目标 MinIO 部署上启用 :ref:`MinIO 用户 <minio-internal-idp>`。
 
 .. end-mc-admin-user-enable-desc
 
-Clients can only use enabled users to authenticate to the MinIO deployment.
-Users created using :mc-cmd:`mc admin user add` are enabled by default.
+客户端只能使用已启用的用户向 MinIO 部署进行认证。
+使用 :mc-cmd:`mc admin user add` 创建的用户默认处于启用状态。
 
-To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :mc:`AD/LDAP <mc idp ldap>`.
+要管理外部身份提供商用户，请参阅 :mc:`OIDC <mc idp openid>` 或 :mc:`AD/LDAP <mc idp ldap>`。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command enables user ``myuser`` on the ``myminio`` MinIO deployment:
+      以下命令在 ``myminio`` MinIO 部署上启用用户 ``myuser``：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin user enable myminio myuser
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -54,51 +54,51 @@ To manage external Identity Provider users, see :mc:`OIDC <mc idp openid>` or :m
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc:`alias <mc alias>` of the MinIO deployment with the user to enable.
+   需要启用该用户的 MinIO 部署的 :mc:`alias <mc alias>`。
 
 .. mc-cmd:: USERNAME
    :required:
 
-   The username of the user to enable.
+   要启用的用户名。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Example
--------
+示例
+----
 
-Enable a User
-~~~~~~~~~~~~~
+启用用户
+~~~~~~~~
 
-Use :mc-cmd:`mc admin user enable` to enable a user on a MinIO deployment.
+使用 :mc-cmd:`mc admin user enable` 在 MinIO 部署上启用用户。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin user enable ALIAS USERNAME
 
-- Replace :mc-cmd:`ALIAS <mc admin user enable ALIAS>` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc admin user enable ALIAS>` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`USERNAME <mc admin user enable USERNAME>` with the username of the user to enable.
+- 将 :mc-cmd:`USERNAME <mc admin user enable USERNAME>` 替换为要启用的用户名。
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

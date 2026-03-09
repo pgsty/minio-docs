@@ -4,30 +4,30 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin prometheus generate
 
-Description
+描述
 -----------
 
 .. start-mc-admin-prometheus-generate-desc
 
-The :mc:`mc admin prometheus generate` command generates a metrics scraping configuration file for use with `Prometheus <https://prometheus.io/>`__.
+:mc:`mc admin prometheus generate` 命令会生成一个用于 `Prometheus <https://prometheus.io/>`__ 的指标抓取配置文件。
 
 .. end-mc-admin-prometheus-generate-desc
 
-For more complete documentation on using MinIO with Prometheus, see :ref:`How to monitor MinIO server with Prometheus <minio-metrics-collect-using-prometheus>`
+有关 MinIO 与 Prometheus 配合使用的完整文档，请参见 :ref:`How to monitor MinIO server with Prometheus <minio-metrics-collect-using-prometheus>`
 
-Starting with MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` and MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z`, :ref:`metrics version 3 (v3) <minio-metrics-and-alerts>` provides additional endpoints and metrics.
-To generate a v3 scrape configuration use the ``--api_version v3`` option.
+从 MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` 和 MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z` 开始，:ref:`metrics version 3 (v3) <minio-metrics-and-alerts>` 提供了额外的端点和指标。
+要生成 v3 抓取配置，请使用 ``--api_version v3`` 选项。
 
-MinIO recommends new deployments use :ref:`version 3 (v3) <minio-metrics-and-alerts>`.
-Existing deployments can continue to use :ref:`metrics version 2 <minio-metrics-v2>`
+MinIO 建议新部署使用 :ref:`version 3 (v3) <minio-metrics-and-alerts>`。
+现有部署可以继续使用 :ref:`metrics version 2 <minio-metrics-v2>`
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -36,18 +36,18 @@ Existing deployments can continue to use :ref:`metrics version 2 <minio-metrics-
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command generates a Prometheus scrape configuration that collects version 2 bucket metrics from the deployment at :term:`alias` ``myminio``:
+      以下命令会为 :term:`alias` ``myminio`` 指向的部署生成一个 Prometheus 抓取配置，用于采集 version 2 的存储桶指标：
 
       .. code-block:: shell
          :class: copyable
 
          mc admin prometheus generate myminio bucket
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -63,36 +63,36 @@ Existing deployments can continue to use :ref:`metrics version 2 <minio-metrics-
          :end-before: end-minio-syntax
 
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc:`alias <mc alias>` of a configured MinIO deployment for which the command generates a Prometheus-compatible configuration file.
+   已配置 MinIO 部署的 :mc:`alias <mc alias>`，该命令会为该部署生成与 Prometheus 兼容的配置文件。
 
 .. mc-cmd:: --api-version
    :optional:
 
-   To generate a scrape configuration for :ref:`v3 metrics <minio-metrics-and-alerts>`, include  an ``--api-version v3`` parameter.
-   ``v3`` is the only accepted value.
+   要为 :ref:`v3 metrics <minio-metrics-and-alerts>` 生成抓取配置，请添加 ``--api-version v3`` 参数。
+   ``v3`` 是唯一接受的值。
 
-   Omit ``--api-version`` to generate a :ref:`v2 metrics <minio-metrics-v2>` configuration.
+   省略 ``--api-version`` 可生成 :ref:`v2 metrics <minio-metrics-v2>` 配置。
 
 .. mc-cmd:: --bucket
    :optional:
 
-   Only valid for v3 metrics.
+   仅适用于 v3 指标。
 
-   For v3 metric types that return bucket-level metrics, specify a bucket name.
-   Requires :mc-cmd:`~mc admin prometheus generate --api-version`.
+   对于返回存储桶级指标的 v3 指标类型，请指定存储桶名称。
+   需要 :mc-cmd:`~mc admin prometheus generate --api-version`。
 
-   ``--bucket`` works for the following v3 metric types:
+   ``--bucket`` 适用于以下 v3 指标类型：
 
    - ``api``
    - ``replication``
 
-   The following example generates a configuration for API metrics from the bucket ``mybucket``:
+   以下示例为存储桶 ``mybucket`` 的 API 指标生成配置：
 
    .. code-block:: shell
       :class: copyable
@@ -102,9 +102,9 @@ Parameters
 .. mc-cmd:: TYPE
    :optional:
 
-   The type of metrics to scrape.
+   要抓取的指标类型。
 
-      Valid values for metrics version 3 are:
+      metrics version 3 的有效值为：
 
       - ``api``
       - ``audit``
@@ -117,20 +117,20 @@ Parameters
       - ``scanner``
       - ``system``
 
-      If not specified, a ``v3`` command returns all metrics.
+      如果未指定，``v3`` 命令会返回所有指标。
 
-      Valid values for metrics version 2 are:
+      metrics version 2 的有效值为：
 
       - ``bucket``
       - ``cluster``
       - ``node``
       - ``resource``
 
-      If not specified, a ``v2`` command returns cluster metrics.
-      Cluster metrics include rollups of certain node metrics.
+      如果未指定，``v2`` 命令返回 cluster 指标。
+      Cluster 指标包含部分 node 指标的汇总。
 
 
-Global flags
+全局参数
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
@@ -138,22 +138,22 @@ Global flags
    :end-before: end-minio-mc-globals
 
 
-Examples
+示例
 --------
 
-Generate a default metrics v3 config
+生成默认的 v3 metrics 配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin prometheus generate --api-version v3 <mc admin prometheus generate --api-version>` to generate a scrape configuration that collects all v3 metrics for a MinIO deployment:
+使用 :mc-cmd:`mc admin prometheus generate --api-version v3 <mc admin prometheus generate --api-version>` 生成一个抓取配置，用于为 MinIO 部署采集所有 v3 指标：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus generate ALIAS --api-version v3
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -166,20 +166,20 @@ The output resembles the following:
      - targets: ['localhost:9000']
 
 
-Generate a v3 metrics config for another type
+为其他类型生成 v3 metrics 配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To generate a configuration for another metric type, specify the type.
-The following generates a scrape configuration for v3 cluster metrics:
+要为其他指标类型生成配置，请指定类型。
+以下命令会为 v3 cluster 类型指标生成抓取配置：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus generate ALIAS cluster --api-version v3
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -191,22 +191,22 @@ The output resembles the following:
      static_configs:
      - targets: ['localhost:9000']
 
-To generate a configuration for a :mc-cmd:`different metric type <mc admin prometheus generate TYPE>`, replace ``cluster`` with the desired type.
+要为 :mc-cmd:`different metric type <mc admin prometheus generate TYPE>` 生成配置，请将 ``cluster`` 替换为所需类型。
 
 
-Generate a v3 bucket replication metrics config
+生成 v3 bucket replication metrics 配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example generates a scrape configuration for v3 replication metrics of bucket ``mybucket``:
+以下示例会为存储桶 ``mybucket`` 的 v3 replication 指标生成抓取配置：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus generate ALIAS replication --bucket mybucket --api-version v3
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -218,19 +218,19 @@ The output resembles the following:
      static_configs:
      - targets: [`localhost:9000`]
 
-Generate a v3 config for bucket API metrics
+生成用于存储桶 API 指标的 v3 配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example generates a scrape configuration for v3 API metrics for bucket ``mybucket``:
+以下示例会为存储桶 ``mybucket`` 的 v3 API 指标生成抓取配置：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus generate ALIAS api --bucket mybucket --api-version v3
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -243,19 +243,19 @@ The output resembles the following:
      - targets: [`localhost:9000`]
 
 
-Generate a default metrics v2 config
+生成默认的 v2 metrics 配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, :mc-cmd:`mc admin prometheus generate` generates a scrape configuration for v2 cluster metrics:
+默认情况下，:mc-cmd:`mc admin prometheus generate` 会生成用于 v2 cluster 指标的抓取配置：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus generate ALIAS
 
-- Replace ``ALIAS`` with the :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+- 将 ``ALIAS`` 替换为 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
-The output resembles the following:
+输出类似如下：
 
 .. code-block:: shell
 
@@ -268,14 +268,13 @@ The output resembles the following:
      - targets: ['localhost:9000']
 
 
-Generate a v2 config for other metric types
+为其他指标类型生成 v2 配置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To generate a configuration for another metric type, specify the type.
-The following generates a scrape configuration for v2 bucket metrics:
+要为其他指标类型生成配置，请指定类型。
+以下命令会为 v2 bucket 类型指标生成抓取配置：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin prometheus generate ALIAS bucket
-

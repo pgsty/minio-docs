@@ -1,23 +1,23 @@
 .. _minio-server-envvar-console:
 
-======================
-MinIO Console Settings
-======================
+===================
+MinIO Console 设置
+===================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. versionchanged:: RELEASE.2025-05-24T17-08-30Z
 
-   The Console now presents only object browser capabilities similar to those available through the :mc:`mc` tool.
-   For administrative interactions, such as user management, use the :mc:`mc admin` command.
+   Console 现在仅提供对象浏览能力，类似于通过 :mc:`mc` 工具可用的能力。
+   对于用户管理等管理类交互，请使用 :mc:`mc admin` 命令。
 
-   Some of the settings on this page may no longer be relevant for newer deployments.
+   本页中的部分设置可能已不再适用于较新的部署。
 
-This page covers settings that manage access and behavior for the MinIO Console. 
+本页介绍用于管理 MinIO Console 访问与行为的设置。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -27,154 +27,154 @@ This page covers settings that manage access and behavior for the MinIO Console.
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Browser Settings
-----------------
+浏览器设置
+----------
 
-The following settings control behavior for the embedded MinIO Console.
+以下设置用于控制内嵌 MinIO Console 的行为。
 
 MinIO Console
 ~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_BROWSER
 
-         Specify ``off`` to disable the embedded MinIO Console.
+         指定 ``off`` 以禁用内嵌 MinIO Console。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
-Animation
-~~~~~~~~~
+动画
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_BROWSER_LOGIN_ANIMATION
 
          .. versionadded:: MinIO Server RELEASE.2023-05-04T21-44-30Z
 
-         Specify ``off`` to disable the animated login screen for the MinIO Console. 
-         Defaults to ``on``.
-   .. tab-item:: Configuration Setting
+         指定 ``off`` 以禁用 MinIO Console 的动画登录界面。
+         默认为 ``on``。
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
-Browser Redirect
-~~~~~~~~~~~~~~~~
+浏览器重定向
+~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_BROWSER_REDIRECT
 
          .. versionadded:: MinIO Server RELEASE.2023-09-16T01-01-47Z
 
-        Specify whether requests from a web browser automatically redirect to the Console address.
-        Defaults to ``true``.
+         指定是否将来自 Web 浏览器的请求自动重定向到 Console 地址。
+         默认为 ``true``。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
-Browser Redirect URL
-~~~~~~~~~~~~~~~~~~~~
+浏览器重定向 URL
+~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_BROWSER_REDIRECT_URL
 
-         Specify the Fully Qualified Domain Name (FQDN) the MinIO Console listens for incoming connections on.
-   
-         If you want to host the MinIO Console exclusively from a reverse-proxy service, you must specify the hostname managed by that service.
-   
-         For example, consider a reverse proxy configured to route ``https://example.net/minio/`` to the MinIO Console.
-         You must set this environment variable to match that hostname for the Console to both listen and respond to requests using that hostname.
+         指定 MinIO Console 监听传入连接的 Fully Qualified Domain Name (FQDN)。
 
-         If you omit this variable, the Console listens and responds to all IP addresses or hostnames associated to the host machine on which the MinIO Server runs.
+         如果你希望 MinIO Console 仅通过反向代理服务对外提供，必须指定由该服务管理的主机名。
 
-   .. tab-item:: Configuration Setting
+         例如，假设某个反向代理被配置为将 ``https://example.net/minio/`` 路由到 MinIO Console。
+         你必须将此环境变量设置为与该主机名一致，这样 Console 才会使用该主机名进行监听并响应请求。
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+         如果省略此变量，Console 会在运行 MinIO Server 的主机所关联的所有 IP 地址或主机名上监听并响应。
 
-Session Duration
-~~~~~~~~~~~~~~~~
+   .. tab-item:: 配置项
 
-*Optional*
+      此设置没有对应的配置变量。
+      请改用环境变量。
+
+会话时长
+~~~~~~~~
+
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_BROWSER_SESSION_DURATION
 
          .. versionadded:: MinIO Server RELEASE.2023-08-23T10-07-06Z
 
-         Specify the duration of a browser session for working with the MinIO Console.
+         指定使用 MinIO Console 时浏览器会话的持续时间。
 
-         MinIO supports the following units of time measurement:
+         MinIO 支持以下时间单位：
 
-         - ``s`` - seconds, "60s"
-         - ``m`` - minutes, "60m"
-         - ``h`` - hours, "24h"
-         - ``d`` - days, "7d"
-      
-         Defaults to ``12h``.
+         - ``s`` - 秒，"60s"
+         - ``m`` - 分钟，"60m"
+         - ``h`` - 小时，"24h"
+         - ``d`` - 天，"7d"
 
-   .. tab-item:: Configuration Setting
+         默认为 ``12h``。
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+   .. tab-item:: 配置项
 
-Log Query URL
-~~~~~~~~~~~~~
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
-*Optional*
+日志查询 URL
+~~~~~~~~~~~~
+
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_LOG_QUERY_URL
 
-         Specify the URL of a PostgreSQL service to which MinIO writes :ref:`Audit logs <minio-logging-publish-audit-logs>`. 
-         The embedded MinIO Console provides a Log Search tool that allows querying the PostgreSQL service for collected logs.
+         指定 PostgreSQL 服务的 URL，MinIO 会将 :ref:`Audit logs <minio-logging-publish-audit-logs>` 写入该服务。
+         内嵌 MinIO Console 提供日志搜索工具，可查询 PostgreSQL 服务中收集的日志。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
-Content Security Policy
-~~~~~~~~~~~~~~~~~~~~~~~
+内容安全策略
+~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
-Configure MinIO Console to generate a `Content-Security-Policy <https://en.wikipedia.org/wiki/Content_Security_Policy>`__ header in HTTP responses.
-Defaults to ``default-src 'self' 'unsafe-eval' 'unsafe-inline';``
+将 MinIO Console 配置为在 HTTP 响应中生成 `Content-Security-Policy <https://en.wikipedia.org/wiki/Content_Security_Policy>`__ 头。
+默认为 ``default-src 'self' 'unsafe-eval' 'unsafe-inline';``
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_BROWSER_CONTENT_SECURITY_POLICY
@@ -184,8 +184,8 @@ Defaults to ``default-src 'self' 'unsafe-eval' 'unsafe-inline';``
 
             export MINIO_BROWSER_CONTENT_SECURITY_POLICY="default-src 'self' 'unsafe-eval' 'unsafe-inline';"
 
-            
-   .. tab-item:: Configuration Setting
+
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: browser csp_policy
@@ -193,42 +193,42 @@ Defaults to ``default-src 'self' 'unsafe-eval' 'unsafe-inline';``
 
          .. code-block:: shell
             :class: copyable
-		 
+
             mc admin config set browser \
                csp_policy="default-src 'self' 'unsafe-eval' 'unsafe-inline';" \
                [ARGUMENT=VALUE ...]
 
 
-Strict Transport Security
-~~~~~~~~~~~~~~~~~~~~~~~~~
+严格传输安全
+~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
-Configure MinIO console to generate a `Strict-Transport-Security <https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security>`__ header in HTTP responses.
+将 MinIO Console 配置为在 HTTP 响应中生成 `Strict-Transport-Security <https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security>`__ 头。
 
-To generate the header, you **must** set a duration using either :envvar:`MINIO_BROWSER_HSTS_SECONDS` or :mc-conf:`~browser.hsts_seconds`.
-Other HSTS settings are optional.
+要生成该头，你**必须**使用 :envvar:`MINIO_BROWSER_HSTS_SECONDS` 或 :mc-conf:`~browser.hsts_seconds` 设置持续时间。
+其他 HSTS 设置是可选的。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_BROWSER_HSTS_SECONDS
 
-         The ``max_age`` the configured policy remains in effect, in seconds.
-         Defaults to ``0``, disabled.
-         You **must** configure a *non-zero* duration to enable the ``Strict-Transport-Security`` header.
+         已配置策略生效的 ``max_age``（秒）。
+         默认为 ``0``，即禁用。
+         你**必须**配置*非零*时长，才能启用 ``Strict-Transport-Security`` 头。
 
          .. code-block:: shell
             :class: copyable
 
-            export MINIO_BROWSER_HSTS_SECONDS=31536000            
+            export MINIO_BROWSER_HSTS_SECONDS=31536000
 
       .. envvar:: MINIO_BROWSER_HSTS_INCLUDE_SUB_DOMAINS
 
-         Set to ``on`` to also apply the configured HSTS policy to all MinIO Console subdomains.
-         Defaults to ``off``.
+         设置为 ``on`` 可将已配置的 HSTS 策略同时应用到所有 MinIO Console 子域名。
+         默认为 ``off``。
 
          .. code-block:: shell
             :class: copyable
@@ -237,26 +237,26 @@ Other HSTS settings are optional.
 
       .. envvar:: MINIO_BROWSER_HSTS_PRELOAD
 
-         Set to ``on`` to direct the client browser to add the MinIO Console domain to its HSTS preload list.
-         Defaults to ``off``.
+         设置为 ``on`` 可指示客户端浏览器将 MinIO Console 域名加入其 HSTS 预加载列表。
+         默认为 ``off``。
 
          .. code-block:: shell
             :class: copyable
 
             export MINIO_BROWSER_HSTS_PRELOAD="on"
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置项
       :sync: config
 
-      The following configuration settings require a service restart to take effect.
-      To restart the service, use :mc-cmd:`mc admin service restart`.
+      以下配置项需要重启服务后才会生效。
+      要重启服务，请使用 :mc-cmd:`mc admin service restart`。
 
       .. mc-conf:: browser hsts_seconds
          :delimiter: " "
 
-         The ``max_age`` the configured policy remains in effect, in seconds.
-         Defaults to ``0``, disabled.
-         You **must** configure a *non-zero* duration to enable the ``Strict-Transport-Security`` header.
+         已配置策略生效的 ``max_age``（秒）。
+         默认为 ``0``，即禁用。
+         你**必须**配置*非零*时长，才能启用 ``Strict-Transport-Security`` 头。
 
          .. code-block:: shell
             :class: copyable
@@ -268,8 +268,8 @@ Other HSTS settings are optional.
       .. mc-conf:: browser hsts_include_subdomains
          :delimiter: " "
 
-         Set to ``on`` to also apply the configured HSTS policy to all MinIO Console subdomains.
-         Defaults to ``off``.
+         设置为 ``on`` 可将已配置的 HSTS 策略同时应用到所有 MinIO Console 子域名。
+         默认为 ``off``。
 
          .. code-block:: shell
             :class: copyable
@@ -282,8 +282,8 @@ Other HSTS settings are optional.
       .. mc-conf:: browser hsts_preload
          :delimiter: " "
 
-         Set to ``on`` to direct the client browser to add the MinIO Console domain to its HSTS preload list.
-         Defaults to ``off``.
+         设置为 ``on`` 可指示客户端浏览器将 MinIO Console 域名加入其 HSTS 预加载列表。
+         默认为 ``off``。
 
          .. code-block:: shell
             :class: copyable
@@ -294,12 +294,12 @@ Other HSTS settings are optional.
                [ARGUMENT=VALUE ...]
 
 
-Examples
-++++++++
+示例
+++++
 
-The following examples show the rendered header for the given configuration settings.
-The equivalent environment variables generate the same result.
-All examples use a value of ``31536000``, which is the number of seconds in a calendar year (365 days).
+以下示例展示了给定配置项对应的渲染后响应头。
+等价的环境变量会生成相同结果。
+所有示例均使用 ``31536000``，即一个自然年（365 天）的秒数。
 
 ``hsts_seconds``
 
@@ -338,17 +338,17 @@ All examples use a value of ``31536000``, which is the number of seconds in a ca
      Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
 
-Referrer Policy
-~~~~~~~~~~~~~~~
+来源策略
+~~~~~~~~
 
-*Optional*
+*可选*
 
-Configure MinIO Console to generate a `Referrer-Policy <https://www.w3.org/TR/referrer-policy/>`__ header in HTTP responses.
-Defaults to ``strict-origin-when-cross-origin``.
+将 MinIO Console 配置为在 HTTP 响应中生成 `Referrer-Policy <https://www.w3.org/TR/referrer-policy/>`__ 头。
+默认为 ``strict-origin-when-cross-origin``。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_BROWSER_REFERRER_POLICY
@@ -358,7 +358,7 @@ Defaults to ``strict-origin-when-cross-origin``.
 
             export MINIO_BROWSER_REFERRER_POLICY="strict-origin-when-cross-origin"
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: browser referrer_policy
@@ -371,77 +371,77 @@ Defaults to ``strict-origin-when-cross-origin``.
                [ARGUMENT=VALUE ...]
 
 
-Prometheus Settings
+Prometheus 设置
 -------------------
 
-The following settings manage how MinIO interacts with your Prometheus service.
+以下设置用于管理 MinIO 与你的 Prometheus 服务之间的交互方式。
 
 Prometheus URL
 ~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_PROMETHEUS_URL
 
-         Specify the URL for a Prometheus service configured to :ref:`scrape MinIO metrics <minio-metrics-collect-using-prometheus>`.
+         指定已配置为 :ref:`抓取 MinIO 指标 <minio-metrics-collect-using-prometheus>` 的 Prometheus 服务 URL。
 
-         The MinIO Console populates the :guilabel:`Dashboard` with cluster metrics using the ``minio-job`` Prometheus scraping job.
+         MinIO Console 使用 ``minio-job`` Prometheus 抓取作业，将集群指标填充到 :guilabel:`Dashboard`。
 
-         If you are using a standalone MinIO Console process, this variable corresponds with ``CONSOLE_PROMETHEUS_URL``.
+         如果你使用独立的 MinIO Console 进程，则该变量对应 ``CONSOLE_PROMETHEUS_URL``。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
 Prometheus Job ID
 ~~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_PROMETHEUS_JOB_ID
 
-         Specify the custom Prometheus job ID used for :ref:`scraping MinIO metrics <minio-metrics-collect-using-prometheus>`. 
+         指定用于 :ref:`抓取 MinIO 指标 <minio-metrics-collect-using-prometheus>` 的自定义 Prometheus job ID。
 
-         MinIO defaults to ``minio-job``.
+         MinIO 默认为 ``minio-job``。
 
-         If you are using a standalone MinIO Console process, this variable corresponds with ``CONSOLE_PROMETHEUS_JOB_ID``.
+         如果你使用独立的 MinIO Console 进程，则该变量对应 ``CONSOLE_PROMETHEUS_JOB_ID``。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。
 
 Prometheus Auth Token
 ~~~~~~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
       .. envvar:: MINIO_PROMETHEUS_AUTH_TOKEN
 
-         Specify the :prometheus-docs:`basic auth token <guides/basic-auth/>` the Console should use to connect to a Prometheus service.
+         指定 Console 连接 Prometheus 服务时应使用的 :prometheus-docs:`basic auth token <guides/basic-auth/>`。
 
-         For example, a basic auth token you might use could resemble the following:
+         例如，你使用的 basic auth token 可能如下所示：
 
          .. code-block:: text
 
             eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibWluaW8iLCJleHAiOjQ4NTAwMzg0MDJ9.GZCKR3d0FH2TCvNHSd39HaVfSuQVVV0s8glICBDmhT51V6CQ_hw8gTYlKHJmcpR8aHkqiJwCqcYJhaMmqwe00XY
 
-         If you are using a standalone MinIO Console process, this variable corresponds with ``CONSOLE_PROMETHEUS_AUTH_TOKEN``.
+         如果你使用独立的 MinIO Console 进程，则该变量对应 ``CONSOLE_PROMETHEUS_AUTH_TOKEN``。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
-      This setting does not have a configuration variable setting.
-      Use the Environment Variable instead.
+      此设置没有对应的配置变量。
+      请改用环境变量。

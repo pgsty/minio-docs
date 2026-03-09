@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,35 +14,34 @@
 .. |rewind| replace:: :mc-cmd:`~mc tree --rewind`
 .. |alias| replace:: :mc-cmd:`~mc tree ALIAS`
 
-Syntax
+语法
 ------
 
 .. start-mc-tree-desc
 
-The :mc:`mc tree` command lists all prefixes inside a MinIO bucket in a tree
-format. The command optionally supports listing all objects inside of bucket
-at each prefix, including the bucket root.
+:mc:`mc tree` 命令以树形格式列出 MinIO 存储桶中的所有前缀。
+该命令还可选支持在每个前缀处列出存储桶内的所有对象，包括存储桶根。
 
 .. end-mc-tree-desc
 
-You can also use :mc:`mc tree` against a local filesystem directory to
-produce similar results to the ``tree`` commandline tool.
+你也可以将 :mc:`mc tree` 用于本地文件系统目录，
+获得与 ``tree`` 命令行工具类似的结果。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command prints a complete tree of all objects at any
-      depth in the ``mydata`` bucket on the ``myminio`` MinIO deployment:
+      以下命令会打印 ``myminio`` MinIO 部署中 ``mydata`` 存储桶内
+      任意深度的全部对象树：
 
       .. code-block:: shell
          :class: copyable
 
          mc tree --files myminio/mydata
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令具有以下语法：
 
       .. code-block:: shell
          :class: copyable
@@ -56,27 +55,26 @@ produce similar results to the ``tree`` commandline tool.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* The :ref:`alias <alias>` of a MinIO deployment and the
-   full path to the bucket to list the tree hierarchy. For example:
+   *必需* MinIO 部署的 :ref:`alias <alias>` 和存储桶的完整路径，
+   用于列出树形层级。例如：
 
    .. code-block:: shell
 
       mc tree myminio/mybucket
 
-   You can specify multiple targets to the :mc:`mc tree` command. For
-   example:
+   你可以为 :mc:`mc tree` 命令指定多个目标。例如：
 
    .. code-block:: shell
 
       mc tree myminio/mybucket myminio/myotherbucket
 
-   For retrieving the tree heirarchy of a local filesystem directory,
-   specify the full path to that directory. For example:
+   如需获取本地文件系统目录的树形层级，
+   请指定该目录的完整路径。例如：
 
    .. code-block:: shell
 
@@ -85,15 +83,14 @@ Parameters
 .. mc-cmd:: --depth, d
    
 
-   *Optional* Limit the tree depth to the specified integer value. 
+   *可选* 将树深度限制为指定的整数值。
    
-   Defaults to ``-1`` or unlimited depth.
+   默认为 ``-1``，即不限制深度。
 
 .. mc-cmd:: --files, f
    
 
-   *Optional* Includes files in the object or directory in the :mc:`mc tree`
-   output.
+   *可选* 在 :mc:`mc tree` 输出中包含对象或目录中的文件。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -102,7 +99,7 @@ Parameters
       :start-after: start-rewind-desc
       :end-before: end-rewind-desc
 
-Examples
+示例
 --------
 
 .. code-block:: shell
@@ -110,17 +107,15 @@ Examples
 
    mc tree ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc tree ALIAS>` with the :ref:`alias <alias>` 
-  of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc tree ALIAS>` 替换为 MinIO 部署的 :ref:`alias <alias>`。
 
-- Replace :mc-cmd:`PATH <mc tree ALIAS>` with the path to the bucket on the
-  MinIO deployment.
+- 将 :mc-cmd:`PATH <mc tree ALIAS>` 替换为 MinIO 部署上存储桶的路径。
 
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

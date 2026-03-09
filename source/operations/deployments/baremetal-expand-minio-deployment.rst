@@ -1,48 +1,46 @@
 .. _expand-minio-distributed:
 
-=====================================
-Expand a Distributed MinIO Deployment
-=====================================
+=================================
+扩展分布式 MinIO 部署
+=================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports expanding an existing distributed deployment by adding a new :ref:`Server Pool <minio-intro-server-pool>`. 
-Each Pool expands the total available storage capacity of the cluster.
+MinIO 支持通过添加新的 :ref:`Server Pool <minio-intro-server-pool>` 来扩展现有的分布式部署。
+每个 Pool 都会扩展集群的总可用存储容量。
 
-Expansion does not provide Business Continuity/Disaster Recovery (BC/DR)-grade protections.
-While each pool is an independent set of servers with distinct :ref:`erasure sets <minio-ec-erasure-set>` for availability, the complete loss of one pool results in MinIO stopping I/O for all pools in the deployment.
-Similarly, an erasure set which loses quorum in one pool represents data loss of objects stored in that set, regardless of the number of other erasure sets or pools.
+扩容并不能提供 Business Continuity/Disaster Recovery (BC/DR) 级别的保护。
+虽然每个 pool 都是一组相互独立的服务器，并通过各自的 :ref:`纠删码集合 <minio-ec-erasure-set>` 提供可用性，但只要其中一个 pool 完全丢失，MinIO 就会停止该部署中所有 pool 的 I/O。
+同样地，只要某个 pool 中的某个纠删码集合失去 quorum，该集合中存储的对象就会发生数据丢失，而不受其他纠删码集合或 pool 数量的影响。
 
-The new server pool does **not** need to use the same type or size of hardware and software configuration as any existing server pool, though doing so may allow for simplified cluster management and more predictable performance across pools.
-All drives in the new pool **should** be of the same type and size within the new pool.
-Review MinIO's :ref:`hardware recommendations <minio-hardware-checklist>` for more complete guidance on selecting an appropriate configuration.
+新的 server pool **不必** 与现有任一 server pool 使用相同类型或规格的硬件和软件配置，不过保持一致通常有助于简化集群管理，并让各 pool 间的性能表现更可预测。
+新 pool 内的所有驱动器 **应当** 保持相同类型和容量。
+有关如何选择合适配置的完整建议，请参阅 MinIO 的 :ref:`硬件建议 <minio-hardware-checklist>`。
 
-To provide BC-DR grade failover and recovery support for your single or multi-pool MinIO deployments, use :ref:`site replication <minio-site-replication-overview>`.
+若要为单 pool 或多 pool 的 MinIO 部署提供 BC/DR 级别的故障切换与恢复支持，请使用 :ref:`站点复制 <minio-site-replication-overview>`。
 
-The procedure on this page expands an existing :ref:`distributed <deploy-minio-distributed>` MinIO deployment with an additional server pool. 
+本页步骤用于为现有 :ref:`分布式 <deploy-minio-distributed>` MinIO 部署增加一个额外的 server pool。
 
 .. important::
 
-   MinIO does not support expanding Single-Node Single-Drive topologies.
+   MinIO 不支持扩展 Single-Node Single-Drive 拓扑。
 
 .. _expand-minio-distributed-prereqs:
 
-Prerequisites
--------------
+前提条件
+--------
 
-Networking and Firewalls
-~~~~~~~~~~~~~~~~~~~~~~~~
+网络与防火墙
+~~~~~~~~~~~~
 
-Each node should have full bidirectional network access to every other node in
-the deployment. For containerized or orchestrated infrastructures, this may
-require specific configuration of networking and routing components such as
-ingress or load balancers. Certain operating systems may also require setting
-firewall rules. For example, the following command explicitly opens the default
-MinIO server API port ``9000`` on servers using ``firewalld``:
+部署中的每个节点都应当与其他所有节点具备完整的双向网络访问能力。
+对于容器化或编排式基础设施，这可能需要针对 Ingress、负载均衡器等网络和路由组件进行专门配置。
+某些操作系统还可能需要设置防火墙规则。
+例如，以下命令会在使用 ``firewalld`` 的服务器上显式开放 MinIO server 默认 API 端口 ``9000``：
 
 .. code-block:: shell
    :class: copyable
@@ -50,50 +48,42 @@ MinIO server API port ``9000`` on servers using ``firewalld``:
    firewall-cmd --permanent --zone=public --add-port=9000/tcp
    firewall-cmd --reload
 
-All MinIO servers in the deployment *must* use the same listen port.
+部署中的所有 MinIO server *必须* 使用相同的监听端口。
 
-If you set a static :ref:`MinIO Console <minio-console>` port (e.g. ``:9001``)
-you must *also* grant access to that port to ensure connectivity from external
-clients.
+如果你为 :ref:`MinIO Console <minio-console>` 设置了静态端口（例如 ``:9001``），
+则还必须允许外部客户端访问该端口，以确保连接可用。
 
-MinIO **strongly recomends** using a load balancer to manage connectivity to the
-cluster. The Load Balancer should use a "Least Connections" algorithm for
-routing requests to the MinIO deployment, since any MinIO node in the deployment
-can receive, route, or process client requests. 
+MinIO **强烈建议** 使用负载均衡器管理到集群的连接。
+由于部署中的任意 MinIO 节点都可以接收、转发或处理客户端请求，因此负载均衡器应采用 "Least Connections" 算法将请求路由到 MinIO 部署。
 
-The following load balancers are known to work well with MinIO:
+以下负载均衡器已知可与 MinIO 良好配合：
 
 - `NGINX <https://www.nginx.com/products/nginx/load-balancing/>`__
 - `HAProxy <https://cbonte.github.io/haproxy-dconv/2.3/intro.html#3.3.5>`__
 
-Configuring firewalls or load balancers to support MinIO is out of scope for
-this procedure.
-The :ref:`integrations-nginx-proxy` reference provides a baseline configuration for using NGINX as a reverse proxy with basic load balancing configured.
+如何配置防火墙或负载均衡器以支持 MinIO 不在本步骤范围内。
+:ref:`integrations-nginx-proxy` 参考页提供了一个将 NGINX 作为反向代理并启用基础负载均衡的基线配置。
 
-Sequential Hostnames
-~~~~~~~~~~~~~~~~~~~~
+连续主机名
+~~~~~~~~~~
 
-MinIO *requires* using expansion notation ``{x...y}`` to denote a sequential
-series of MinIO hosts when creating a server pool. MinIO therefore *requires*
-using sequentially-numbered hostnames to represent each
-:mc:`minio server` process in the pool. 
+MinIO 在创建 server pool 时，*要求* 使用扩展表示法 ``{x...y}`` 来表示一组连续的 MinIO 主机。
+因此，MinIO *要求* 使用连续编号的主机名来表示 pool 中的每个 :mc:`minio server` 进程。
 
-Create the necessary DNS hostname mappings *prior* to starting this procedure.
-For example, the following hostnames would support a 4-node distributed
-server pool:
+在开始本步骤之前，请先创建所需的 DNS 主机名映射。
+例如，以下主机名可用于一个 4 节点分布式 server pool：
 
 - ``minio5.example.com``
 - ``minio6.example.com``
 - ``minio7.example.com``
 - ``minio8.example.com``
 
-You can specify the entire range of hostnames using the expansion notation
-``minio{5...8}.example.com``.
+你可以使用扩展表示法 ``minio{5...8}.example.com`` 来指定完整的主机名范围。
 
-Configuring DNS to support MinIO is out of scope for this procedure.
+如何配置 DNS 以支持 MinIO 不在本步骤范围内。
 
-Storage Requirements
-~~~~~~~~~~~~~~~~~~~~
+存储要求
+~~~~~~~~
 
 .. |deployment| replace:: server pool
 
@@ -105,172 +95,153 @@ Storage Requirements
    :start-after: start-exclusive-drive-access
    :end-before: end-exclusive-drive-access
 
-Minimum Drives for Erasure Code Parity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-MinIO requires each pool satisfy the deployment :ref:`erasure code
-<minio-erasure-coding>` settings. Specifically the new pool topology must 
-support a minimum of ``2 x EC:N`` drives per 
-:ref:`erasure set <minio-ec-erasure-set>`, where ``EC:N`` is the 
-:ref:`Standard <minio-ec-storage-class>` parity storage class of the
-deployment. This requirement ensures the new server pool can satisfy the
-expected :abbr:`SLA (Service Level Agreement)` of the deployment.
-
-You can use the 
-`MinIO Erasure Code Calculator 
-<https://min.io/product/erasure-code-calculator?ref=docs>`__ to check the
-:guilabel:`Erasure Code Stripe Size (K+M)` of your new pool. If the highest
-listed value is at least ``2 x EC:N``, the pool supports the deployment's
-erasure parity settings.
-
-Time Synchronization
-~~~~~~~~~~~~~~~~~~~~
-
-Multi-node systems must maintain synchronized time and date to maintain stable internode operations and interactions.
-Make sure all nodes sync to the same time server regularly.
-Operating systems vary for methods used to synchronize time and date, such as with ``ntp``, ``timedatectl``, or ``timesyncd``.
-
-Check the documentation for your operating system for how to set up and maintain accurate and identical system clock times across nodes.
-
-Back Up Cluster Settings First
+满足纠删码校验的最小驱动器数量
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc admin cluster bucket export` and :mc:`mc admin cluster iam export` commands to take a snapshot of the bucket metadata and IAM configurations respectively prior to starting decommissioning.
-You can use these snapshots to restore :ref:`bucket <minio-mc-admin-cluster-bucket-import>` and :ref:`IAM <minio-mc-admin-cluster-iam-import>` settings to recover from user or process errors as necessary.
+MinIO 要求每个 pool 都满足部署的 :ref:`纠删码 <minio-erasure-coding>` 设置。
+具体来说，新 pool 的拓扑必须为每个 :ref:`纠删码集合 <minio-ec-erasure-set>` 提供至少 ``2 x EC:N`` 个驱动器，其中 ``EC:N`` 是该部署的 :ref:`Standard <minio-ec-storage-class>` 校验存储类。
+这一要求可确保新的 server pool 满足该部署预期的 :abbr:`SLA (Service Level Agreement)`。
 
-Considerations
---------------
+你可以使用 `MinIO Erasure Code Calculator <https://min.io/product/erasure-code-calculator?ref=docs>`__ 检查新 pool 的 :guilabel:`Erasure Code Stripe Size (K+M)`。
+如果列出的最大值至少为 ``2 x EC:N``，则该 pool 支持部署当前的纠删码校验设置。
+
+时间同步
+~~~~~~~~
+
+多节点系统必须保持时间和日期同步，才能维持稳定的节点间操作与交互。
+请确保所有节点都定期同步到同一时间服务器。
+不同操作系统可采用不同方式同步时间和日期，例如 ``ntp``、``timedatectl`` 或 ``timesyncd``。
+
+请查阅所用操作系统的文档，了解如何在各节点之间建立并维护准确且一致的系统时钟。
+
+先备份集群设置
+~~~~~~~~~~~~~~
+
+在开始扩容前，使用 :mc:`mc admin cluster bucket export` 和 :mc:`mc admin cluster iam export` 命令分别为存储桶元数据和 IAM 配置创建快照。
+必要时，你可以使用这些快照恢复 :ref:`存储桶 <minio-mc-admin-cluster-bucket-import>` 和 :ref:`IAM <minio-mc-admin-cluster-iam-import>` 设置，以从用户错误或流程错误中恢复。
+
+注意事项
+--------
 
 .. _minio-writing-files:
 
-Writing Files
-~~~~~~~~~~~~~
+写入文件
+~~~~~~~~
 
-MinIO does not automatically rebalance objects across the new server pools. 
-Instead, MinIO performs new write operations to the pool with the most free
-storage weighted by the amount of free space on the pool divided by the free space across all available pools.
+MinIO 不会自动在新的 server pool 之间重新平衡对象。
+相反，MinIO 会根据某个 pool 的空闲空间占所有可用 pool 总空闲空间的比例，将新的写入操作分配到空闲空间最多的 pool。
 
-The formula to determine the probability of a write operation on a particular pool is
+用于计算某个 pool 被选中执行写操作概率的公式如下：
 
 :math:`FreeSpaceOnPoolA / FreeSpaceOnAllPools`
 
-Consider a situation where a group of three pools has a total of 10 TiB of free space distributed as:
+假设有一个由三个 pool 组成的部署，总空闲空间为 10 TiB，分布如下：
 
-- Pool A has 3 TiB of free space
-- Pool B has 2 TiB of free space
-- Pool C has 5 TiB of free space
+- Pool A 有 3 TiB 空闲空间
+- Pool B 有 2 TiB 空闲空间
+- Pool C 有 5 TiB 空闲空间
 
-MinIO calculates the probability of a write operation to each of the pools as:
+MinIO 计算各 pool 被用于写入操作的概率如下：
 
-- Pool A: 30% chance (:math:`3TiB / 10TiB`)
-- Pool B: 20% chance (:math:`2TiB / 10TiB`)
-- Pool C: 50% chance (:math:`5TiB / 10TiB`)
+- Pool A：30% (:math:`3TiB / 10TiB`)
+- Pool B：20% (:math:`2TiB / 10TiB`)
+- Pool C：50% (:math:`5TiB / 10TiB`)
 
-In addition to the free space calculation, if a write option (with parity) would bring a drive
-usage above 99% or a known free inode count below 1000, MinIO does not write to the pool.
+除空闲空间计算外，如果某次写入（含校验）会导致驱动器使用率超过 99%，或已知剩余 inode 数量低于 1000，MinIO 也不会写入该 pool。
 
-If desired, you can manually initiate a rebalance procedure with :mc:`mc admin rebalance`.
-For more about how rebalancing works, see :ref:`managing objects across a deployment <minio-rebalance>`.
+如有需要，你可以使用 :mc:`mc admin rebalance` 手动启动重平衡过程。
+有关重平衡工作方式的更多信息，请参阅 :ref:`跨部署管理对象 <minio-rebalance>`。
 
-Likewise, MinIO does not write to pools in a decommissioning process.
+同样地，MinIO 不会向正在退役中的 pool 执行写入。
 
-Expansion is Non-Disruptive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+扩容是无中断的
+~~~~~~~~~~~~~~
 
-Adding a new server pool requires restarting *all* MinIO server processes in the
-deployment at around same time. 
+新增 server pool 需要在大致同一时间重启部署中的 *所有* MinIO server 进程。
 
 .. include:: /includes/common-installation.rst
    :start-after: start-nondisruptive-upgrade-desc
    :end-before: end-nondisruptive-upgrade-desc
 
-Capacity-Based Planning
-~~~~~~~~~~~~~~~~~~~~~~~
+基于容量的规划
+~~~~~~~~~~~~~~
 
-MinIO recommends planning storage capacity sufficient to store **at least** 2 years of data before reaching 70% usage.
-Performing :ref:`server pool expansion <expand-minio-distributed>` more frequently or on a "just-in-time" basis generally indicates an architecture or planning issue.
+MinIO 建议预先规划足以存放 **至少** 2 年数据的存储容量，并在使用率达到 70% 之前完成准备。
+如果过于频繁地执行 :ref:`server pool 扩容 <expand-minio-distributed>`，或按“just-in-time”方式扩容，通常意味着架构或规划存在问题。
 
-For example, consider an application suite expected to produce at least 100 TiB of data per year and a 3 year target before expansion.
-The deployment has ~500TiB of usable storage in the initial server pool, such that the cluster safely met the 70% threshold with some buffer for data growth.
-The new server pool should **ideally** meet at minimum 500TiB of additional storage to allow for a similar lifespan before further expansion.
+例如，假设某套应用每年预计至少产生 100 TiB 数据，并计划在 3 年后再扩容。
+初始 server pool 为该部署提供了约 500 TiB 的可用存储，使集群能够在安全满足 70% 阈值的同时，为数据增长保留一定缓冲。
+理想情况下，新 server pool **至少** 也应提供 500 TiB 的额外存储，以便在下次扩容前维持类似的生命周期。
 
-Since MinIO :ref:`erasure coding <minio-erasure-coding>` requires some storage for parity, the total **raw** storage must exceed the planned **usable** capacity. 
-Consider using the MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ for guidance in planning capacity around specific erasure code settings.
+由于 MinIO :ref:`纠删码 <minio-erasure-coding>` 需要预留部分存储用于校验，因此总 **原始** 存储容量必须高于计划中的 **可用** 容量。
+建议使用 MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__，围绕具体纠删码设置进行容量规划。
 
-Recommended Operating Systems
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+推荐的操作系统
+~~~~~~~~~~~~~~
 
-This tutorial assumes all hosts running MinIO use a :ref:`recommended Linux operating system <minio-installation-platform-support>`. 
+本教程默认所有运行 MinIO 的主机都使用 :ref:`推荐的 Linux 操作系统 <minio-installation-platform-support>`。
 
-All hosts in the deployment should run with matching :ref:`software configurations <minio-software-checklists>`.
+部署中的所有主机都应采用一致的 :ref:`软件配置 <minio-software-checklists>`。
 
 .. _expand-minio-distributed-baremetal:
 
-Expand a Distributed MinIO Deployment
--------------------------------------
+扩展分布式 MinIO 部署
+---------------------
 
-The following procedure adds a :ref:`Server Pool <minio-intro-server-pool>`
-to an existing MinIO deployment. Each Pool expands the total available
-storage capacity of the cluster while maintaining the overall 
-:ref:`availability <minio-erasure-coding>` of the cluster.
+以下步骤将向现有 MinIO 部署中添加一个 :ref:`Server Pool <minio-intro-server-pool>`。
+每个 Pool 都会在保持集群整体 :ref:`可用性 <minio-erasure-coding>` 的同时，扩展集群的总可用存储容量。
 
-All commands provided below use example values. Replace these values with
-those appropriate for your deployment.
+以下所有命令都使用示例值。
+请将这些值替换为适用于你部署的实际值。
 
-Review the :ref:`expand-minio-distributed-prereqs` before starting this
-procedure.
+开始本步骤前，请先阅读 :ref:`expand-minio-distributed-prereqs`。
 
-Complete any planned hardware expansion prior to :ref:`decommissioning older hardware pools <minio-decommissioning>`.
+在 :ref:`退役旧硬件 pool <minio-decommissioning>` 之前，请先完成所有计划中的硬件扩容。
 
-1) Install the MinIO Binary on Each Node in the New Server Pool
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 在新 Server Pool 的每个节点上安装 MinIO 二进制文件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-binary-desc
    :end-before: end-install-minio-binary-desc
 
-2) Add TLS/SSL Certificates
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 添加 TLS/SSL 证书
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-installation.rst
    :start-after: start-install-minio-tls-desc
    :end-before: end-install-minio-tls-desc
 
-3) Create the ``systemd`` Service File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 创建 ``systemd`` 服务文件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-systemd-desc
    :end-before: end-install-minio-systemd-desc
 
-4) Create the Service Environment File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 创建服务环境文件
+~~~~~~~~~~~~~~~~~~~~
 
-Create an environment file at ``/etc/default/minio``. The MinIO 
-service uses this file as the source of all 
-:ref:`environment variables <minio-server-environment-variables>` used by
-MinIO *and* the ``minio.service`` file.
+在 ``/etc/default/minio`` 创建环境文件。
+MinIO 服务会将该文件作为 MinIO *以及* ``minio.service`` 文件所用全部 :ref:`环境变量 <minio-server-environment-variables>` 的来源。
 
-The following examples assumes that:
+以下示例假设：
 
-- The deployment has a single server pool consisting of four MinIO server hosts
-  with sequential hostnames.
+- 该部署当前只有一个 server pool，由四台使用连续主机名的 MinIO server 主机构成。
 
   .. code-block:: shell
 
      minio1.example.com   minio3.example.com   
      minio2.example.com   minio4.example.com   
 
-  Each host has 4 locally attached drives with
-  sequential mount points:
+  每台主机都有 4 块本地直连驱动器，挂载点连续：
 
   .. code-block:: shell
 
      /mnt/disk1/minio   /mnt/disk3/minio 
      /mnt/disk2/minio   /mnt/disk4/minio
 
-- The new server pool consists of eight new MinIO hosts with sequential
-  hostnames:
+- 新的 server pool 由八台使用连续主机名的新 MinIO 主机构成：
 
   .. code-block:: shell
 
@@ -279,7 +250,7 @@ The following examples assumes that:
      minio7.example.com   minio11.example.com
      minio8.example.com   minio12.example.com
 
-- All hosts have eight locally-attached drives with sequential mount-points:
+- 所有主机都具有八块本地直连驱动器，挂载点连续：
 
   .. code-block:: shell
      
@@ -288,12 +259,10 @@ The following examples assumes that:
      /mnt/disk3/minio  /mnt/disk7/minio
      /mnt/disk4/minio  /mnt/disk8/minio
 
-- The deployment has a load balancer running at ``https://minio.example.net``
-  that manages connections across all MinIO hosts. The load balancer should
-  not be routing requests to the new hosts at this step, but should have 
-  the necessary configuration updates planned.
+- 该部署有一个运行在 ``https://minio.example.net`` 的负载均衡器，用于管理到所有 MinIO 主机的连接。
+  在此步骤中，负载均衡器不应将请求路由到新主机，但应已准备好所需的配置更新计划。
 
-Modify the example to reflect your deployment topology:
+请根据你的部署拓扑修改示例：
 
 .. code-block:: shell
    :class: copyable
@@ -338,16 +307,13 @@ Modify the example to reflect your deployment topology:
 
    MINIO_ROOT_PASSWORD=minio-secret-key-CHANGE-ME
 
-You may specify other :ref:`environment variables
-<minio-server-environment-variables>` or server commandline options as required
-by your deployment. All MinIO nodes in the deployment should include the same
-environment variables with the matching values.
+你可以根据部署需要指定其他 :ref:`环境变量 <minio-server-environment-variables>` 或 server 命令行选项。
+部署中的所有 MinIO 节点都应包含相同且取值一致的环境变量。
 
-5) Restart the MinIO Deployment with Expanded Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5) 使用扩展后的配置重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Issue the following commands on each node **simultaneously** in the deployment
-to restart the MinIO service:
+在部署中的每个节点上**同时**执行以下命令，以重启 MinIO 服务：
 
 .. include:: /includes/linux/common-installation.rst
    :start-after: start-install-minio-restart-service-desc
@@ -357,14 +323,10 @@ to restart the MinIO service:
    :start-after: start-nondisruptive-upgrade-desc
    :end-before: end-nondisruptive-upgrade-desc
 
-6) Next Steps
-~~~~~~~~~~~~~
+6) 后续步骤
+~~~~~~~~~~~
 
-- Update any load balancers, reverse proxies, or other network control planes
-  to route client requests to the new hosts in the MinIO distributed deployment.
-  While MinIO automatically manages routing internally, having the control
-  planes handle initial connection management may reduce network hops and
-  improve efficiency.
+- 更新所有负载均衡器、反向代理或其他网络控制平面，使客户端请求能够路由到 MinIO 分布式部署中的新主机。
+  虽然 MinIO 会在内部自动管理路由，但由控制平面处理初始连接通常可以减少网络跳数并提升效率。
 
-- Review the :ref:`MinIO Console <minio-console>` to confirm the updated
-  cluster topology and monitor performance.
+- 查看 :ref:`MinIO Console <minio-console>`，确认更新后的集群拓扑并监控性能。

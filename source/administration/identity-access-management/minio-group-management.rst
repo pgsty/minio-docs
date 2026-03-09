@@ -1,60 +1,55 @@
 .. _minio-groups:
 
 ================
-Group Management
+组管理
 ================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-Overview
+概述
 --------
 
-A *group* is a collection of :ref:`users <minio-users>`. Each group
-can have one or more assigned :ref:`policies <minio-policy>`
-that explicitly list the actions and resources to which group members are
-allowed or denied access.
+*组* 是 :ref:`用户 <minio-users>` 的集合。每个组
+都可以分配一个或多个 :ref:`策略 <minio-policy>`，
+这些策略会显式列出允许或拒绝组成员访问的操作和资源。
 
-For example, consider the following groups. Each group is assigned a
-:ref:`built-in policy <minio-policy-built-in>` or supported
-:ref:`policy action <minio-policy-actions>`. Each group also has one or
-more assigned users. Each user's total set of permissions consists of their
-explicitly assigned permission *and* the inherited permissions from each of
-their assigned groups. MinIO by default *denies* access to any resource or
-operation not explicitly allowed by a user's assigned or inherited policies.
+例如，考虑以下几个组。每个组都分配了一个
+:ref:`内置策略 <minio-policy-built-in>` 或受支持的
+:ref:`策略操作 <minio-policy-actions>`。每个组还分配了一个或
+多个用户。每个用户的完整权限集合由其
+显式分配的权限 *以及* 从其所属各组继承的权限共同组成。
+对于用户被分配或继承的策略中未显式允许的任何资源或操作，MinIO 默认都会 *拒绝* 访问。
 
 .. list-table::
    :header-rows: 1
    :widths: 20 40 40
    :width: 100%
 
-   * - Group
-     - Policy
-     - Members
+   * - 组
+     - 策略
+     - 成员
 
    * - ``Operations``
-     - | :userpolicy:`readwrite` on ``finance`` bucket
-       | :userpolicy:`readonly` on ``audit`` bucket
+     - | ``finance`` 存储桶上的 :userpolicy:`readwrite`
+       | ``audit`` 存储桶上的 :userpolicy:`readonly`
      
      - ``john.doe``, ``jane.doe``
 
    * - ``Auditing``
-     - | :userpolicy:`readonly` on ``audit`` bucket
+     - | ``audit`` 存储桶上的 :userpolicy:`readonly`
      - ``jen.doe``, ``joe.doe``
 
    * - ``Admin``
      - :policy-action:`admin:*`
      - ``greg.doe``, ``jen.doe``
 
-Groups provide a simplified method for managing shared permissions among
-users with common access patterns and workloads. Client's *cannot* authenticate
-to a MinIO deployment using a group as an identity. 
+组为具有相同访问模式和工作负载的用户之间管理共享权限提供了一种更简便的方法。
+客户端 *不能* 使用组作为身份向 MinIO 部署进行认证。
 
 
-The :mc:`mc admin group` command supports the creation and management of
-groups on the MinIO deployment. See the command reference for examples of
-usage.
-
+:mc:`mc admin group` 命令支持在 MinIO 部署上创建和管理组。
+有关用法示例，请参阅该命令的参考文档。

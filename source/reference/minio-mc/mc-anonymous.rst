@@ -4,35 +4,35 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc anonymous
 
 
-Description
------------
+说明
+----
 
 .. start-mc-anonymous-desc
 
-The :mc:`mc anonymous` command supports setting or removing anonymous :ref:`policies <minio-policy>` to a bucket and its contents. 
-Buckets with anonymous policies allow public access where clients can perform any action granted by the policy without :ref:`authentication <minio-authentication-and-identity-management>`.
+:mc:`mc anonymous` 命令支持为存储桶及其内容设置或移除匿名 :ref:`policies <minio-policy>`。
+配置了匿名策略的存储桶允许公开访问，客户端无需进行 :ref:`authentication <minio-authentication-and-identity-management>` 即可执行策略授予的任意操作。
 
 .. end-mc-anonymous-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc-cmd:`mc anonymous` includes the following subcommands:
+:mc-cmd:`mc anonymous` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc anonymous get`
      - .. include:: /reference/minio-mc/mc-anonymous-get.rst

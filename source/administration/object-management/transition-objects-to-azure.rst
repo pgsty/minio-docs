@@ -1,60 +1,52 @@
 .. _minio-lifecycle-management-transition-to-azure:
 
 ======================================
-Transition Objects from MinIO to Azure
+将对象从 MinIO 迁移到 Azure
 ======================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The procedure on this page creates a new object lifecycle management rule that
-transition objects from a MinIO bucket to a remote storage tier on the
-:abbr:`Azure (Microsoft Azure)` storage backend. This procedure supports use
-cases like moving aged data to low-cost public cloud storage solutions after a
-certain time period or calendar date.
+本页中的过程将创建一条新的对象生命周期管理规则，用于将 MinIO 存储桶中的对象迁移到
+:abbr:`Azure (Microsoft Azure)` 存储后端上的远程存储层。该过程适用于如下场景：
+在达到特定时间周期或日历日期后，将陈旧数据移动到低成本的公有云存储方案中。
 
 .. todo: diagram
 
-Requirements
-------------
+要求
+----
 
-Install and Configure ``mc``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+安装并配置 ``mc``
+~~~~~~~~~~~~~~~~~
 
-This procedure uses :mc:`mc` for performing operations on the MinIO cluster.
-Install :mc:`mc` on a machine with network access to both source and destination
-clusters. See the ``mc`` :ref:`Installation Quickstart <mc-install>` for
-instructions on downloading and installing ``mc``.
+该过程使用 :mc:`mc` 在 MinIO 集群上执行操作。
+请将 :mc:`mc` 安装在一台同时具备源集群和目标集群网络访问能力的主机上。
+有关下载和安装 ``mc`` 的说明，请参见 ``mc`` :ref:`安装快速开始 <mc-install>`。
 
-Use the :mc:`mc alias set` command to create an alias for the source MinIO cluster.
-Alias creation requires specifying an access key for a user on the source and
-destination clusters. The specified users must have :ref:`permissions
-<minio-lifecycle-management-transition-to-azure-permissions>` for configuring
-and applying transition operations.
+使用 :mc:`mc alias set` 命令为源 MinIO 集群创建别名。
+创建别名时，需要为源集群和目标集群上的用户指定访问密钥。
+所指定的用户必须具备配置和应用迁移操作所需的 :ref:`权限
+<minio-lifecycle-management-transition-to-azure-permissions>`。
 
 .. _minio-lifecycle-management-transition-to-azure-permissions:
 
-Required MinIO Permissions
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+所需的 MinIO 权限
+~~~~~~~~~~~~~~~~~
 
-MinIO requires the following permissions scoped to the bucket or buckets 
-for which you are creating lifecycle management rules.
+MinIO 要求在要创建生命周期管理规则的一个或多个存储桶范围内具备以下权限。
 
 - :policy-action:`s3:PutLifecycleConfiguration`
 - :policy-action:`s3:GetLifecycleConfiguration`
 
-MinIO also requires the following administrative permissions on the cluster
-in which you are creating remote tiers for object transition lifecycle
-management rules:
+此外，在为对象迁移生命周期管理规则创建远程层的集群上，MinIO 还要求具备以下管理权限：
 
 - :policy-action:`admin:SetTier`
 - :policy-action:`admin:ListTier`
 
-For example, the following policy provides permission for configuring object
-transition lifecycle management rules on any bucket in the cluster:.
+例如，以下策略授予在集群中任意存储桶上配置对象迁移生命周期管理规则的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
@@ -62,36 +54,36 @@ transition lifecycle management rules on any bucket in the cluster:.
 
 .. _minio-lifecycle-management-transition-to-azure-permissions-remote:
 
-Required Azure Permissions
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+所需的 Azure 权限
+~~~~~~~~~~~~~~~~~
 
-Object transition lifecycle management rules require additional permissions on
-the remote storage tier. Specifically, MinIO requires the 
-:abbr:`Azure (Microsoft Azure)` credentials provide read, write, list, and
-delete permissions for the remote storage account and container.
+对象迁移生命周期管理规则要求在远程存储层上具备额外权限。
+具体而言，MinIO 要求 :abbr:`Azure (Microsoft Azure)` 凭证对远程存储账户和容器具备读取、
+写入、列出和删除权限。
 
-Refer to the `Azure RBAC
+有关配置所需权限的更完整说明，请参阅 `Azure RBAC
 <https://docs.microsoft.com/en-us/azure/role-based-access-control/>`__
-documentation for more complete guidance on configuring the required
-permissions.
+文档。
 
-Remote Storage Account and Container Must Exist
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Create the remote :azure-docs:`Azure storage account <storage/common/storage-account-overview>` and container *prior* to configuring lifecycle management tiers or rules using that resource as the target.
-When :azure-docs:`creating the Azure storage account <storage/common/storage-account-create>`, ensure the storage account corresponds to either Standard or Premium blob storage with the locally redundant storage (LRS) redundancy option.
-The Azure Go SDK API used by MinIO does not support any other redundancy options.
-
-If you set a Storage Account :azure-docs:`default access tier <storage/blobs/access-tiers-online-manage>`, MinIO uses that default *if* you do not specify a :mc-cmd:`storage class <mc ilm tier add --storage-class>` when defining the remote tier.
-Ensure you document the settings of both your Azure storage account and MinIO tiering configuration to avoid any potential confusion, misconfiguration, or other unexpected outcomes.
-
-For more information on Azure storage accounts, see :azure-docs:`Storage accounts <storage/common/storage-account-overview#types-of-storage-accounts>`.
-
-Considerations
---------------
-
-Exclusive Access to Remote Data
+远程存储账户和容器必须预先存在
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+在将该资源配置为生命周期管理层或规则的目标之前，先创建远程
+:azure-docs:`Azure 存储账户 <storage/common/storage-account-overview>` 和容器。
+在 :azure-docs:`创建 Azure 存储账户 <storage/common/storage-account-create>` 时，请确保该存储账户对应
+Standard 或 Premium blob storage，并使用本地冗余存储（LRS）选项。
+MinIO 使用的 Azure Go SDK API 不支持其他任何冗余选项。
+
+如果您为存储账户设置了 :azure-docs:`默认访问层 <storage/blobs/access-tiers-online-manage>`，那么在定义远程层时，如果未指定 :mc-cmd:`storage class <mc ilm tier add --storage-class>`，MinIO 将使用该默认值。
+请确保记录 Azure 存储账户和 MinIO 分层配置的相关设置，以避免潜在的混淆、误配置或其他意外结果。
+
+有关 Azure 存储账户的更多信息，请参见 :azure-docs:`Storage accounts <storage/common/storage-account-overview#types-of-storage-accounts>`。
+
+注意事项
+--------
+
+对远程数据的独占访问
+~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-tiering.rst
    :start-after: start-transition-bucket-access-desc
@@ -99,26 +91,23 @@ Exclusive Access to Remote Data
 
 .. important::
 
-   MinIO does *not* support changing the account name associated to an Azure
-   remote tier. Azure storage backends are tied to the account, such that
-   changing the account would change the storage backend and prevent access
-   to any objects transitioned to the original account/backend.
+   MinIO *不* 支持更改与 Azure 远程层关联的账户名称。
+   Azure 存储后端与该账户绑定，因此更改账户会改变存储后端，并导致无法访问已迁移到原始账户/后端的任何对象。
 
-   Please contact `MinIO Support <https://min.io/pricing?ref=docs>`__ if you need
-   situation-specific guidance around configuring Azure remote tiers.
+   如果您需要与 Azure 远程层配置相关的场景化指导，请联系 `MinIO Support <https://min.io/pricing?ref=docs>`__。
 
-Availability of Remote Data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+远程数据的可用性
+~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-tiering.rst
    :start-after: start-transition-data-loss-desc
    :end-before: end-transition-data-loss-desc
 
-Procedure
----------
+过程
+----
 
-1) Configure User Accounts and Policies for Lifecycle Management
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 为生命周期管理配置用户账户和策略
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. |permissions| replace:: :ref:`permissions <minio-lifecycle-management-transition-to-azure-permissions>`
 
@@ -126,10 +115,10 @@ Procedure
    :start-after: start-create-transition-user-desc
    :end-before: end-create-transition-user-desc
 
-2) Configure the Remote Storage Tier
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 配置远程存储层
+~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc ilm tier add` command to add a new remote storage tier:
+使用 :mc:`mc ilm tier add` 命令添加新的远程存储层：
 
 .. code-block:: shell
    :class: copyable
@@ -143,92 +132,84 @@ Use the :mc:`mc ilm tier add` command to add a new remote storage tier:
       --storage-class STORAGE_CLASS
 
 
-The example above uses the following arguments:
+上述示例使用了以下参数：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Argument
-     - Description
+   * - 参数
+     - 说明
    
    * - :mc-cmd:`TARGET <mc ilm tier add TARGET>`
-     - The :mc:`alias <mc alias>` of the MinIO deployment on which to configure
-       the remote tier.
+     - 要在其上配置远程层的 MinIO 部署的 :mc:`alias <mc alias>`。
    
    * - :mc-cmd:`TIER_NAME <mc ilm tier add TIER_NAME>`
-     - The name to associate with the new :abbr:`Azure (Microsoft Azure)` blob
-       remote storage tier. Specify the name in all-caps, e.g. ``AZURE_TIER``.
-       This value is required in the next step.
+     - 为新的 :abbr:`Azure (Microsoft Azure)` blob 远程存储层指定的名称。
+       请使用全大写名称，例如 ``AZURE_TIER``。
+       下一步中将需要该值。
 
    * - :mc-cmd:`ACCOUNT <mc ilm tier add --account-name>`
-     - The :azure-docs:`Storage Account <storage/common/storage-account-overview>` to use as the remote storage resource.
+     - 用作远程存储资源的 :azure-docs:`Storage Account <storage/common/storage-account-overview>`。
 
-       You cannot change this account name after creating the tier.
+       创建该层后，无法更改此账户名称。
 
    * - :mc-cmd:`KEY <mc ilm tier add --account-key>`
-     - The corresponding shared account key for the specified ``ACCOUNT``.
+     - 指定 ``ACCOUNT`` 对应的共享账户密钥。
 
-       The account key must have an assigned Azure policy with the required :ref:`permissions
-       <minio-lifecycle-management-transition-to-azure-permissions-remote>`.
+       该账户密钥对应的 Azure 策略必须具备所需 :ref:`权限
+       <minio-lifecycle-management-transition-to-azure-permissions-remote>`。
 
-       See :azure-docs:`Managing storage account access keys <storage/common/storage-account-keys-manage>` for more information.
+       更多信息请参见 :azure-docs:`Managing storage account access keys <storage/common/storage-account-keys-manage>`。
 
    * - :mc-cmd:`CONTAINER <mc ilm tier add --bucket>`
-     - The name of the container on the :abbr:`Azure (Microsoft Azure)` storage
-       backend to which MinIO transitions objects.
+     - MinIO 将对象迁移到其上的 :abbr:`Azure (Microsoft Azure)` 存储后端中的容器名称。
 
    * - :mc-cmd:`ENDPOINT <mc ilm tier add --endpoint>`
-     - (Optional) The full URL of the Azure blob storage backend to which MinIO transitions objects.  Defaults
-       to ``https://ACCOUNT.blob.core.windows.net`` if not specified.
+     - （可选）MinIO 将对象迁移到其上的 Azure blob 存储后端的完整 URL。
+       如果未指定，默认为 ``https://ACCOUNT.blob.core.windows.net``。
 
    * - :mc-cmd:`PREFIX <mc ilm tier add --prefix>`
-     - The optional container prefix within which MinIO transitions objects.
+     - MinIO 迁移对象时使用的可选容器前缀。
 
-       MinIO stores all transitioned objects in the specified ``BUCKET`` under a
-       unique per-deployment prefix value. Omit this argument to use only that
-       value for isolating and organizing data within the remote storage.
+       MinIO 会将所有已迁移对象存储在指定 ``BUCKET`` 下，并使用部署唯一的前缀值。
+       省略此参数时，仅使用该值在远程存储中隔离和组织数据。
 
-       MinIO recommends specifying this optional prefix for remote storage tiers
-       which contain other data, including transitioned objects from other MinIO
-       deployments. This prefix should provide a clear reference back to the
-       source MinIO deployment to facilitate ease of operations related to
-       diagnostics, maintenance, or disaster recovery.
+       对于包含其他数据的远程存储层，包括来自其他 MinIO 部署的已迁移对象，MinIO 建议指定该可选前缀。
+       此前缀应能清晰指向源 MinIO 部署，以便开展与诊断、维护或灾难恢复相关的操作。
 
    * - :mc-cmd:`STORAGE_CLASS <mc ilm tier add --storage-class>`
-     - The Azure access tier MinIO applies to objects transitioned to the Azure container.
+     - MinIO 应用于迁移到 Azure 容器中对象的 Azure 访问层。
 
-       MinIO tiering behavior depends on the remote storage returning objects immediately (milliseconds to seconds) upon request.
-       MinIO therefore *cannot* support remote storage which requires rehydration, wait periods, or manual intervention.
+       MinIO 的分层行为依赖远程存储在收到请求后立即返回对象（毫秒到秒级）。
+       因此，MinIO *不能* 支持需要 rehydration、等待周期或人工干预的远程存储。
 
-       The following Azure access tiers meet MinIO's requirements as a remote tier:
+       以下 Azure 访问层满足 MinIO 对远程层的要求：
 
        - ``Hot``
        - ``Cool``
 
-       For more information, see :azure-docs:`Hot, cool, and archive access tiers for blob data <storage/blobs/access-tiers-overview.html>`.
+       更多信息请参见 :azure-docs:`Hot, cool, and archive access tiers for blob data <storage/blobs/access-tiers-overview.html>`。
 
-3) Create and Apply the Transition Rule
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 创建并应用迁移规则
+~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-tiering.rst
    :start-after: start-create-transition-rule-desc
    :end-before: end-create-transition-rule-desc
 
 
-4) Verify the Transition Rule
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证迁移规则
+~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc ilm rule ls` command to review the configured transition rules:
+使用 :mc:`mc ilm rule ls` 命令查看已配置的迁移规则：
 
 .. code-block:: shell
    :class: copyable
 
    mc ilm rule ls ALIAS/PATH --transition
 
-- Replace :mc-cmd:`ALIAS <mc ilm rule ls ALIAS>` with the :mc:`alias <mc alias>`
-  of the MinIO deployment.
+- 将 :mc-cmd:`ALIAS <mc ilm rule ls ALIAS>` 替换为 MinIO 部署的 :mc:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc ilm rule ls ALIAS>` with the name of the bucket for
-  which to retrieve the configured lifecycle management rules.
+- 将 :mc-cmd:`PATH <mc ilm rule ls ALIAS>` 替换为要检索其已配置生命周期管理规则的存储桶名称。

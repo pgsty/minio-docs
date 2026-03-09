@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,130 +12,119 @@
 
 .. note:: 
 
-   This command has been replaced by :mc:`mc support profile` as of `mc` RELEASE.2023-04-06T16-51-10Z.
+   自 `mc` RELEASE.2023-04-06T16-51-10Z 起，该命令已由 :mc:`mc support profile` 取代。
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-profile-desc
 
-The :mc-cmd:`mc admin profile` command generates profiling data for debugging
-purposes.
+:mc-cmd:`mc admin profile` 命令会生成用于调试的性能分析数据。
 
 .. end-mc-admin-profile-desc
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
       :start-after: start-minio-only
       :end-before: end-minio-only
 
-Profile Data Format
-~~~~~~~~~~~~~~~~~~~
+性能分析数据格式
+~~~~~~~~~~~~~~~~
 
-:mc-cmd:`mc admin profile` produces a ``ZIP`` archive ``profile.zip`` that
-contains one or more ``.pprof`` files. Use the 
-`pprof <https://github.com/google/pprof>`__ ``go`` utility to read the
-profile data.
+:mc-cmd:`mc admin profile` 会生成一个 ``ZIP`` 归档文件 ``profile.zip``，
+其中包含一个或多个 ``.pprof`` 文件。使用
+`pprof <https://github.com/google/pprof>`__ ``go`` 工具读取这些性能分析数据。
 
-Examples
---------
+示例
+----
 
-Profile Data for Single Resource
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+单个资源的性能分析数据
+~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin profile start` with the
-:mc-cmd:`~mc admin profile start type` flag to start profiling the
-resource:
+使用 :mc-cmd:`mc admin profile start` 并结合
+:mc-cmd:`~mc admin profile start type` 标志开始对该资源进行性能分析：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin profile start --type "TYPE" ALIAS
 
-- Replace :mc-cmd:`ALIAS <mc admin profile start TARGET>` with the
-  :mc-cmd:`alias <mc alias>` of the MinIO host.
+- 将 :mc-cmd:`ALIAS <mc admin profile start TARGET>` 替换为 MinIO 主机的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`TYPE <mc admin profile start type>` with the resource to
-  profile.
+- 将 :mc-cmd:`TYPE <mc admin profile start type>` 替换为要分析的资源类型。
 
-Use :mc-cmd:`mc admin profile stop` to stop profiling data from the specified
-resource and output the results:
+使用 :mc-cmd:`mc admin profile stop` 停止对指定资源的性能分析并输出结果：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin profile stop
 
-The command outputs the profiled data as ``profile.zip``.
+该命令会将性能分析数据输出为 ``profile.zip``。
 
-Profile Data for Multiple Resources
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+多个资源的性能分析数据
+~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc admin profile start` with the
-:mc-cmd:`~mc admin profile start type` flag to start profiling the
-resources:
+使用 :mc-cmd:`mc admin profile start` 并结合
+:mc-cmd:`~mc admin profile start type` 标志开始对这些资源进行性能分析：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin profile start --type "TYPE,[TYPE...]" ALIAS
 
-- Replace :mc-cmd:`ALIAS <mc admin profile start TARGET>` with the
-  :mc-cmd:`alias <mc alias>` of the MinIO host.
+- 将 :mc-cmd:`ALIAS <mc admin profile start TARGET>` 替换为 MinIO 主机的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`TYPE <mc admin profile start type>` with the resources to
-  profile. Specify multiple resources as a comma-separated list.
+- 将 :mc-cmd:`TYPE <mc admin profile start type>` 替换为要分析的资源类型。
+  多个资源类型请使用逗号分隔列表指定。
 
-Use :mc-cmd:`mc admin profile stop` to stop profiling data from the specified
-resources and output the results:
+使用 :mc-cmd:`mc admin profile stop` 停止对指定资源的性能分析并输出结果：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin profile stop
 
-The command outputs the profiled data as ``profile.zip``.
+该命令会将性能分析数据输出为 ``profile.zip``。
 
-Syntax
-------
+语法
+----
 
-:mc-cmd:`mc admin profile` has the following syntax:
+:mc-cmd:`mc admin profile` 的语法如下：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin profile SUBCOMMAND
 
-:mc-cmd:`mc admin profile` supports the following subcommands:
+:mc-cmd:`mc admin profile` 支持以下子命令：
 
 .. mc-cmd:: start
    :fullpath:
 
-   Starts collecting profiling data on the target MinIO deployment. The
-   command has the following syntax:
+   在目标 MinIO 部署上开始收集性能分析数据。该命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin profile start [FLAGS] TARGET
 
-   :mc-cmd:`mc admin profile start` supports the following arguments:
+   :mc-cmd:`mc admin profile start` 支持以下参数：
 
    .. mc-cmd:: TARGET
 
-      The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment from
-      which the command collects profiling data.
+      已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，命令将从该部署收集性能分析数据。
 
    .. mc-cmd:: type
       
 
-      The type(s) of profiling data to collect from the 
-      :mc-cmd:`~mc admin profile start TARGET` MinIO deployment.
+      从 :mc-cmd:`~mc admin profile start TARGET` MinIO 部署收集的性能分析数据类型。
 
-      Specify one or more of the following supported types as a comma-separated
-      list:
+      将以下一个或多个支持的类型以逗号分隔列表形式指定：
 
       - ``cpu``
       - ``mem``
@@ -145,29 +134,25 @@ Syntax
       - ``threads``
       - ``goroutines``
 
-      Defaults to ``cpu,mem,block`` if omitted. 
+      省略时默认为 ``cpu,mem,block``。
 
 .. mc-cmd:: stop
    :fullpath:
 
-   Stops the profiling process and returns the collected data as 
-   ``profile.zip``. The ``zip`` file contains one or more 
-   ``.pprof`` files which are readable with programs like the ``go``
-   `pprof <https://github.com/google/pprof>`__ utility.
+   停止性能分析过程，并将收集的数据作为 ``profile.zip`` 返回。该 ``zip``
+   文件包含一个或多个 ``.pprof`` 文件，可由 ``go``
+   `pprof <https://github.com/google/pprof>`__ 等工具读取。
 
-   The command has the following syntax:
+   该命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin profile stop TARGET
 
-   The command supports the following arguments:
+   该命令支持以下参数：
 
    .. mc-cmd:: TARGET
 
-      The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment from
-      which the command returns available profiling data. 
-
-
+      已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，命令将从该部署返回可用的性能分析数据。
 

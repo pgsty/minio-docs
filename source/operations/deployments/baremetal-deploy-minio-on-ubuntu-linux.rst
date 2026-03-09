@@ -1,12 +1,12 @@
 .. _deploy-minio-ubuntu:
 
-============================
-Deploy MinIO on Ubuntu Linux
-============================
+==============================
+在 Ubuntu Linux 上部署 MinIO
+==============================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
@@ -16,64 +16,64 @@ Deploy MinIO on Ubuntu Linux
    
    - `How to Connect to MinIO with JavaScript <https://www.youtube.com/watch?v=yUR4Fvx0D3E&list=PLFOIsHSSYIK3Dd3Y_x7itJT1NUKT5SxDh&index=5>`__
 
-This page documents deploying MinIO on Ubuntu Linux operating systems.
+本页介绍如何在 Ubuntu Linux 操作系统上部署 MinIO。
 
-MinIO officially supports Ubuntu Long Term Support (LTS) releases in the **Standard** or **Ubuntu Pro** support phases of the Ubuntu life cycle.
-MinIO strongly recommends only those releases that include the Linux 5.X kernel and above for best performance.
-At the time of writing, that includes:
+MinIO 正式支持处于 Ubuntu 生命周期 **Standard** 或 **Ubuntu Pro** 支持阶段的 Ubuntu Long Term Support (LTS) 版本。
+为获得最佳性能，MinIO 强烈建议仅使用包含 Linux 5.X 及以上内核的版本。
+在撰写本文时，包括：
 
-- Ubuntu 24.04+ LTS (Noble Numbat) (**Recommended**)
+- Ubuntu 24.04+ LTS (Noble Numbat)（**推荐**）
 - Ubuntu 22.04+ LTS (Jammy Jellyfish)
 - Ubuntu 20.04+ LTS (Focal Fossa)
-- Ubuntu 18.04.5 LTS (Bionic Beaver) (**Ubuntu Pro Only**)
+- Ubuntu 18.04.5 LTS (Bionic Beaver)（**仅 Ubuntu Pro**）
 
-The above list assumes your organization has the necessary service contracts with Ubuntu to ensure end-to-end supportability throughout the release's lifespan.
+上述列表假定你的组织已具备与 Ubuntu 相关的必要服务合同，以确保在该版本整个生命周期内获得端到端支持。
 
-MinIO *may* run on versions of Ubuntu that use older kernels, are out of support, or are in legacy support phases, with limited support or troubleshooting from either MinIO or RedHat.
+MinIO *可能* 也能在使用更旧内核、已停止支持或处于遗留支持阶段的 Ubuntu 版本上运行，但 MinIO 或 RedHat 仅能提供有限的支持或故障排查。
 
-The procedure focuses on production-grade Multi-Node Multi-Drive (MNMD) "Distributed" configurations.
-|MNMD| deployments provide enterprise-grade performance, availability, and scalability and are the recommended topology for all production workloads.
+本步骤重点介绍生产级 Multi-Node Multi-Drive (MNMD)“Distributed”配置。
+|MNMD| 部署可提供企业级性能、可用性和可扩展性，是所有生产工作负载的推荐拓扑。
 
-The procedure includes guidance for deploying Single-Node Multi-Drive (SNMD) and Single-Node Single-Drive (SNSD) topologies in support of early development and evaluation environments.
+本步骤也包含对 Single-Node Multi-Drive (SNMD) 和 Single-Node Single-Drive (SNSD) 拓扑的指导，适用于早期开发和评估环境。
 
-Considerations
---------------
+注意事项
+--------
 
-Review Checklists
-~~~~~~~~~~~~~~~~~
+检查清单
+~~~~~~~~
 
-Ensure you have reviewed our published Hardware, Software, and Security checklists before attempting this procedure.
+在执行本步骤前，请先阅读我们发布的硬件、软件和安全检查清单。
 
 
-Erasure Coding Parity
-~~~~~~~~~~~~~~~~~~~~~
+纠删码校验
+~~~~~~~~~~
 
-MinIO automatically determines the default :ref:`erasure coding <minio-erasure-coding>` configuration for the cluster based on the total number of nodes and drives in the topology.
-You can configure the per-object :term:`parity` setting when you set up the cluster *or* let MinIO select the default (``EC:4`` for production-grade clusters).
+MinIO 会根据拓扑中的节点和驱动器总数，自动为集群确定默认的 :ref:`纠删码 <minio-erasure-coding>` 配置。
+你可以在设置集群时配置按对象生效的 :term:`parity`，也可以让 MinIO 选择默认值（生产级集群默认为 ``EC:4``）。
 
-Parity controls the relationship between object availability and storage on disk. 
-Use the MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ for guidance in selecting the appropriate erasure code parity level for your cluster.
+校验值决定了对象可用性与磁盘存储占用之间的关系。
+可使用 MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ 选择适合你集群的纠删码校验级别。
 
-While you can change erasure parity settings at any time, objects written with a given parity do **not** automatically update to the new parity settings.
+虽然你可以随时更改纠删码校验设置，但以既有校验值写入的对象 **不会** 自动更新为新的校验设置。
 
-Capacity-Based Planning
-~~~~~~~~~~~~~~~~~~~~~~~
+基于容量的规划
+~~~~~~~~~~~~~~
 
-MinIO recommends planning storage capacity sufficient to store **at least** 2 years of data before reaching 70% usage.
-Performing :ref:`server pool expansion <expand-minio-distributed>` more frequently or on a "just-in-time" basis generally indicates an architecture or planning issue.
+MinIO 建议在存储使用率达到 70% 之前，预先规划足以存放 **至少** 2 年数据的存储容量。
+过于频繁地执行 :ref:`server pool 扩容 <expand-minio-distributed>`，或按“just-in-time”方式扩容，通常说明架构或规划存在问题。
 
-For example, consider an application suite expected to produce at least 100 TiB of data per year and a 3 year target before expansion.
-By ensuring the deployment has ~500TiB of usable storage up front, the cluster can safely meet the 70% threshold with additional buffer for growth in data storage output per year.
+例如，假设某套应用每年预计至少生成 100 TiB 数据，并以 3 年后再扩容为目标。
+若在部署初期就提供约 500 TiB 可用存储，集群即可在安全满足 70% 阈值的同时，为每年的数据增长预留额外缓冲。
 
-Consider using the MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__ for guidance in planning capacity around specific erasure code settings.
+建议使用 MinIO `Erasure Code Calculator <https://min.io/product/erasure-code-calculator>`__，围绕具体纠删码设置进行容量规划。
 
-Procedure
----------
+步骤
+----
 
-1. Download the MinIO RPM
-~~~~~~~~~~~~~~~~~~~~~~~~~
+1. 下载 MinIO DEB 包
+~~~~~~~~~~~~~~~~~~~~
 
-Use the following commands to download the latest stable MinIO DEB and install it.
+使用以下命令下载最新稳定版 MinIO DEB 包并完成安装。
 
 .. code-block:: shell
    :class: copyable
@@ -82,10 +82,10 @@ Use the following commands to download the latest stable MinIO DEB and install i
    wget |minio-deb| -O minio.deb
    sudo dpkg -i minio.deb
 
-2. Review the ``systemd`` Service File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2. 查看 ``systemd`` 服务文件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``.deb`` package install the following `systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ service file to ``/usr/lib/systemd/system/minio.service``:
+``.deb`` 软件包会将以下 `systemd <https://www.freedesktop.org/wiki/Software/systemd/>`__ 服务文件安装到 ``/usr/lib/systemd/system/minio.service``：
     
 .. code-block:: shell
    :class: copyable
@@ -131,13 +131,13 @@ The ``.deb`` package install the following `systemd <https://www.freedesktop.org
 
    # Built for ${project.name}-${project.version} (${project.name})
 
-3. Create a User and Group for MinIO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3. 为 MinIO 创建用户和组
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``minio.service`` file runs as the ``minio-user`` User and Group by default.
-You can create the user and group using the ``groupadd`` and ``useradd`` commands. 
-The following example creates the user, group, and sets permissions to access the folder paths intended for use by MinIO. 
-These commands typically require root (``sudo``) permissions.
+``minio.service`` 文件默认以 ``minio-user`` 用户和组身份运行。
+你可以使用 ``groupadd`` 和 ``useradd`` 命令创建该用户和组。
+以下示例创建用户、组，并为计划供 MinIO 使用的文件夹路径设置访问权限。
+这些命令通常需要 root（``sudo``）权限。
 
 .. code-block:: shell
    :class: copyable
@@ -145,28 +145,28 @@ These commands typically require root (``sudo``) permissions.
    groupadd -r minio-user
    useradd -M -r -g minio-user minio-user
 
-The command above creates the user **without** a home directory, as is typical for system service accounts.
+以上命令创建的用户 **不包含** 主目录，这对系统服务账号来说是典型做法。
 
-You **must** ``chown`` the drive paths you intend to use with MinIO.
-If the ``minio-user`` user or group cannot read, write, or list contents of any drive, the MinIO process returns errors on startup.
+你 **必须** 对计划供 MinIO 使用的驱动器路径执行 ``chown``。
+如果 ``minio-user`` 用户或组无法读取、写入或列出任一驱动器的内容，MinIO 进程会在启动时返回错误。
 
-For example, the following command sets ``minio-user:minio-user`` as the user-group owner of all drives at ``/mnt/drives-n`` where ``n`` is between 1 and 16 inclusive:
+例如，以下命令将 ``/mnt/drives-n`` 下所有驱动器的属主和属组设置为 ``minio-user:minio-user``，其中 ``n`` 的范围为 1 到 16：
 
 .. code-block:: shell
    :class: copyable
 
    chown -R minio-user:minio-user /mnt/drives-{1...16}
 
-4. Enable TLS Connectivity
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+4. 启用 TLS 连接
+~~~~~~~~~~~~~~~~
 
-You can skip this step to deploy without TLS enabled. 
-MinIO strongly recommends *against* non-TLS deployments outside of early development.
+你可以跳过此步骤，以在未启用 TLS 的情况下部署。
+MinIO 强烈 *不建议* 在早期开发之外的场景中进行非 TLS 部署。
 
-Create or provide :ref:`Transport Layer Security (TLS) <minio-tls>` certificates to MinIO to automatically enable HTTPS-secured connections between the server and clients.
+为 MinIO 创建或提供 :ref:`传输层安全 (TLS) <minio-tls>` 证书，以自动启用服务端与客户端之间的 HTTPS 安全连接。
 
-MinIO expects the default certificate names of ``private.key`` and ``public.crt`` for the private and public keys respectively.
-Place the certificates in a directory accessible by the ``minio-user`` user/group:
+MinIO 要求私钥和公钥证书的默认文件名分别为 ``private.key`` 和 ``public.crt``。
+请将证书放置在 ``minio-user`` 用户/组可访问的目录中：
 
 .. code-block:: shell
    :class: copyable
@@ -178,37 +178,37 @@ Place the certificates in a directory accessible by the ``minio-user`` user/grou
    cp public.crt /opt/minio/certs
 
 
-MinIO verifies client certificates against the OS/System's default list of trusted Certificate Authorities.
-To enable verification of third-party or internally-signed certificates, place the CA file in the ``/opt/minio/certs/CAs`` folder.
-The CA file should include the full chain of trust from leaf to root to ensure successful verification.
+MinIO 会根据操作系统/系统默认的受信任证书颁发机构列表来验证客户端证书。
+若要启用对第三方证书或内部签发证书的验证，请将 CA 文件放入 ``/opt/minio/certs/CAs`` 目录。
+CA 文件应包含从叶子证书到根证书的完整信任链，以确保验证成功。
 
-For more specific guidance on configuring MinIO for TLS, including multi-domain support via Server Name Indication (SNI), see :ref:`minio-tls`. 
+有关为 MinIO 配置 TLS 的更具体指导，包括通过 Server Name Indication (SNI) 支持多域名，请参阅 :ref:`minio-tls`。
 
-.. dropdown:: Certificates for Early Development
+.. dropdown:: 早期开发环境证书
 
-   For local testing or development environments, you can use the MinIO :minio-git:`certgen <certgen>` to mint self-signed certificates.
-   For example, the following command generates a self-signed certificate with a set of IP and DNS Subject Alternate Names (SANs) associated to the MinIO Server hosts:
+   对于本地测试或开发环境，你可以使用 MinIO :minio-git:`certgen <certgen>` 生成自签名证书。
+   例如，以下命令会生成一组带有 IP 和 DNS Subject Alternate Names (SANs) 的自签名证书，这些 SAN 与 MinIO Server 主机关联：
 
    .. code-block:: shell
 
       certgen -host "localhost,minio-*.example.net"
 
-   Place the generated ``public.crt`` and ``private.key`` into the ``/path/to/certs`` directory to enable TLS for the MinIO deployment.
-   Applications can use the ``public.crt`` as a trusted Certificate Authority to allow connections to the MinIO deployment without disabling certificate validation.
+   将生成的 ``public.crt`` 和 ``private.key`` 放入 ``/path/to/certs`` 目录，以为 MinIO 部署启用 TLS。
+   应用程序可以将 ``public.crt`` 作为受信任的证书颁发机构，从而在不禁用证书校验的情况下连接到 MinIO 部署。
 
-5. Create the MinIO Environment File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5. 创建 MinIO 环境文件
+~~~~~~~~~~~~~~~~~~~~~~
 
-Create an environment file at ``/etc/default/minio``. 
-The MinIO service uses this file as the source of all :ref:`environment variables <minio-server-environment-variables>` used by MinIO *and* the ``minio.service`` file.
+在 ``/etc/default/minio`` 创建环境文件。
+MinIO 服务将该文件作为 MinIO *以及* ``minio.service`` 文件所用全部 :ref:`环境变量 <minio-server-environment-variables>` 的来源。
 
-Modify the example to reflect your deployment topology. 
+请根据你的部署拓扑修改示例。
 
 .. tab-set::
 
    .. tab-item:: Multi-Node Multi-Drive
 
-      Use Multi-Node Multi-Drive ("Distributed") deployment topologies in production environments.
+      在生产环境中使用 Multi-Node Multi-Drive（“Distributed”）部署拓扑。
 
       .. code-block:: shell
          :class: copyable
@@ -251,8 +251,8 @@ Modify the example to reflect your deployment topology.
 
    .. tab-item:: Single-Node Multi-Drive
 
-      Use Single-Node Multi-Drive deployments in development and evaluation environments.
-      You can also use them for smaller storage workloads which can tolerate data loss or unavailability due to node downtime.
+      在开发和评估环境中使用 Single-Node Multi-Drive 部署。
+      对于能够容忍节点停机带来数据丢失或不可用的小型存储工作负载，也可以使用该拓扑。
 
       .. code-block:: shell
          :class: copyable
@@ -294,12 +294,12 @@ Modify the example to reflect your deployment topology.
 
    .. tab-item:: Single-Node Single-Drive
 
-      Use Single-Node Single-Drive ("Standalone") deployments in early development and evaluation environments.
-      MinIO does not recommend Standalone deployments in production, as the loss of the node or its storage medium results in data loss.
+      在早期开发和评估环境中使用 Single-Node Single-Drive（“Standalone”）部署。
+      MinIO 不建议在生产环境中使用 Standalone 部署，因为节点或其存储介质丢失会导致数据丢失。
 
       .. important::
 
-         SNSD deployments do not support storage expansion through adding new server pools.
+         SNSD 部署不支持通过添加新的 server pool 来扩展存储。
 
       .. code-block:: shell
          :class: copyable
@@ -333,19 +333,19 @@ Modify the example to reflect your deployment topology.
 
          MINIO_ROOT_PASSWORD=minio-secret-key-CHANGE-ME
 
-Specify any other :ref:`environment variables <minio-server-environment-variables>` or server command-line options as required by your deployment. 
+请根据部署需要，指定其他 :ref:`环境变量 <minio-server-environment-variables>` 或 server 命令行选项。
 
-For distributed deployments, all nodes **must** have matching ``/etc/default/minio`` environment files.
-Use a utility such as ``shasum -a 256 /etc/default/minio`` on each node to verify an exact match across all nodes.
+对于分布式部署，所有节点的 ``/etc/default/minio`` 环境文件 **必须** 完全一致。
+可在每个节点上使用 ``shasum -a 256 /etc/default/minio`` 等工具验证其是否完全匹配。
 
-6. Start the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+6. 启动 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-Use ``systemctl start minio`` to start each node in the deployment.
+使用 ``systemctl start minio`` 启动部署中的每个节点。
 
-You can track the status of the startup using ``journalctl -u minio`` on each node.
+你可以在每个节点上使用 ``journalctl -u minio`` 跟踪启动状态。
 
-On successful startup, the MinIO process emits a summary of the deployment that resembles the following output:
+启动成功后，MinIO 进程会输出一段部署摘要，类似如下：
 
 .. code-block:: shell
 
@@ -368,58 +368,56 @@ On successful startup, the MinIO process emits a summary of the deployment that 
    Docs: https://minio.pigsty.io/index.html
    Status:         16 Online, 0 Offline. 
 
-You may see increased log churn as the cluster starts up and synchronizes. 
+在集群启动和同步期间，你可能会看到日志明显增多。
 
-Common reasons for startup failure include:
+启动失败的常见原因包括：
 
-- The MinIO process does not have read-write-list access to the specified drives
-- The drives are not empty or contain non-MinIO data
-- The drives are not formatted or mounted properly
-- One or more hosts are not reachable over the network
+- MinIO 进程对指定驱动器没有读、写、列出权限
+- 驱动器不是空的，或其中包含非 MinIO 数据
+- 驱动器未正确格式化或挂载
+- 一个或多个主机无法通过网络访问
 
-Following our checklists typically mitigates the risk of encountering those or similar issues.
+遵循我们的检查清单通常可以降低遇到这些或类似问题的风险。
 
-7. Connect to the Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+7. 连接到部署
+~~~~~~~~~~~~~~
 
 .. tab-set::
 
    .. tab-item:: Console
 
-      Open your browser and access any of the MinIO hostnames at port ``:9001`` to open the :ref:`MinIO Console <minio-console>` login page. 
-      For example, ``https://minio1.example.com:9001``.
+      打开浏览器，并通过任一 MinIO 主机名的 ``:9001`` 端口访问 :ref:`MinIO Console <minio-console>` 登录页。
+      例如：``https://minio1.example.com:9001``。
 
-      Log in with the :guilabel:`MINIO_ROOT_USER` and :guilabel:`MINIO_ROOT_PASSWORD`
-      from the previous step.
+      使用上一步中的 :guilabel:`MINIO_ROOT_USER` 和 :guilabel:`MINIO_ROOT_PASSWORD` 登录。
 
       .. image:: /images/minio-console/console-login.png
          :width: 600px
-         :alt: MinIO Console Login Page
+         :alt: MinIO Console 登录页
          :align: center
 
-      You can use the MinIO Console for general administration tasks like Identity and Access Management, Metrics and Log Monitoring, or Server Configuration. 
-      Each MinIO server includes its own embedded MinIO Console.
+      你可以使用 MinIO Console 执行常规管理任务，例如身份与访问管理、指标和日志监控，或 Server 配置。
+      每个 MinIO Server 都包含自身内嵌的 MinIO Console。
 
    .. tab-item:: CLI
 
-      Follow the :ref:`installation instructions <mc-install>` for ``mc`` on your local host.
-      Run ``mc --version`` to verify the installation.
+      请按照本地主机上的 ``mc`` :ref:`安装说明 <mc-install>` 完成安装。
+      运行 ``mc --version`` 验证安装结果。
 
-      If your MinIO deployment uses third-party or self-signed TLS certificates, copy the :abbr:`CA (Certificate Authority)` files to ``~/.mc/certs/CAs`` to allow ``mc`` 
+      如果你的 MinIO 部署使用第三方或自签名 TLS 证书，请将 :abbr:`CA (Certificate Authority)` 文件复制到 ``~/.mc/certs/CAs``，以便 ``mc`` 信任该证书链。
 
-
-      Once installed, create an alias for the MinIO deployment:
+      安装完成后，为该 MinIO 部署创建一个别名：
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set myminio https://minio-1.example.net:9000 USERNAME PASSWORD
 
-      Change the hostname, username, and password to reflect your deployment.
-      The hostname can be any MinIO node in the deployment.
-      You can also specify the hostname load balancer, reverse proxy, or similar network control plane that handles connections to the deployment.
+      请根据你的部署修改主机名、用户名和密码。
+      主机名可以是部署中的任意一个 MinIO 节点。
+      你也可以指定负责处理部署连接的负载均衡器、反向代理或类似网络控制平面的主机名。
 
-8. Next Steps
-~~~~~~~~~~~~~
+8. 后续步骤
+~~~~~~~~~~~
 
-TODO
+待补充

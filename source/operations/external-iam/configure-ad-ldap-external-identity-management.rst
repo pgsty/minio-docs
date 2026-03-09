@@ -1,22 +1,22 @@
 .. _minio-authenticate-using-ad-ldap-generic:
 
-================================================================
-Configure MinIO for Authentication using Active Directory / LDAP
-================================================================
+================================================
+配置 MinIO 使用 Active Directory / LDAP 进行认证
+================================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 
-Overview
---------
+概览
+----
 
-MinIO supports configuring a single Active Directory / LDAP Connect for external management of user identities.
+MinIO 支持配置单个 Active Directory / LDAP 连接，用于对用户身份进行外部管理。
 
-The procedure on this page provides instructions for:
+本页流程提供以下内容的操作说明：
 
 .. tab-set::
    :class: parent-tab
@@ -24,29 +24,29 @@ The procedure on this page provides instructions for:
    .. tab-item:: Kubernetes
       :sync: k8s
 
-      For MinIO Tenants deployed using the :ref:`MinIO Kubernetes Operator <minio-kubernetes>`, this procedure covers:
+      对于使用 :ref:`MinIO Kubernetes Operator <minio-kubernetes>` 部署的 MinIO Tenant，本流程包括：
 
-      - Configuring a MinIO Tenant to use an external AD/LDAP provider
-      - Accessing the Tenant Console using AD/LDAP Credentials.
-      - Using the MinIO ``AssumeRoleWithLDAPIdentity`` Security Token Service (STS) API to generate temporary credentials for use by applications.
+      - 配置 MinIO Tenant 使用外部 AD/LDAP 提供方
+      - 使用 AD/LDAP 凭证访问 Tenant Console
+      - 使用 MinIO ``AssumeRoleWithLDAPIdentity`` Security Token Service (STS) API 生成供应用程序使用的临时凭证
 
    .. tab-item:: Baremetal
       :sync: baremetal
 
-      For MinIO deployments on baremetal infrastructure, this procedure covers:
+      对于部署在裸金属基础设施上的 MinIO，本流程包括：
 
-      - Configuring a MinIO cluster for an external AD/LDAP provider.
-      - Accessing the MinIO Console using AD/LDAP credentials.
-      - Using the MinIO ``AssumeRoleWithLDAPIdentity`` Security Token Service (STS) API to generate temporary credentials for use by applications.
+      - 为 MinIO 集群配置外部 AD/LDAP 提供方
+      - 使用 AD/LDAP 凭证访问 MinIO Console
+      - 使用 MinIO ``AssumeRoleWithLDAPIdentity`` Security Token Service (STS) API 生成供应用程序使用的临时凭证
 
-This procedure is generic for AD/LDAP services.
-See the documentation for the AD/LDAP provider of your choice for specific instructions or procedures on configuration of user identities.
+本流程是面向 AD/LDAP 服务的通用配置流程。
+有关用户身份配置的具体步骤，请参阅你所选 AD/LDAP 提供方的文档。
 
-Prerequisites
--------------
+前提条件
+--------
 
-Access to MinIO Cluster
-~~~~~~~~~~~~~~~~~~~~~~~
+访问 MinIO 集群
+~~~~~~~~~~~~~~~
 
 .. tab-set::
    
@@ -54,23 +54,23 @@ Access to MinIO Cluster
    .. tab-item:: Kubernetes
       :sync: k8s
 
-      You must have access to the MinIO Operator Console web UI.
-      You can either expose the MinIO Operator Console service using your preferred Kubernetes routing component, or use temporary port forwarding to expose the Console service port on your local machine.
+      你必须能够访问 MinIO Operator Console Web UI。
+      你可以使用自己偏好的 Kubernetes 路由组件暴露 MinIO Operator Console service，也可以通过临时端口转发，在本地机器上暴露 Console service 端口。
 
    .. tab-item:: Baremetal
       :sync: baremetal
 
-      This procedure uses :mc:`mc` for performing operations on the MinIO cluster. 
-      Install ``mc`` on a machine with network access to the cluster.
-      See the ``mc`` :ref:`Installation Quickstart <mc-install>` for instructions on downloading and installing ``mc``.
+      本流程使用 :mc:`mc` 对 MinIO 集群执行操作。
+      请在一台能够访问该集群网络的机器上安装 ``mc``。
+      关于如何下载和安装 ``mc``，请参见 ``mc`` :ref:`安装快速开始 <mc-install>`。
 
-      This procedure assumes a configured :mc:`alias <mc alias>` for the MinIO cluster. 
+      本流程假定已为 MinIO 集群配置 :mc:`alias <mc alias>`。
 
-Active Directory / LDAP Compatible IDentity Provider
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+兼容 Active Directory / LDAP 的身份提供方
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This procedure assumes an existing Active Directory or LDAP service.
-Instructions on configuring AD/LDAP are out of scope for this procedure.
+本流程假定你已经拥有一个现成的 Active Directory 或 LDAP 服务。
+AD/LDAP 本身的配置不在本流程范围内。
 
 .. tab-set::
    
@@ -78,33 +78,33 @@ Instructions on configuring AD/LDAP are out of scope for this procedure.
    .. tab-item:: Kubernetes
       :sync: k8s
 
-      - For AD/LDAP deployments within the same Kubernetes cluster as the MinIO Tenant, you can use Kubernetes service names to allow the MinIO Tenant to establish connectivity to the AD/LDAP service.
+      - 如果 AD/LDAP 部署与 MinIO Tenant 位于同一 Kubernetes 集群内，你可以使用 Kubernetes service 名称，让 MinIO Tenant 能够连接到 AD/LDAP 服务。
 
-      - For AD/LDAP deployments external to the Kubernetes cluster, you must ensure the cluster supports routing communications between Kubernetes services and pods and the external network.
-        This may require configuration or deployment of additional Kubernetes network components and/or enabling access to the public internet.
+      - 如果 AD/LDAP 部署位于 Kubernetes 集群外部，则必须确保该集群支持 Kubernetes services、pods 与外部网络之间的通信路由。
+        这可能需要配置或部署额外的 Kubernetes 网络组件，和/或启用访问公网的能力。
 
    .. tab-item:: Baremetal
       :sync: baremetal
 
-      The MinIO deployment must have bidirectional network connectivity to the target AD / LDAP service.
+      MinIO 部署必须与目标 AD / LDAP 服务保持双向网络连通。
 
-MinIO requires a read-only access keys with which it :ref:`binds <minio-external-identity-management-ad-ldap-lookup-bind>` to perform authenticated user and group queries.
-Ensure each AD/LDAP user and group intended for use with MinIO has a corresponding :ref:`policy <minio-external-identity-management-ad-ldap-access-control>` on the MinIO deployment. 
-An AD/LDAP user with no assigned policy *and* with membership in groups with no assigned policy has no permission to access any action or resource on the MinIO cluster.
+MinIO 需要一组只读访问凭证，以便通过 :ref:`bind <minio-external-identity-management-ad-ldap-lookup-bind>` 执行认证用户和组查询。
+请确保每个打算与 MinIO 配合使用的 AD/LDAP 用户和组，都在 MinIO 部署上拥有对应的 :ref:`策略 <minio-external-identity-management-ad-ldap-access-control>`。
+如果某个 AD/LDAP 用户没有分配任何策略，*并且* 所属组也都没有分配任何策略，那么该用户无权访问 MinIO 集群中的任何操作或资源。
 
 .. _minio-external-identity-management-ad-ldap-configure:
 
-Configure MinIO with Active Directory or LDAP External Identity Management
---------------------------------------------------------------------------
+为 MinIO 配置 Active Directory 或 LDAP 外部身份管理
+----------------------------------------------------------------------
 
 .. include:: /includes/baremetal/steps-configure-ad-ldap-external-identity-management.rst
 
-Disable a Configured Active Directory / LDAP Connection
--------------------------------------------------------
+禁用已配置的 Active Directory / LDAP 连接
+--------------------------------------------------------------
 
 .. versionadded:: RELEASE.2023-03-20T20-16-18Z
 
-You can enable and disable the configured AD/LDAP connection as needed.
+你可以按需启用或禁用已配置的 AD/LDAP 连接。
 
-Use :mc:`mc idp ldap disable` to deactivate a configured connection.
-Use :mc:`mc idp ldap enable` to activate a previously configured connection.
+使用 :mc:`mc idp ldap disable` 停用已配置连接。
+使用 :mc:`mc idp ldap enable` 激活此前已配置的连接。

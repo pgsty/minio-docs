@@ -2,17 +2,17 @@
 .. _minio-open-id-config-settings:
 
 ===================================
-OpenID Identity Management Settings
+OpenID 身份管理设置
 ===================================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-This page documents settings for enabling external identity management using an OpenID Connect (OIDC)-compatible provider. 
-See :ref:`minio-external-identity-management-openid` for a tutorial on using these settings.
+本页面记录了如何使用与 OpenID Connect (OIDC) 兼容的提供方来启用外部身份管理的相关设置。
+有关如何使用这些设置的教程，请参见 :ref:`minio-external-identity-management-openid`。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -22,12 +22,12 @@ See :ref:`minio-external-identity-management-openid` for a tutorial on using the
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Examples
---------
+示例
+----
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. code-block:: shell
@@ -35,14 +35,14 @@ Examples
 
          MINIO_IDENTITY_OPENID_CONFIG_URL="https://openid-provider.example.net/.well-known/openid-configuration"
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
       :sync: config
 
       .. mc-conf:: identity_openid
 
-      Use :mc-cmd:`mc admin config set` to set or update the OpenID configuration.
-      The :mc-conf:`~identity_openid.config_url` argument is *required*. 
-      Specify additional optional arguments as a whitespace (``" "``)-delimited list.
+      使用 :mc-cmd:`mc admin config set` 设置或更新 OpenID 配置。
+      :mc-conf:`~identity_openid.config_url` 参数为*必需*。
+      其他可选参数请以空白字符（``" "``）分隔的列表形式指定。
 
       .. code-block:: shell
          :class: copyable
@@ -51,22 +51,22 @@ Examples
            config_url="https://openid-provider.example.net/.well-known/openid-configuration" \
            [ARGUMENT="VALUE"] ... 
 
-Settings
---------
+设置
+----
 
-Config URL
-~~~~~~~~~~
+配置 URL
+~~~~~~~~
 
-*Required*
+*必需*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_CONFIG_URL
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid config_url
@@ -76,44 +76,44 @@ Config URL
    :start-after: start-minio-openid-config-url
    :end-before: end-minio-openid-config-url
 
-Enabled
-~~~~~~~
+启用
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
 
-      This setting does not have an environment variable option.
-      Use the Configuration Setting instead.
+      此设置没有环境变量选项。
+      请改用配置项。
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :selected:
 
       .. mc-conf:: identity_openid enabled
          :delimiter: " "
 
 
-Set to ``false`` to disable the OpenID configuration.
+设置为 ``false`` 可禁用 OpenID 配置。
 
-Applications cannot generate STS credentials or otherwise authenticate to MinIO using the configured provider if set to ``false``.
+如果设置为 ``false``，应用程序将无法使用已配置的提供方生成 STS 凭证或通过其他方式向 MinIO 认证。
 
-Defaults to ``true`` or "enabled".
+默认值为 ``true``（即“启用”）。
 
-Client ID
+客户端 ID
 ~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_CLIENT_ID
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid client_id
@@ -123,19 +123,19 @@ Client ID
    :start-after: start-minio-openid-client-id
    :end-before: end-minio-openid-client-id
 
-Client Secret
-~~~~~~~~~~~~~
+客户端密钥
+~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
       
       .. envvar:: MINIO_IDENTITY_OPENID_CLIENT_SECRET
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
       
       .. mc-conf:: identity_openid client_secret
@@ -145,21 +145,21 @@ Client Secret
    :start-after: start-minio-openid-client-secret
    :end-before: end-minio-openid-client-secret
 
-Role Policy
-~~~~~~~~~~~
+角色策略
+~~~~~~~~
 
-*Optional*
+*可选*
 
-This setting is mutually exclusive with the ``Claim Name`` setting.
+此设置与 ``Claim Name`` 设置互斥。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_ROLE_POLICY
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
 
       .. mc-conf:: identity_openid role_policy
          :delimiter: " "
@@ -168,21 +168,21 @@ This setting is mutually exclusive with the ``Claim Name`` setting.
    :start-after: start-minio-openid-role-policy
    :end-before: end-minio-openid-role-policy
 
-Claim Name
-~~~~~~~~~~
+声明名称
+~~~~~~~~
 
-*Optional*
+*可选*
 
-This setting is mutually exclusive with the ``Role Policy`` setting.
+此设置与 ``Role Policy`` 设置互斥。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_CLAIM_NAME
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid claim_name
@@ -192,22 +192,22 @@ This setting is mutually exclusive with the ``Role Policy`` setting.
    :start-after: start-minio-openid-claim-name
    :end-before: end-minio-openid-claim-name
 
-Claim Prefix
-~~~~~~~~~~~~
+声明前缀
+~~~~~~~~
 
-*Optional*
+*可选*
 
-This setting is deprecated and has been removed as of :minio-release:`RELEASE.2024-07-13T01-46-15Z`.
-Use :envvar:`MINIO_IDENTITY_OPENID_CLAIM_NAME` instead.
+此设置已弃用，并已在 :minio-release:`RELEASE.2024-07-13T01-46-15Z` 起移除。
+请改用 :envvar:`MINIO_IDENTITY_OPENID_CLAIM_NAME`。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
       
       .. envvar:: MINIO_IDENTITY_OPENID_CLAIM_PREFIX
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid claim_prefix
@@ -217,19 +217,19 @@ Use :envvar:`MINIO_IDENTITY_OPENID_CLAIM_NAME` instead.
    :start-after: start-minio-openid-claim-prefix
    :end-before: end-minio-openid-claim-prefix
 
-Display Name
-~~~~~~~~~~~~
+显示名称
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_DISPLAY_NAME
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid display_name
@@ -239,19 +239,19 @@ Display Name
    :start-after: start-minio-openid-display-name
    :end-before: end-minio-openid-display-name
 
-Scopes
+作用域
 ~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_SCOPES
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid scopes
@@ -261,22 +261,22 @@ Scopes
    :start-after: start-minio-openid-scopes
    :end-before: end-minio-openid-scopes
 
-Redirect URI
-~~~~~~~~~~~~
+重定向 URI
+~~~~~~~~~~
 
-*Optional*
+*可选*
 
-This setting is deprecated and has been removed as of :minio-release:`RELEASE.2024-07-13T01-46-15Z`.
-Use :envvar:`MINIO_BROWSER_REDIRECT_URL` instead.
+此设置已弃用，并已在 :minio-release:`RELEASE.2024-07-13T01-46-15Z` 起移除。
+请改用 :envvar:`MINIO_BROWSER_REDIRECT_URL`。
 
 .. tab-set:: 
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_REDIRECT_URI
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid redirect_uri
@@ -286,19 +286,19 @@ Use :envvar:`MINIO_BROWSER_REDIRECT_URL` instead.
    :start-after: start-minio-openid-redirect-uri
    :end-before: end-minio-openid-redirect-uri
 
-Dynamic URI Redirect
-~~~~~~~~~~~~~~~~~~~~
+动态 URI 重定向
+~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid redirect_uri_dynamic
@@ -308,19 +308,19 @@ Dynamic URI Redirect
    :start-after: start-minio-openid-redirect-uri-dynamic
    :end-before: end-minio-openid-redirect-uri-dynamic
 
-User Info
-~~~~~~~~~
+用户信息
+~~~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_CLAIM_USERINFO
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid claim_userinfo
@@ -330,19 +330,19 @@ User Info
    :start-after: start-minio-openid-claim-userinfo
    :end-before: end-minio-openid-claim-userinfo
 
-Vendor
+提供方
 ~~~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_VENDOR
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid vendor
@@ -355,18 +355,18 @@ Vendor
 Keycloak Realm
 ~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
-This setting requires that the ``OpenID Vendor`` setting be defined as ``keycloak``.
+此设置要求将 ``OpenID Vendor`` 设置定义为 ``keycloak``。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_KEYCLOAK_REALM
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid keycloak_realm
@@ -376,21 +376,21 @@ This setting requires that the ``OpenID Vendor`` setting be defined as ``keycloa
    :start-after: start-minio-openid-keycloak-realm
    :end-before: end-minio-openid-keycloak-realm
 
-Keycloak Admin URL
-~~~~~~~~~~~~~~~~~~
+Keycloak 管理 URL
+~~~~~~~~~~~~~~~~~
 
-*Optional*
+*可选*
 
-This setting requires that the ``OpenID Vendor`` setting be defined as ``keycloak``.
+此设置要求将 ``OpenID Vendor`` 设置定义为 ``keycloak``。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_KEYCLOAK_ADMIN_URL
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid keycloak_admin_url
@@ -400,19 +400,19 @@ This setting requires that the ``OpenID Vendor`` setting be defined as ``keycloa
    :start-after: start-minio-openid-keycloak-admin-url
    :end-before: end-minio-openid-keycloak-admin-url
 
-Comment
-~~~~~~~
+注释
+~~~~
 
-*Optional*
+*可选*
 
 .. tab-set::
 
-   .. tab-item:: Environment Variable
+   .. tab-item:: 环境变量
       :sync: envvar
 
       .. envvar:: MINIO_IDENTITY_OPENID_COMMENT
 
-   .. tab-item:: Configuration Setting
+   .. tab-item:: 配置项
       :sync: config
 
       .. mc-conf:: identity_openid comment

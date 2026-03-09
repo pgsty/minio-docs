@@ -1,14 +1,16 @@
 
 .. start-kes-minio-start-service-desc
 
-For new MinIO deployments, run the following command on each MinIO host to start the service:
+对于新的 MinIO 部署，
+请在每台 MinIO 主机上运行以下命令以启动服务：
 
 .. code-block:: shell
    :class: copyable
 
    systemctl start minio
 
-For existing MinIO deployments, run the following command on each MinIO host to restart the service:
+对于现有 MinIO 部署，
+请在每台 MinIO 主机上运行以下命令以重启服务：
 
 .. code-block:: shell
    :class: copyable
@@ -20,15 +22,20 @@ For existing MinIO deployments, run the following command on each MinIO host to 
 
 .. start-kes-generate-kes-certs-prod-desc
 
-KES requires TLS connectivity for all client connections, including those originating from MinIO.
-See :ref:`minio-tls` for more information on enabling TLS for the MinIO deployment.
+KES 要求所有客户端连接都使用 TLS，
+包括来自 MinIO 的连接。
+有关如何为 MinIO 部署启用 TLS 的更多信息，
+请参见 :ref:`minio-tls`。
 
-Depending on your selected KMS target's configuration, you may also need to create a dedicated set of TLS certificates for KES to connect and authenticate to the KMS.
+根据所选 KMS 目标的配置，
+你可能还需要为 KES 创建一组专用 TLS 证书，
+用于连接到 KMS 并完成认证。
 
-Defer to your organization's best practices around generating production-ready TLS certificates.
+请遵循贵组织关于生成生产就绪 TLS 证书的最佳实践。
 
-Place the certificates and corresponding private keys in a directory that the KES service user has permissions to access and read the directory's contents.
-For example:
+将证书及其对应私钥放置在一个目录中，
+并确保 KES 服务用户有权限访问这些文件并读取该目录内容。
+例如：
 
 .. code-block:: shell
    :substitutions:
@@ -45,10 +52,15 @@ For example:
 
 .. start-kes-generate-key-desc
 
-MinIO requires that the |EK| exist on the root KMS *before* performing |SSE| operations using that key. 
-Use ``kes key create`` *or* :mc-cmd:`mc admin kms key create` to add a new |EK| for use with |SSE|.
+MinIO 要求在使用某个 |EK| 执行 |SSE| 操作之前，
+该 |EK| 必须已存在于根 KMS 中。
+使用 ``kes key create`` *或*
+:mc-cmd:`mc admin kms key create`
+为 |SSE| 添加新的 |EK|。
 
-The following command uses the ``kes key create`` command to add a new External Key (EK) stored on the root KMS server for use with encrypting the MinIO backend.
+以下命令使用 ``kes key create`` 命令，
+在根 KMS 服务器上添加一个新的 External Key（EK），
+供加密 MinIO 后端时使用。
 
 .. code-block:: shell
    :class: copyable

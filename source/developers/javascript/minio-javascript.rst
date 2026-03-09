@@ -1,10 +1,10 @@
 .. _minio-javascript-quickstart:
 
-===========================
-JavaScript Quickstart Guide
-===========================
+====================
+JavaScript 快速入门指南
+====================
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 

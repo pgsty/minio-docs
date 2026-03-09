@@ -6,36 +6,36 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc admin accesskey enable
 
 
-Syntax
-------
+语法
+----
 
 .. start-mc-admin-accesskey-enable-desc
 
-The :mc-cmd:`mc admin accesskey enable` command enables an existing access key.
+:mc-cmd:`mc admin accesskey enable` 命令用于启用现有访问密钥。
 
 .. end-mc-admin-accesskey-enable-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command enables the specified access key:
+      以下命令启用指定的访问密钥：
   
       .. code-block:: shell  
          :class: copyable 
   
          mc admin accesskey enable myminio myuserserviceaccount  
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax: 
+      该命令具有以下语法：
   
       .. code-block:: shell  
          :class: copyable 
@@ -49,33 +49,33 @@ The :mc-cmd:`mc admin accesskey enable` command enables an existing access key.
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of the MinIO deployment.
+   MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
 .. mc-cmd:: SERVICEACCOUNT
    :required:
 
-   The access key to enable.
+   要启用的访问密钥。
 
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

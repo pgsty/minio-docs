@@ -4,41 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc mv
 
-Syntax
+语法
 ------
 
 .. start-mc-mv-desc
 
-The :mc:`mc mv` command moves an object from source to the target, such as
-between MinIO deployments *or* between buckets on the same MinIO deployment.
-:mc:`mc mv` also supports moving objects between a local filesystem and MinIO.
+:mc:`mc mv` 命令将对象从源移动到目标，例如在不同 MinIO 部署之间移动，*或* 在同一 MinIO 部署的不同存储桶之间移动。
+:mc:`mc mv` 还支持在本地文件系统与 MinIO 之间移动对象。
 
 .. end-mc-mv-desc
 
-You can also use :mc:`mc mv` against the local filesystem to produce
-similar results to the ``mv`` commandline tool.
+你也可以对本地文件系统使用 :mc:`mc mv`，以获得与 ``mv`` 命令行工具类似的结果。
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command moves objects from the ``mydata`` bucket to the
-      ``archive`` bucket on the ``myminio`` MinIO deployment:
+      以下命令将对象从 ``mydata`` 存储桶移动到 ``myminio`` MinIO 部署上的 ``archive`` 存储桶：
 
       .. code-block:: shell
          :class: copyable
 
          mc mv --recursive myminio/mydata myminio/archive
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The command has the following syntax:
+      该命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -63,91 +60,84 @@ similar results to the ``mv`` commandline tool.
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: SOURCE
    :required:
 
-  The object or objects to move. 
-   
-   For moving an object from a MinIO bucket, specify the :ref:`alias <alias>`
-   and the full path to the object(s) (e.g. bucket and path to objects). For
-   example:
+  要移动的一个或多个对象。
+
+   若要从 MinIO 存储桶移动对象，请指定 :ref:`alias <alias>`
+   以及对象的完整路径（例如存储桶和对象路径）。例如：
 
    .. code-block:: shell
 
       mc mv play/mybucket/object.txt play/myotherbucket/object.txt
 
-   For moving an object from a local filesystem, specify the full path to that
-   object. For example:
+   若要从本地文件系统移动对象，请指定该对象的完整路径。例如：
 
    .. code-block:: shell
 
       mc mv ~/mydata/object.txt play/mybucket/object.txt
-   
-   Specify multiple ``SOURCE`` paths to move multiple objects to the
-   specified :mc-cmd:`~mc mv TARGET`. :mc:`mc rm` treats the
-   *last* specified alias or filesystem path as the ``TARGET``. For example:
+
+   指定多个 ``SOURCE`` 路径可将多个对象移动到指定的
+   :mc-cmd:`~mc mv TARGET`。:mc:`mc rm` 将*最后一个*指定的 alias 或文件系统路径
+   视为 ``TARGET``。例如：
 
    .. code-block:: shell
 
       mc mv ~/mydata/object.txt play/mydata/otherobject.txt myminio/mydata
 
-   If you specify a directory or bucket to :mc-cmd:`~mc mv SOURCE`, you must
-   also specify :mc-cmd:`~mc mv --recursive` to recursively move the
-   contents of that directory. If you omit the :mc-cmd:`~mc mv --recursive`
-   argument, :mc:`~mc mv` only moves objects in the top level of the specified
-   directory or bucket.
+   如果你为 :mc-cmd:`~mc mv SOURCE` 指定的是目录或存储桶，
+   则还必须指定 :mc-cmd:`~mc mv --recursive` 以递归移动该目录内容。
+   如果省略 :mc-cmd:`~mc mv --recursive` 参数，:mc:`~mc mv` 仅会移动
+   指定目录或存储桶顶层中的对象。
 
 .. mc-cmd:: TARGET
    :required:
 
-   The full path to the bucket to which the command moves the
-   object(s) at the specified :mc-cmd:`~mc mv SOURCE`. Specify the 
-   :ref:`alias <alias>` of a configured S3 service as the prefix to the 
-   :mc-cmd:`~mc mv TARGET` path. 
+   命令会将指定 :mc-cmd:`~mc mv SOURCE` 的对象移动到该存储桶，
+   这里填写该存储桶的完整路径。请将已配置 S3 服务的
+   :ref:`alias <alias>` 作为 :mc-cmd:`~mc mv TARGET` 路径前缀。
 
-   For moving an object from MinIO,
-   specify the :ref:`alias <alias>` and hte full path to the object(s)
-   (e.g. bucket and path to objects). For example:
+   若要从 MinIO 移动对象，请指定 :ref:`alias <alias>`
+   以及对象的完整路径（例如存储桶和对象路径）。例如：
 
    .. code-block:: shell
 
       mc mv play/mybucket/object.txt play/myotherbucket/object.txt
 
-   For moving an object from a local filesystem, specify the full path to that
-   object. For example:
+   若要从本地文件系统移动对象，请指定该对象的完整路径。例如：
 
    .. code-block:: shell
 
       mc mv ~/mydata/object.txt play/mybucket/object.txt
 
-   The ``TARGET`` object name can differ from the ``SOURCE`` to 
-   "rename" the object as part of the move operation. 
+   ``TARGET`` 对象名可以不同于 ``SOURCE``，
+   以便在移动操作中同时“重命名”对象。
 
-   If running :mc:`mc mv` with the :mc-cmd:`~mc mv --recursive` option, 
-   :mc:`mc mv` treats the ``TARGET`` as the bucket prefix for all
-   objects at the ``SOURCE``. 
+   如果以 :mc-cmd:`~mc mv --recursive` 选项运行 :mc:`mc mv`，
+   :mc:`mc mv` 会将 ``TARGET`` 视为 ``SOURCE`` 下所有对象的存储桶前缀。
 
 .. mc-cmd:: --attr
    :optional:
 
-   Add custom metadata for the object. Specify key-value pairs as ``KEY=VALUE\;``. 
-   For example, ``--attr key1=value1\;key2=value2\;key3=value3``.
+   为对象添加自定义元数据。将键值对指定为 ``KEY=VALUE\;``。
+   例如，``--attr key1=value1\;key2=value2\;key3=value3``。
 
 .. mc-cmd:: --disable-multipart
    :optional:
 
-   Disables the multipart upload feature.
+   禁用 multipart upload 功能。
 
-   Multipart upload breaks an object into a set of separate parts.
-   Each part uploads individually and in any order.
-   If any individual part upload fails, MinIO retries that part without affecting the other parts.
-   After upload completes, the parts combine to restore the original object.
+   Multipart upload 会将对象拆分为多个独立分片。
+   每个分片可独立上传，且顺序不限。
+   如果任一分片上传失败，MinIO 会仅重试该分片而不影响其他分片。
+   上传完成后，这些分片会合并还原为原始对象。
 
-   MinIO recommends using multipart upload for any object larger than 100 MB.
-   For more information on multipart upload, refer to the :s3-docs:`Amazon S3 documentation <mpuoverview.html>`
+   MinIO 建议对大于 100 MB 的对象使用 multipart upload。
+   有关 multipart upload 的更多信息，请参阅 :s3-docs:`Amazon S3 documentation <mpuoverview.html>`
 
 .. block include of enc-c , enc-s3, and enc-kms
 
@@ -163,44 +153,41 @@ Parameters
 .. mc-cmd:: --newer-than
    :optional:
 
-   Remove object(s) newer than the specified number of days.  Specify
-   a string in ``##d#hh#mm#ss`` format. For example: 
-   ``--newer-than 1d2hh3mm4ss``.
+   删除比指定天数更新的对象。指定格式为 ``##d#hh#mm#ss``
+   的字符串。例如：
+   ``--newer-than 1d2hh3mm4ss``。
 
-   Defaults to ``0`` (all objects).
+   默认为 ``0``（所有对象）。
 
 .. mc-cmd:: --older-than
    :optional:
 
-   Remove object(s) older than the specified time limit. Specify a
-   string in ``#d#hh#mm#ss`` format. For example: ``--older-than 1d2hh3mm4ss``.
-      
-   Defaults to ``0`` (all objects).
+   删除早于指定时间限制的对象。指定格式为 ``#d#hh#mm#ss``
+   的字符串。例如：``--older-than 1d2hh3mm4ss``。
+
+   默认为 ``0``（所有对象）。
 
 .. mc-cmd:: --preserve, a
    :optional:
 
-   Preserve file system attributes and bucket policy rules of the
-   :mc-cmd:`~mc mv SOURCE` directories, buckets, and objects on the 
-   :mc-cmd:`~mc mv TARGET` bucket(s).
+   保留 :mc-cmd:`~mc mv SOURCE` 目录、存储桶和对象在文件系统上的属性
+   以及存储桶策略规则，并应用到 :mc-cmd:`~mc mv TARGET` 存储桶。
 
 .. mc-cmd:: --recursive, r
    :optional:
-   
-   Recursively move the contents of each bucket or directory
-   :mc-cmd:`~mc mv SOURCE` to the :mc-cmd:`~mc mv TARGET` bucket.
+
+   将每个 :mc-cmd:`~mc mv SOURCE` 存储桶或目录的内容
+   递归移动到 :mc-cmd:`~mc mv TARGET` 存储桶。
 
 .. mc-cmd:: --storage-class
    :optional:
 
-   Set the storage class for the new object(s) on the 
-   :mc-cmd:`~mc mv TARGET`. 
-         
-   See the Amazon documentation on
-   :aws-docs:`Storage Classes <AmazonS3/latest/dev/storage-class-intro.html>` 
-   for more information on S3 storage classses.
+   为 :mc-cmd:`~mc mv TARGET` 上的新对象设置存储类别。
 
-Global Flags
+   有关 S3 storage class 的更多信息，请参阅 Amazon 文档
+   :aws-docs:`Storage Classes <AmazonS3/latest/dev/storage-class-intro.html>`。
+
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
@@ -208,10 +195,10 @@ Global Flags
    :end-before: end-minio-mc-globals
 
 
-Examples
+示例
 --------
 
-Move Files from Filesystem to S3-Compatible Host
+将文件从文件系统移动到 S3-Compatible Host
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
@@ -219,45 +206,41 @@ Move Files from Filesystem to S3-Compatible Host
 
    mc mv [--recursive] FILEPATH ALIAS/PATH
 
-- Replace :mc-cmd:`FILEPATH <mc mv SOURCE>` with the full file path to the
-  file to move. 
+- 将 :mc-cmd:`FILEPATH <mc mv SOURCE>` 替换为要移动文件的完整文件路径。
 
-  If specifying the path to a directory, include the 
-  :mc-cmd:`~mc mv --recursive` flag.
+  如果指定的是目录路径，请包含
+  :mc-cmd:`~mc mv --recursive` 标志。
 
-  :mc:`mc mv` *removes* the files from the source after
-  successfully moving it to the destination.
+  :mc:`mc mv` 在成功移动到目标后，会从源中*移除*这些文件。
 
-- Replace :mc-cmd:`ALIAS <mc mv TARGET>` with the :mc-cmd:`alias <mc alias>`
-  of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc mv TARGET>` 替换为已配置 S3-compatible host 的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc mv TARGET>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc mv TARGET>` 替换为目标存储桶。
 
-Move a File from Filesystem to S3-Compatible Host with Custom Metadata
+将文件从文件系统移动到 S3-Compatible Host 并附带自定义元数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mv` with the :mc-cmd:`~mc mv --attr` option to set custom
-attributes on file(s).
+使用带 :mc-cmd:`~mc mv --attr` 选项的 :mc:`mc mv`，
+可为文件设置自定义属性。
 
 .. code-block:: shell
    :class: copyable
 
    mc mv --attr "ATTRIBUTES" FILEPATH ALIAS/PATH
 
-- Replace :mc-cmd:`FILEPATH <mc mv SOURCE>` with the full file path to the
-  file to move. :mc:`mc mv` *removes* the file from the source after
-  successfully moving it to the destination.
+- 将 :mc-cmd:`FILEPATH <mc mv SOURCE>` 替换为要移动文件的完整文件路径。
+  :mc:`mc mv` 在成功移动到目标后，会从源中*移除*该文件。
 
-- Replace :mc-cmd:`ALIAS <mc mv TARGET>` with the :mc-cmd:`alias <mc alias>`
-  of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc mv TARGET>` 替换为已配置 S3-compatible host 的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc mv TARGET>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc mv TARGET>` 替换为目标存储桶。
 
-- Replace :mc-cmd:`ATTRIBUTES <mc mv --attr>` with one or more comma-separated
-  key-value pairs ``KEY=VALUE``. Each pair represents one attribute key and
-  value.
+- 将 :mc-cmd:`ATTRIBUTES <mc mv --attr>` 替换为一个或多个逗号分隔的
+  键值对 ``KEY=VALUE``。每个键值对表示一个属性键及其值。
 
-Move Bucket Between S3-Compatible Services
+在 S3-Compatible 服务之间移动存储桶
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
@@ -265,77 +248,72 @@ Move Bucket Between S3-Compatible Services
 
     mc mv --recursive SRCALIAS/SRCPATH TGTALIAS/TGTPATH
 
-- Replace :mc-cmd:`SRCALIAS <mc mv SOURCE>` with the :mc-cmd:`alias <mc alias>`
-  of a configured S3-compatible host.
+- 将 :mc-cmd:`SRCALIAS <mc mv SOURCE>` 替换为已配置 S3-compatible host 的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`SRCPATH <mc mv SOURCE>` with the path to the bucket.
-  :mc:`mc mv` *removes* the bucket and its contents from the source after
-  successfully moving it to the destination.
+- 将 :mc-cmd:`SRCPATH <mc mv SOURCE>` 替换为存储桶路径。
+  :mc:`mc mv` 在成功移动到目标后，会从源中*移除*该存储桶及其内容。
 
-- Replace :mc-cmd:`TGTALIAS <mc mv TARGET>` with the :mc-cmd:`alias <mc alias>`
-  of a configured S3-compatible host.
+- 将 :mc-cmd:`TGTALIAS <mc mv TARGET>` 替换为已配置 S3-compatible host 的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`TGTPATH <mc mv TARGET>` with the path to the bucket.
+- 将 :mc-cmd:`TGTPATH <mc mv TARGET>` 替换为存储桶路径。
 
 
-Move File to S3-Compatible Host with Specific Storage Class
+将文件移动到 S3-Compatible Host 并指定存储类别
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc mv` with the :mc-cmd:`~mc mv --storage-class` option to set
-the storage class on the destination S3-compatible host.
+使用带 :mc-cmd:`~mc mv --storage-class` 选项的 :mc:`mc mv`，
+可在目标 S3-compatible host 上设置存储类别。
 
 .. code-block:: shell
    :class: copyable
 
    mc mv --storage-class CLASS FILEPATH ALIAS/PATH
 
-- Replace :mc-cmd:`CLASS <mc mv --storage-class>` with the storage class to 
-  associate to the files.
+- 将 :mc-cmd:`CLASS <mc mv --storage-class>` 替换为要
+  关联到文件的存储类别。
 
-- Replace :mc-cmd:`FILEPATH <mc mv SOURCE>` with the full file path to the
-  file to move. :mc:`mc mv` *removes* the file from the source after
-  successfully moving it to the destination.
+- 将 :mc-cmd:`FILEPATH <mc mv SOURCE>` 替换为要移动文件的完整文件路径。
+  :mc:`mc mv` 在成功移动到目标后，会从源中*移除*该文件。
 
-- Replace :mc-cmd:`ALIAS <mc mv TARGET>` with the :mc-cmd:`alias <mc alias>`
-  of a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc mv TARGET>` 替换为已配置 S3-compatible host 的
+  :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc mv TARGET>` with the destination bucket.
+- 将 :mc-cmd:`PATH <mc mv TARGET>` 替换为目标存储桶。
 
-- Replace :mc-cmd:`ATTRIBUTES <mc mv --attr>` with one or more comma-separated
-  key-value pairs ``KEY=VALUE``. Each pair represents one attribute key and
-  value.
+- 将 :mc-cmd:`ATTRIBUTES <mc mv --attr>` 替换为一个或多个逗号分隔的
+  键值对 ``KEY=VALUE``。每个键值对表示一个属性键及其值。
 
    mc mv --storage-class REDUCED_REDUNDANCY myobject.txt play/mybucket
 
 
-Behavior
+行为
 --------
 
-Object Names on Move
+移动时的对象名称
 ~~~~~~~~~~~~~~~~~~~~
 
-MinIO uses the :mc-cmd:`~mc mv SOURCE` object name when moving
-the object to the :mc-cmd:`~mc mv TARGET` if no explicit target
-object name is specified.
+如果未显式指定目标对象名，在将对象移动到
+:mc-cmd:`~mc mv TARGET` 时，MinIO 会使用
+:mc-cmd:`~mc mv SOURCE` 的对象名。
 
-You can specify a different object name for the
-:mc-cmd:`~mc mv TARGET` with the same object path to "rename"
-an object. For example:
+你可以在相同对象路径下，为 :mc-cmd:`~mc mv TARGET`
+指定不同的对象名，以在移动时“重命名”对象。例如：
 
 .. code-block:: shell
 
    mc mv play/mybucket/object.txt play/mybucket/myobject.txt
 
-For recursive move operations (:mc-cmd:`mc mv --recursive`), MinIO
-treats the ``TARGET`` path as a prefix for objects on the ``SOURCE``. 
+对于递归移动操作（:mc-cmd:`mc mv --recursive`），MinIO
+会将 ``TARGET`` 路径视为 ``SOURCE`` 上对象的前缀。
 
-Checksum Verification
+校验和验证
 ~~~~~~~~~~~~~~~~~~~~~
 
-:mc:`mc mv` verifies all move operations to object storage using MD5SUM
-checksums. 
+:mc:`mc mv` 使用 MD5SUM 校验和验证所有到对象存储的移动操作。
 
-MinIO Trims Empty Prefixes on Object Removal
+MinIO 在对象删除时会裁剪空前缀
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. |command| replace:: :mc:`mc mv`
@@ -348,7 +326,7 @@ MinIO Trims Empty Prefixes on Object Removal
    :start-after: start-remove-api-trims-prefixes-fs
    :end-before: end-remove-api-trims-prefixes-fs
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

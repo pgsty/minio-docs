@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,68 +14,68 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   :mc:`mc ilm tier add` replaces ``mc admin tier add``.
+   :mc:`mc ilm tier add` 替代了 ``mc admin tier add``。
 
-Description
+描述
 -----------
 
 .. start-mc-ilm-tier-add-desc
 
-The :mc:`mc ilm tier add` command creates a new remote storage tier to a supported storage services.
+:mc:`mc ilm tier add` 命令在受支持的存储服务上创建一个新的远程存储层。
 
 .. end-mc-ilm-tier-add-desc
 
-See :ref:`Object Transition <minio-lifecycle-management-tiering>` for a complete list.
+完整列表请参见 :ref:`对象转换 <minio-lifecycle-management-tiering>`。
 
-Supported S3 Services
+支持的 S3 服务
 ~~~~~~~~~~~~~~~~~~~~~
 
-:mc:`mc ilm tier add` supports *only* the following S3-compatible services as a remote target for object tiering:
+:mc:`mc ilm tier add` *仅*支持以下 S3 兼容服务作为对象分层的远程目标：
 
 - MinIO
 - Amazon S3
 - Google Cloud Storage
 - Azure Blob Storage
 
-Permissions
+权限
 ~~~~~~~~~~~
 
-MinIO requires the following administrative permissions on the cluster in which you create remote tiers for object transition lifecycle management rules:
+在为对象转换生命周期管理规则创建远程层的集群上，MinIO 需要以下管理权限：
 
 - :policy-action:`admin:SetTier`
 - :policy-action:`admin:ListTier`
 
-For example, the following policy provides permission for configuring object transition lifecycle management rules on any bucket in the cluster: 
+例如，以下策略授予在集群中任意存储桶上配置对象转换生命周期管理规则的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
    :class: copyable
 
-Syntax
+语法
 ------
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following example creates a new remote tier called ``WARM-MINIO-TIER`` on the ``myminio`` deployment.
-      The command creates a tier for a remote MinIO deployment located at the hostname ``https://warm-minio.com``.
-      
+      以下示例在 ``myminio`` 部署上创建一个名为 ``WARM-MINIO-TIER`` 的新远程层。
+      该命令为位于主机名 ``https://warm-minio.com`` 的远程 MinIO 部署创建一个层。
+
       .. code-block:: shell
          :class: copyable
 
           mc ilm tier add minio myminio WARM-MINIO-TIER                     \
-                                        --endpoint https://warm-minio.com   \                       
+                                        --endpoint https://warm-minio.com   \
                                         --access-key ACCESSKEY              \
                                         --secret-key SECRETKEY              \
                                         --bucket mybucket                   \
-                                        --prefix myprefix/ 
+                                        --prefix myprefix/
 
-      Lifecycle management rules on the ``myminio`` deployment can use the new tier to transition objects into the remote location's ``myprefix/`` prefix in the ``mybucket`` bucket.
+      ``myminio`` 部署上的生命周期管理规则可以使用该新层，将对象转换到远程位置 ``mybucket`` 存储桶中的 ``myprefix/`` 前缀下。
 
    .. tab-item:: SYNTAX
-   
-      The command has the following syntax:
+
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -100,25 +100,25 @@ Syntax
                          [--prefix value]             \
                          [--storage-class value]
 
-      **^Note:** Each supported storage vendor authenticates with different methods.
-      The flags to use for authentication vary by storage vendor.
-      See details under :mc-cmd:`~mc ilm tier add TIER_TYPE` below. 
+      **^注意：**每个受支持的存储供应商使用不同的认证方式。
+      用于认证的标志因存储供应商而异。
+      详见下方 :mc-cmd:`~mc ilm tier add TIER_TYPE`。
 
       .. include:: /includes/common-minio-mc.rst
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
 
-Parameters
+参数
 ~~~~~~~~~~
 
-The command accepts the following arguments:
+该命令接受以下参数：
 
 .. mc-cmd:: TIER_TYPE
    :required:
 
-   The Cloud Service Provider storage backend ("Tier") to which MinIO transitions objects. 
-   Specify *one* of the following supported values:
+   MinIO 将对象转换到的云服务提供商存储后端（"Tier"）。
+   指定以下受支持值之一：
 
    .. list-table::
       :stub-columns: 1
@@ -126,139 +126,139 @@ The command accepts the following arguments:
       :widths: 30 70
 
       * - ``minio``
-        - Use a remote MinIO deployment as the storage backend for the new Tier.
+        - 使用远程 MinIO 部署作为新 Tier 的存储后端。
 
-          Requires also specifying the following parameters:
+          还需要指定以下参数：
 
           - :mc-cmd:`~mc ilm tier add --access-key`
           - :mc-cmd:`~mc ilm tier add --secret-key`
 
       * - ``s3``
-        - Use AWS S3 as the storage backend for the new Tier.
+        - 使用 AWS S3 作为新 Tier 的存储后端。
 
-          Requires also specifying the following parameters:
+          还需要指定以下参数：
 
           - :mc-cmd:`~mc ilm tier add --access-key`
           - :mc-cmd:`~mc ilm tier add --secret-key`
 
       * - ``azure``
-        - Use :abbr:`Azure (Microsoft Azure)` Blob Storage as the storage backend for the new Tier.
+        - 使用 :abbr:`Azure (Microsoft Azure)` Blob Storage 作为新 Tier 的存储后端。
 
-          Requires also specifying the following parameters:
+          还需要指定以下参数：
 
           - :mc-cmd:`~mc ilm tier add --account-name`
           - :mc-cmd:`~mc ilm tier add --account-key`
-         
-      * - ``gcs`` 
-        - Use :abbr:`GCP (Google Cloud Platform)` Cloud Storage as the storage backend for the new Tier.
 
-          Requires also specifying the following parameter:
+      * - ``gcs``
+        - 使用 :abbr:`GCP (Google Cloud Platform)` Cloud Storage 作为新 Tier 的存储后端。
+
+          还需要指定以下参数：
 
           - :mc-cmd:`~mc ilm tier add --credentials-file`
 
 .. mc-cmd:: TARGET
    :required:
 
-   The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which the command creates the new remote tier.
-   You can then create new rules with :mc:`mc ilm rule add` specifying the new remote tier.
-      
+   命令在该已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>` 上创建新的远程层。
+   随后你可以使用 :mc:`mc ilm rule add` 并指定该新远程层来创建新规则。
+
 .. mc-cmd:: TIER_NAME
    :required:
 
-   The name to associate with the new remote tier. 
-   The name **must** be unique across all configured tiers on the MinIO cluster.
+   与新远程层关联的名称。
+   该名称**必须**在 MinIO 集群所有已配置层中唯一。
 
-   You **must** specify the tier in all-caps, e.g. ``WARM_TIER``.
-   
+   你**必须**使用全大写指定 tier，例如 ``WARM_TIER``。
+
 .. mc-cmd:: --endpoint
    :optional:
 
-   The URL endpoint for the S3 or MinIO storage. 
-   The URL endpoint **must** resolve to the provider specified to :mc-cmd:`~mc ilm tier add TIER_TYPE`. 
+   S3 或 MinIO 存储的 URL endpoint。
+   URL endpoint **必须**解析到 :mc-cmd:`~mc ilm tier add TIER_TYPE` 指定的提供方。
 
-   Required for ``s3`` or ``minio`` tier types, optional for ``azure``.
-   This option has no effect for any other value of ``TIER_TYPE``.
+   对 ``s3`` 或 ``minio`` tier 类型为必需，对 ``azure`` 为可选。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --access-key
    :optional:
-      
-   The access key for a user on the remote ``S3`` or ``minio`` tier types. 
-   The user must have permission to perform read/write/list/delete operations on the remote bucket or bucket prefix.
-      
-   Required if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``s3`` or ``minio``. 
-   This option has no effect for any other value of ``TIER_TYPE``.
+
+   远程 ``S3`` 或 ``minio`` tier 类型中某个用户的 access key。
+   该用户必须具有对远程存储桶或存储桶前缀执行 read/write/list/delete 操作的权限。
+
+   当 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``s3`` 或 ``minio`` 时必需。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --secret-key
    :optional:
 
-   The secret key for a user on the remote ``s3`` or ``minio`` tier types.
+   远程 ``s3`` 或 ``minio`` tier 类型中某个用户的 secret key。
 
-   Required if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``s3`` or ``minio``. 
-   This option has no effect for any other value of ``TIER_TYPE``.
+   当 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``s3`` 或 ``minio`` 时必需。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --account-name
    :optional:
 
-   The :azure-docs:`Storage Account <storage/common/storage-account-overview>` to use as the remote storage resource.
+   用作远程存储资源的 :azure-docs:`Storage Account <storage/common/storage-account-overview>`。
 
-   Required if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``azure``. 
-   This option has no effect for any other value of ``TIER_TYPE``.
+   当 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``azure`` 时必需。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
-   MinIO does *not* support changing the storage account name associated to an Azure remote tier. 
-   Azure storage backends are tied to the storage account, such that changing this value would change the storage backend and prevent access to any objects transitioned to the original account/backend.
+   MinIO *不*支持更改与 Azure 远程 tier 关联的存储账户名。
+   Azure 存储后端绑定到存储账户，因此更改该值会更换存储后端，并导致无法访问已转换到原账户/后端的任何对象。
 
 .. mc-cmd:: --account-key
    :optional:
 
-   The corresponding shared account key for the :mc-cmd:`~mc ilm tier add --account-name` associated to the remote Azure tier.
+   与远程 Azure tier 关联的 :mc-cmd:`~mc ilm tier add --account-name` 对应的共享 account key。
 
-   The account key must have an assigned Azure policy with the required :ref:`permissions <minio-lifecycle-management-transition-to-azure-permissions-remote>`.
+   该 account key 必须绑定具备所需 :ref:`权限 <minio-lifecycle-management-transition-to-azure-permissions-remote>` 的 Azure 策略。
 
-   Required if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``azure``. 
-   This option has no effect for any other value of ``TIER_TYPE``.
+   当 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``azure`` 时必需。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --credentials-file
    :optional:
 
-   The `credential file <https://cloud.google.com/docs/authentication/getting-started>`__ for a user on the remote Google Cloud Storage tier. 
-   The user must have permission to perform read/write/list/delete operations on the remote bucket or bucket prefix.
-      
-   Required if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``gcs``. 
-   This option has no effect for any other value of ``TIER_TYPE``.
+   远程 Google Cloud Storage tier 中用户使用的 `credential file <https://cloud.google.com/docs/authentication/getting-started>`__。
+   该用户必须具有对远程存储桶或存储桶前缀执行 read/write/list/delete 操作的权限。
+
+   当 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``gcs`` 时必需。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --bucket
    :required:
 
-   The bucket on the remote tier to which MinIO transitions objects.
+   MinIO 将对象转换到的远程 tier 存储桶。
 
-   For ``azure`` remote tiers, this value corresponds to the :azure-docs:`Container name <storage/blobs/storage-blobs-introduction#containers>`
+   对于 ``azure`` 远程 tier，该值对应 :azure-docs:`Container name <storage/blobs/storage-blobs-introduction#containers>`
 
 .. mc-cmd:: --prefix
    :optional:
 
-   The prefix path for the specified :mc-cmd:`~mc ilm tier add --bucket` to which MinIO transitions objects.
+   MinIO 将对象转换到指定 :mc-cmd:`~mc ilm tier add --bucket` 的前缀路径。
 
-   Omit this field to transition objects into the bucket root.
+   省略此字段可将对象转换到存储桶根路径。
 
 .. mc-cmd:: --storage-class
    :optional:
 
-   The storage class ("access tier" for Microsoft Azure) MinIO applies to objects transitioned to the remote bucket.
+   MinIO 应用于转换到远程存储桶对象的 storage class（在 Microsoft Azure 中称为 "access tier"）。
 
-   The storage class to apply to objects transitioned by MinIO to the remote bucket.
-   MinIO tiering behavior depends on the remote storage returning objects immediately (milliseconds to seconds) upon request.
-   MinIO therefore *cannot* support remote storage which requires rehydration, wait periods, or manual intervention.
-   
-   Select the tab corresponding to the ``TIER_TYPE`` for a list of supported values for each tier:
+   应用于 MinIO 转换到远程存储桶对象的 storage class。
+   MinIO 分层行为依赖远程存储在请求后立即返回对象（毫秒到秒级）。
+   因此 MinIO *无法*支持需要 rehydration、等待周期或手动干预的远程存储。
+
+   选择与 ``TIER_TYPE`` 对应的选项卡，查看各层支持的值：
 
    .. tab-set::
 
       .. tab-item:: minio
 
-         - ``STANDARD`` *Recommended*
+         - ``STANDARD`` *推荐*
          - ``REDUCED``
 
-         For more information, see :ref:`Erasure Coding storage class <minio-ec-storage-class>`.
+         更多信息请参见 :ref:`纠删码存储类 <minio-ec-storage-class>`。
 
       .. tab-item:: s3
 
@@ -266,7 +266,7 @@ The command accepts the following arguments:
          - ``STANDARD-IA``
          - ``ONEZONE-IA``
 
-         For more information, see :s3-docs:`Using Amazon S3 storage classes <storage-class-intro.html>`.
+         更多信息请参见 :s3-docs:`使用 Amazon S3 存储类 <storage-class-intro.html>`。
 
       .. tab-item:: gcs
 
@@ -274,151 +274,150 @@ The command accepts the following arguments:
          - ``NEARLINE``
          - ``COLDLINE``
 
-         For more information, see :gcs-docs:`GCS storage class <storage-classes>`.
+         更多信息请参见 :gcs-docs:`GCS 存储类 <storage-classes>`。
 
-      .. tab-item:: azure 
-         
+      .. tab-item:: azure
+
          - ``Hot``
          - ``Cool``
 
-         For more information, see :azure-docs:`Hot, cool, and archive access tiers for blob data <storage/blobs/access-tiers-overview.html>`.
+         更多信息请参见 :azure-docs:`Blob 数据的 Hot、Cool 和 Archive 访问层 <storage/blobs/access-tiers-overview.html>`。
 
-   If omitted, objects use the default storage class defined for the remote bucket.
+   若省略，对象将使用远程存储桶定义的默认存储类。
 
 .. mc-cmd:: --region
    :optional:
 
-   The S3 backend region for the specified :mc-cmd:`~mc ilm tier add TIER_TYPE`, such as ``us-west-1``.
+   指定 :mc-cmd:`~mc ilm tier add TIER_TYPE` 的 S3 后端区域，例如 ``us-west-1``。
 
-   This option only applies if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``s3`` or ``minio``. 
-   This option has no effect for any other value of ``TIER_TYPE``.
-      
+   该选项仅在 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``s3`` 或 ``minio`` 时生效。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
+
 .. mc-cmd:: --use-aws-role
    :optional:
 
-   Use the access permission for the locally configured :iam-docs:`AWS Role <id_roles.html>`.
+   使用本地配置的 :iam-docs:`AWS Role <id_roles.html>` 的访问权限。
 
-   This option only applies if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``s3`` or ``minio``.
-   This option has no effect for any other value of ``TIER_TYPE``.
+   该选项仅在 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``s3`` 或 ``minio`` 时生效。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --aws-role-arn
    :optional:
 
-   The AWS S3 role name to use when transitioning objects.
+   转换对象时要使用的 AWS S3 角色名称。
 
-   This option only applies if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``s3`` **and** the source is a MinIO pod on Amazon EKS.
+   该选项仅在 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``s3`` **且**源端是 Amazon EKS 上的 MinIO pod 时生效。
 
 .. mc-cmd:: --aws-web-identity-file
    :optional:
 
-   Specify the web identity token file to use when transitioning objects.
+   指定转换对象时使用的 web identity token 文件。
 
-   This option only applies if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``s3`` **and** the source is a MinIO pod on Amazon EKS.
+   该选项仅在 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``s3`` **且**源端是 Amazon EKS 上的 MinIO pod 时生效。
 
 .. mc-cmd:: --azure-sp-tenant-id
    :optional:
 
-   Tenant ID for the `service principal account <https://learn.microsoft.com/en-us/cli/azure/azure-cli-sp-tutorial-1>`__ to use to log in to Azure storage.
+   用于登录 Azure 存储的 `service principal account <https://learn.microsoft.com/en-us/cli/azure/azure-cli-sp-tutorial-1>`__ 的 Tenant ID。
 
-   This option only applies if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``azure`` and you log in using a service principal identity.
-   This option has no effect for any other value of ``TIER_TYPE``.
+   该选项仅在 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``azure`` 且使用 service principal 身份登录时生效。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --azure-sp-client-id
    :optional:
 
-   Client ID for the `service principal account <https://learn.microsoft.com/en-us/cli/azure/azure-cli-sp-tutorial-1>`__ to use to log in to Azure storage.
+   用于登录 Azure 存储的 `service principal account <https://learn.microsoft.com/en-us/cli/azure/azure-cli-sp-tutorial-1>`__ 的 Client ID。
 
-   This option only applies if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``azure`` and you log in using a service principal identity.
-   This option has no effect for any other value of ``TIER_TYPE``.
+   该选项仅在 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``azure`` 且使用 service principal 身份登录时生效。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
 .. mc-cmd:: --azure-sp-client-secret
    :optional:
 
-   The client secret for the `service principal account <https://learn.microsoft.com/en-us/cli/azure/azure-cli-sp-tutorial-1>`__ to use to log in to Azure storage.
+   用于登录 Azure 存储的 `service principal account <https://learn.microsoft.com/en-us/cli/azure/azure-cli-sp-tutorial-1>`__ 的 client secret。
 
-   This option only applies if :mc-cmd:`~mc ilm tier add TIER_TYPE` is ``azure`` and you log in using a service principal identity.
-   This option has no effect for any other value of ``TIER_TYPE``.
+   该选项仅在 :mc-cmd:`~mc ilm tier add TIER_TYPE` 为 ``azure`` 且使用 service principal 身份登录时生效。
+   对 ``TIER_TYPE`` 的任何其他取值，该选项均无效。
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-Configure a Tier to Transition Objects to a MinIO Deployment
+配置一个 Tier 以将对象转换到 MinIO 部署
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example creates a new tier on a local deployment that a configured rule can use to transition objects to a separate, remote MinIO deployment.
+以下示例在本地部署上创建一个新层，已配置规则可使用该层将对象转换到独立的远程 MinIO 部署。
 
 .. code-block:: shell
    :class: copyable
 
-   mc ilm tier add minio myminio WARM-MINIO-TIER --endpoint https://warm-minio.com \                       
-        --access-key ACCESSKEY --secret-key SECRETKEY --bucket mybucket --prefix myprefix/  
+   mc ilm tier add minio myminio WARM-MINIO-TIER --endpoint https://warm-minio.com \
+        --access-key ACCESSKEY --secret-key SECRETKEY --bucket mybucket --prefix myprefix/
 
-This command creates a new tier called ``WARM-MINIO-TIER`` for a ``minio`` type of remote storage on the ``myminio`` deployment.
+该命令在 ``myminio`` 部署上为 ``minio`` 类型远程存储创建一个名为 ``WARM-MINIO-TIER`` 的新层。
 
-- The remote MinIO storage is located at ``https://warm-minio.com``.
-- The command includes credentials for a user with read, write, list, and delete privileges to the bucket and prefix.
-- The tier transitions objects to the ``mybucket`` bucket and the ``myprefix`` prefix on the remote MinIO storage.
+- 远程 MinIO 存储位于 ``https://warm-minio.com``。
+- 命令中包含了一个对该存储桶及前缀具备 read、write、list 和 delete 权限用户的凭据。
+- 该层会将对象转换到远程 MinIO 存储上的 ``mybucket`` 存储桶与 ``myprefix`` 前缀。
 
-Configure a Tier to Transition Objects to an Azure Blob Storage Location
+配置一个 Tier 以将对象转换到 Azure Blob Storage 位置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example creates a new tier on a local deployment that a configured rule can use to transition objects to Azure Blob Storage.
+以下示例在本地部署上创建一个新层，已配置规则可使用该层将对象转换到 Azure Blob Storage。
 
 .. code-block:: shell
    :class: copyable
 
-   mc ilm tier add azure myminio AZTIER --account-name ACCOUNT-NAME --account-key ACCOUNT-KEY \            
-        --bucket myazurebucket --prefix myazureprefix/                                                         
-                                                        
+   mc ilm tier add azure myminio AZTIER --account-name ACCOUNT-NAME --account-key ACCOUNT-KEY \
+        --bucket myazurebucket --prefix myazureprefix/
 
-This command creates a new tier called ``AZTIER`` for an ``azure`` type of remote storage on the ``myminio`` deployment.
+该命令在 ``myminio`` 部署上为 ``azure`` 类型远程存储创建一个名为 ``AZTIER`` 的新层。
 
-- The remote Azure storage is accessed by the provided account name and key.
-- The tier transitions objects to the ``myazurebucket`` bucket and the ``myazureprefix`` prefix on the Azure storage.
+- 使用提供的 account name 和 key 访问远程 Azure 存储。
+- 该层会将对象转换到 Azure 存储上的 ``myazurebucket`` 存储桶与 ``myazureprefix`` 前缀。
 
-Configure a Tier to Transition Objects to Google Cloud Storage
+配置一个 Tier 以将对象转换到 Google Cloud Storage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example creates a new tier on a local deployment that a configured rule can use to transition objects to Google Cloud Storage.
+以下示例在本地部署上创建一个新层，已配置规则可使用该层将对象转换到 Google Cloud Storage。
 
 .. code-block:: shell
    :class: copyable
 
-    mc ilm tier add gcs myminio GCSTIER --credentials-file /path/to/credentials.json \                      
-        --bucket mygcsbucket  --prefix mygcsprefix/                                                            
+    mc ilm tier add gcs myminio GCSTIER --credentials-file /path/to/credentials.json \
+        --bucket mygcsbucket  --prefix mygcsprefix/
 
-This command creates a new tier called ``GCSTIER`` for a ``gcs`` type of remote storage on the ``myminio`` deployment.
+该命令在 ``myminio`` 部署上为 ``gcs`` 类型远程存储创建一个名为 ``GCSTIER`` 的新层。
 
-- The remote GCS storage is accessed by the provided credentials file.
-- The tier transitions objects to the ``mygcsbucket`` bucket and the ``mygcsprefix`` prefix on the GCS storage.
+- 使用提供的 credentials file 访问远程 GCS 存储。
+- 该层会将对象转换到 GCS 存储上的 ``mygcsbucket`` 存储桶与 ``mygcsprefix`` 前缀。
 
-Configure a Tier to Transition Objects to Amazon Simple Storage Service (S3)
+配置一个 Tier 以将对象转换到 Amazon Simple Storage Service (S3)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example creates a new tier on a local deployment that a configured rule can use to transition objects to a STANDARD storage on S3.
+以下示例在本地部署上创建一个新层，已配置规则可使用该层将对象转换到 S3 上的 STANDARD 存储。
 
 .. code-block:: shell
    :class: copyable
 
-    mc ilm tier add s3 myminio S3TIER --endpoint https://s3.amazonaws.com \                                 
-        --access-key ACCESSKEY --secret-key SECRETKEY --bucket mys3bucket --prefix mys3prefix/ \               
-        --storage-class "STANDARD" --region us-west-2                                                             
+    mc ilm tier add s3 myminio S3TIER --endpoint https://s3.amazonaws.com \
+        --access-key ACCESSKEY --secret-key SECRETKEY --bucket mys3bucket --prefix mys3prefix/ \
+        --storage-class "STANDARD" --region us-west-2
 
-This command creates a new tier called ``S3TIER`` for a ``s3`` type of remote storage on the ``myminio`` deployment.
+该命令在 ``myminio`` 部署上为 ``s3`` 类型远程存储创建一个名为 ``S3TIER`` 的新层。
 
-- The S3 storage is located at the provided endpoint.
-- The remotes S3 storage is accessed by the provided access key and secret key.
-- The tier transitions objects to the ``mys3bucket`` bucket and the ``mys3prefix`` prefix on the GCS storage.
-- The tier utilizes S3 ``STANDARD`` storage class located in the ``us-west-2`` S3 region.
+- S3 存储位于提供的 endpoint。
+- 使用提供的 access key 和 secret key 访问远程 S3 存储。
+- 该层会将对象转换到 GCS 存储上的 ``mys3bucket`` 存储桶与 ``mys3prefix`` 前缀。
+- 该层使用位于 ``us-west-2`` S3 区域的 S3 ``STANDARD`` 存储类。
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
@@ -426,7 +425,7 @@ S3 Compatibility
    :end-before: end-minio-mc-s3-compatibility
 
 
-Required Permissions
+所需权限
 --------------------
 
-For permissions required to add a tier, refer to the :ref:`required permissions <minio-mc-ilm-tier-permissions>` on the parent command.
+有关添加 tier 所需的权限，请参见父命令中的 :ref:`required permissions <minio-mc-ilm-tier-permissions>`。

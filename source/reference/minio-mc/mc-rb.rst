@@ -4,41 +4,38 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
 .. mc:: mc rb
 
-Syntax
-------
+语法
+----
 
 .. start-mc-rb-desc
 
-The :mc:`mc rb` command removes one or more buckets on MinIO *or*
-another S3-compatible service.
+:mc:`mc rb` 命令用于删除 MinIO *或* 其他兼容 S3 服务上的一个或多个存储桶。
 
-To remove only the contents of a bucket, use :mc:`mc rm` instead.
+如仅需删除存储桶内容，请改用 :mc:`mc rm`。
 
 .. end-mc-rb-desc
 
 .. important::
 
-   :mc:`mc rb` *permanently deletes bucket(s)* on the target deployment,
-   including any and all :ref:`object versions <minio-bucket-versioning>`
-   and bucket configurations such as 
-   :ref:`lifecycle management <minio-lifecycle-management>` or
-   :ref:`replication <minio-bucket-replication-serverside>`.
+   :mc:`mc rb` 会在目标部署上*永久删除存储桶*，
+   包括所有 :ref:`对象版本 <minio-bucket-versioning>`
+   以及存储桶配置，例如
+   :ref:`生命周期管理 <minio-lifecycle-management>` 或
+   :ref:`复制 <minio-bucket-replication-serverside>`。
 
-You can also use :mc:`mc rb` against the local filesystem to produce
-similar results to the ``rm --rf`` commandline tool.
+你也可以对本地文件系统使用 :mc:`mc rb`，其效果与 ``rm --rf`` 命令行工具类似。
 
 .. tab-set::
 
    .. tab-item:: EXAMPLE
 
-      The following command removes the ``mydata`` bucket on the 
-      ``myminio`` MinIO deployment:
+      以下命令删除 ``myminio`` MinIO 部署上的 ``mydata`` 存储桶：
 
       .. code-block:: shell
          :class: copyable
@@ -47,7 +44,7 @@ similar results to the ``rm --rf`` commandline tool.
 
    .. tab-item:: SYNTAX
 
-      The command has the following syntax:
+      命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -62,38 +59,33 @@ similar results to the ``rm --rf`` commandline tool.
          :end-before: end-minio-syntax
 
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* The :ref:`alias <alias>` of a MinIO or other S3-compatible
-   service and the full path to the bucket to remove. For example:
+   *必需* MinIO 或其他兼容 S3 服务的 :ref:`alias <alias>`，以及要删除的存储桶完整路径。例如：
 
    .. code-block:: none
 
       mc rb --force myminio/mydata
 
-   Omit the bucket path to perform a site-wide removal of buckets on the MinIO
-   deployment. This operation *requires* specifying 
-   :mc-cmd:`~mc rb --dangerous` to explicitly acknowledge the permanent
-   removal of *all* data on the deployment. For example:
+   省略存储桶路径可对 MinIO 部署执行站点范围的存储桶删除操作。
+   此操作*必须*指定 :mc-cmd:`~mc rb --dangerous`，以明确确认会永久删除该部署上的*全部*数据。例如：
 
    .. code-block:: none
 
       mc rb --force --dangerous myminio
 
-   For removing a directory and its contents on a local filesystem, specify
-   the full path to that directory. The 
-   :mc-cmd:`~mc rb --force` flag is ignored if specified. For example:
+   若要删除本地文件系统上的目录及其内容，请指定该目录的完整路径。
+   如果指定了 :mc-cmd:`~mc rb --force` 标志，也会被忽略。例如：
 
    .. code-block:: none
 
       mc rb ~/data/myolddata
 
-   You can specify multiple ``ALIAS`` targets consisting of either
-   MinIO or local filesystem directories. The command attempts to remove
-   *all* specified targets. For example:
+   你可以指定多个 ``ALIAS`` 目标，目标可以是 MinIO 或本地文件系统目录。
+   命令会尝试删除*所有*指定目标。例如：
 
    .. code-block:: none
 
@@ -102,52 +94,47 @@ Parameters
 .. mc-cmd:: --force
    
 
-   *Required* Safety flag to confirm removal of the bucket contents.
+   *必需* 用于确认删除存储桶内容的安全标志。
 
 .. mc-cmd:: --dangerous
    
 
-   *Optional* Directs :mc:`mc rb` to perform a site-wide removal of all
-   buckets on each specified :mc-cmd:`~mc rb ALIAS` (e.g. ``myminio/``).
+   *可选* 指示 :mc:`mc rb` 在每个指定的 :mc-cmd:`~mc rb ALIAS`（例如 ``myminio/``）上执行站点范围的全部存储桶删除。
 
-   If any ``ALIAS`` specifies a filesystem directory, this option
-   results in the removal of all subdirectories and files at that directory
-   path similar to ``rm --rf``.
+   如果任一 ``ALIAS`` 指定的是文件系统目录，此选项会删除该目录路径下的所有子目录和文件，效果类似 ``rm --rf``。
 
    .. warning::
 
-      Running :mc-cmd:`mc rb --dangerous` is irreversible. Exercise all
-      possible due diligence in ensuring the command applies to only the 
-      desired ``ALIAS`` targets prior to execution.
+      执行 :mc-cmd:`mc rb --dangerous` 不可逆。
+      在执行前请尽可能审慎核对，确保命令仅作用于预期的 ``ALIAS`` 目标。
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Example
--------
+示例
+----
 
-Remove a Bucket
-~~~~~~~~~~~~~~~
+删除存储桶
+~~~~~~~~~~
 
 .. code-block:: shell
    :class: copyable
 
    mc rb --force ALIAS/PATH
 
-- Replace :mc-cmd:`ALIAS <mc rb ALIAS>` with the :mc-cmd:`alias <mc alias>` of
-  a configured S3-compatible host.
+- 将 :mc-cmd:`ALIAS <mc rb ALIAS>` 替换为已配置的兼容 S3 主机的 :mc-cmd:`alias <mc alias>`。
 
-- Replace :mc-cmd:`PATH <mc rb ALIAS>` with the path to the bucket to remove.
+- 将 :mc-cmd:`PATH <mc rb ALIAS>` 替换为要删除的存储桶路径。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility

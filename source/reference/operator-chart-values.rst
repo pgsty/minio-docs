@@ -1,29 +1,29 @@
 .. _minio-operator-chart-values:
 
 ====================
-Operator Helm Charts
+Operator Helm 图表
 ====================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO publishes |helm-charts| for the |helm-operator-chart| and |helm-tenant-chart|.
-You can use these charts to deploy the MinIO Operator and managed Tenants through Helm.
+MinIO 发布了用于 |helm-operator-chart| 和 |helm-tenant-chart| 的 |helm-charts|。
+你可以通过 Helm 使用这些图表来部署 MinIO Operator 及其管理的租户。
 
-The following page documents the ``values.yaml`` chart for the MinIO Operator.
-For documentation on the chart for a MinIO Tenant, see :ref:`minio-tenant-chart-values`
+本页说明 MinIO Operator 的 ``values.yaml`` 图表。
+有关 MinIO 租户图表的文档，请参见 :ref:`minio-tenant-chart-values`
 
 .. _minio-operator-chart-operator-values:
 
-MinIO Operator Chart
+MinIO Operator 图表
 --------------------
 
 .. tab-set::
    
-   .. tab-item:: Reference
+   .. tab-item:: 参考
 
       .. autoyaml:: /source/includes/k8s/operator-values.yaml
 

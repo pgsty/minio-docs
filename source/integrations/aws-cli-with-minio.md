@@ -1,23 +1,23 @@
-# AWS CLI with MinIO Server [![Slack](https://slack.min.io/slack?type=svg)](https://slack.min.io)
+# AWS CLI 与 MinIO Server [![Slack](https://slack.min.io/slack?type=svg)](https://slack.min.io)
 
-AWS CLI is a unified tool to manage AWS services. It is frequently the tool used to transfer data in and out of AWS S3. It works with any S3 compatible cloud storage service.
+AWS CLI 是一个用于管理 AWS 服务的统一工具。它也常用于在 AWS S3 中导入和导出数据。它可用于任何兼容 S3 的云存储服务。
 
-In this recipe we will learn how to configure and use AWS CLI to manage data with MinIO Server.
+在本教程中，我们将学习如何配置并使用 AWS CLI 通过 MinIO Server 管理数据。
 
-## 1. Prerequisites
+## 1. 前提条件
 
-Install MinIO Server from [here](https://minio.pigsty.io/operations/deployments/installation.html).
+从[这里](https://minio.pigsty.io/operations/deployments/installation.html)安装 MinIO Server。
 
-## 2. Installation
+## 2. 安装
 
-Install AWS CLI from <https://aws.amazon.com/cli/>
+从 <https://aws.amazon.com/cli/> 安装 AWS CLI。
 
-## 3. Configuration
+## 3. 配置
 
-To configure AWS CLI, type `aws configure` and specify the MinIO key information.
+要配置 AWS CLI，请执行 `aws configure` 并填写 MinIO 密钥信息。
 
-Access credentials shown in this example belong to <https://play.min.io:9000>.
-These credentials are open to public. Feel free to use this service for testing and development. Replace with your own MinIO keys in deployment.
+本示例中展示的访问凭据属于 <https://play.min.io:9000>。
+这些凭据是公开的。你可以将该服务用于测试和开发。在生产部署中请替换为你自己的 MinIO 密钥。
 
 ```sh
 aws configure
@@ -27,15 +27,15 @@ Default region name [None]: us-east-1
 Default output format [None]: ENTER
 ```
 
-Additionally enable AWS Signature Version '4' for MinIO server.
+此外，还需要为 MinIO Server 启用 AWS Signature Version '4'。
 
 ```sh
 aws configure set default.s3.signature_version s3v4
 ```
 
-## 4. Commands
+## 4. 命令
 
-### To list your buckets
+### 列出你的存储桶
 
 ```sh
 aws --endpoint-url https://play.min.io:9000 s3 ls
@@ -46,7 +46,7 @@ aws --endpoint-url https://play.min.io:9000 s3 ls
 2016-03-26 15:37:02 testbucket
 ```
 
-### To list contents inside bucket
+### 列出存储桶中的内容
 
 ```sh
 aws --endpoint-url https://play.min.io:9000 s3 ls s3://mybucket
@@ -54,28 +54,28 @@ aws --endpoint-url https://play.min.io:9000 s3 ls s3://mybucket
 2016-03-30 00:35:37      67250 simplejson-3.3.0.tar.gz
 ```
 
-### To make a bucket
+### 创建存储桶
 
 ```sh
 aws --endpoint-url https://play.min.io:9000 s3 mb s3://mybucket
 make_bucket: s3://mybucket/
 ```
 
-### To add an object to a bucket
+### 向存储桶添加对象
 
 ```sh
 aws --endpoint-url https://play.min.io:9000 s3 cp simplejson-3.3.0.tar.gz s3://mybucket
 upload: ./simplejson-3.3.0.tar.gz to s3://mybucket/simplejson-3.3.0.tar.gz
 ```
 
-### To delete an object from a bucket
+### 从存储桶删除对象
 
 ```sh
 aws --endpoint-url https://play.min.io:9000 s3 rm s3://mybucket/argparse-1.2.1.tar.gz
 delete: s3://mybucket/argparse-1.2.1.tar.gz
 ```
 
-### To remove a bucket
+### 删除存储桶
 
 ```sh
 aws --endpoint-url https://play.min.io:9000 s3 rb s3://mybucket

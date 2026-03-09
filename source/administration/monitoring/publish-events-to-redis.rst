@@ -1,57 +1,52 @@
 .. _minio-bucket-notifications-publish-redis:
 
-=======================
-Publish Events to Redis
-=======================
+=====================
+将事件发布到 Redis
+=====================
 
 .. default-domain:: minio
 
 .. |ARN| replace:: ``arn:minio:sqs::primary:redis``
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 1
 
-MinIO supports publishing :ref:`bucket notification
-<minio-bucket-notifications>` events to a `Redis <https://redis.io/>`__ 
-service endpoint.
+MinIO 支持将 :ref:`存储桶通知
+<minio-bucket-notifications>` 事件发布到 `Redis <https://redis.io/>`__
+服务端点。
 
-Add a Redis Endpoint to a MinIO Deployment
--------------------------------------------
+向 MinIO 部署添加 Redis 端点
+----------------------------
 
-The following procedure adds a new Redis service endpoint for supporting
-:ref:`bucket notifications <minio-bucket-notifications>` in a MinIO
-deployment.
+以下过程会在 MinIO 部署中添加一个新的 Redis 服务端点，用于支持
+:ref:`存储桶通知 <minio-bucket-notifications>`。
 
-Prerequisites
-~~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-MinIO ``mc`` Command Line Tool
-++++++++++++++++++++++++++++++
+MinIO ``mc`` 命令行工具
++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+此过程在部分操作中使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`快速入门 <mc-install>`。
 
-1) Add the Redis Endpoint to MinIO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 将 Redis 端点添加到 MinIO
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can configure a new Redis service endpoint using either environment variables
-*or* by setting runtime configuration settings.
+你可以使用环境变量 *或* 运行时配置设置来配置新的 Redis 服务端点。
 
 .. tab-set::
 
-   .. tab-item:: Environment Variables
+   .. tab-item:: 环境变量
 
-      MinIO supports specifying the Redis service endpoint and associated
-      configuration settings using 
-      :ref:`environment variables 
-      <minio-server-envvar-bucket-notification-redis>`. The 
-      :mc:`minio server` process applies the specified settings on its 
-      next startup.
-      
-      The following example code sets *all*  environment variables
-      related to configuring an Redis service endpoint. The minimum
-      *required* variables are:
+      MinIO 支持使用
+      :ref:`环境变量
+      <minio-server-envvar-bucket-notification-redis>` 指定 Redis 服务端点及其相关
+      配置设置。:mc:`minio server` 进程会在下一次启动时应用这些设置。
+
+      以下示例代码设置了与配置 Redis 服务端点相关的 *全部* 环境变量。
+      最少的 *必需* 变量包括：
 
       - :envvar:`MINIO_NOTIFY_REDIS_ENABLE` 
       - :envvar:`MINIO_NOTIFY_REDIS_ADDRESS`
@@ -86,35 +81,33 @@ You can configure a new Redis service endpoint using either environment variable
                export MINIO_NOTIFY_REDIS_QUEUE_LIMIT_<IDENTIFIER>="<string>"
                export MINIO_NOTIFY_REDIS_COMMENT_<IDENTIFIER>="<string>"
 
-      - Replace ``<IDENTIFIER>`` with a unique descriptive string for the
-        TARGET service endpoint. Use the same ``<IDENTIFIER>`` value for all 
-        environment variables related to the new target service endpoint.
-        The following examples assume an identifier of ``PRIMARY``.
+      - 将 ``<IDENTIFIER>`` 替换为目标服务端点的唯一描述性字符串。
+        对于与新目标服务端点相关的所有环境变量，请使用相同的 ``<IDENTIFIER>`` 值。
+        以下示例假定标识符为 ``PRIMARY``。
 
-        If the specified ``<IDENTIFIER>`` matches an existing Redis service
-        endpoint on the MinIO deployment, the new settings *override* 
-        any existing settings for that endpoint. Use 
-        :mc-cmd:`mc admin config get notify_redis <mc admin config get>` to
-        review the currently configured Redis endpoints on the MinIO deployment.
+        如果指定的 ``<IDENTIFIER>`` 与 MinIO 部署上现有的 Redis 服务端点匹配，
+        新设置会 *覆盖*
+        该端点的所有现有设置。使用
+        :mc-cmd:`mc admin config get notify_redis <mc admin config get>`
+        查看当前在 MinIO 部署上已配置的 Redis 端点。
 
-      - Replace ``<ENDPOINT>`` with the URL of the Redis service endpoint.
-        For example: ``https://redis.example.com:6369``
+      - 将 ``<ENDPOINT>`` 替换为 Redis 服务端点的 URL。
+        例如：``https://redis.example.com:6369``
 
 
-      See :ref:`Redis Service for Bucket Notifications
-      <minio-server-envvar-bucket-notification-redis>` for complete documentation
-      on each environment variable.
+      有关每个环境变量的完整文档，请参见
+      :ref:`存储桶通知的 Redis 服务
+      <minio-server-envvar-bucket-notification-redis>`。
 
-   .. tab-item:: Configuration Settings
+   .. tab-item:: 配置设置
 
-      MinIO supports adding or updating Redis endpoints on a running 
-      :mc:`minio server` process using the :mc-cmd:`mc admin config set` command 
-      and the :mc-conf:`notify_redis` configuration key. You must restart the 
-      :mc:`minio server` process to apply any new or updated configuration
-      settings.
+      MinIO 支持在正在运行的 :mc:`minio server` 进程上，使用
+      :mc-cmd:`mc admin config set` 命令和 :mc-conf:`notify_redis` 配置键
+      添加或更新 Redis 端点。你必须重启 :mc:`minio server` 进程，才能应用任何新的
+      或更新后的配置设置。
 
-      The following example code sets *all*  settings related to configuring an
-      Redis service endpoint. The minimum *required* settings are:
+      以下示例代码设置了与配置 Redis 服务端点相关的 *全部* 设置。
+      最少的 *必需* 设置包括：
 
       - :mc-conf:`notify_redis address <notify_redis.address>`
       - :mc-conf:`notify_redis key <notify_redis.key>`
@@ -132,56 +125,52 @@ You can configure a new Redis service endpoint using either environment variable
            queue_limit="<string>" \
            comment="<string>"
 
-      - Replace ``IDENTIFIER`` with a unique descriptive string for the
-        Redis service endpoint. The following examples in this procedure
-        assume an identifier of ``PRIMARY``.
+      - 将 ``IDENTIFIER`` 替换为 Redis 服务端点的唯一描述性字符串。
+        本过程中的以下示例假定标识符为 ``PRIMARY``。
 
-        If the specified ``IDENTIFIER`` matches an existing Redis service
-        endpoint on the MinIO deployment, the new settings *override* 
-        any existing settings for that endpoint. Use 
-        :mc-cmd:`mc admin config get notify_redis <mc admin config get>` to
-        review the currently configured Redis endpoints on the MinIO deployment.
+        如果指定的 ``IDENTIFIER`` 与 MinIO 部署上现有的 Redis 服务端点匹配，
+        新设置会 *覆盖*
+        该端点的所有现有设置。使用
+        :mc-cmd:`mc admin config get notify_redis <mc admin config get>`
+        查看当前在 MinIO 部署上已配置的 Redis 端点。
 
-      - Replace ``ENDPOINT`` with the URL of the Redis service endpoint.
-        For example: ``https://redis.example.com:6369``
+      - 将 ``ENDPOINT`` 替换为 Redis 服务端点的 URL。
+        例如：``https://redis.example.com:6369``
 
-      See :ref:`Redis Bucket Notification Configuration Settings
-      <minio-server-config-bucket-notification-redis>` for complete 
-      documentation on each setting.
+      有关每个设置的完整文档，请参见
+      :ref:`Redis 存储桶通知配置设置
+      <minio-server-config-bucket-notification-redis>`。
 
-1) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署才能应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启该部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`别名 <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured Redis
-target similar to the following:
+:mc:`minio server` 进程在启动时会为每个已配置的 Redis 目标打印一行类似如下的内容：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:redis
 
-You must specify the ARN resource when configuring bucket notifications with
-the associated Redis deployment as a target.
+将关联的 Redis 部署配置为目标来配置存储桶通知时，必须指定该 ARN 资源。
 
 .. include:: /includes/common-bucket-notifications.rst
    :start-after: start-bucket-notification-find-arn
    :end-before: end-bucket-notification-find-arn
 
-3) Configure Bucket Notifications using the Redis Endpoint as a Target
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 将 Redis 端点配置为存储桶通知目标
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc:`mc event add` command to add a new bucket notification 
-event with the configured Redis service as a target:
+使用 :mc:`mc event add` 命令新增一个存储桶通知事件，并将已配置的 Redis 服务
+作为目标：
 
 .. code-block:: shell
    :class: copyable
@@ -189,89 +178,80 @@ event with the configured Redis service as a target:
    mc event add ALIAS/BUCKET arn:minio:sqs::primary:redis \
      --event EVENTS
 
-- Replace ``ALIAS`` with the :ref:`alias <alias>` of a MinIO deployment.
-- Replace ``BUCKET`` with the name of the bucket in which to configure the 
-  event.
-- Replace ``EVENTS`` with a comma-separated list of :ref:`events 
-  <mc-event-supported-events>` for which MinIO triggers notifications.
+- 将 ``ALIAS`` 替换为某个 MinIO 部署的 :ref:`别名 <alias>`。
+- 将 ``BUCKET`` 替换为要配置该事件的存储桶名称。
+- 将 ``EVENTS`` 替换为一个以逗号分隔的 :ref:`事件
+  <mc-event-supported-events>` 列表，MinIO 会为这些事件触发通知。
 
-Use :mc:`mc event ls` to view all configured bucket events for 
-a given notification target:
+使用 :mc:`mc event ls` 查看给定通知目标的所有已配置存储桶事件：
 
 .. code-block:: shell
    :class: copyable
 
    mc event ls ALIAS/BUCKET arn:minio:sqs::primary:redis
 
-4) Validate the Configured Events
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证已配置的事件
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Perform an action on the bucket for which you configured the new event and 
-check the Redis service for the notification data. The action required
-depends on which :mc-cmd:`events <mc event add --event>` were specified
-when configuring the bucket notification.
+对已为其配置新事件的存储桶执行某个操作，并检查 Redis 服务中的通知数据。
+所需的操作取决于在配置存储桶通知时指定了哪些
+:mc-cmd:`事件 <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the 
-``s3:ObjectCreated:Put`` event, you can use the 
-:mc:`mc cp` command to create a new object in the bucket and trigger 
-a notification.
+例如，如果存储桶通知配置包含 ``s3:ObjectCreated:Put`` 事件，
+则可以使用 :mc:`mc cp` 命令在存储桶中创建一个新对象并触发通知。
 
 .. code-block:: shell
    :class: copyable
 
    mc cp ~/data/new-object.txt ALIAS/BUCKET
 
-Update an Redis Endpoint in a MinIO Deployment
-----------------------------------------------
+在 MinIO 部署中更新 Redis 端点
+------------------------------
 
-The following procedure updates an existing Redis service endpoint for
-supporting :ref:`bucket notifications <minio-bucket-notifications>` in a MinIO
-deployment.
+以下过程会更新 MinIO 部署中现有的 Redis 服务端点，以支持
+:ref:`存储桶通知 <minio-bucket-notifications>`。
 
-Prerequisites
-~~~~~~~~~~~~~~
+前提条件
+~~~~~~~~
 
-MinIO ``mc`` Command Line Tool
-++++++++++++++++++++++++++++++
+MinIO ``mc`` 命令行工具
++++++++++++++++++++++++
 
-This procedure uses the :mc:`mc` command line tool for certain actions. 
-See the ``mc`` :ref:`Quickstart <mc-install>` for installation instructions.
+此过程在部分操作中使用 :mc:`mc` 命令行工具。
+安装说明请参见 ``mc`` :ref:`快速入门 <mc-install>`。
 
 
-1) List Configured Redis Endpoints In The Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) 列出部署中已配置的 Redis 端点
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config get` command to list the currently
-configured Redis service endpoints in the deployment:
+使用 :mc-cmd:`mc admin config get` 命令列出部署中当前已配置的 Redis
+服务端点：
 
 .. code-block:: shell
    :class: copyable
 
    mc admin config get ALIAS/ notify_redis
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the MinIO deployment.
+将 ``ALIAS`` 替换为 MinIO 部署的 :ref:`别名 <alias>`。
 
-The command output resembles the following:
+命令输出类似如下：
 
 .. code-block:: shell
 
    notify_redis:primary address="https://redis.example.com:6369" format="namespace" key="minioevent" password="" queue_dir="" queue_limit="0"
    notify_redis:secondary address="https://redis.example.com:6369" format="namespace" key="minioevent" password="" queue_dir="" queue_limit="0"
 
-The :mc-conf:`notify_redis` key is the top-level configuration key for an
-:ref:`minio-server-config-bucket-notification-redis`. The 
-:mc-conf:`address <notify_redis.address>` key specifies the Redis service endpoint 
-for the given `notify_redis` key. The ``notify_redis:<IDENTIFIER>`` suffix 
-describes the unique identifier for that Redis service endpoint.
+:mc-conf:`notify_redis` 键是
+:ref:`minio-server-config-bucket-notification-redis` 的顶层配置键。
+:mc-conf:`address <notify_redis.address>` 键为给定的 `notify_redis` 键指定 Redis
+服务端点。``notify_redis:<IDENTIFIER>`` 后缀表示该 Redis 服务端点的唯一标识符。
 
-Note the identifier for the Redis service endpoint you want to update for
-the next step. 
+记下你要更新的 Redis 服务端点标识符，以便在下一步中使用。
 
-2) Update the Redis Endpoint
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2) 更新 Redis 端点
+~~~~~~~~~~~~~~~~~~
 
-Use the :mc-cmd:`mc admin config set` command to set the new configuration
-for the Redis service endpoint:
+使用 :mc-cmd:`mc admin config set` 命令为 Redis 服务端点设置新配置：
 
 .. code-block:: shell
    :class: copyable
@@ -285,45 +265,39 @@ for the Redis service endpoint:
       queue_limit="<string>" \
       comment="<string>"
 
-The :mc-conf:`notify_redis address <notify_redis.address>` configuration setting
-is the *minimum* required for an Redis service endpoint. All other configuration
-settings are *optional*. See
-:ref:`minio-server-config-bucket-notification-redis` for a complete list of
-Redis configuration settings.
+:mc-conf:`notify_redis address <notify_redis.address>` 配置设置是 Redis
+服务端点 *最少* 必需的配置项。所有其他配置设置均为 *可选*。有关 Redis
+配置设置的完整列表，请参见
+:ref:`minio-server-config-bucket-notification-redis`。
 
-3) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) 重启 MinIO 部署
+~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+你必须重启 MinIO 部署才能应用配置更改。
+使用 :mc-cmd:`mc admin service restart` 命令重启该部署。
 
 .. code-block:: shell
    :class: copyable
 
    mc admin service restart ALIAS
 
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+将 ``ALIAS`` 替换为要重启的部署的 :ref:`别名 <alias>`。
 
-The :mc:`minio server` process prints a line on startup for each configured Redis
-target similar to the following:
+:mc:`minio server` 进程在启动时会为每个已配置的 Redis 目标打印一行类似如下的内容：
 
 .. code-block:: shell
 
    SQS ARNs: arn:minio:sqs::primary:redis
 
-4) Validate the Changes
-~~~~~~~~~~~~~~~~~~~~~~~
+4) 验证更改
+~~~~~~~~~~~
 
-Perform an action on a bucket which has an event configuration using the updated
-Redis service endpoint and check the Redis service for the notification data. The
-action required depends on which :mc-cmd:`events <mc event add --event>` were
-specified when configuring the bucket notification.
+对某个已使用更新后的 Redis 服务端点进行事件配置的存储桶执行操作，并检查 Redis
+服务中的通知数据。所需的操作取决于在配置存储桶通知时指定了哪些
+:mc-cmd:`事件 <mc event add --event>`。
 
-For example, if the bucket notification configuration includes the 
-``s3:ObjectCreated:Put`` event, you can use the 
-:mc:`mc cp` command to create a new object in the bucket and trigger 
-a notification.
+例如，如果存储桶通知配置包含 ``s3:ObjectCreated:Put`` 事件，
+则可以使用 :mc:`mc cp` 命令在存储桶中创建一个新对象并触发通知。
 
 .. code-block:: shell
    :class: copyable

@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -19,36 +19,36 @@
 .. |versions| replace:: :mc-cmd:`~mc du --versions`
 .. |alias| replace:: :mc-cmd:`~mc du ALIAS`
 
-Syntax
+语法
 ------
 
 .. start-mc-du-desc
 
-The :mc:`mc du` command summarizes the disk usage of buckets and folders. 
-You can also use :mc:`~mc du` against the local filesystem to produce similar results as the ``du`` command. 
+:mc:`mc du` 命令用于汇总存储桶和文件夹的磁盘使用量。
+你也可以对本地文件系统使用 :mc:`~mc du`，以生成与 ``du`` 命令类似的结果。
 
 .. end-mc-du-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command prints the disk usage of the ``mybucket`` bucket on the ``myminio`` MinIO deployment:
+      以下命令打印 ``myminio`` MinIO 部署中 ``mybucket`` 存储桶的磁盘使用量：
 
       .. code-block:: shell
          :class: copyable
 
          mc du play/mybucket
 
-      The output resembles the following:
+      输出类似如下：
       
       .. code-block:: shell
 
          825KiB	3 objects        mybucket
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc du` command has the following syntax:
+      :mc:`mc du` 命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -65,41 +65,41 @@ You can also use :mc:`~mc du` against the local filesystem to produce similar re
          :end-before: end-minio-syntax
 
 
-Parameters
+参数
 ~~~~~~~~~~
 
 .. mc-cmd:: ALIAS
    :required:
    
-   The :ref:`alias <alias>` of a MinIO deployment and the full path to the folder. For example:
+   MinIO 部署的 :ref:`alias <alias>` 以及文件夹的完整路径。例如：
 
    .. code-block:: shell
 
       mc du myminio/mybucket
 
-   You can specify multiple buckets and folders on the same or different MinIO deployment. For example:
+   你可以在同一个或不同的 MinIO 部署上指定多个存储桶和文件夹。例如：
 
    .. code-block:: shell
 
       mc du myminio/mybucket myminio/myotherbucket/myfolder
 
-   For a folder on a local filesystem, specify the full path to that folder. For example:
+   对于本地文件系统中的文件夹，请指定该文件夹的完整路径。例如：
 
    .. code-block:: shell
 
       mc du ~/data/images
 
-   The time required for :mc:`mc du` to complete depends on the size of the target buckets and folders. A large bucket may take some time to generate a disk usage summary.
+   :mc:`mc du` 完成所需时间取决于目标存储桶和文件夹的大小。大型存储桶可能需要一些时间来生成磁盘使用量摘要。
    
 .. mc-cmd:: --depth, d
    :optional:
 
-   Print the total for all folders N or fewer levels below the path specified in the command. Default is 0, for the specified path only.
+   打印命令中指定路径下 N 层及以内所有文件夹的总计值。默认值为 0，仅统计指定路径本身。
 
 .. mc-cmd:: --recursive, r
    :optional:
 
-   Recursively print the total for each bucket or child folder.
+   递归打印每个存储桶或子文件夹的总计值。
 
 .. mc-cmd:: --rewind
    :optional:
@@ -108,7 +108,7 @@ Parameters
       :start-after: start-rewind-desc
       :end-before: end-rewind-desc
 
-   Use :mc-cmd:`~mc du --rewind` and :mc-cmd:`~mc du --versions` together to show the disk usage for those object versions which existed at a specific point in time.
+   将 :mc-cmd:`~mc du --rewind` 与 :mc-cmd:`~mc du --versions` 一起使用，可显示特定时间点存在的对象版本的磁盘使用量。
 
 .. mc-cmd:: --versions
    :optional:
@@ -117,72 +117,72 @@ Parameters
       :start-after: start-versions-desc
       :end-before: end-versions-desc
 
-   Use :mc-cmd:`~mc du --versions` and :mc-cmd:`~mc du --rewind` together to show the disk usage for those object versions which existed at a specific point in time.
+   将 :mc-cmd:`~mc du --versions` 与 :mc-cmd:`~mc du --rewind` 一起使用，可显示特定时间点存在的对象版本的磁盘使用量。
 
 
-Global Flags
+全局标志
 ~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
+示例
 --------
 
-View the Disk Usage for a Bucket or Folder
+查看存储桶或文件夹的磁盘使用量
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc du` to print a summary of the disk usage for a bucket or folder:
+使用 :mc:`mc du` 打印存储桶或文件夹的磁盘使用量摘要：
 
 .. code-block:: shell
    :class: copyable
 
    mc du ALIAS/PATH
 
-- Replace ``ALIAS`` with the  :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 ``ALIAS`` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace ``PATH`` with the path to the bucket or folder on the S3-compatible host.
+- 将 ``PATH`` 替换为 S3 兼容主机上存储桶或文件夹的路径。
 
-View the Disk Usage at a Point-In-Time
+查看某个时间点的磁盘使用量
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc du --rewind` to print a summary of disk usage at a specific point-in-time in the past:
+使用 :mc-cmd:`mc du --rewind` 打印过去某个特定时间点的磁盘使用量摘要：
 
 .. code-block:: shell
    :class: copyable
 
    mc du --rewind DURATION ALIAS/PATH
 
-- Replace ``DURATION`` with the desired point-in-time in the past. For example, specify ``30d`` to show the disk usage 30 days prior to the current date.
+- 将 ``DURATION`` 替换为所需的过去时间点。例如，指定 ``30d`` 以显示当前日期前 30 天的磁盘使用量。
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 ``ALIAS`` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace ``PATH`` with the path to the bucket or folder on the S3-compatible host.
+- 将 ``PATH`` 替换为 S3 兼容主机上存储桶或文件夹的路径。
 
 .. include:: /includes/facts-versioning.rst
    :start-after: start-versioning-admonition
    :end-before: end-versioning-admonition
 
-View the Disk Usage Recursively
+递归查看磁盘使用量
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc-cmd:`mc du --recursive` to print a summary for each folder recursively:
+使用 :mc-cmd:`mc du --recursive` 递归打印每个文件夹的摘要：
 
 .. code-block:: shell
    :class: copyable
 
    mc du --recursive ALIAS/PATH
 
-- Replace ``ALIAS`` with the :mc:`alias <mc alias>` of the S3-compatible host.
+- 将 ``ALIAS`` 替换为 S3 兼容主机的 :mc:`alias <mc alias>`。
 
-- Replace ``PATH`` with the path to the bucket or folder on the S3-compatible host.
+- 将 ``PATH`` 替换为 S3 兼容主机上存储桶或文件夹的路径。
 
 
-Behavior
+行为
 --------
 
-S3 Compatibility
+S3 兼容性
 ~~~~~~~~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst

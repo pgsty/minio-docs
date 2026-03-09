@@ -3,23 +3,23 @@
 .. _minio-server-configuration-settings:
 
 =================
-Settings Overview
+设置概览
 =================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-The :mc:`minio server` process stores its configuration in the storage backend :mc-cmd:`directory <minio server DIRECTORIES>`. 
+:mc:`minio server` 进程将其配置存储在存储后端 :mc-cmd:`directory <minio server DIRECTORIES>` 中。
 
 .. _minio-server-configuration-options:
 
-MinIO Settings
+MinIO 设置
 --------------
 
-MinIO settings define runtime behavior of the MinIO :mc:`server <minio server>` process.
+MinIO 设置定义 MinIO :mc:`server <minio server>` 进程的运行时行为。
 
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
@@ -29,14 +29,14 @@ MinIO settings define runtime behavior of the MinIO :mc:`server <minio server>` 
    :start-after: start-minio-settings-test-before-prod
    :end-before: end-minio-settings-test-before-prod
 
-Additional settings include those to customize:
+其他可用于自定义的设置包括：
 
-- :ref:`Core settings <minio-server-envvar-core>`
-- :ref:`Root credentials <minio-server-envvar-root>`
-- :ref:`Storage class <minio-server-envvar-storage-class>`
+- :ref:`核心设置 <minio-server-envvar-core>`
+- :ref:`Root 凭证 <minio-server-envvar-root>`
+- :ref:`存储类 <minio-server-envvar-storage-class>`
 - :ref:`MinIO Console <minio-server-envvar-console>`
-- :ref:`Metrics and logging <minio-server-envvar-metrics-logging>`
-- :ref:`Notification targets <minio-server-envvar-notifications>` for use with :ref:`MinIO Bucket Notifications <minio-bucket-notifications>`
-- :ref:`Identity and access management solutions <minio-server-envvar-iam>`
+- :ref:`指标与日志 <minio-server-envvar-metrics-logging>`
+- 用于 :ref:`MinIO Bucket Notifications <minio-bucket-notifications>` 的 :ref:`通知目标 <minio-server-envvar-notifications>`
+- :ref:`身份与访问管理方案 <minio-server-envvar-iam>`
 - :ref:`Key Encryption Service (KES) <minio-server-envvar-kes>`
-- :ref:`Object Lambda functions <minio-server-envvar-object-lambda-webhook>`
+- :ref:`Object Lambda 函数 <minio-server-envvar-object-lambda-webhook>`

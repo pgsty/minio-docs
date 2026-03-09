@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,48 +12,46 @@
 
 .. versionchanged:: RELEASE.2022-08-11T00-30-48Z
 
-   ``mc admin top`` replaced by :mc-cmd:`mc support top`.
+   ``mc admin top`` 已由 :mc-cmd:`mc support top` 替代。
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-top-desc
 
-The :mc-cmd:`mc admin top` command returns statistics for distributed
-MinIO deployments, similar to the output of the ``top`` command. 
+:mc-cmd:`mc admin top` 命令返回分布式 MinIO 部署的统计信息，
+类似于 ``top`` 命令的输出。
 
 .. end-mc-admin-top-desc
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
       :start-after: start-minio-only
       :end-before: end-minio-only
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: locks
    :fullpath:
 
-   Returns the 10 oldest locks on the MinIO deployment.
+   返回 MinIO 部署中最早的 10 个锁。
 
-   The command has the following syntax:
+   该命令的语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin top locks TARGET
 
-   The command supports the following arguments:
+   该命令支持以下参数：
 
    .. mc-cmd:: TARGET
 
-      The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment from which
-      the command retrieves statistics.
+      已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，命令将从该部署
+      获取统计信息。
 
-      The alias *must* correspond to a distributed (multi-node) MinIO deployment.
-      The command returns an error for :term:`single-node single-drive` deployments.
-      
-
+      该 alias *必须* 对应分布式（多节点）MinIO 部署。
+      对于 :term:`single-node single-drive` 部署，该命令会返回错误。

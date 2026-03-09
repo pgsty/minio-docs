@@ -11,27 +11,27 @@
 .. mc:: mc legalhold
 
 
-Description
------------
+描述
+----
 
 .. start-mc-legalhold-desc
 
-The :mc:`mc legalhold` command sets, removes, or retrieves the :ref:`object legal hold (WORM) <minio-object-locking-legalhold>` settings for object(s).
+:mc:`mc legalhold` 命令用于为一个或多个对象设置、移除或获取 :ref:`object legal hold (WORM) <minio-object-locking-legalhold>` 配置。
 
 .. end-mc-legalhold-desc
 
-Subcommands
------------
+子命令
+------
 
-:mc:`mc legalhold` includes the following subcommands:
+:mc:`mc legalhold` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc:`~mc legalhold clear`
      - .. include:: /reference/minio-mc/mc-legalhold-clear.rst

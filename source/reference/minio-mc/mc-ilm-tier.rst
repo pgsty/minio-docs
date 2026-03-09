@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -14,31 +14,31 @@
 
    :mc-cmd:`mc ilm tier` replaces ``mc admin tier``.
 
-Description
------------
+说明
+----
 
 .. start-mc-ilm-tier-desc
 
-The :mc:`mc ilm tier` command and its subcommands configure a remote supported S3-compatible service for MinIO :ref:`Lifecycle Management: Object Transition ("Tiering") <minio-lifecycle-management-expiration>`. 
+:mc:`mc ilm tier` 命令及其子命令用于为 MinIO 的 :ref:`生命周期管理：对象过渡（“分层”）<minio-lifecycle-management-expiration>` 配置受支持的远程 S3 兼容服务。
 
 .. end-mc-ilm-tier-desc
 
-After creating one or more tiers with this command, use :mc-cmd:`mc ilm rule` and its subcommands to create the rules that move objects to other storage.
+使用此命令创建一个或多个层后，可使用 :mc-cmd:`mc ilm rule` 及其子命令创建将对象迁移到其他存储的规则。
 
-For more information, see the overview of :ref:`lifecycle management <minio-lifecycle-management>`.
+有关更多信息，请参阅 :ref:`生命周期管理 <minio-lifecycle-management>` 概述。
 
-Subcommands
------------
+子命令
+------
 
-:mc-cmd:`mc ilm tier` includes the following subcommands:
+:mc-cmd:`mc ilm tier` 包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 30 70
    :width: 100%
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 说明
 
    * - :mc:`~mc ilm tier add`
      - .. include:: /reference/minio-mc/mc-ilm-tier-add.rst
@@ -73,43 +73,43 @@ Subcommands
 
 .. _minio-mc-ilm-tier-permissions:
 
-Required Permissions
---------------------
+所需权限
+--------
 
-To create tiers for object transition, MinIO requires the following administrative permissions on the cluster:
+要为对象过渡创建层，MinIO 要求在集群上具有以下管理权限：
 
 - :policy-action:`admin:SetTier`
 - :policy-action:`admin:ListTier`
 
-For example, the following policy provides sufficient permissions for configuring object transition lifecycle management rules on any bucket in the cluster:
+例如，以下策略提供了足够的权限，可为集群中的任意存储桶配置对象过渡生命周期管理规则：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
    :class: copyable
 
-Transition Permissions
-~~~~~~~~~~~~~~~~~~~~~~
+过渡权限
+~~~~~~~~
 
-Object transition lifecycle management rules require additional permissions on the remote storage tier. 
-Specifically, MinIO requires the remote tier credentials provide read, write, list, and delete permissions.
+对象过渡生命周期管理规则要求远程存储层具备额外权限。
+具体而言，MinIO 要求远程层凭证提供读取、写入、列出和删除权限。
 
-For example, if the remote storage tier implements AWS IAM policy-based access control, the following policy provides the necessary permissions for transitioning objects into and out of the remote tier:
+例如，如果远程存储层使用基于 AWS IAM 策略的访问控制，则以下策略提供了对象迁入和迁出远程层所需的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementUser.json
    :language: json
    :class: copyable
 
-Modify the ``Resource`` for the bucket into which MinIO tiers objects.
+请将 ``Resource`` 修改为 MinIO 用于对象分层的目标存储桶。
 
-.. admonition:: Avoid enabling versioning in the remote tier
+.. admonition:: 避免在远程层启用版本控制
    :class: important
 
-   MinIO strongly recommends against enabling bucket versioning for remote tiers.
-   If the remote tier bucket is versioned, each source object version is transitioned to a *unique object* in the remote tier.
+   MinIO 强烈建议不要为远程层启用存储桶版本控制。
+   如果远程层存储桶启用了版本控制，则每个源对象版本都会过渡为远程层中的一个*唯一对象*。
    
-   If your environment requires versioning for the remote tier, you must also allow the ``s3:DeleteObjectVersion`` permission.
+   如果你的环境要求远程层启用版本控制，则还必须允许 ``s3:DeleteObjectVersion`` 权限。
 
-Defer to the documentation for the supported tiering targets for more complete information on configuring users and permissions to support MinIO tiering:
+有关如何配置用户和权限以支持 MinIO 分层的更完整信息，请参阅受支持分层目标的相关文档：
 
 - :aws-docs:`Amazon S3 Permissions <service-authorization/latest/reference/list_amazons3.html#amazons3-actions-as-permissions>`
 - `Google Cloud Storage Access Control <https://cloud.google.com/storage/docs/access-control>`__

@@ -16,36 +16,33 @@
 
 .. |command| replace:: :mc:`mc alias set`
 
-Syntax
-------
+语法
+----
 
 .. start-mc-alias-set-desc
 
-The :mc:`mc alias set` command adds or updates an alias to the local
-:program:`mc` configuration.
+:mc:`mc alias set` 命令用于在本地 :program:`mc` 配置中添加或更新别名。
 
 .. end-mc-alias-set-desc
 
 .. tab-set::
 
-   .. tab-item:: EXAMPLE
+   .. tab-item:: 示例
 
-      The following command adds an :ref:`alias <alias>` for a MinIO
-      deployment ``myminio`` running at the URL
-      ``https://myminio.example.net``. :program:`mc` uses the specified 
-      username and password for authenticating to the MinIO deployment:
+      以下命令为运行在 URL ``https://myminio.example.net`` 的 MinIO
+      部署 ``myminio`` 添加一个 :ref:`alias <alias>`。:program:`mc` 使用指定的用户名和密码对该 MinIO 部署进行身份验证：
 
       .. code-block:: shell
          :class: copyable
          
          mc alias set myminio https://myminio.example.net minioadminuser minioadminpassword
 
-      If the ``myminio`` alias already exists, the command overwrites that
-      alias with the new URL, access key, and secret key.
+      如果 ``myminio`` 别名已存在，该命令会使用新的 URL、access key 和
+      secret key 覆盖该别名。
 
-   .. tab-item:: SYNTAX
+   .. tab-item:: 语法
 
-      The :mc:`mc alias set` command has the following syntax:
+      :mc:`mc alias set` 命令语法如下：
 
       .. code-block:: shell
          :class: copyable
@@ -62,23 +59,23 @@ The :mc:`mc alias set` command adds or updates an alias to the local
          :start-after: start-minio-syntax
          :end-before: end-minio-syntax
 
-Parameters
-~~~~~~~~~~
+参数
+~~~~
 
 .. mc-cmd:: ALIAS
 
-   *Required* The name to associate to the S3-compatible service.
-   Aliases are case-sensitive and must meet the following requirements:
+   *必填* 与 S3 兼容服务关联的名称。
+   别名区分大小写，且必须满足以下要求：
 
-   - Contain only `ASCII <https://en.wikipedia.org/wiki/ASCII>`__ lower case letters (``a-z``), upper case letters (``A-Z``), numbers (``[0-9]``), hyphen (``-``), or underscore (``_``).
-   - 2 or more characters in length.
-   - The first character must be a letter.
+   - 只能包含 `ASCII <https://en.wikipedia.org/wiki/ASCII>`__ 小写字母（``a-z``）、大写字母（``A-Z``）、数字（``[0-9]``）、连字符（``-``）或下划线（``_``）。
+   - 长度为 2 个或更多字符。
+   - 首字符必须是字母。
 
    .. versionchanged:: RELEASE.2024-01-11T05-49-32Z
 
-      An alias may also be a single letter (``a-z`` or ``A-Z``).
+      别名也可以是单个字母（``a-z`` 或 ``A-Z``）。
 
-   Examples of some valid alias values include:
+   部分有效别名示例如下：
 
    - ``myminio``
    - ``Test-1``
@@ -87,141 +84,128 @@ Parameters
 
 .. mc-cmd:: URL
 
-   *Required* The URL to the S3-compatible service endpoint. For example:
+   *必填* S3 兼容服务端点的 URL。例如：
 
    ``https://minio.example.net``
 
 .. mc-cmd:: ACCESSKEY
    
-   *Required*
+   *必填*
 
-   The access key for authenticating to the S3 service.
+   用于对 S3 服务进行身份验证的 access key。
 
 .. mc-cmd:: SECRETKEY
 
-   *Required*
+   *必填*
 
-   The secret key for authenticating to the S3 service.
+   用于对 S3 服务进行身份验证的 secret key。
 
 .. mc-cmd:: --api
    
    
-   *Optional*
+   *可选*
 
-   Specifies the signature calculation method to use when connecting to the
-   S3-compatible service. Supports the following values:
+   指定连接到 S3 兼容服务时使用的签名计算方法。支持以下值：
 
-   - ``S3v4`` (Default)
+   - ``S3v4``（默认）
    - ``S3v2``
 
    .. note::
 
-      AWS Signature V2 is considered
-      `deprecated <https://aws.amazon.com/blogs/aws/amazon-s3-update-sigv2-deprecation-period-extended-modified/>`__
-      by AWS. :mc:`mc alias set` includes this option only for S3 buckets
-      or services still reliant on the Signature V2.
+      AWS 将 AWS Signature V2 视为
+      `deprecated <https://aws.amazon.com/blogs/aws/amazon-s3-update-sigv2-deprecation-period-extended-modified/>`__。
+      :mc:`mc alias set` 保留该选项，仅用于仍依赖 Signature V2 的 S3 存储桶或服务。
       
-      Use ``S3v4`` unless explicitly required by the S3-compatible service.
-      MinIO server does not rely on nor require ``S3v2``, nor are all API
-      operations available on ``S3v2``. 
+      除非 S3 兼容服务明确要求，否则请使用 ``S3v4``。
+      MinIO server 不依赖也不要求 ``S3v2``，且并非所有 API 操作都可在 ``S3v2`` 上使用。
 
 .. mc-cmd:: --path
    
 
-   *Optional*
+   *可选*
 
-   Specifies the bucket path lookup setting used by the server. Supports the
-   following values:
+   指定服务端使用的存储桶路径查找设置。支持以下值：
 
-   - ``"auto"`` (Default)
+   - ``"auto"``（默认）
    - ``"on"``
    - ``"off"``
 
-Global Flags
-~~~~~~~~~~~~
+全局标志
+~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-globals
    :end-before: end-minio-mc-globals
 
-Examples
---------
+示例
+----
 
-Add or Update an Alias for a MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+为 MinIO 部署添加或更新别名
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use :mc:`mc alias set` to add an S3-compatible service for use with
-:program:`mc`:
+使用 :mc:`mc alias set` 添加一个供 :program:`mc` 使用的 S3 兼容服务：
 
 .. tab-set::
 
-   .. tab-item:: Example
+   .. tab-item:: 示例
 
-      The following command creates a new alias ``myminio`` pointing at a
-      MinIO deployment at ``https://minio.example.net``. The
-      alias uses the ``miniouser`` and ``miniopassword`` credentials for
-      performing operations against the deployment.
+      以下命令创建一个新的别名 ``myminio``，指向位于
+      ``https://minio.example.net`` 的 MinIO 部署。该别名使用
+      ``miniouser`` 和 ``miniopassword`` 凭据对该部署执行操作。
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set myminio https://minio.example.net miniouser miniopassword
 
-      If the ``myminio`` alias already exists, the 
-      :mc:`mc alias set` command overwrites that alias with the specified
-      arguments.
+      如果 ``myminio`` 别名已存在，
+      :mc:`mc alias set` 命令会使用指定参数覆盖该别名。
 
-   .. tab-item:: Syntax
+   .. tab-item:: 语法
 
       .. code-block:: shell
          :class: copyable
 
          mc alias set ALIAS HOSTNAME ACCESSKEY SECRETKEY
 
-      - Replace ``ALIAS`` with the the name to associate to the 
-        MinIO service.
+      - 将 ``ALIAS`` 替换为与 MinIO 服务关联的名称。
 
-      - Replace ``HOSTNAME`` with the URL for any node in the MinIO
-        deployment. You can alternatively specify the URL for a load balancer
-        or reverse proxy managing connections to the MinIO deployment.
+      - 将 ``HOSTNAME`` 替换为 MinIO 部署中任意节点的 URL。你也可以指定
+        用于管理 MinIO 部署连接的负载均衡器或反向代理 URL。
 
-      - Replace ``ACCESSKEY`` and ``SECRETKEY`` with credentials for a user
-        on the MinIO deployment.
+      - 将 ``ACCESSKEY`` 和 ``SECRETKEY`` 替换为 MinIO 部署中某个用户的凭据。
 
-Behavior
---------
+行为
+----
 
-S3 Compatibility
-~~~~~~~~~~~~~~~~
+S3 兼容性
+~~~~~~~~~
 
 .. include:: /includes/common-minio-mc.rst
    :start-after: start-minio-mc-s3-compatibility
    :end-before: end-minio-mc-s3-compatibility
 
-Required Credentials and Access Control
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+所需凭据与访问控制
+~~~~~~~~~~~~~~~~~~
 
-:mc:`mc alias set` requires specifying an access key and corresponding
-secret key for the S3-compatible host. :program:`mc` functionality is limited
-based on the policies associated to the specified credentials. For example, if
-the specified credentials do not have read/write access to a specific bucket,
-:program:`mc` cannot perform read or write operations on that bucket.
+:mc:`mc alias set` 要求为 S3 兼容主机指定 access key 及对应的
+secret key。:program:`mc` 的功能受指定凭据关联策略的限制。例如，如果
+指定凭据对某个存储桶没有读写权限，:program:`mc` 就无法对该存储桶执行读写操作。
 
-For more information on MinIO Access Control, see
-:ref:`minio-access-management`. 
+有关 MinIO 访问控制的更多信息，请参阅
+:ref:`minio-access-management`。
 
-For more complete documentation on S3 Access Control, see
+有关 S3 访问控制的更完整文档，请参阅
 :s3-docs:`Amazon S3 Security <security.html>`.
 
-For all other S3-compatible services, defer to the documentation for that
-service.
+对于其他所有 S3 兼容服务，请参考对应服务的文档。
 
-Certificates
-~~~~~~~~~~~~
+证书
+~~~~
 
-The MinIO Client fetches the peer certificate, computes the public key fingerprint, and asks the user whether to accept the deployment's certificate.
+MinIO Client 会获取对端证书、计算公钥指纹，并询问用户是否接受该部署的证书。
 
-If trusted, the MinIO Client automatically adds the certificate authority to:
+如果被信任，MinIO Client 会自动将证书颁发机构添加到：
 
--  ``~/.mc/certs/CAs/`` on Linux and other Unix-like systems.
--  ``C:\Users\[username]\mc\certs\CAs\`` on Windows systems.
+-  Linux 和其他类 Unix 系统上的 ``~/.mc/certs/CAs/``。
+-  Windows 系统上的 ``C:\Users\[username]\mc\certs\CAs\``。

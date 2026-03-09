@@ -1,15 +1,16 @@
-# Upload Files Using Pre-signed URLs [![Slack](https://slack.min.io/slack?type=svg)](https://slack.min.io)
+<a name="upload-files-using-pre-signed-urls-"></a>
+# 使用 Pre-signed URL 上传文件 [![Slack](https://slack.min.io/slack?type=svg)](https://slack.min.io)
 
-Using pre-signed URLs, a client can upload files directly to an S3-compatible cloud storage server (S3) without exposing the S3 credentials to the user. 
+使用 pre-signed URL，客户端可以直接将文件上传到兼容 S3 的云存储服务器（S3），而无需向用户暴露 S3 凭证。
 
-This guide describes how to use the [`presignedPutObject`](https://minio.pigsty.io/developers/go/API.html#presignedputobject-ctx-context-context-bucketname-objectname-string-expiry-time-duration-url-url-error) API from the [MinIO JavaScript Library](https://github.com/minio/minio-js) to generate a pre-signed URL. This is demonstrated through a JavaScript example in which an Express Node.js server exposes an endpoint to generate a pre-signed URL and a client-side web application uploads a file to MinIO Server using that URL.
+本文介绍如何使用 [MinIO JavaScript Library](https://github.com/minio/minio-js) 中的 [`presignedPutObject`](https://minio.pigsty.io/developers/go/API.html#presignedputobject-ctx-context-context-bucketname-objectname-string-expiry-time-duration-url-url-error) API 生成 pre-signed URL。文中通过一个 JavaScript 示例进行演示：由 Express Node.js 服务器暴露一个用于生成 pre-signed URL 的端点，客户端 Web 应用再使用该 URL 将文件上传到 MinIO Server。
 
-- [Upload Files Using Pre-signed URLs ](#upload-files-using-pre-signed-urls-)
-  - [1. Create the Server](#1-create-the-server)
-  - [2. Create the Client-side Web Application](#2-create-the-client-side-web-application)
+- [使用 Pre-signed URL 上传文件 ](#upload-files-using-pre-signed-urls-)
+  - [1. 创建服务端](#createserver)
+  - [2. 创建客户端 Web 应用](#createclient)
 
-## <a name="createserver"></a>1. Create the Server
-The server consists of an [Express](https://expressjs.com) Node.js server that exposes an endpoint called `/presignedUrl`. This endpoint uses a `Minio.Client` object to generate a short-lived, pre-signed URL that can be used to upload a file to MinIO Server.
+## <a name="createserver"></a>1. 创建服务端
+服务端由一个 [Express](https://expressjs.com) Node.js 服务器组成，并暴露名为 `/presignedUrl` 的端点。该端点使用 `Minio.Client` 对象生成短时有效的 pre-signed URL，用于将文件上传到 MinIO Server。
 
 ```js
 // In order to use the MinIO JavaScript API to generate the pre-signed URL, begin by instantiating
@@ -48,8 +49,8 @@ server.get('/', (req, res) => {
 server.listen(8080)
 ```
 
-## <a name="createclient"></a>2. Create the Client-side Web Application
-The client-side web application's user interface contains a selector field that allows the user to select files for upload, as well as a button that invokes an `onclick` handler called `upload`:
+## <a name="createclient"></a>2. 创建客户端 Web 应用
+客户端 Web 应用的用户界面包含一个选择器字段，允许用户选择要上传的文件，以及一个用于触发名为 `upload` 的 `onclick` 处理函数的按钮：
 
 ```html
 <input type="file" id="selector" multiple>
@@ -103,4 +104,4 @@ The client-side web application's user interface contains a selector field that 
 </script>
 ```
 
-**Note:** This uses the [File API](https://developer.mozilla.org/en-US/docs/Web/API/File), [QuerySelector API](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector), [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) & [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+**注意：** 本示例使用了 [File API](https://developer.mozilla.org/en-US/docs/Web/API/File)、[QuerySelector API](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)、[fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) 和 [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)。

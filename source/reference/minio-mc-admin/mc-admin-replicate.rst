@@ -6,7 +6,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -17,28 +17,28 @@
    - ``mc admin replicate edit`` renamed to :mc-cmd:`mc admin replicate update`
    - ``mc admin replicate remove`` renamed to :mc-cmd:`mc admin replicate rm`
 
-Description
+描述
 -----------
 
 .. start-mc-admin-replicate-desc
 
-The :mc-cmd:`mc admin replicate` command creates and manages :ref:`site replication <minio-site-replication-overview>` for a set of MinIO peer sites.
+:mc-cmd:`mc admin replicate` 命令用于为一组 MinIO 对等站点创建并管理 :ref:`站点复制 <minio-site-replication-overview>`。
 
-Site replication mimics an active-active bucket replication, but for multiple MinIO deployments.
-Wherever a change occurs to IAM settings, buckets, or objects across the set of sites, the change replicates across all sites in the site replication group.
+站点复制类似于 active-active 存储桶复制，但适用于多个 MinIO 部署。
+在这组站点中，无论 IAM 设置、存储桶或对象发生何种变更，该变更都会在站点复制组中的所有站点间复制。
 
 .. end-mc-admin-replicate-desc
 
-Where :ref:`bucket replication <minio-bucket-replication>` manages the mirroring of particular buckets or objects from one location to another within a deployment or across deployments, site replication continuously mirrors an entire MinIO site to other sites.
+:ref:`存储桶复制 <minio-bucket-replication>` 用于在单个部署内或跨部署将特定存储桶或对象从一个位置镜像到另一个位置，而站点复制会持续将整个 MinIO 站点镜像到其他站点。
 
-:mc-cmd:`mc admin replicate` only supports site replication for :ref:`distributed deployments <deploy-minio-distributed>` when configuring site replication.
+在配置站点复制时，:mc-cmd:`mc admin replicate` 仅支持 :ref:`分布式部署 <deploy-minio-distributed>` 的站点复制。
 
-Only one deployment can have any data when initiating a new site replication configuration.
+在初始化新的站点复制配置时，只允许一个部署包含数据。
 
-Site replication enforces :ref:`bucket versioning <minio-bucket-versioning>` on all buckets, including existing buckets and any buckets added after initiating site replication.
-Site replication fully synchronizes versioned objects, compared to :mc:`mc mirror` which operates only on the latest version of an object
+站点复制会对所有存储桶强制启用 :ref:`存储桶版本控制 <minio-bucket-versioning>`，包括现有存储桶以及启动站点复制后新增的任何存储桶。
+与仅处理对象最新版本的 :mc:`mc mirror` 相比，站点复制会完整同步版本化对象。
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
@@ -46,79 +46,79 @@ Site replication fully synchronizes versioned objects, compared to :mc:`mc mirro
       :end-before: end-minio-only
 
 
-The :mc-cmd:`mc admin replicate` command has the following subcommands:
+:mc-cmd:`mc admin replicate` 命令包含以下子命令：
 
 .. list-table::
    :header-rows: 1
    :widths: 40 60
 
-   * - Subcommand
-     - Description
+   * - 子命令
+     - 描述
 
    * - :mc-cmd:`mc admin replicate add`
-     - Create a new site replication configuration or expand an existing configuration.
+     - 创建新的站点复制配置，或扩展现有配置。
 
    * - :mc-cmd:`mc admin replicate info`
-     - Returns information about site replication configuration.
+     - 返回站点复制配置信息。
 
    * - :mc-cmd:`mc admin replicate resync`
-     - Resynchronizes content from one site to a second site if the second site has lost data.
+     - 当第二个站点丢失数据时，将一个站点中的内容重新同步到第二个站点。
 
    * - :mc-cmd:`mc admin replicate rm`
-     - Removes an entire site replication configuration or one or more peer sites from participating in site replication.
+     - 删除整个站点复制配置，或将一个或多个对等站点从站点复制中移除。
 
    * - :mc-cmd:`mc admin replicate status`
-     - Displays the status for :ref:`replicable data <minio-site-replication-what-replicates>` across participating sites.
+     - 显示参与站点之间 :ref:`可复制数据 <minio-site-replication-what-replicates>` 的状态。
 
    * - :mc-cmd:`mc admin replicate update`
-     - Modify the endpoint of the specified peer site in the site replication configuration.
+     - 修改站点复制配置中指定对等站点的 endpoint。
 
-Syntax
+语法
 ------
 
 .. mc-cmd:: add
    :fullpath:
 
-   Create or expand a site replication configuration.
-   The configuration uses asynchronous site replication by default, as MinIO recommends.
+   创建或扩展站点复制配置。
+   按 MinIO 的建议，该配置默认使用异步站点复制。
 
-   To enable synchronous site replication, create the replication using this command *first*.
-   Then use :mc-cmd:`mc admin replicate update --mode sync <mc admin replicate update --mode>` to update the configuration.
+   若要启用同步站点复制，请先使用此命令创建复制配置。
+   然后使用 :mc-cmd:`mc admin replicate update --mode sync <mc admin replicate update --mode>` 更新配置。
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLES
+      .. tab-item:: 示例
 
-         Consider a multi-site MinIO topology with three separate MinIO deployments using the following :ref:`aliases <alias>`: ``minio1``, ``minio2``, and ``minio3``. 
-         All three sites have complete bidirectional network access and low latency between sites.
+         假设一个多站点 MinIO 拓扑包含三个独立的 MinIO 部署，使用以下 :ref:`别名 <alias>`：``minio1``、``minio2`` 和 ``minio3``。
+         三个站点之间都具备完整的双向网络访问，并且站点间延迟较低。
 
          .. code-block:: shell
             :class: copyable
 
             mc admin replicate add minio1 minio2 minio3
 
-         The following command expands an existing site replication that includes peer sites ``minio1``, ``minio2``, ``minio3``, and ``minio4`` to an additional peer site, ``minio5``.
-         ``minio5`` contains no data.
-         List *all* existing peer sites first.
-         List the site to expand to last.
+         以下命令将一个现有站点复制配置（包含对等站点 ``minio1``、``minio2``、``minio3`` 和 ``minio4``）扩展到新的对等站点 ``minio5``。
+         ``minio5`` 不包含任何数据。
+         请先列出 *所有* 现有对等站点。
+         最后列出要扩展到的站点。
 
-         If any existing sites are unreachable, first remove the unreachable sites with :mc-cmd:`mc admin replicate rm`, then proceed with the site replication expansion.
+         如果任一现有站点不可达，请先使用 :mc-cmd:`mc admin replicate rm` 删除不可达站点，再继续扩展站点复制。
 
          .. code-block:: shell
             :class: copyable
 
             mc admin replicate add minio1 minio2 minio3 minio4 minio5
 
-         The following command creates a new site replication configuration with ILM expiration rule synchronization between peer sites ``minio1``, ``minio2``, and ``minio3``.
-         
+         以下命令创建新的站点复制配置，并在对等站点 ``minio1``、``minio2`` 和 ``minio3`` 之间同步 ILM 过期规则。
+
          .. code-block:: shell
             :class: copyable
 
             mc admin replicate add minio1 minio2 minio3 --replicate-ilm-expiry
 
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
             :class: copyable
@@ -132,27 +132,27 @@ Syntax
    .. mc-cmd:: ALIAS
       :required:
 
-      The :ref:`alias <alias>` of a MinIO deployment to include in site replication.
+      要纳入站点复制的 MinIO 部署 :ref:`别名 <alias>`。
 
-      At least two MinIO deployment aliases are required to create a site replication. 
-      Only the first alias can have buckets or objects.
-      The first site can also be empty.
+      创建站点复制至少需要两个 MinIO 部署别名。
+      只有第一个别名可以包含存储桶或对象。
+      第一个站点也可以为空。
 
-      To expand an existing site replication to one more new replication sites, list all existing peer site :ref:`aliases <alias>` in the site replication set to expand.
-      Then include one or more additional :ref:`aliases <alias>` to add to the existing site replication.
-      The peers being added must be empty.
+      要将现有站点复制扩展到一个或多个新站点，请先列出待扩展的站点复制集合中所有现有对等站点的 :ref:`别名 <alias>`。
+      然后再附加一个或多个 :ref:`别名 <alias>`，将其加入现有站点复制。
+      新增对等站点必须为空。
 
    .. mc-cmd:: --replicate-ilm-expiry
       :optional:
 
       .. versionadded:: mc RELEASE.2023-12-02T02-03-28Z
 
-      Replicate :ref:`ILM expiration <minio-lifecycle-management-expiration>` rules across peers.
+      在对等站点间复制 :ref:`ILM expiration <minio-lifecycle-management-expiration>` 规则。
 
 .. mc-cmd:: update
    :fullpath:
 
-   Modifies the endpoint used for an existing peer site participating in site replication.
+   修改参与站点复制的现有对等站点所使用的 endpoint。
 
    .. versionchanged:: RELEASE.2023-01-11T03-14-16Z
 
@@ -160,7 +160,7 @@ Syntax
 
    .. tab-set::
 
-      .. tab-item:: EXAMPLE
+      .. tab-item:: 示例
 
          .. code-block:: shell
             :class: copyable
@@ -170,9 +170,9 @@ Syntax
                                --deployment-id c1758167-4426-454f-9aae-5c3dfdf6df64   \
                                --endpoint https://minio2:9000
 
-      .. tab-item:: SYNTAX
+      .. tab-item:: 语法
 
-         The command has the following syntax:
+         命令语法如下：
 
          .. code-block:: shell
 
@@ -183,29 +183,29 @@ Syntax
                                         --mode ["sync" | "async"]       \
                                         --enable-ilm-expiry-replication \
                                         --disable-ilm-expiry-replication
-    
+
    .. mc-cmd:: ALIAS
       :required:
 
-      The :ref:`alias <alias>` of the MinIO deployment.
+      MinIO 部署的 :ref:`别名 <alias>`。
 
    .. mc-cmd:: --bucket-bandwidth
 
-      Set default bandwidth limit for bucket in bits per second.
+      以每秒比特为单位设置存储桶的默认带宽限制。
 
-      Valid units include: 
-   
-      - ``B`` for bytes
-      - ``K`` for kilobytes
-      - ``M`` for megabytes
-      - ``G`` for gigabytes
-      - ``T`` for terabytes
-      - ``Ki`` for kibibytes
-      - ``Mi`` for mibibytes
-      - ``Gi`` for gibibytes
-      - ``Ti`` for tebibytes
+      有效单位包括：
 
-      For example, the following command limits the replication on the ``myminio`` deployment to no more than 2 Gigabytes per second.
+      - ``B`` 表示字节
+      - ``K`` 表示千字节
+      - ``M`` 表示兆字节
+      - ``G`` 表示吉字节
+      - ``T`` 表示太字节
+      - ``Ki`` 表示 kibibyte
+      - ``Mi`` 表示 mibibyte
+      - ``Gi`` 表示 gibibyte
+      - ``Ti`` 表示 tebibyte
+
+      例如，以下命令将 ``myminio`` 部署上的复制带宽限制为不超过每秒 2 Gigabytes。
 
       .. code-block:: shell
          :class: copyable
@@ -215,68 +215,68 @@ Syntax
    .. mc-cmd:: --deployment-id
       :required:
 
-      The unique id of the deployment to change.
+      要修改的部署唯一 ID。
 
-      The deployment ID can be found by running :mc-cmd:`mc admin replicate info ALIAS`
+      可通过运行 :mc-cmd:`mc admin replicate info ALIAS` 获取部署 ID
 
    .. mc-cmd:: --disable-ilm-expiry-replication
       :optional:
 
       .. versionadded:: mc RELEASE.2023-12-02T02-03-28Z
 
-      Stops the replication of ILM expiration rules between peer sites.
-      Existing rules already synchronized across peers are not removed from any peer site.
+      停止在对等站点之间复制 ILM 过期规则。
+      对等站点之间已经同步的现有规则不会从任何对等站点移除。
 
    .. mc-cmd:: --enable-ilm-expiry-replication
       :optional:
 
       .. versionadded:: mc RELEASE.2023-12-02T02-03-28Z
 
-      Start replication of ILM expiration rules between peer sites.
+      开始在对等站点之间复制 ILM 过期规则。
 
    .. mc-cmd:: --endpoint
       :required:
-      
-      The new endpoint or URL to associate with the peer site.
+
+      与该对等站点关联的新 endpoint 或 URL。
 
    .. mc-cmd:: --mode
       :optional:
 
-      Specify whether MinIO performs replication operations to the peer synchronously or asynchronously.
-      Available values are ``sync`` and ``async``.
-      
-      Defaults to ``async``.
+      指定 MinIO 对该对等站点执行同步或异步复制操作。
+      可用值为 ``sync`` 和 ``async``。
+
+      默认值为 ``async``。
 
    .. mc-cmd:: --sync
       :optional:
 
       .. important::
 
-         The ``--sync`` flag has been deprecated as of ``RELEASE.2023-07-07T05-25-51Z``.
-         Use :mc-cmd:`~mc admin replicate update --mode` instead.
+         ``--sync`` 标志自 ``RELEASE.2023-07-07T05-25-51Z`` 起已弃用。
+         请改用 :mc-cmd:`~mc admin replicate update --mode`。
 
-      Enable or disable synchronous site replication.
-      Available values are ``enable`` and ``disable``.
-      If not defined, MInIO uses asynchronous site replication.
+      启用或禁用同步站点复制。
+      可用值为 ``enable`` 和 ``disable``。
+      若未定义，MinIO 使用异步站点复制。
 
 .. mc-cmd:: rm, remove
    :fullpath:
 
    .. versionchanged:: RELEASE.2023-01-11T03-14-16Z
 
-      The ``mc admin replicate remove`` subcommand renamed to ``mc admin replicate rm``.
+      ``mc admin replicate remove`` 子命令重命名为 ``mc admin replicate rm``。
 
-   Removes one or more sites from a site replication configuration.
+   从站点复制配置中移除一个或多个站点。
 
-   Remember, if you intend to re-add the site to a site replication configuration in the future, it must be empty of :ref:`replicable data <minio-site-replication-what-replicates>`.
+   请注意，如果你打算未来将该站点重新加入站点复制配置，则其必须不包含任何 :ref:`可复制数据 <minio-site-replication-what-replicates>`。
 
    .. tab-set::
-      
-      .. tab-item:: EXAMPLES
-         
-         Remove site replication for all connected sites for an existing site replication configuration that includes `minio2`.
-         This deletes the site replication configuration for all participating sites.
-         
+
+      .. tab-item:: 示例
+
+         从包含 `minio2` 的现有站点复制配置中，移除所有已连接站点的站点复制。
+         这会删除所有参与站点的站点复制配置。
+
          .. code-block:: shell
             :class: copyable
 
@@ -285,7 +285,7 @@ Syntax
                                --all   \
                                --force
 
-         Remove the sites with alias names ``minio5`` and ``minio6`` from an existing site replication configuration that includes `minio2`
+         从包含 `minio2` 的现有站点复制配置中移除别名为 ``minio5`` 和 ``minio6`` 的站点
 
          .. code-block:: shell
             :class: copyable
@@ -295,13 +295,13 @@ Syntax
                                minio5  \
                                minio6  \
                                --force
-        
-      .. tab-item:: SYNTAX
-         
-         The command has the following syntax:
+
+      .. tab-item:: 语法
+
+         命令语法如下：
 
          .. code-block:: shell
-            
+
             mc [GLOBALFLAGS] admin rm          \
                                    TARGET      \
                                    ALIAS1      \
@@ -312,76 +312,76 @@ Syntax
    .. mc-cmd:: TARGET
       :required:
 
-      The :ref:`alias <alias>` of an active MinIO deployment participating in the site replication to target.
-      Do not use an alias of a deployment to be removed, unless removing all sites from site replication.
+      要操作的站点复制中，处于活动状态的 MinIO 部署 :ref:`别名 <alias>`。
+      除非要从站点复制中移除所有站点，否则不要使用待移除部署的别名。
 
    .. mc-cmd:: ALIAS
       :optional:
 
-      The :ref:`alias <alias>` of an active MinIO deployment to remove from a site replication configuration.
-      May be repeated to remove additional sites.
+      要从站点复制配置中移除的活动 MinIO 部署 :ref:`别名 <alias>`。
+      可重复指定以移除更多站点。
 
    .. mc-cmd:: --all
       :optional:
 
-      Include this flag to remove all sites configured for site replication and end the site replication configuration.
+      包含此标志可移除为站点复制配置的所有站点，并结束该站点复制配置。
 
    .. mc-cmd:: --force
       :required:
 
-      This flag forces the removal of the specified peer site(s) from the site replication configuration.
-      
+      此标志会强制从站点复制配置中移除指定的对等站点。
+
 
 .. mc-cmd:: info
    :fullpath:
 
-   Returns information about the sites in the site replication configuration.
-   
+   返回站点复制配置中各站点的信息。
+
    .. tab-set::
-      
-      .. tab-item:: EXAMPLE
-         
+
+      .. tab-item:: 示例
+
          .. code-block:: shell
             :class: copyable
 
             mc admin replicate info minio1
 
-      .. tab-item:: SYNTAX
-         
+      .. tab-item:: 语法
+
          .. code-block:: shell
-            
+
             mc [GLOBALFLAGS] admin replicate info ALIAS
 
    .. mc-cmd:: ALIAS
       :required:
 
-      The :ref:`alias <alias>` of an active MinIO deployment in the site replication configuration.
+      站点复制配置中活动 MinIO 部署的 :ref:`别名 <alias>`。
 
 
 .. mc-cmd:: status
    :fullpath:
 
-   Displays the status of the sites, buckets, users, groups, or policies for a site replication configuration.
+   显示站点复制配置中站点、存储桶、用户、组或策略的状态。
 
    .. tab-set::
-      
-      .. tab-item:: EXAMPLES
 
-         Display the overall replication status for a site replication configuration that includes the site ``minio1``.
-         
+      .. tab-item:: 示例
+
+         显示包含站点 ``minio1`` 的站点复制配置的整体复制状态。
+
          .. code-block:: shell
-            
+
             mc admin replicate status minio1
-        
-         Display the replication status of buckets across sites for a site replication configuration that includes the site ``minio1``.
+
+         显示包含站点 ``minio1`` 的站点复制配置中，跨站点的存储桶复制状态。
 
          .. code-block:: shell
-            
+
             mc admin replicate status     \
                                minio1     \
                                --buckets
 
-         Display the site replication status of a bucket called ``images`` across sites for a site replication configuration that contains the site ``minio1``.
+         显示包含站点 ``minio1`` 的站点复制配置中，名为 ``images`` 的存储桶在跨站点间的站点复制状态。
 
          .. code-block:: shell
 
@@ -389,7 +389,7 @@ Syntax
                                 minio1          \
                                 --bucket images
 
-         Display the site replication status for the setting for a user, ``janedoe``, across sites for a site replication configuration that contains the site ``minio1``.
+         显示包含站点 ``minio1`` 的站点复制配置中，用户 ``janedoe`` 设置在跨站点间的站点复制状态。
 
          .. code-block:: shell
 
@@ -397,51 +397,51 @@ Syntax
                                minio1         \
                                --user janedoe
 
-         The output of the above examples resembles the following:
+         上述示例的输出类似如下：
 
          .. code-block:: shell
 
             Bucket replication status:
             ●  30/30 Buckets in sync
-            
+
             Policy replication status:
             ●  5/5 Policies in sync
-            
+
             User replication status:
             ●  3/3 Users in sync
-            
+
             Group replication status:
             No Groups present
 
             ILM Expiry Rules replication status:
             ●  5/5 ILM Expiry Rules in sync
-            
+
             Object replication status:
-            Replication status since 1 day 
+            Replication status since 1 day
             Summary:
             Replicated:    0 objects (0 B)
             Queued:        - 0 objects, (0 B) (avg: 0 objects, 0 B; max: 0 objects, 0 B)
             Received:      0 objects (0 B)
 
-         Display the site replication status across sites for the ILM expiration rule with rule ID of ``ckok9v5b4dtgofkbi6tg`` for a site replication configuration that contains the site ``minio1``.
+         显示包含站点 ``minio1`` 的站点复制配置中，规则 ID 为 ``ckok9v5b4dtgofkbi6tg`` 的 ILM 过期规则在跨站点间的站点复制状态。
 
          .. code-block:: shell
 
             mc admin replicate status minio1 --ilm-expiry-rule ckok9v5b4dtgofkbi6tg
 
-         The output resembles the following:
+         输出类似如下：
 
          .. code-block:: shell
 
             ●  ILM Expiry Rule replication summary for: ckok9v5b4dtgofkbi6tg
-            
-            ILMExpiryRule   | MINIO1          | MINIO2   
-            ILM Expiry Rule | ✔               | ✔  
 
-      .. tab-item:: SYNTAX
-         
+            ILMExpiryRule   | MINIO1          | MINIO2
+            ILM Expiry Rule | ✔               | ✔
+
+      .. tab-item:: 语法
+
          .. code-block:: shell
-            
+
             mc [GLOBALFLAGS] admin replicate status          \
                                TARGET                        \
                                [--all]                       \
@@ -458,133 +458,133 @@ Syntax
 
    .. mc-cmd:: TARGET
       :required:
-     
-      The :ref:`alias <alias>` of an active MinIO deployment in the site replication configuration.
-  
+
+      站点复制配置中活动 MinIO 部署的 :ref:`别名 <alias>`。
+
    .. mc-cmd:: --all
       :optional:
 
-      Display all available site replication status information.
+      显示所有可用的站点复制状态信息。
 
    .. mc-cmd:: --buckets
       :optional:
-    
-      Display the replication status of all buckets.
+
+      显示所有存储桶的复制状态。
 
    .. mc-cmd:: --bucket
       :optional:
-     
-      Display the replication status of a specific bucket by including the bucket name after the flag.
+
+      在该标志后指定存储桶名称，以显示特定存储桶的复制状态。
 
    .. mc-cmd:: --groups
       :optional:
 
-      Display the replication status of all groups.
+      显示所有组的复制状态。
 
    .. mc-cmd:: --group
       :optional:
 
-      Display the replication status of a specific group by including the group name after the flag.
+      在该标志后指定组名称，以显示特定组的复制状态。
 
    .. mc-cmd:: --ilm-expiry-rules
       :optional:
 
       .. versionadded:: mc RELEASE.2023-12-02T02-03-28Z
 
-      Display sync information about ILM expiration rules.
+      显示 ILM 过期规则的同步信息。
 
-      Mutually exclusive with :mc-cmd:`~mc admin replicate status --ilm-expiry-rule`
+      与 :mc-cmd:`~mc admin replicate status --ilm-expiry-rule` 互斥
 
    .. mc-cmd:: --ilm-expiry-rule
       :optional:
 
       .. versionadded:: mc RELEASE.2023-12-02T02-03-28Z
 
-      Display replication status information about the specified ILM expiration rule.
+      显示指定 ILM 过期规则的复制状态信息。
 
-      Mutually exclusive with :mc-cmd:`~mc admin replicate status --ilm-expiry-rules`
+      与 :mc-cmd:`~mc admin replicate status --ilm-expiry-rules` 互斥
 
    .. mc-cmd:: --policies
       :optional:
 
-      Display the replication status of all policies.
+      显示所有策略的复制状态。
 
    .. mc-cmd:: --policy
       :optional:
 
-      Display the replication status of a specific policy by including the policy name after the flag.
+      在该标志后指定策略名称，以显示特定策略的复制状态。
 
    .. mc-cmd:: --users
       :optional:
- 
-      Display the replication status of all users.
-  
+
+      显示所有用户的复制状态。
+
    .. mc-cmd:: --user
       :optional:
 
-      Display the replication status of a specific user by including the user name after the flag.
+      在该标志后指定用户名，以显示特定用户的复制状态。
 
 .. mc-cmd:: resync
    :fullpath:
 
-   Resynchronizes data from one site in the replication configuration to a second site in the replication configuration in the event of lost data.
+   在数据丢失场景下，将复制配置中一个站点的数据重新同步到复制配置中的第二个站点。
 
    .. tab-set::
-      
-      .. tab-item:: EXAMPLES
-         
-         The following command starts a resynchronization process to restore ``minio2`` from ``minio1``
+
+      .. tab-item:: 示例
+
+         以下命令启动重新同步过程，将 ``minio1`` 的数据恢复到 ``minio2``
 
          .. code-block:: shell
             :class: copyable
 
             mc admin replicate resync start minio1 minio2
 
-         The following command shows the status of a resynchronization currently in progress.
+         以下命令显示当前进行中的重新同步状态。
 
          .. code-block:: shell
             :class: copyable
 
             mc admin replicate resync status minio1 minio2
 
-         The following command stops a resynchronization that is in progress.
+         以下命令停止进行中的重新同步。
 
          .. code-block:: shell
             :class: copyable
 
             mc admin replicate resync cancel minio1 minio2
 
-      .. tab-item:: SYNTAX
-         
-         .. code-block:: shell
-            
-            mc [GLOBALFLAGS] admin replicate resync start|status|cancel ALIAS1 ALIAS2   
+      .. tab-item:: 语法
 
-         - Replace ``ALIAS1`` with the alias for the site that has the data to restore.
-         - Replace ``ALIAS2`` with the alias for the site that needs resynched data.
+         .. code-block:: shell
+
+            mc [GLOBALFLAGS] admin replicate resync start|status|cancel ALIAS1 ALIAS2
+
+         - 将 ``ALIAS1`` 替换为拥有待恢复数据的站点别名。
+         - 将 ``ALIAS2`` 替换为需要重新同步数据的站点别名。
 
    .. mc-cmd:: start
 
-      Launches a new resynchronization process from one site with data to a second site that needs synchronization.
+      从拥有数据的一个站点到需要同步的第二个站点，发起新的重新同步流程。
 
    .. mc-cmd:: status
 
-      Shows the status of an existing resynchronization process between two sites configured for site replication.
+      显示已配置站点复制的两个站点之间，现有重新同步流程的状态。
 
    .. mc-cmd:: cancel
 
-      Ends a resynchronization process currently in progress between two sites configured for site replication.
+      结束已配置站点复制的两个站点之间当前进行中的重新同步流程。
 
    .. mc-cmd:: alias1
 
-      The :ref:`alias <alias>` of an active MinIO deployment in the site replication configuration with the data you want to resync to another site.
+      站点复制配置中活动 MinIO 部署的 :ref:`别名 <alias>`，其包含你希望重新同步到另一个站点的数据。
 
    .. mc-cmd:: alias2
 
-      The :ref:`alias <alias>` of an active MinIO deployment in the site replication configuration that needs data resynced from another site.
-   
+      站点复制配置中活动 MinIO 部署的 :ref:`别名 <alias>`，其需要从另一个站点重新同步数据。
 
-Global Flags
+
+全局标志
 ------------
 
 .. include:: /includes/common-minio-mc.rst

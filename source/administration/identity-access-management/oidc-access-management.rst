@@ -1,127 +1,116 @@
 .. _minio-external-identity-management-openid:
 .. _minio-external-identity-management-openid-access-control:
 
-================================
-OpenID Connect Access Management
-================================
+==========================
+OpenID Connect 访问管理
+==========================
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
-MinIO supports using an OpenID Connect (OIDC) compatible IDentity Provider (IDP)
-such as Okta, KeyCloak, Dex, Google, or Facebook for external management of user
-identities.
+MinIO 支持使用兼容 OpenID Connect (OIDC) 的 Identity Provider (IDP)，例如 Okta、KeyCloak、Dex、Google 或 Facebook，来进行外部用户身份管理。
 
-For identities managed by the external OpenID Connect (OIDC) compatible provider, MinIO can use either of two methods to assign policies to the authenticated user.
+对于由外部 OpenID Connect (OIDC) 兼容提供方管理的身份，MinIO 可以通过以下两种方式之一，将策略分配给已认证用户。
 
-1. Use the `JSON Web Token claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__ returned as part of the OIDC authentication flow to identify the :ref:`policies <minio-policy>` to assign to the authenticated user.
-2. Use the ``RoleArn`` specified in the authorization request to assign the policies attached to the provider's RolePolicy.
+1. 使用 OIDC 认证流程返回的 `JSON Web Token claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__，识别需要分配给已认证用户的 :ref:`策略 <minio-policy>`。
+2. 使用授权请求中指定的 ``RoleArn``，分配附加到该提供方 RolePolicy 的策略。
    
-MinIO by default denies access to all actions or resources not explicitly allowed by a user's assigned or inherited :ref:`policies <minio-policy>`. 
-Users managed by an OIDC provider must specify the necessary policies as part of the JWT claim. If the user JWT claim has no matching MinIO policies, that user has no permissions to access any action or resource on the MinIO deployment.
+默认情况下，MinIO 会拒绝访问用户已分配或继承的 :ref:`策略 <minio-policy>` 中未显式允许的任何操作或资源。
+由 OIDC 提供方管理的用户必须在 JWT claim 中指定所需策略。如果用户的 JWT claim 没有与之匹配的 MinIO 策略，则该用户无权访问 MinIO 部署中的任何操作或资源。
 
-The specific claim which MinIO looks for is configured as part of :ref:`deploying the cluster with OIDC identity management <minio-external-iam-oidc>`. This page focuses on creating MinIO policies to match the configured OIDC claims.
+MinIO 要检查的具体 claim 需要在 :ref:`使用 OIDC 身份管理部署集群 <minio-external-iam-oidc>` 时进行配置。本页重点介绍如何创建与已配置 OIDC claims 匹配的 MinIO 策略。
 
-Authentication and Authorization Flow 
--------------------------------------
+认证与授权流程
+--------------
 
-MinIO supports two OIDC authentication and authorization flows:
+MinIO 支持两种 OIDC 认证与授权流程：
 
-1. The RolePolicy flow sets the assigned policies for an authenticated user in the MinIO configuration.
+1. RolePolicy 流在 MinIO 配置中设置已认证用户的分配策略。
 
-   MinIO recommends using the RolePolicy method for authenticating with an OpenID provider.
+   MinIO 建议在与 OpenID 提供方集成认证时使用 RolePolicy 方法。
 
-2. The JWT flow sets the assigned policies for an authenticated user as part of the OIDC configuration.
+2. JWT 流将已认证用户的分配策略作为 OIDC 配置的一部分进行设置。
 
-MinIO supports multiple OIDC provider configurations.
-However, you can configure only **one** JWT claim-based OIDC provider per deployment. 
-All other providers must use RolePolicy.
+MinIO 支持多个 OIDC 提供方配置。
+但是，每个部署只能配置 **一个** 基于 JWT claim 的 OIDC 提供方。
+所有其他提供方都必须使用 RolePolicy。
 
-RolePolicy and RoleArn
-~~~~~~~~~~~~~~~~~~~~~~
+RolePolicy 与 RoleArn
+~~~~~~~~~~~~~~~~~~~~~
 
-With a RolePolicy, all clients which generate an STS credential using a given RoleArn receive the :ref:`policy or policies <minio-policy>` associated to the RolePolicy configuration for that RoleArn.
+使用 RolePolicy 时，所有通过给定 RoleArn 生成 STS 凭证的客户端，都会获得与该 RoleArn 的 RolePolicy 配置关联的 :ref:`一个或多个策略 <minio-policy>`。
 
-You can use  :ref:`OpenID Policy Variables <minio-policy-variables-oidc>` to create policies that programmatically manage what each individual user has access to.
+你可以使用 :ref:`OpenID 策略变量 <minio-policy-variables-oidc>` 创建策略，以编程方式控制每个用户可访问的内容。
 
-The login flow for an application using :abbr:`OIDC (OpenID Connect)` credentials with a RolePolicy claim flow is as follows:
+应用程序使用 :abbr:`OIDC (OpenID Connect)` 凭证并采用 RolePolicy claim 流时，其登录流程如下：
 
-1. Create an OIDC Configuration.
-2. Record the RoleArn assigned to the configuration either at time of creation or at MinIO start.
-   Use this RoleArn with the :ref:`AssumeRoleWithWebIdentity <minio-sts-assumerolewithwebidentity>` STS API.
-3. Create a RolePolicy to use with the RoleArn.
-   Use either the :envvar:`MINIO_IDENTITY_OPENID_ROLE_POLICY` environment variable or the :mc-conf:`identity_openid role_policy <identity_openid.role_policy>` configuration setting to define the list of policies to use for the provider
-4. Users select the configured OIDC provider when logging in to MinIO.
-5. Users complete authentication to the configured :abbr:`OIDC (OpenID Connect)` provider and redirect back to MinIO. 
+1. 创建 OIDC 配置。
+2. 记录分配给该配置的 RoleArn，可在创建时或 MinIO 启动时获取。
+   将此 RoleArn 与 :ref:`AssumeRoleWithWebIdentity <minio-sts-assumerolewithwebidentity>` STS API 一起使用。
+3. 创建与该 RoleArn 配套使用的 RolePolicy。
+   使用 :envvar:`MINIO_IDENTITY_OPENID_ROLE_POLICY` 环境变量或 :mc-conf:`identity_openid role_policy <identity_openid.role_policy>` 配置项，定义该提供方要使用的策略列表
+4. 用户在登录 MinIO 时选择已配置的 OIDC 提供方。
+5. 用户完成对已配置 :abbr:`OIDC (OpenID Connect)` 提供方的认证，并重定向回 MinIO。
    
-   MinIO only supports the `OpenID Authorization Code Flow <https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth>`__. 
-   Authentication using Implicit Flow is not supported.
+   MinIO 仅支持 `OpenID Authorization Code Flow <https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth>`__。
+   不支持使用 Implicit Flow 进行认证。
 
-6. MinIO verifies the ``RoleArn`` in the API call and checks for the :ref:`RolePolicy <minio-external-identity-management-openid-access-control>` to use.
-   Any authentication request with the RoleArn receives the same policy access permissions.
-7. MinIO returns temporary credentials in the STS API response in the form of an access key, secret key, and session token. 
-   The credentials have permissions matching those policies specified in the RolePolicy.
+6. MinIO 验证 API 调用中的 ``RoleArn``，并检查要使用的 :ref:`RolePolicy <minio-external-identity-management-openid-access-control>`。
+   任何携带该 RoleArn 的认证请求都会获得相同的策略访问权限。
+7. MinIO 在 STS API 响应中返回临时凭证，形式为 access key、secret key 和 session token。
+   这些凭证的权限与 RolePolicy 中指定的策略一致。
    
-8. Applications use the temporary credentials returned by the STS endpoint to perform authenticated S3 operations on MinIO.
+8. 应用程序使用 STS 端点返回的临时凭证，在 MinIO 上执行已认证的 S3 操作。
 
 
 JSON Web Token Claim
 ~~~~~~~~~~~~~~~~~~~~
 
-Using JSON Web Tokens allows you to have individual assignment of policies.
-However, the use of web tokens also comes at the increased cost of managing multiple policies for separate claims.
+使用 JSON Web Token 可以为不同用户单独分配策略。
+但使用 Web Token 也意味着需要为不同 claim 管理多份策略，管理成本会更高。
 
-The login flow for an application using :abbr:`OIDC (OpenID Connect)`
-credentials with a JSON Web Token Claim flow is as follows:
+应用程序使用 :abbr:`OIDC (OpenID Connect)` 凭证并采用 JSON Web Token Claim 流时，其登录流程如下：
 
-1. Authenticate to the configured :abbr:`OIDC (OpenID Connect)`
-   provider and retrieve a `JSON Web Token (JWT) <https://jwt.io/introduction>`__. 
+1. 对已配置的 :abbr:`OIDC (OpenID Connect)` 提供方进行认证，并获取 `JSON Web Token (JWT) <https://jwt.io/introduction>`__。
    
-   MinIO only supports the `OpenID Authorization Code Flow <https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth>`__. 
-   Authentication using Implicit Flow is not supported.
+   MinIO 仅支持 `OpenID Authorization Code Flow <https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth>`__。
+   不支持使用 Implicit Flow 进行认证。
 
-2. Specify the :abbr:`JWT (JSON Web Token)` to the MinIO Security Token Service
-   (STS) :ref:`minio-sts-assumerolewithwebidentity` API endpoint. 
+2. 将 :abbr:`JWT (JSON Web Token)` 提交到 MinIO Security Token Service (STS) :ref:`minio-sts-assumerolewithwebidentity` API 端点。
    
-   MinIO verifies the :abbr:`JWT (JSON Web Token)` against the configured OIDC provider.
+   MinIO 会根据已配置的 OIDC 提供方验证 :abbr:`JWT (JSON Web Token)`。
 
-   If the JWT is valid, MinIO checks for a :ref:`claim 
-   <minio-external-identity-management-openid-access-control>` specifying a list
-   of one or more :ref:`policies <minio-policy>` to assign to the
-   authenticated user. MinIO defaults to checking the ``policy`` claim.
+   如果 JWT 有效，MinIO 会检查其中的 :ref:`claim <minio-external-identity-management-openid-access-control>`，该 claim 指定了要分配给已认证用户的一个或多个 :ref:`策略 <minio-policy>` 列表。MinIO 默认检查 ``policy`` claim。
 
-3. MinIO returns temporary credentials in the STS API response in the form of an
-   access key, secret key, and session token. The credentials have 
-   permissions matching those policies specified in the JWT claim.
+3. MinIO 在 STS API 响应中返回临时凭证，形式为 access key、secret key 和 session token。这些凭证的权限与 JWT claim 中指定的策略一致。
    
-4. Applications use the temporary credentials returned by the STS endpoint to
-   perform authenticated S3 operations on MinIO.
+4. 应用程序使用 STS 端点返回的临时凭证，在 MinIO 上执行已认证的 S3 操作。
 
-MinIO provides an example Go application :minio-git:`web-identity.go <minio/blob/master/docs/sts/web-identity.go>` that handles the full login flow.
+MinIO 提供了一个示例 Go 应用 :minio-git:`web-identity.go <minio/blob/master/docs/sts/web-identity.go>`，用于处理完整登录流程。
 
-Identifying the JWT Claim Value
-+++++++++++++++++++++++++++++++
+识别 JWT Claim 值
++++++++++++++++++++++++++++++++++++++++
 
-MinIO uses the JWT token returned as part of the OIDC authentication flow to identify the specific policies to assign to the authenticated user.
+MinIO 使用 OIDC 认证流程返回的 JWT token，识别要分配给已认证用户的具体策略。
 
-You can use a `JWT Debugging tool <https://jwt.io/>`__ to decode the returned JWT token and validate that the user attributes include the required claims. 
+你可以使用 `JWT Debugging tool <https://jwt.io/>`__ 对返回的 JWT token 进行解码，并验证用户属性中是否包含所需 claims。
 
 .. todo - example JWT claim
 
-See `RFC 7519: JWT Claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__ for more information on JWT claims. 
+有关 JWT claim 的更多信息，请参见 `RFC 7519: JWT Claim <https://datatracker.ietf.org/doc/html/rfc7519#section-4>`__。
 
-Defer to the documentation for your preferred OIDC provider for instructions on configuring user claims.
+关于如何配置用户 claims，请参见你所选 OIDC 提供方的文档。
 
-Creating Policies to Match Claims
----------------------------------
+创建与 Claims 匹配的策略
+------------------------
 
-Use the :mc:`mc admin policy` command to create policies that match one or more claim values.
+使用 :mc:`mc admin policy` 命令创建与一个或多个 claim 值匹配的策略。
 
-OIDC Policy Variables
----------------------
+OIDC 策略变量
+-------------
 
 .. include:: /includes/common/common-minio-oidc.rst
    :start-after: start-minio-oidc-policy-variables

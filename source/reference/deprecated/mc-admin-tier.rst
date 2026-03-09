@@ -4,7 +4,7 @@
 
 .. default-domain:: minio
 
-.. contents:: Table of Contents
+.. contents:: 目录
    :local:
    :depth: 2
 
@@ -12,115 +12,100 @@
 
 .. versionchanged:: RELEASE.2022-12-24T15-21-38Z
 
-   ``mc admin tier`` replaced by :mc-cmd:`mc ilm tier`.
+   ``mc admin tier`` 已由 :mc-cmd:`mc ilm tier` 替代。
 
-Description
------------
+描述
+----
 
 .. start-mc-admin-tier-desc
 
-The :mc:`mc admin tier` command configures a remote supported S3-compatible
-service for supporting MinIO 
+:mc:`mc admin tier` 命令用于配置受支持的远程 S3 兼容服务，以支持 MinIO
 :ref:`Lifecycle Management: Object Transition ("Tiering")
-<minio-lifecycle-management-expiration>`. 
+<minio-lifecycle-management-expiration>`。
 
 .. end-mc-admin-tier-desc
 
-.. admonition:: Use ``mc admin`` on MinIO Deployments Only
+.. admonition:: 仅在 MinIO 部署上使用 ``mc admin``
    :class: note
 
    .. include:: /includes/facts-mc-admin.rst
       :start-after: start-minio-only
       :end-before: end-minio-only
 
-Supported S3 Services
-~~~~~~~~~~~~~~~~~~~~~
+支持的 S3 服务
+~~~~~~~~~~~~~~
 
-:mc:`mc admin tier` supports *only* the following S3-compatible services
-as a remote target for object tiering:
+:mc:`mc admin tier` *仅* 支持将以下 S3 兼容服务用作对象分层的远程目标：
 
 - Amazon S3
 - Google Cloud Storage
 - Azure Blob Storage
 
-Required Permissions
-~~~~~~~~~~~~~~~~~~~~
+所需权限
+~~~~~~~~
 
-MinIO requires the following permissions scoped to to the bucket or buckets 
-for which you are creating lifecycle management rules.
+MinIO 需要以下权限，作用范围应限定为你要为其创建生命周期管理规则的一个或多个存储桶。
 
 - :policy-action:`s3:PutLifecycleConfiguration`
 - :policy-action:`s3:GetLifecycleConfiguration`
 
-MinIO also requires the following administrative permissions on the cluster
-in which you are creating remote tiers for object transition lifecycle
-management rules:
+MinIO 还需要在集群上具备以下管理权限，用于为对象过渡生命周期管理规则创建远程层：
 
 - :policy-action:`admin:SetTier`
 - :policy-action:`admin:ListTier`
 
-For example, the following policy provides permission for configuring object
-transition lifecycle management rules on any bucket in the cluster:.
+例如，以下策略授予在集群任意存储桶上配置对象过渡生命周期管理规则的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementAdmin.json
    :language: json
    :class: copyable
 
-Transition Permissions
-++++++++++++++++++++++
+过渡权限
+++++++++
 
-Object transition lifecycle management rules require additional permissions
-on the remote storage tier. Specifically, MinIO requires the remote
-tier credentials provide read, write, list, and delete permissions.
+对象过渡生命周期管理规则需要远程存储层的额外权限。具体来说，MinIO 要求远程层凭证具备读取、写入、列举和删除权限。
 
-For example, if the remote storage tier implements AWS IAM policy-based
-access control, the following policy provides the necessary permission
-for transitioning objects into and out of the remote tier:
+例如，如果远程存储层使用基于 AWS IAM 策略的访问控制，以下策略提供了对象迁入和迁出远程层所需的权限：
 
 .. literalinclude:: /extra/examples/LifecycleManagementUser.json
    :language: json
    :class: copyable
 
-Modify the ``Resource`` for the bucket into which MinIO tiers objects.
+修改 ``Resource`` 使其指向 MinIO 要分层写入对象的存储桶。
 
-Defer to the documentation for the supported tiering targets for more complete
-information on configuring users and permissions to support MinIO tiering:
+有关配置用户与权限以支持 MinIO 分层的更完整信息，请参考受支持分层目标的文档：
 
 - :aws-docs:`Amazon S3 Permissions <service-authorization/latest/reference/list_amazons3.html#amazons3-actions-as-permissions>`
 - `Google Cloud Storage Access Control <https://cloud.google.com/storage/docs/access-control>`__
 - `Authorizing access to data in Azure storage <https://docs.microsoft.com/en-us/azure/storage/common/storage-auth?toc=/azure/storage/blobs/toc.json>`__
 
 
-Syntax
-------
+语法
+----
 
 .. mc-cmd:: add
    :fullpath:
 
-   Creates a new remote storage tier for transitioning objects using MinIO
-   lifecycle management rules. 
+   创建一个新的远程存储层，用于通过 MinIO 生命周期管理规则过渡对象。
    
    .. important::
 
-      MinIO does not support removing remote storage tiers. Ensure the 
-      storage backend supports the intended workload *prior* to 
-      adding it as a remote tier target. 
+      MinIO 不支持移除远程存储层。在将其添加为远程层目标*之前*，请先确保该存储后端能够满足预期工作负载。
    
-   The command has the following syntax:
+   命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin tier add TIER_TYPE TARGET TIER_NAME [FLAGS]
 
-   The command accepts the following arguments:
+   此命令接受以下参数：
 
    .. mc-cmd:: TIER_TYPE
 
       *Required*
 
-      The Cloud Service Provider storage backend ("Tier") to which MinIO
-      transitions objects. Specify *one* of the following supported values:
+      MinIO 用于过渡对象的云服务提供商存储后端（“Tier”）。请在以下受支持值中指定*一个*：
 
       .. list-table::
          :stub-columns: 1
@@ -128,28 +113,25 @@ Syntax
          :widths: 30 70
 
          * - ``s3``
-           - Use AWS S3 *or* a remote MinIO deployment as the storage
-             backend for the new Tier.
+           - 使用 AWS S3 *或* 远程 MinIO 部署作为新 Tier 的存储后端。
 
-             Requires specifying the following additional options:
+             需要额外指定以下选项：
 
              - :mc-cmd:`~mc admin tier add --access-key`
              - :mc-cmd:`~mc admin tier add --secret-key`
 
          * - ``azure``
-           - Use :abbr:`Azure (Microsoft Azure)` Blob Storage as the storage
-             backend for the new Tier.
+           - 使用 :abbr:`Azure (Microsoft Azure)` Blob Storage 作为新 Tier 的存储后端。
 
-             Requires specifying the following additional options:
+             需要额外指定以下选项：
 
              - :mc-cmd:`~mc admin tier add --account-name`
              - :mc-cmd:`~mc admin tier add --account-key`
          
          * - ``gcs`` 
-           - Use :abbr:`GCP (Google Cloud Platform)` Cloud Storage as the
-             storage backend for the new Tier.
+           - 使用 :abbr:`GCP (Google Cloud Platform)` Cloud Storage 作为新 Tier 的存储后端。
 
-             Requires specifying the following additional option:
+             需要额外指定以下选项：
 
              - :mc-cmd:`~mc admin tier add --credentials-file`
 
@@ -157,232 +139,200 @@ Syntax
 
       *Required*
 
-      The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment on which
-      the command creates the new remote tier.
+      已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`，命令会在该部署上创建新的远程层。
       
    .. mc-cmd:: TIER_NAME
 
       *Required*
 
-      The name to associate with the new remote tier. The name *must*
-      be unique across all configured tiers on the MinIO cluster.
+      与新远程层关联的名称。该名称在 MinIO 集群所有已配置层中*必须*唯一。
 
-      You **must** specify the tier in all-caps, e.g. ``WARM_TIER``.
+      你**必须**使用全大写指定 tier，例如 ``WARM_TIER``。
    
    .. mc-cmd:: --endpoint
       
 
       *Required*
       
-      The URL endpoint for the cloud service provider. The URL endpoint
-      *must* resolve to the provider specified to
-      :mc-cmd:`~mc admin tier add TIER_TYPE`. 
+      云服务提供商的 URL endpoint。该 URL endpoint *必须* 能解析到 :mc-cmd:`~mc admin tier add TIER_TYPE` 指定的提供商。
 
    .. mc-cmd:: --access-key
       
 
       *Required*
       
-      The access key for a user on the remote S3 tier. The user must
-      have permission to perform read/write/list/delete operations on the 
-      remote bucket or bucket prefix.
+      远程 S3 层用户的 access key。该用户必须对远程存储桶或存储桶前缀具备读/写/列举/删除操作权限。
       
-      Required if :mc-cmd:`~mc admin tier add TIER_TYPE` is ``s3``. 
-      This option has no effect for any other value of ``TIER_TYPE``.
+      当 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``s3`` 时必填。
+      对 ``TIER_TYPE`` 的其他取值，此选项无效。
 
    .. mc-cmd:: --secret-key
       
 
       *Required*
       
-      The secret key for a user on the remote S3 tier.
+      远程 S3 层用户的 secret key。
 
-      Required if :mc-cmd:`~mc admin tier add TIER_TYPE` is ``s3``. 
-      This option has no effect for any other value of ``TIER_TYPE``.
+      当 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``s3`` 时必填。
+      对 ``TIER_TYPE`` 的其他取值，此选项无效。
 
    .. mc-cmd:: --account-name
       
 
       *Required*
       
-      The account name for a user on the remote Azure tier. The user
-      must have permission to perform read/write/list/delete operations on the
-      remote bucket or bucket prefix.
+      远程 Azure 层用户的 account name。该用户必须对远程存储桶或存储桶前缀具备读/写/列举/删除操作权限。
       
-      Required if :mc-cmd:`~mc admin tier add TIER_TYPE` is ``azure``. 
-      This option has no effect for any other value of ``TIER_TYPE``.
+      当 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``azure`` 时必填。
+      对 ``TIER_TYPE`` 的其他取值，此选项无效。
 
-      MinIO does *not* support changing the account name associated to an Azure
-      remote tier. Azure storage backends are tied to the account, such that
-      changing the account would change the storage backend and prevent access
-      to any objects transitioned to the original account/backend.
+      MinIO *不*支持修改与 Azure 远程层关联的 account name。Azure 存储后端与账号绑定，修改账号会改变存储后端，并导致无法访问已过渡到原账号/后端的任何对象。
 
    .. mc-cmd:: --account-key
       
 
       *Required*
       
-      The account key for the :mc-cmd:`~mc admin tier add --account-name` 
-      associated to the remote Azure tier.
+      与远程 Azure 层关联的 :mc-cmd:`~mc admin tier add --account-name` 对应的 account key。
 
-      Required if :mc-cmd:`~mc admin tier add TIER_TYPE` is ``azure``. 
-      This option has no effect for any other value of ``TIER_TYPE``.
+      当 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``azure`` 时必填。
+      对 ``TIER_TYPE`` 的其他取值，此选项无效。
 
    .. mc-cmd:: --credentials-file
       
 
       *Required*
       
-      The `credential file
-      <https://cloud.google.com/docs/authentication/getting-started>`__ for a
-      user on the remote GCS tier. The user must have permission to perform
-      read/write/list/delete operations on the remote bucket or bucket prefix.
+      远程 GCS 层用户的 `credential file
+      <https://cloud.google.com/docs/authentication/getting-started>`__。该用户必须对远程存储桶或存储桶前缀具备读/写/列举/删除操作权限。
       
-      Required if :mc-cmd:`~mc admin tier add TIER_TYPE` is ``gcs``. 
-      This option has no effect for any other value of ``TIER_TYPE``.
+      当 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``gcs`` 时必填。
+      对 ``TIER_TYPE`` 的其他取值，此选项无效。
 
    .. mc-cmd:: --bucket
       
 
       *Required*
       
-      The bucket on the remote tier to which MinIO transitions objects.
+      MinIO 过渡对象所使用的远程层存储桶。
 
    .. mc-cmd:: --prefix
       
 
       *Optional*
       
-      The prefix path for the specified :mc-cmd:`~mc admin tier add --bucket`
-      to which MinIO transitions objects.
+      指定 :mc-cmd:`~mc admin tier add --bucket` 下 MinIO 过渡对象使用的前缀路径。
 
-      Omit this field to transition objects into the bucket root.
+      省略此字段则将对象过渡到存储桶根路径。
 
    .. mc-cmd:: --storage-class
       
 
       *Optional*
 
-      The AWS storage class to use for objects transitioned by 
-      MinIO. MinIO supports only the following storage classes:
+      MinIO 过渡对象时使用的 AWS 存储类。MinIO 仅支持以下存储类：
 
       - ``STANDARD``
       - ``REDUCED_REDUNDANCY``
 
-      Defaults to ``S3_STANDARD`` if omitted. 
+      省略时默认为 ``S3_STANDARD``。
 
-      This option only applies if :mc-cmd:`~mc admin tier add TIER_TYPE` is 
-      ``s3``. This option has no effect for any other value of ``TIER_TYPE``.
+      此选项仅在 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``s3`` 时生效。
+      对 ``TIER_TYPE`` 的其他取值，此选项无效。
 
    .. mc-cmd:: --region
       
 
       *Optional*
 
-      The S3 backend region for the specified 
-      :mc-cmd:`~mc admin tier add TIER_TYPE`, such as ``us-west-1``.
+      指定 :mc-cmd:`~mc admin tier add TIER_TYPE` 的 S3 后端区域，例如 ``us-west-1``。
 
-      This option only applies if :mc-cmd:`~mc admin tier add TIER_TYPE` is 
-      ``s3``. This option has no effect for any other value of ``TIER_TYPE``.
+      此选项仅在 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``s3`` 时生效。
+      对 ``TIER_TYPE`` 的其他取值，此选项无效。
       
 .. mc-cmd:: edit
    :fullpath:
 
-   Modify or remove a remote storage tier from a MinIO cluster. Remote
-   storage tiers support transitioning objects using MinIO lifecycle
-   management rules.
+   修改或移除 MinIO 集群中的远程存储层。远程存储层支持通过 MinIO 生命周期管理规则进行对象过渡。
 
-   The command has the following syntax:
+   命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin tier edit TARGET TIER_NAME [FLAGS]
 
-   The command accepts the following arguments:
+   此命令接受以下参数：
 
    .. mc-cmd:: TARGET
 
       *Required*
 
-      The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment.
+      已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
 
    .. mc-cmd:: TIER_NAME
 
       *Required*
 
-      The name of the remote tier the command modifies. The value
-      corresponds to the :mc-cmd:`mc admin tier add TIER_NAME` specified
-      when creating the remote tier.
+      命令要修改的远程层名称。该值对应于创建远程层时指定的 :mc-cmd:`mc admin tier add TIER_NAME`。
 
    .. mc-cmd:: --access-key
       
 
       *Optional*
       
-      The access key for a user on the remote S3 tier. The user must
-      have permission to perform read/write/list/delete operations on the 
-      remote bucket or bucket prefix.
+      远程 S3 层用户的 access key。该用户必须对远程存储桶或存储桶前缀具备读/写/列举/删除操作权限。
 
-      This option only applies to remote storage tiers with 
-      :mc-cmd:`~mc admin tier add TIER_TYPE` is ``s3``. 
-      This option has no effect for any other ``TIER_TYPE``.
+      此选项仅适用于 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``s3`` 的远程存储层。
+      对其他 ``TIER_TYPE``，此选项无效。
 
    .. mc-cmd:: --secret-key
       
 
       *Optional*
       
-      The secret key for a user on the remote S3 tier.
+      远程 S3 层用户的 secret key。
 
-      This option only applies to remote storage tiers with 
-      :mc-cmd:`~mc admin tier add TIER_TYPE` is ``s3``. 
-      This option has no effect for any other ``TIER_TYPE``.
+      此选项仅适用于 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``s3`` 的远程存储层。
+      对其他 ``TIER_TYPE``，此选项无效。
 
    .. mc-cmd:: --account-key
       
 
       *Required*
 
-      The account key for a user on the remote Azure tier.
-      Use this option to rotate the credentials for the
-      :mc-cmd:`~mc admin tier add --account-name` 
-      associated to the remote tier.
+      远程 Azure 层用户的 account key。
+      使用此选项可轮换与远程层关联的 :mc-cmd:`~mc admin tier add --account-name` 凭证。
 
-      This option only applies to remote storage tiers with 
-      :mc-cmd:`~mc admin tier add TIER_TYPE` is ``azure``. 
-      This option has no effect for any other ``TIER_TYPE``.
+      此选项仅适用于 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``azure`` 的远程存储层。
+      对其他 ``TIER_TYPE``，此选项无效。
 
    .. mc-cmd:: --credentials-file
       
 
       *Required*
       
-      The credential file for a user on the remote GCS tier. The user must have
-      permission to perform read/write/list/delete operations on the remote bucket
-      or bucket prefix.
+      远程 GCS 层用户的 credential file。该用户必须对远程存储桶或存储桶前缀具备读/写/列举/删除操作权限。
       
-      This option only applies to remote storage tiers with 
-      :mc-cmd:`~mc admin tier add TIER_TYPE` is ``gcs``. 
-      This option has no effect for any other ``TIER_TYPE``.
+      此选项仅适用于 :mc-cmd:`~mc admin tier add TIER_TYPE` 为 ``gcs`` 的远程存储层。
+      对其他 ``TIER_TYPE``，此选项无效。
    
 .. mc-cmd:: ls
    :fullpath:
 
-   List all remote storage tiers on a MinIO cluster. Remote storage tiers
-   support transitioning objects using MinIO lifecycle management rules.
+   列出 MinIO 集群上的所有远程存储层。远程存储层支持通过 MinIO 生命周期管理规则进行对象过渡。
 
-   The command has the following syntax:
+   命令语法如下：
 
    .. code-block:: shell
       :class: copyable
 
       mc admin tier ls TARGET [FLAGS]
 
-   The command accepts the following arguments:
+   此命令接受以下参数：
 
    .. mc-cmd:: TARGET
 
       *Required*
 
-      The :mc-cmd:`alias <mc alias>` of a configured MinIO deployment.
+      已配置 MinIO 部署的 :mc-cmd:`alias <mc alias>`。
