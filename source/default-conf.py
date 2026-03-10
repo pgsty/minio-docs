@@ -223,9 +223,9 @@ rst_prolog = """
 .. |minio-binarys-390x| replace:: MINIOS390XURL
 .. |subnet| replace:: `MinIO SUBNET <https://min.io/pricing?jmp=docs>`__
 .. |subnet-short| replace:: `SUBNET <https://min.io/pricing?jmp=docs>`__
-.. |SNSD| replace:: :abbr:`SNSD (Single-Node Single-Drive)`
-.. |SNMD| replace:: :abbr:`SNMD (Single-Node Multi-Drive)`
-.. |MNMD| replace:: :abbr:`MNMD (Multi-Node Multi-Drive)`
+.. |SNSD| replace:: :abbr:`SNSD (单机单盘)`
+.. |SNMD| replace:: :abbr:`SNMD (单机多盘)`
+.. |MNMD| replace:: :abbr:`MNMD (多机多盘)`
 
 .. |operator-version-stable| replace:: OPERATOR
 .. |helm-charts| replace:: `Helm Charts <https://github.com/minio/operator/tree/vOPERATOR/helm>`__
