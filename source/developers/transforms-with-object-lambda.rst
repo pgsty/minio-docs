@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -54,7 +55,7 @@ handler 函数应执行以下步骤：
         - 说明
 
       * - ``inputS3Url``
-        - 原始对象的 `presigned URL <https://minio.pigsty.io/developers/go/API.html#presigned-operations>`__。
+        - 原始对象的 `presigned URL <https://silo.pigsty.cc/developers/go/API.html#presigned-operations>`__。
 	  调用应用程序会生成该 URL，并在原始请求中发送它。
 	  这使 handler 无需通常所需的 MinIO 凭证即可访问原始对象。
           该 URL 的有效期为一小时。
@@ -133,7 +134,7 @@ MinIO 还支持以下用于已认证 webhook endpoint 的环境变量：
 
 #. 通过添加 ``lambdaArn`` 参数并设置目标 handler 的 ARN，设置 Object Lambda 目标。
 
-#. 为原始对象生成 `presigned URL <https://minio.pigsty.io/developers/go/API.html#presigned-operations>`__。
+#. 为原始对象生成 `presigned URL <https://silo.pigsty.cc/developers/go/API.html#presigned-operations>`__。
 
 #. 使用生成的 URL 获取转换后的对象。
 
@@ -160,7 +161,7 @@ MinIO 还支持以下用于已认证 webhook endpoint 的环境变量：
 创建 Handler
 ~~~~~~~~~~~~
 
-示例 handler 使用 Python 编写，使用调用方生成的 `presigned URL <https://minio.pigsty.io/developers/go/API.html#presigned-operations>`__ 获取目标对象。
+示例 handler 使用 Python 编写，使用调用方生成的 `presigned URL <https://silo.pigsty.cc/developers/go/API.html#presigned-operations>`__ 获取目标对象。
 随后，handler 转换对象内容并返回新文本。
 它使用 `Flask web framework <https://flask.palletsprojects.com/en/2.2.x/>`__ 和 Python 3.8+。
 

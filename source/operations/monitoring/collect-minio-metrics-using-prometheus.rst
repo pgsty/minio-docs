@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -15,7 +16,7 @@
    - `使用 MinIO 和 Prometheus 进行监控：概览 <https://youtu.be/A3vCDaFWNNs?ref=docs>`__
    - `使用 MinIO 和 Prometheus 进行监控：实验 <https://youtu.be/Oix9iXndSUY?ref=docs>`__
 
-MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/#data-model>` 发布集群、节点、存储桶和资源指标。
+MinIO 使用 :prometheus-docs:`Prometheus 数据模型 <concepts/data_model/#data-model>` 发布集群、节点、存储桶和资源指标。
 本页过程说明了以下内容：
 
 - 配置 Prometheus 服务，抓取并展示 MinIO 部署的指标

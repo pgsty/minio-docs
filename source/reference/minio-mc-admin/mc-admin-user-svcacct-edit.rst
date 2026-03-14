@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -14,9 +15,9 @@
 
 .. important::
 
-   此命令已被替代，并将在未来的 MinIO Client 发布版本中弃用。
+   此命令已被替代，并将在未来的 MinIO 客户端 发布版本中弃用。
 
-   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey edit` 命令修改内置 MinIO IDP 用户的访问密钥。
+   从 MinIO客户端版本RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey edit` 命令修改内置 MinIO IDP 用户的访问密钥。
 
    如需修改 AD/LDAP 用户的访问密钥，请使用 :mc:`mc idp ldap accesskey edit` 命令。
 
@@ -72,22 +73,22 @@
 .. mc-cmd:: SERVICEACCOUNT
    :required:
 
-   要修改的服务账号。
+   要修改的服务账户。
 
 .. mc-cmd:: --description
    :optional:
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   为服务账号添加描述。
-   例如，可以说明该服务账号存在的原因。
+   为服务账户添加描述。
+   例如，可以说明该服务账户存在的原因。
 
 .. mc-cmd:: --expiry
    :optional:
 
    .. versionadded:: RELEASE.2023-05-30T22-41-38Z
 
-   为服务账号设置过期日期。
+   为服务账户设置过期日期。
    日期必须在未来，不能设置已经过去的过期日期。
 
    允许的日期和时间格式：
@@ -103,7 +104,7 @@
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   为服务账号添加一个便于识别的名称。
+   为服务账户添加一个便于识别的名称。
 
 .. mc-cmd:: --policy
    :optional:

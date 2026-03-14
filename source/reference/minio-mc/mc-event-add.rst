@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -78,7 +79,7 @@ MinIO 会将已触发的事件自动发送到已配置的
    通知目标的 :aws-docs:`Amazon Resource Name (ARN) <IAM/latest/UserGuide/reference-arns>`。
 
    MinIO 服务器启动时会为每个已配置的通知目标输出一个 ARN。
-   更多信息请参见 :ref:`Bucket Notifications <minio-bucket-notifications>`。
+   更多信息请参见 :ref:`存储桶通知 <minio-bucket-notifications>`。
 
 .. mc-cmd:: --event
    :optional:

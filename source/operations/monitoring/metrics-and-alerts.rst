@@ -9,14 +9,15 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
 
-MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/>` 发布指标。
+MinIO 使用 :prometheus-docs:`Prometheus 数据模型 <concepts/data_model/>` 发布指标。
 你可以使用任意抓取工具从 MinIO 拉取指标数据，以执行进一步分析和配置告警。
 
-从 MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` 与 MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z` 开始，metrics version 3 提供了更多端点。
+从 MinIO 服务端 :minio-release:`RELEASE.2024-07-15T19-02-30Z` 与 MinIO 客户端 :mc-release:`RELEASE.2024-07-11T18-01-28Z` 开始，metrics version 3 提供了更多端点。
 对于新部署，MinIO 建议使用 version 3。
 
 .. admonition:: Metrics version 2

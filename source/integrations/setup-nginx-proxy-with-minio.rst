@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -20,7 +21,7 @@
 - 已有 :ref:`MinIO <minio-installation>` 部署
 - 一个可唯一标识该 MinIO 部署的 DNS 主机名
 
-将请求代理到 MinIO Server API 和 MinIO Console 有两种模式：
+将请求代理到 MinIO 服务端 API 和 MinIO Console 有两种模式：
 
 .. tab-set::
 

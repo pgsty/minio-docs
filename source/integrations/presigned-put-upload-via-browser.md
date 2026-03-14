@@ -3,7 +3,7 @@
 
 使用 pre-signed URL，客户端可以直接将文件上传到兼容 S3 的云存储服务器（S3），而无需向用户暴露 S3 凭证。
 
-本文介绍如何使用 [MinIO JavaScript Library](https://github.com/minio/minio-js) 中的 [`presignedPutObject`](https://minio.pigsty.io/developers/go/API.html#presignedputobject-ctx-context-context-bucketname-objectname-string-expiry-time-duration-url-url-error) API 生成 pre-signed URL。文中通过一个 JavaScript 示例进行演示：由 Express Node.js 服务器暴露一个用于生成 pre-signed URL 的端点，客户端 Web 应用再使用该 URL 将文件上传到 MinIO Server。
+本文介绍如何使用 [MinIO JavaScript Library](https://github.com/minio/minio-js) 中的 [`presignedPutObject`](https://silo.pigsty.cc/developers/go/API.html#presignedputobject-ctx-context-context-bucketname-objectname-string-expiry-time-duration-url-url-error) API 生成 pre-signed URL。文中通过一个 JavaScript 示例进行演示：由 Express Node.js 服务器暴露一个用于生成 pre-signed URL 的端点，客户端 Web 应用再使用该 URL 将文件上传到 MinIO Server。
 
 - [使用 Pre-signed URL 上传文件 ](#upload-files-using-pre-signed-urls-)
   - [1. 创建服务端](#createserver)
@@ -29,7 +29,7 @@ var client = new Minio.Client({
 
 // Instantiate an `express` server and expose an endpoint called `/presignedUrl` as a `GET` request that
 // accepts a filename through a query parameter called `name`. For the implementation of this endpoint,
-// invoke [`presignedPutObject`](https://minio.pigsty.io/developers/go/API.html#presignedputobject-ctx-context-context-bucketname-objectname-string-expiry-time-duration-url-url-error) 
+// invoke [`presignedPutObject`](https://silo.pigsty.cc/developers/go/API.html#presignedputobject-ctx-context-context-bucketname-objectname-string-expiry-time-duration-url-url-error) 
 // on the `Minio.Client` instance to generate a pre-signed URL, and return that URL in the response:
 
 // express is a small HTTP server wrapper, but this works with any HTTP server

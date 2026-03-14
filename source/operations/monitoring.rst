@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -16,7 +17,7 @@
 指标与告警
 ----------
 
-MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/>` 发布时点指标。
+MinIO 使用 :prometheus-docs:`Prometheus 数据模型 <concepts/data_model/>` 发布时点指标。
 你可以使用任何支持该数据模型的抓取工具，将这些指标拉取到数据库中，以生成历史视图、执行指标查询与分析，或基于关注的数据点创建告警。
 
 下表列出了将 MinIO 指标接入部分第三方监控软件的教程。

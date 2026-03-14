@@ -6,7 +6,7 @@
 在本教程中，我们将使用 Certbot 生成 Let's Encypt 证书。随后将把该证书部署到 MinIO Server 中使用。
 
 ## 1. 前置条件
-- 从[这里](https://minio.pigsty.io/index.html#procedure)安装 MinIO Server。
+- 从[这里](https://silo.pigsty.cc/index.html#procedure)安装 MinIO Server。
 - 从[这里](https://certbot.eff.org/)安装 Certbot
 
 ## 2. 依赖要求

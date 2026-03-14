@@ -28,7 +28,7 @@
 
    [Unit]
    Description=MinIO
-   Documentation=https://minio.pigsty.io/index.html
+   Documentation=https://silo.pigsty.cc/index.html
    Wants=network-online.target
    After=network-online.target
    AssertFileIsExecutable=/usr/local/bin/minio
@@ -169,10 +169,10 @@ MinIO 会使用 KMS 和 `hash-based message authentication code (HMAC) <https://
    RootUser: myminioadmin 
    RootPass: minio-secret-key-change-me 
 
-   Command-line: https://minio.pigsty.io/reference/minio-mc.html
+   Command-line: https://silo.pigsty.cc/reference/minio-mc.html
       $ mc alias set myminio http://10.0.2.100:9000 myminioadmin minio-secret-key-change-me
 
-   Documentation: https://minio.pigsty.io/index.html
+   Documentation: https://silo.pigsty.cc/index.html
 
 ``API`` 区块列出了客户端可访问 MinIO S3 API 的网络接口和端口。
 ``Console`` 区块列出了客户端可访问 MinIO Web Console 的网络接口和端口。

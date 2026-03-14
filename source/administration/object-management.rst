@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -179,7 +180,7 @@ MinIO 支持为单个对象最多添加 10 个自定义标签。
 对象保留
 --------
 
-MinIO Object Locking（“对象保留”）通过强制执行一次写入、多次读取（WORM）不可变性，防止 :ref:`已启用版本控制的对象 <minio-bucket-versioning>` 被删除。
+MinIO 对象锁定（“对象保留”）通过强制执行一次写入、多次读取（WORM）不可变性，防止 :ref:`已启用版本控制的对象 <minio-bucket-versioning>` 被删除。
 MinIO 同时支持 :ref:`基于时长的对象保留 <minio-object-locking-retention-modes>` 和 :ref:`无限期 legal hold 保留 <minio-object-locking-legalhold>`。
 
 .. image:: /images/retention/minio-object-locking.svg
@@ -195,7 +196,7 @@ MinIO 同时支持 :ref:`基于时长的对象保留 <minio-object-locking-reten
 只有在首次创建存储桶时才能启用对象锁定。
 启用存储桶锁定也会同时启用 :ref:`版本控制 <minio-bucket-versioning>`。
 
-根据 `Cohasset Associates <https://min.io/cohasset?ref=docs>`__ 的说明，MinIO Object Locking 提供关键的数据保留合规能力，并满足 SEC17a-4(f)、FINRA 4511(C) 和 CFTC 1.31(c)-(d) 的要求。
+根据 `Cohasset Associates <https://min.io/cohasset?ref=docs>`__ 的说明，MinIO 对象锁定 提供关键的数据保留合规能力，并满足 SEC17a-4(f)、FINRA 4511(C) 和 CFTC 1.31(c)-(d) 的要求。
 
 有关更完整的文档，请参见 :ref:`minio-object-locking` 和 :ref:`minio-object-delete`。
 

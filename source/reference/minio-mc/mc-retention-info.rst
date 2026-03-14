@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -23,7 +24,7 @@
 
 :mc:`mc retention info` 命令用于为对象或存储桶中的对象配置 :ref:`Write-Once Read-Many (WORM)
 locking <minio-object-locking>` 设置。
-你还可以为存储桶设置默认对象锁设置，未显式配置对象锁的对象会继承该存储桶默认值。
+你还可以为存储桶设置默认对象锁定设置，未显式配置对象锁定的对象会继承该存储桶默认值。
 
 .. end-mc-retention-info-desc
 
@@ -38,7 +39,7 @@ locking <minio-object-locking>` 设置。
 
    .. tab-item:: 示例
 
-      以下命令返回 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的默认对象锁配置：
+      以下命令返回 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的默认对象锁定配置：
 
       .. code-block:: shell
          :class: copyable
@@ -73,7 +74,7 @@ locking <minio-object-locking>` 设置。
 .. mc-cmd:: ALIAS
    :required:
 
-   要检索对象锁配置的对象完整路径。
+   要检索对象锁定配置的对象完整路径。
    将已配置的 S3 兼容服务的 :ref:`alias <alias>` 作为 ``ALIAS`` 存储桶路径前缀。
    例如：
 
@@ -82,18 +83,18 @@ locking <minio-object-locking>` 设置。
       mc retention info play/mybucket/object.txt
 
    - 如果 ``ALIAS`` 指定的是存储桶或存储桶前缀，请添加
-      :mc-cmd:`~mc retention info --recursive`，以返回该存储桶或前缀下所有对象的对象锁设置。
+      :mc-cmd:`~mc retention info --recursive`，以返回该存储桶或前缀下所有对象的对象锁定设置。
 
    - 如果 ``ALIAS`` 存储桶已启用版本控制，
       :mc:`mc retention info` 默认仅作用于对象的最新版本。
       使用 :mc-cmd:`~mc retention info --version-id` 或
-      :mc-cmd:`~mc retention info --versions` 可返回特定版本或对象全部版本的对象锁设置。
+      :mc-cmd:`~mc retention info --versions` 可返回特定版本或对象全部版本的对象锁定设置。
 
 
 .. mc-cmd:: --default
    :optional:
 
-   返回 :mc-cmd:`~mc retention info ALIAS` 指定存储桶的默认对象锁设置。
+   返回 :mc-cmd:`~mc retention info ALIAS` 指定存储桶的默认对象锁定设置。
 
    如果指定 :mc-cmd:`~mc retention info --default`，
    :mc:`mc retention info` 会忽略所有其他标志。
@@ -101,7 +102,7 @@ locking <minio-object-locking>` 设置。
 .. mc-cmd:: --recursive, r
    :optional:
 
-   递归返回指定 :mc-cmd:`~mc retention info ALIAS` 路径下所有对象的对象锁设置。
+   递归返回指定 :mc-cmd:`~mc retention info ALIAS` 路径下所有对象的对象锁定设置。
 
    与 :mc-cmd:`~mc retention info --version-id` 互斥。
 
@@ -146,8 +147,8 @@ locking <minio-object-locking>` 设置。
 示例
 ----
 
-检索单个或多个对象的对象锁设置
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+检索单个或多个对象的对象锁定设置
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::
 
@@ -182,11 +183,11 @@ locking <minio-object-locking>` 设置。
    :start-after: start-command-requires-locking-desc
    :end-before: end-command-requires-locking-desc
 
-检索存储桶的默认对象锁设置
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+检索存储桶的默认对象锁定设置
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 将 :mc:`mc retention info` 与
-:mc-cmd:`~mc retention info --default` 一起使用，以检索存储桶的默认对象锁设置：
+:mc-cmd:`~mc retention info --default` 一起使用，以检索存储桶的默认对象锁定设置：
 
 .. code-block:: shell
    :class: copyable

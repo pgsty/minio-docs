@@ -9,6 +9,7 @@
 .. |ARN| replace:: ``arn:minio:sqs::primary:amqp``
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -114,7 +115,7 @@ MinIO ``mc`` 命令行工具
 
         ``amqp://user:password@hostname:port``
 
-      参见 :ref:`AMQP Service for Bucket Notifications
+      参见 :ref:`AMQP Service for 存储桶通知
       <minio-server-envvar-bucket-notification-amqp>`，获取每个环境变量的完整文档。
 
    .. tab-item:: 配置设置
@@ -183,7 +184,7 @@ MinIO ``mc`` 命令行工具
    :start-after: start-bucket-notification-find-arn
    :end-before: end-bucket-notification-find-arn
 
-3) 使用 AMQP 端点作为目标配置 Bucket Notifications
+3) 使用 AMQP 端点作为目标配置 存储桶通知
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 使用 :mc:`mc event add` 命令新增 bucket notification 事件，并将已配置的 AMQP 服务作为目标：

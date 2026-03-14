@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -19,7 +20,7 @@ Authentication
 
 Authorization
   用于限制已认证客户端在部署上可执行操作及可访问资源的过程。
-  MinIO 使用 Policy-Based Access Control (PBAC)，其中每个策略描述一条或多条规则，用于定义某个用户或某组用户的权限。
+  MinIO 使用 基于策略的访问控制 (PBAC)，其中每个策略描述一条或多条规则，用于定义某个用户或某组用户的权限。
   MinIO 在创建策略时支持 S3 特定的 :ref:`actions <minio-policy-actions>` 和 :ref:`conditions <minio-policy-conditions>`。
   默认情况下，MinIO 会 *拒绝* 访问用户已分配或继承策略中未显式引用的操作或资源。
 
@@ -59,7 +60,7 @@ MinIO 同时支持内部和外部身份管理：
 Access Management
 -----------------
 
-MinIO 使用 Policy-Based Access Control (PBAC) 来定义已认证用户可访问的授权操作和资源。每个策略描述一条或多条 :ref:`actions <minio-policy-actions>` 与 :ref:`conditions
+MinIO 使用 基于策略的访问控制 (PBAC) 来定义已认证用户可访问的授权操作和资源。每个策略描述一条或多条 :ref:`actions <minio-policy-actions>` 与 :ref:`conditions
 <minio-policy-conditions>`，用于说明某个 :ref:`user <minio-users>` 或 :ref:`group <minio-groups>` 的权限。
 
 MinIO 负责策略的创建与存储。将策略分配给用户或组的具体流程取决于所配置的 :ref:`IDentity Provider (IDP) <minio-authentication-and-identity-management>`。

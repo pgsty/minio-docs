@@ -1,15 +1,18 @@
 # MinIO 文档
 
+[![Website: silo.pigsty.io](https://img.shields.io/badge/website-silo.pigsty.io-slategray?style=flat&logo=cilium&logoColor=white)](https://silo.pigsty.io)
+[![CN: silo.pigsty.cc](https://img.shields.io/badge/网站-silo.pigsty.cc-slategray?style=flat&logo=cilium&logoColor=white)](https://silo.pigsty.cc)
+
 > [!IMPORTANT]
-> **这是由社区维护的 [minio/docs](https://github.com/minio/docs) 分支，由 [Pigsty](https://pigsty.io) 维护。**
-> 本项目与 MinIO, Inc. **无关联**，也未获得 MinIO, Inc. 的认可或赞助。
-> “MinIO”是 MinIO, Inc. 的商标，在此仅用于标识上游项目。
->
+> **这是由社区维护的 [minio/docs](https://github.com/minio/docs) 分支，由 [PGSTY](https://pigsty.io) 维护。** 本项目与 MinIO, Inc. **无关联**，也未获得 MinIO, Inc. 的认可或赞助。“MinIO”是 MinIO, Inc. 的商标，在此仅用于标识上游项目。
+> 
 > 与上游相比的改动很少：
-> - 恢复了被移除的 [Console](https://minio.pigsty.io/administration/minio-console.html) 文档
+>- 恢复了被移除的 [Console](https://silo.pigsty.cc/administration/minio-console.html) 文档
 > - 修复了指向已下线 `docs.min.io` 的失效链接
->
-> 托管地址：[minio.pigsty.io](https://minio.pigsty.io)。按原始 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) 许可分发。
+> 
+> 托管地址：[`silo.pigsty.cc`](https://silo.pigsty.cc)。按原始 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) 许可分发。
+
+
 
 ## 构建说明
 

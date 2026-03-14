@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -43,7 +44,7 @@ MinIO 前置条件
        上述列表列出了在 MinIO 这类高性能系统上，最常见的、已知会引发性能或行为问题的服务或软件。
        对于在 MinIO 主机上功能与上述项目类似的其他服务或软件，也应考虑移除或禁用。
 
-       或者，将这些服务配置为忽略或排除 MinIO Server 进程，以及 MinIO 访问的 *全部* 驱动器或驱动器路径。
+       或者，将这些服务配置为忽略或排除 MinIO 服务端进程，以及 MinIO 访问的 *全部* 驱动器或驱动器路径。
 
    * - :octicon:`circle` 
      - 对远程服务器具有系统管理员访问权限

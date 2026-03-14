@@ -10,6 +10,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -46,7 +47,7 @@
       #. 创建一个新的 |EK| 供 |SSE| 使用。
       #. 配置自动化的存储桶默认 :ref:`SSE-KMS <minio-encryption-sse-kms>`。
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       本流程说明如何部署已配置 KES 并启用 :ref:`服务端加密 <minio-sse-data-encryption>` 的 MinIO。
@@ -83,7 +84,7 @@
 
       本流程假定你的权限集足以支持在 Kubernetes 集群中部署或修改与 MinIO 相关的资源，包括但不限于 pods、statefulsets、replicasets、deployments 和 secrets。
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       本流程使用 :mc:`mc` 对 MinIO 集群执行操作。
@@ -112,7 +113,7 @@
 
       关于部署和配置的指导，请以你所选 KMS 方案的文档为准。
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       本流程假定已经存在一个 KES 安装，并已连接到受支持的 |KMS| 安装，且二者都可从本地主机访问。
@@ -157,7 +158,7 @@
 
       .. include:: /includes/k8s/steps-configure-minio-kes-hashicorp.rst
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       .. include:: /includes/linux/steps-configure-minio-kes-hashicorp.rst

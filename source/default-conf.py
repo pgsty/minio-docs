@@ -70,7 +70,7 @@ extlinks = {
     'influxdb-docs'   : ('https://docs.influxdata.com/influxdb/v2.4/%s', None),
     'eks-docs'        : ('https://docs.aws.amazon.com/eks/latest/userguide/%s', None),
     'minio-web'       : ('https://min.io/%s?ref=docs', None),
-    'minio-docs'      : ('https://minio.pigsty.io/%s', None),
+    'minio-docs'      : ('https://silo.pigsty.cc/%s', None),
     'minio-blog'      : ('https://blog.min.io/%s?ref=docs', None),
     'gke-docs'        : ('https://cloud.google.com/kubernetes-engine/docs/%s', None),
     'gcp-docs'        : ('https://cloud.google.com/compute/docs/%s', None),
@@ -175,16 +175,16 @@ html_js_files = [
 # Add https://www.min.io/robots.txt to html_extra_path list once available.
 html_extra_path = [ 'extra']
 
-html_baseurl = 'https://minio.pigsty.io/'
+html_baseurl = 'https://silo.pigsty.cc/'
 
 # -- Project information -----------------------------------------------------
 
 
-project = 'Documentation for MinIO Object Storage' 
+project = 'MinIO 对象存储文档'
 copyright = '2020-Present, MinIO, Inc. '
 author = 'MinIO Documentation Team'
-html_title = 'MinIO Object Storage (AGPLv3)'
-html_short_title = 'MinIO Object Storage'
+html_title = 'MinIO 对象存储 (AGPLv3)'
+html_short_title = 'MinIO 对象存储'
 
 html_permalinks_icon = ''
 

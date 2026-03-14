@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -48,7 +49,7 @@ MinIO 强烈建议仅执行同时升级并重启的流程。
 权限
 ~~~~
 
-执行该命令的用户**必须**对 MinIO Server 二进制安装目标路径具有 ``write`` 权限。
+执行该命令的用户**必须**对 MinIO 服务端二进制安装目标路径具有 ``write`` 权限。
 
 示例
 ----

@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -100,7 +101,7 @@
 .. mc-cmd:: --svcacc-only
    :optional:
 
-   仅输出服务账号访问密钥。
+   仅输出服务账户访问密钥。
 
    与 :mc-cmd:`~mc idp ldap accesskey ls --temp-only` 互斥。
 

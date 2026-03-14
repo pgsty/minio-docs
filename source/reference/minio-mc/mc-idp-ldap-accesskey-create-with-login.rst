@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -108,7 +109,7 @@
 .. mc-cmd:: --description
    :optional:
 
-   为服务账号创建描述。
+   为服务账户创建描述。
    例如，你可以说明该访问密钥存在的原因。
 
 .. mc-cmd:: --expiry-duration

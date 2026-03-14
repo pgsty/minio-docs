@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -339,7 +340,7 @@ MinIO 审计日志类似于以下 JSON 文档：
 - 对于 :ref:`纠删码部署 <minio-erasure-coding>`，
   ``tags.objectErasureMap`` 提供与对象相关的以下详细信息：
 
-  - 执行该对象操作所在的 :ref:`Server Pool <minio-intro-server-pool>`。
+  - 执行该对象操作所在的 :ref:`服务器池 <minio-intro-server-pool>`。
 
   - 执行该对象操作所在的 :ref:`纠删码集合 <minio-ec-erasure-set>`。
 

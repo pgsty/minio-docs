@@ -9,6 +9,7 @@ Webhook 服务通知设置
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 

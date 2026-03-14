@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -28,7 +29,7 @@
 
 .. start-mc-admin-policy-desc
 
-:mc:`mc admin policy` 命令用于管理可与 :ref:`MinIO Policy-Based Access Control <minio-policy>` (PBAC) 配合使用的策略。
+:mc:`mc admin policy` 命令用于管理可与 :ref:`MinIO 基于策略的访问控制 <minio-policy>` (PBAC) 配合使用的策略。
 MinIO PBAC 使用与 IAM 兼容的策略 JSON 文档来定义访问 MinIO 服务器资源的规则。
 
 .. end-mc-admin-policy-desc

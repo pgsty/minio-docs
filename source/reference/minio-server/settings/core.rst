@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -351,10 +352,10 @@ MinIO Server CLI 选项
 
 *可选*
 
-应用于指定 :term:`server pool` 中所有驱动器的 :ref:`erasure set size <minio-ec-basics>`。
+应用于指定 :term:`服务器池` 中所有驱动器的 :ref:`erasure set size <minio-ec-basics>`。
 
 如果设置此值，你**必须**在初始化集群*之前*完成设置。
-集群初始化后，所选条带大小为**不可变**，并会影响后续添加到集群中的所有 server pool。
+集群初始化后，所选条带大小为**不可变**，并会影响后续添加到集群中的所有 服务器池。
 
 |subnet| 用户应先登录并提交 issue，讨论条带大小设置后再在任何环境中实施。
 

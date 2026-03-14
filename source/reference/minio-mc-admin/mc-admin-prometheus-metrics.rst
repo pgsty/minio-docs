@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -23,7 +24,7 @@
 
 有关将 MinIO 与 Prometheus 配合使用的完整文档，请参阅 :ref:`How to monitor MinIO server with Prometheus <minio-metrics-collect-using-prometheus>`
 
-从 MinIO Server :minio-release:`RELEASE.2024-07-15T19-02-30Z` 和 MinIO Client :mc-release:`RELEASE.2024-07-11T18-01-28Z` 开始，:ref:`metrics version 3 (v3) <minio-metrics-and-alerts>` 提供了额外的端点和指标。
+从 MinIO 服务端 :minio-release:`RELEASE.2024-07-15T19-02-30Z` 和 MinIO 客户端 :mc-release:`RELEASE.2024-07-11T18-01-28Z` 开始，:ref:`metrics version 3 (v3) <minio-metrics-and-alerts>` 提供了额外的端点和指标。
 要输出 v3 指标，请使用 ``--api_version v3`` 选项。
 
 MinIO 建议新部署使用 :ref:`version 3 (v3) <minio-metrics-and-alerts>`。

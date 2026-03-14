@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -17,7 +18,7 @@
 .. start-mc-retention-desc
 
 :mc:`mc retention` 命令用于为存储桶中的一个或多个对象配置 :ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` 设置。
-你还可以为存储桶设置默认的对象锁设置；未显式配置对象锁设置的所有对象都会继承该存储桶默认值。
+你还可以为存储桶设置默认的对象锁定设置；未显式配置对象锁定设置的所有对象都会继承该存储桶默认值。
 
 .. end-mc-retention-desc
 

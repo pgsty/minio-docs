@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -35,7 +36,7 @@
 组与基于策略的访问控制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO 使用 Policy-Based Access Control (PBAC) 对已成功在部署上
+MinIO 使用 基于策略的访问控制 (PBAC) 对已成功在部署上
 *认证* 的用户执行*授权*。每条策略都包含规则，用于规定该部署上
 允许或拒绝的操作/资源。可以为一个组分配一个或多个 :ref:`策略
 <minio-policy>`。属于该组的用户会继承该组已分配的策略。用户的

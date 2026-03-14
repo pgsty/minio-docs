@@ -7,10 +7,11 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
-MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/>` 发布集群和节点指标。
+MinIO 使用 :prometheus-docs:`Prometheus 数据模型 <concepts/data_model/>` 发布集群和节点指标。
 `InfluxDB <https://www.influxdata.com/?ref=minio>`__ 支持抓取 MinIO 指标数据，用于监控和告警。
 
 本页介绍以下内容：

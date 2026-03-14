@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -55,7 +56,7 @@ MinIO 建议始终安装最新版本，以获得安全增强和其他改进。
 MinIO
    更新到最新版本，或更新到不超过六个月的版本。
 
-MinIO Client
+MinIO 客户端
    更新到在 MinIO 发布后紧接着发布的 `mc` 版本，时间间隔控制在一到两周内。
 
 MinIO Operator

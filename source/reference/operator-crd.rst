@@ -7,6 +7,7 @@ MinIO 自定义资源定义
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 

@@ -7,6 +7,7 @@ MinIO Operator 环境变量
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
 
 :ref:`MinIO Operator <minio-operator-installation>` 在启动期间使用以下环境变量来设置配置项。
 请在 ``minio-operator`` 容器中配置这些变量。

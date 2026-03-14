@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -28,22 +29,22 @@
 ----
 
 MinIO 使用 :ref:`基于策略的访问控制 <minio-policy>` 系统进行访问管理。
-用户或服务账号必须提供正确的策略操作和条件，才能对该存储桶和对象执行 ``DELETE``。
+用户或服务账户必须提供正确的策略操作和条件，才能对该存储桶和对象执行 ``DELETE``。
 
 未启用版本控制的对象
 --------------------
 
 如果对未启用版本控制的存储桶中的对象执行 ``DELETE`` 操作，其行为比较直接。
-在确认用户或服务账号具有执行 ``DELETE`` 操作的权限后，MinIO 会永久删除该对象。
+在确认用户或服务账户具有执行 ``DELETE`` 操作的权限后，MinIO 会永久删除该对象。
 
-请求删除操作的用户或服务账号必须对该存储桶和对象具有 :policy-action:`s3:DeleteObject` 操作权限。
+请求删除操作的用户或服务账户必须对该存储桶和对象具有 :policy-action:`s3:DeleteObject` 操作权限。
 
 已启用版本控制的对象
 --------------------
 
 启用版本控制后，``DELETE`` 操作的行为会有所不同。
 
-用户或服务账号必须对该存储桶和对象具有 :policy-action:`s3:DeleteObjectVersion` 操作权限。
+用户或服务账户必须对该存储桶和对象具有 :policy-action:`s3:DeleteObjectVersion` 操作权限。
 
 删除当前版本
 ~~~~~~~~~~~~

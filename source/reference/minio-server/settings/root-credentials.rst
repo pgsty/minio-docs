@@ -7,6 +7,7 @@ Root 访问设置
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -93,7 +94,7 @@ Root 访问
 .. versionadded:: MinIO Server RELEASE.2023-05-04T21-44-30Z
 
 设置为 ``on`` 可启用 :ref:`root <minio-users-root>` 用户账号，设置为 ``off`` 可禁用该账号。
-禁用 root 服务账号时，也会禁用所有与 root 关联的服务账号，但用于站点复制的账号除外。
+禁用 root 服务账户时，也会禁用所有与 root 关联的服务账户，但用于站点复制的账号除外。
 默认值为 ``on``。
 
 .. important::

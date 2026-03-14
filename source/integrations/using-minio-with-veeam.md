@@ -5,10 +5,10 @@
 ## 前置条件
 
 - 安装以下一个或两个产品：支持 S3 兼容对象存储的 Veeam Backup and Replication（例如 9.5.4），以及 Veeam Backup for Office365（VBO）
-- 按照 <https://minio.pigsty.io/index.html#procedure> 完成 MinIO 对象存储部署
-- Veeam 要求到对象存储的连接使用 TLS。可按 <https://minio.pigsty.io/operations/network-encryption.html> 进行配置
+- 按照 <https://silo.pigsty.cc/index.html#procedure> 完成 MinIO 对象存储部署
+- Veeam 要求到对象存储的连接使用 TLS。可按 <https://silo.pigsty.cc/operations/network-encryption.html> 进行配置
 - 必须在 Veeam 之外、且在接入前先创建好 S3 存储桶、Access Key 和 Secret Key。
-- 为 Veeam 对接的 MinIO endpoint 配置 MinIO Client：<https://minio.pigsty.io/reference/minio-mc.html>
+- 为 Veeam 对接的 MinIO endpoint 配置 MinIO Client：<https://silo.pigsty.cc/reference/minio-mc.html>
 
 ## 为 Veeam Backup and Replication 设置 S3 兼容对象存储
 
@@ -26,7 +26,7 @@ mc mb myminio/veeambackup
 mc mb -l myminio/veeambackup
 ```
 
-> Object lock 依赖 MinIO Server 启用 erasure coding。更多信息见 <https://minio.pigsty.io/operations/concepts/erasure-coding.html>。
+> Object lock 依赖 MinIO Server 启用 erasure coding。更多信息见 <https://silo.pigsty.cc/operations/concepts/erasure-coding.html>。
 
 ### 将 MinIO 添加为 Veeam 的对象存储
 

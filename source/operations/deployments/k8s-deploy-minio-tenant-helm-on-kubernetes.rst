@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -124,7 +125,7 @@ Helm 是一个用于将应用自动部署到 Kubernetes 集群的工具。
            - 描述
 
          * - ``servers`` 
-           - 要在 Server Pool 中部署的 MinIO pod 数量。
+           - 要在 服务器池 中部署的 MinIO pod 数量。
          
          * - ``volumesPerServer`` 
            - 每个 MinIO pod（``servers``）要挂载的持久卷数量。
@@ -283,7 +284,7 @@ Helm 是一个用于将应用自动部署到 Kubernetes 集群的工具。
         - 描述
 
       * - ``servers`` 
-        - 要在 Server Pool 中部署的 MinIO pod 数量。
+        - 要在 服务器池 中部署的 MinIO pod 数量。
       * - ``volumesPerServer`` 
         - 每个 MinIO pod（``servers``）要挂载的持久卷数量。
           Operator 会为该 Tenant 生成 ``volumesPerServer x servers`` 个 Persistent Volume Claim。

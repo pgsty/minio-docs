@@ -11,6 +11,7 @@
    - `使用 FTP 和 SFTP 与 MinIO 进行文件传输 <https://www.youtube.com/watch?v=lNZyL8wD-lI>`__
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -104,9 +105,9 @@ SFTP 客户端只能操作对象的 :ref:`当前版本 <minio-bucket-versioning>
 SFTP 访问与其他 S3 客户端一样，使用相同的身份验证机制。
 MinIO 支持以下身份验证提供方：
 
-- :ref:`MinIO IDP <minio-internal-idp>` 用户及其服务账号
-- :ref:`Active Directory/LDAP <minio-external-identity-management-ad-ldap>` 用户及其服务账号
-- :ref:`OpenID/OIDC <minio-external-identity-management-openid>` 服务账号
+- :ref:`MinIO IDP <minio-internal-idp>` 用户及其服务账户
+- :ref:`Active Directory/LDAP <minio-external-identity-management-ad-ldap>` 用户及其服务账户
+- :ref:`OpenID/OIDC <minio-external-identity-management-openid>` 服务账户
 
 :ref:`STS <minio-security-token-service>` 凭证**不能**通过 SFTP 访问存储桶或对象。
 
@@ -190,21 +191,21 @@ MinIO 要求指定用于签发 SFTP 访问证书的证书颁发机构 (Certifica
 
    minio server {path-to-server} --sftp="trusted-user-ca-key=/path/to/.ssh/ca_user_key.pub" {...other flags}
 
-通过 SFTP 连接到 MinIO Server 时，客户端会先验证 MinIO Server 的证书。
+通过 SFTP 连接到 MinIO 服务端 时，客户端会先验证 MinIO Server 的证书。
 随后，客户端会将自己的证书发送给 MinIO Server。
 MinIO Server 会将上面创建的密钥与服务器启动时提供的证书颁发机构公钥进行比对，以验证该密钥。
 
-一旦 MinIO Server 验证了客户端证书，用户就可以通过 SFTP 连接到 MinIO Server：
+一旦 MinIO Server 验证了客户端证书，用户就可以通过 SFTP 连接到 MinIO 服务端：
 
 .. code-block:: bash
    :class: copyable
    
    sftp -P <SFTP port> <server IP>
 
-要求使用服务账号或 LDAP 进行身份验证
+要求使用服务账户或 LDAP 进行身份验证
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-若要强制使用 LDAP 或服务账号凭证进行 SFTP 身份验证，请在用户名后附加后缀。
+若要强制使用 LDAP 或服务账户凭证进行 SFTP 身份验证，请在用户名后附加后缀。
 有效后缀为 ``=ldap`` 或 ``=svc``。
 
 .. code-block:: console

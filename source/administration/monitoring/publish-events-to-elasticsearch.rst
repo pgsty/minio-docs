@@ -9,6 +9,7 @@
 .. |ARN| replace:: ``arn:minio:sqs::primary:elasticsearch``
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -104,7 +105,7 @@ MinIO ``mc`` 命令行工具
       - 将 ``<ENDPOINT>`` 替换为 Elasticsearch 服务端点的 URL。
         例如：
 
-      有关各环境变量的完整说明，请参见 :ref:`Elasticsearch Service for Bucket Notifications
+      有关各环境变量的完整说明，请参见 :ref:`Elasticsearch Service for 存储桶通知
       <minio-server-envvar-bucket-notification-elasticsearch>`。
 
    .. tab-item:: 配置项

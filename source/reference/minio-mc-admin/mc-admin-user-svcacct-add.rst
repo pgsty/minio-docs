@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -14,9 +15,9 @@
 
 .. important::
 
-   此命令已被替代，并将在未来的 MinIO Client 版本中弃用。
+   此命令已被替代，并将在未来的 MinIO 客户端版本中弃用。
 
-   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey create` 命令为内置 MinIO IDP 用户添加访问密钥。
+   从 MinIO客户端版本RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey create` 命令为内置 MinIO IDP 用户添加访问密钥。
 
    如需为 AD/LDAP 用户添加访问密钥，请使用 :mc:`mc idp ldap accesskey create` 命令。
 
@@ -33,7 +34,7 @@
 .. admonition:: OpenID Connect 用户的访问密钥
    :class: note
 
-   要为 :ref:`OpenID Connect 用户 <minio-external-identity-management-openid>` 生成服务账号访问密钥，请使用 :ref:`MinIO Console <minio-console>`。
+   要为 :ref:`OpenID Connect 用户 <minio-external-identity-management-openid>` 生成服务账户访问密钥，请使用 :ref:`MinIO Console <minio-console>`。
 
 .. tab-set::
 
@@ -114,15 +115,15 @@
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   为服务账号添加描述。
-   例如，可以说明该服务账号存在的原因。
+   为服务账户添加描述。
+   例如，可以说明该服务账户存在的原因。
 
 .. mc-cmd:: --expiry
    :optional:
 
    .. versionadded:: RELEASE.2023-05-30T22-41-38Z
 
-   为服务账号设置过期日期。
+   为服务账户设置过期日期。
    该日期必须是未来时间，不能设置已经过去的过期日期。
 
    允许的日期和时间格式：
@@ -138,7 +139,7 @@
 
    .. versionadded:: RELEASE.2023-05-18T16-59-00Z
 
-   为服务账号添加一个人类可读的名称。
+   为服务账户添加一个人类可读的名称。
 
 .. mc-cmd:: --policy
    :optional:

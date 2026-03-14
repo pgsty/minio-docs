@@ -16,8 +16,8 @@ MinIO 还支持类似 AWS 区域与层级的多集群、多站点联邦。通过
   - [Setup Ambari](https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.1.0/bk_ambari-installation/content/set_up_the_ambari_server.html)，该步骤会自动设置 YARN
   - [Installing Spark](https://docs.hortonworks.com/HDPDocuments/HDP3/HDP-3.0.1/installing-spark/content/installing_spark.html)
 - 使用以下任一指南安装 MinIO Distributed Server。
-  - [Deployment based on Kubernetes](https://minio.pigsty.io/operations/deployments/kubernetes.html)
-  - [Deployment based on MinIO Helm Chart](https://minio.pigsty.io/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html)
+  - [Deployment based on Kubernetes](https://silo.pigsty.cc/operations/deployments/kubernetes.html)
+  - [Deployment based on MinIO Helm Chart](https://silo.pigsty.cc/operations/deployments/k8s-deploy-operator-helm-on-kubernetes.html)
 
 ## **3. 配置 Hadoop、Spark、Hive 使用 MinIO**
 

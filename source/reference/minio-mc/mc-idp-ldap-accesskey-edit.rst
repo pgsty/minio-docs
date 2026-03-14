@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -82,7 +83,7 @@
 .. mc-cmd:: --description
    :optional:
 
-   为服务账号添加描述。
+   为服务账户添加描述。
    例如，可说明该 access key 的用途。
 
 .. mc-cmd:: --expiry

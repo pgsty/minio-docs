@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -204,7 +205,7 @@ MinIO 支持在以下 S3 :ref:`scanner <minio-concepts-scanner>` 转换事件上
 ~~~~~~~~
 
 MinIO 支持在以下全局事件上触发通知。
-只能通过 `ListenNotification <https://minio.pigsty.io/developers/go/API.html#listennotification-context-context-context-prefix-suffix-string-events-string-chan-notification-info>`__ API 监听这些事件：
+只能通过 `ListenNotification <https://silo.pigsty.cc/developers/go/API.html#listennotification-context-context-context-prefix-suffix-string-events-string-chan-notification-info>`__ API 监听这些事件：
 
 .. data:: s3:BucketCreated
 .. data:: s3:BucketRemoved

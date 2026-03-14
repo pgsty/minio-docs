@@ -134,10 +134,10 @@ MinIO 强烈建议优先使用 RPM 或 DEB 安装方式。
    RootUser: minioadmin 
    RootPass: minioadmin 
 
-   Command-line: https://minio.pigsty.io/reference/minio-mc.html
+   Command-line: https://silo.pigsty.cc/reference/minio-mc.html
       $ mc alias set myminio http://192.0.2.10:9000 minioadmin minioadmin
 
-   Documentation: https://minio.pigsty.io/index.html
+   Documentation: https://silo.pigsty.cc/index.html
 
    WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables
 
@@ -221,7 +221,7 @@ MinIO 强烈建议优先使用 RPM 或 DEB 安装方式。
 
    [Unit]
    Description=MinIO
-   Documentation=https://minio.pigsty.io/index.html
+   Documentation=https://silo.pigsty.cc/index.html
    Wants=network-online.target
    After=network-online.target
    AssertFileIsExecutable=/usr/local/bin/minio

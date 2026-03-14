@@ -148,10 +148,10 @@
    RootUser: myminioadmin 
    RootPass: minio-secret-key-change-me 
 
-   Command-line: https://minio.pigsty.io/reference/minio-mc.html
+   Command-line: https://silo.pigsty.cc/reference/minio-mc.html
       $ mc alias set myminio http://10.0.2.100:9000 myminioadmin minio-secret-key-change-me
 
-   Documentation: https://minio.pigsty.io/operations/deployments/baremetal-deploy-minio-as-a-container.html
+   Documentation: https://silo.pigsty.cc/operations/deployments/baremetal-deploy-minio-as-a-container.html
 
 .. admonition:: 容器网络在主机外部可能不可访问
 

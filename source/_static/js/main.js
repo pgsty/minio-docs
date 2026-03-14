@@ -166,7 +166,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       // Inject the header text
       const extVideoLinkHeader = document.createElement("p");
       extVideoLinkHeader.classList.add("topic-title");
-      extVideoLinkHeader.innerText = "Recommended Videos";
+      extVideoLinkHeader.innerText = "视频教程";
       extVideoLinks.prepend(extVideoLinkHeader);
 
       asideElements.push(extVideoLinks)
@@ -291,34 +291,34 @@ window.addEventListener("DOMContentLoaded", (event) => {
     const operationPersona = document.createElement("li");
     operationPersona.innerHTML = "Operations";
     operationPersona.className = "docs__title";
- 
+
     const administrationPersona = document.createElement("li");
-    administrationPersona.innerHTML = "Administration";
+    administrationPersona.innerHTML = "管理手册";
     administrationPersona.className = "docs__title";
- 
+
     const developerPersona = document.createElement("li");
-    developerPersona.innerHTML = "Developers";
+    developerPersona.innerHTML = "开发者";
     developerPersona.className = "docs__title";
- 
+
     const referencePersona = document.createElement("li");
-    referencePersona.innerHTML = "Reference";
+    referencePersona.innerHTML = "参考手册";
     referencePersona.className = "docs__title";
- 
+
     const list = document.getElementsByClassName("toctree-l1");
- 
+
     for ( i = 0; i < list.length; i++) {
       const page_title = list[i].childNodes[0].innerHTML;
       if (page_title === "Install and Deploy MinIO" || page_title === "Deploy the MinIO Operator") {
-        // First persona is not listed in the design, so commenting it for now. 
+        // First persona is not listed in the design, so commenting it for now.
         //list[i].insertAdjacentElement('beforebegin',operationPersona);
       }
-      else if (page_title === "MinIO Console") {
+      else if (page_title === "MinIO Console" || page_title === "MinIO 控制台") {
         list[i].insertAdjacentElement('beforebegin',administrationPersona);
       }
-      else if (page_title === "Software Development Kits (SDK)") {
+      else if (page_title === "Software Development Kits (SDK)" || page_title === "软件开发工具包（SDK）") {
         list[i].insertAdjacentElement('beforebegin',developerPersona);
       }
-      else if (page_title === "Kubernetes Reference") {
+      else if (page_title === "Kubernetes Reference" || page_title === "Kubernetes 参考") {
         list[i].insertAdjacentElement('beforebegin',referencePersona);
       }
     }

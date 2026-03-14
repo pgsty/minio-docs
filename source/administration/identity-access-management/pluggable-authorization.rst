@@ -8,6 +8,7 @@ MinIO 外部访问管理插件
 
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 

@@ -8,6 +8,7 @@ NATS 通知设置
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -19,7 +20,7 @@ NATS 通知设置
 
    相关的 MinIO 配置选项和环境变量也已弃用。
 
-本页面说明了将 NATS 服务配置为 :ref:`Bucket Notifications <minio-bucket-notifications>` 目标的设置。
+本页面说明了将 NATS 服务配置为 :ref:`存储桶通知 <minio-bucket-notifications>` 目标的设置。
 有关如何使用这些设置的教程，请参见 :ref:`minio-bucket-notifications-publish-nats`。
 
 .. include:: /includes/common-mc-admin-config.rst

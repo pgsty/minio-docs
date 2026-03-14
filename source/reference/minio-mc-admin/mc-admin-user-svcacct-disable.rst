@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -15,9 +16,9 @@
 
 .. important::
 
-   此命令已被替代，并将在未来的 MinIO Client 版本中弃用。
+   此命令已被替代，并将在未来的 MinIO 客户端版本中弃用。
 
-   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey disable` 命令禁用内置 MinIO IDP 用户的访问密钥。
+   从 MinIO客户端版本RELEASE.2024-10-08T09-37-26Z 起，请使用 :mc:`mc admin accesskey disable` 命令禁用内置 MinIO IDP 用户的访问密钥。
 
    如需禁用 AD/LDAP 用户的访问密钥，请使用 :mc:`mc idp ldap accesskey disable` 命令。
 
@@ -68,7 +69,7 @@
 .. mc-cmd:: SERVICEACCOUNT
    :required:
 
-   要禁用的服务账号访问密钥。
+   要禁用的服务账户访问密钥。
 
 
 全局标志

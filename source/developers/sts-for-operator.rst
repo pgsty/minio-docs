@@ -7,6 +7,7 @@ MinIO Operator 的 Security Token Service (STS)
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -137,8 +138,8 @@ MinIO Operator 的 STS 需要满足以下条件：
 
 .. _minio-operator-sts-service-account:
 
-Service Account（服务账号）
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Service Account（服务账户）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Service Account 是一种 :kube-docs:`Kubernetes 资源类型 <reference/access-authn-authz/service-accounts-admin/>`，允许外部应用程序与 Kubernetes 部署交互。
 当该 Service Account 关联到 Pod 时（例如通过 deployment 的 ``.spec.spec.serviceAccountName`` 字段），Kubernetes 会从已知位置挂载该 Service Account 的 :abbr:`JWT (JSON Web Token)`，例如 ``/var/run/secrets/kubernetes.io/serviceaccount/token``。

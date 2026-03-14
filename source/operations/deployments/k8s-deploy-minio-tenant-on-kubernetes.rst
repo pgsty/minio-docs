@@ -8,6 +8,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -76,7 +77,7 @@ MinIO 不建议，也不支持在生产环境中使用单节点部署拓扑。
            - 描述
 
          * - ``servers`` 
-           - 要在 Server Pool 中部署的 MinIO pod 数量。
+           - 要在 服务器池 中部署的 MinIO pod 数量。
 
          * - ``volumesPerServer`` 
            - 每个 MinIO pod（``servers``）要挂载的持久卷数量。

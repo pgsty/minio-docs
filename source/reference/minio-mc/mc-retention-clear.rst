@@ -23,7 +23,7 @@
 
 :mc:`mc retention clear` 命令可移除存储桶中一个或多个对象的
 :ref:`Write-Once Read-Many (WORM) locking <minio-object-locking>` 设置。
-你还可以移除存储桶的默认对象锁设置。
+你还可以移除存储桶的默认对象锁定设置。
 
 .. end-mc-retention-clear-desc
 
@@ -34,7 +34,7 @@
 
    .. tab-item:: 示例
 
-      以下命令会移除 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的默认对象锁配置：
+      以下命令会移除 ``myminio`` MinIO 部署中 ``mydata`` 存储桶的默认对象锁定配置：
 
       .. code-block:: shell
          :class: copyable
@@ -69,7 +69,7 @@
 .. mc-cmd:: ALIAS
    :required:
 
-   要清除对象锁配置的对象或对象集合的完整路径。将已配置的 S3 兼容服务
+   要清除对象锁定配置的对象或对象集合的完整路径。将已配置的 S3 兼容服务
    :mc-cmd:`alias <mc alias>` 作为 ``ALIAS`` 存储桶路径前缀。例如：
 
    .. code-block:: shell
@@ -77,17 +77,17 @@
       mc retention clear play/mybucket/object.txt
 
    - 如果 ``ALIAS`` 指定的是存储桶或存储桶前缀，请添加
-      :mc-cmd:`~mc retention clear --recursive`，以清除存储桶内容的对象锁设置。
+      :mc-cmd:`~mc retention clear --recursive`，以清除存储桶内容的对象锁定设置。
 
    - 如果 ``ALIAS`` 存储桶已启用版本控制，:mc:`mc retention clear` 默认仅作用于
       最新对象版本。使用 :mc-cmd:`~mc retention clear --version-id` 或
       :mc-cmd:`~mc retention clear --versions`，可清除某个特定版本或对象所有版本的
-      对象锁设置。
+      对象锁定设置。
 
 .. mc-cmd:: --default
    :optional:
 
-   清除 :mc-cmd:`~mc retention clear ALIAS` 指定存储桶的默认对象锁设置。
+   清除 :mc-cmd:`~mc retention clear ALIAS` 指定存储桶的默认对象锁定设置。
    
    如果指定 :mc-cmd:`~mc retention clear --default`，
    :mc:`mc retention clear` 会忽略所有其他 flag。
@@ -95,7 +95,7 @@
 .. mc-cmd:: --recursive, r
    :optional:
 
-   递归清除指定 :mc-cmd:`~mc retention clear ALIAS` 路径下所有对象的对象锁设置。
+   递归清除指定 :mc-cmd:`~mc retention clear ALIAS` 路径下所有对象的对象锁定设置。
 
    与 :mc-cmd:`~mc retention clear --version-id` 互斥。
 
@@ -140,7 +140,7 @@
 示例
 ----
 
-清除单个或多个对象的对象锁设置
+清除单个或多个对象的对象锁定设置
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. tab-set::

@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -18,22 +19,22 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
 在该弃用公告中，MinIO 同时宣布该功能将在六个月后移除。
 
 从 :minio-release:`RELEASE.2022-10-29T06-21-33Z` 起，MinIO Gateway 和相关 filesystem 模式代码已被移除。
-仍在使用 `standalone` 或 `filesystem` MinIO 模式的部署，一旦升级到 MinIO Server :minio-release:`RELEASE.2022-10-29T06-21-33Z` 或更高版本，在尝试启动 MinIO 时会报错。
+仍在使用 `standalone` 或 `filesystem` MinIO 模式的部署，一旦升级到 MinIO 服务端 :minio-release:`RELEASE.2022-10-29T06-21-33Z` 或更高版本，在尝试启动 MinIO 时会报错。
 
 
 概览
 ----
 
-若要升级到 :minio-release:`RELEASE.2022-10-29T06-21-33Z` 或更高版本，原先使用 `standalone` 或 `filesystem` 部署模式的用户必须新建一个 :ref:`Single-Node Single-Drive <minio-snsd>` 部署，并将设置和内容迁移到新部署中。
+若要升级到 :minio-release:`RELEASE.2022-10-29T06-21-33Z` 或更高版本，原先使用 `standalone` 或 `filesystem` 部署模式的用户必须新建一个 :ref:`单机单盘 <minio-snsd>` 部署，并将设置和内容迁移到新部署中。
 
 本文概述成功启动并迁移到新部署所需的步骤。
 
 .. important:: 
 
-   Standalone/filesystem 模式在截至 MinIO Server `RELEASE.2022-10-24T18-35-07Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-10-24T18-35-07Z>`__ 的所有版本中仍可使用。
-   若要继续使用 standalone 部署，请安装该 MinIO Server 版本以及 MinIO Client `RELEASE.2022-10-29T10-09-23Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-10-29T10-09-23Z>`__，或安装任意 `更早版本 <https://github.com/minio/minio/releases>`__ 及其对应的 MinIO Client。请注意，MinIO Client 的版本应更新，且尽可能接近 MinIO Server 的版本。
+   单机/文件系统 模式在截至 MinIO Server `RELEASE.2022-10-24T18-35-07Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-10-24T18-35-07Z>`__ 的所有版本中仍可使用。
+   若要继续使用 standalone 部署，请安装该 MinIO 服务端版本以及 MinIO Client `RELEASE.2022-10-29T10-09-23Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-10-29T10-09-23Z>`__，或安装任意 `更早版本 <https://github.com/minio/minio/releases>`__ 及其对应的 MinIO 客户端。请注意，MinIO Client 的版本应更新，且尽可能接近 MinIO 服务端的版本。
 
-   Filesystem 模式部署至少需要升级到 `RELEASE.2022-06-25T15-50-16Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-25T15-50-16Z>`__，才能使用 MinIO Client 的导入和导出命令。
+   Filesystem 模式部署至少需要升级到 `RELEASE.2022-06-25T15-50-16Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-25T15-50-16Z>`__，才能使用 MinIO 客户端 的导入和导出命令。
    对于截至 `RELEASE.2022-06-20T23-13-45Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-06-20T23-13-45Z>`__ 的 filesystem 模式部署，可以通过在新部署上手动重建用户、策略、存储桶和其他资源完成迁移。
 
 
@@ -61,9 +62,9 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
    - MinIO `RELEASE.2022-10-24T18-35-07Z <https://github.com/minio/minio/releases/tag/RELEASE.2022-10-24T18-35-07Z>`__
    - MinIO Client `RELEASE.2022-10-29T10-09-23Z <https://github.com/minio/mc/releases/tag/RELEASE.2022-10-29T10-09-23Z>`__
 
-#. 创建新的 Single-Node Single-Drive MinIO 部署。
+#. 创建新的 单机单盘 MinIO 部署。
 
-   按照适用于所选操作系统的 :ref:`安装说明 <deploy-minio-standalone>`，将安装配置为 Single-Node Single-Drive (SNSD) 拓扑。
+   按照适用于所选操作系统的 :ref:`安装说明 <deploy-minio-standalone>`，将安装配置为 单机单盘 (SNSD) 拓扑。
 
    部署位置可以是所选存储介质上的任意空目录。
    如果现有部署不在磁盘根目录上，则同一块磁盘上的新目录也可以用于新部署。
@@ -86,16 +87,16 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
 
    以下步骤会同时使用两个部署中的 :mc:`mc` 命令行工具。
    *现有 MinIO Client* 指旧部署中的 :mc:`mc`。
-   *新的 MinIO Client* 指新部署中的 :mc:`mc`。
+   *新的 MinIO 客户端* 指新部署中的 :mc:`mc`。
 
-#. 使用 :mc:`mc alias set` 和新的 MinIO Client 为上一步创建的部署添加别名。
+#. 使用 :mc:`mc alias set` 和新的 MinIO 客户端 为上一步创建的部署添加别名。
 
    .. code-block:: shell
       :class: copyable
       
       mc alias set NEWALIAS PATH ACCESSKEY SECRETKEY
 
-   - 使用新的 MinIO Client。
+   - 使用新的 MinIO 客户端。
    - 将 ``NEWALIAS`` 替换为要为该部署创建的别名。
    - 将 ``PATH`` 替换为新部署的 IP 地址或主机名及端口。
    - 将 ``ACCESSKEY`` 和 ``SECRETKEY`` 替换为创建新部署时使用的凭证。
@@ -115,14 +116,14 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
          如果你的部署使用 :ref:`环境变量 <minio-server-environment-variables>` 作为配置方式，请将现有部署 ``/etc/default/minio`` 文件中的环境变量复制到新部署的同名文件中。
          你可以省略所有 ``MINIO_CACHE_*`` 和 ``MINIO_GATEWAY_SSE`` 环境变量，因为这些变量已不再使用。                                                               
 
-         如果你使用 :mc-cmd:`mc admin config set <mc admin config set>` 管理配置，请使用新的 MinIO Client 将现有设置复制到新部署中。
+         如果你使用 :mc-cmd:`mc admin config set <mc admin config set>` 管理配置，请使用新的 MinIO 客户端将现有设置复制到新部署中。
 
       .. tab-item:: Filesystem mode
 
          .. note::
 
             以下 filesystem 模式步骤默认现有 MinIO Client 支持所需的导出命令。
-            如果不支持，请在新部署上使用新的 MinIO Client 手动重建用户、策略、生命周期规则和存储桶。
+            如果不支持，请在新部署上使用新的 MinIO 客户端 手动重建用户、策略、生命周期规则和存储桶。
 
          a. 导出现有部署的**配置**。
 
@@ -136,27 +137,27 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
             - 使用现有 MinIO Client。
             - 将 ``ALIAS`` 替换为现有 standalone 部署的别名，也就是你要从中导出配置的目标。 
 
-         b. 使用新的 MinIO Client 将现有 standalone 部署的**配置**导入到新部署。
+         b. 使用新的 MinIO 客户端将现有 standalone 部署的**配置**导入到新部署。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin config import ALIAS < config.txt
 
-            - 使用新的 MinIO Client。
+            - 使用新的 MinIO 客户端。
             - 将 ``ALIAS`` 替换为新部署的别名。
 
             如果 :mc-cmd:`~mc admin config import` 对某个配置键报错，请在对应行开头加上 ``#`` 注释掉，再重新尝试。
-            完成迁移后，请根据目标 MinIO Server 版本核对当前配置语法，并使用 :mc-cmd:`mc admin config set` 手动设置所需键值。
+            完成迁移后，请根据目标 MinIO 服务端版本核对当前配置语法，并使用 :mc-cmd:`mc admin config set` 手动设置所需键值。
 
-         c. 使用新的 MinIO Client 重启新部署的服务。
+         c. 使用新的 MinIO 客户端 重启新部署的服务。
 
             .. code-block:: shell
                :class: copyable
 
                mc admin service restart ALIAS
    
-            - 使用新的 MinIO Client。
+            - 使用新的 MinIO 客户端。
             - 将 ``ALIAS`` 替换为新部署的别名。
 
          d. 使用现有 MinIO Client 导出现有 standalone 部署的**存储桶元数据**。
@@ -185,7 +186,7 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
 
             此命令会生成 ``cluster-metadata.zip`` 文件，其中包含每个存储桶的元数据。
 
-         e. 使用新的 MinIO Client 将**存储桶元数据**导入到新部署。
+         e. 使用新的 MinIO 客户端将**存储桶元数据**导入到新部署。
 
             以下命令会读取导出的存储桶 ``.zip`` 文件内容，并在新部署上创建具有相同配置的存储桶。
 
@@ -194,12 +195,12 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
 
                mc admin cluster bucket import ALIAS cluster-metadata.zip
 
-            - 使用新的 MinIO Client。
+            - 使用新的 MinIO 客户端。
             - 将 ``ALIAS`` 替换为新部署的别名。
 
             该命令会依据现有部署导出的 .zip 文件中的元数据，在新部署上创建具有相同配置的存储桶。
 
-         f. 使用现有 MinIO Client 将现有 standalone 部署的**IAM 设置**导出到新部署。
+         f. 使用现有 MinIO 客户端将现有 standalone 部署的**IAM 设置**导出到新部署。
 
             如果你使用的是外部身份与访问管理提供方，请在新部署中重建这些设置及所有关联策略。
 
@@ -221,7 +222,7 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
 
             此命令会生成包含 IAM 数据的 ``ALIAS-iam-info.zip`` 文件。
 
-         g. 使用新的 MinIO Client 将**IAM 设置**导入到新部署。
+         g. 使用新的 MinIO 客户端将**IAM 设置**导入到新部署。
 
             使用导出的文件在新部署上创建 IAM 设置。
 
@@ -230,7 +231,7 @@ MinIO Gateway 及相关 filesystem 模式自 2020 年 7 月起进入功能冻结
 
                mc admin cluster iam import ALIAS alias-iam-info.zip
 
-            - 使用新的 MinIO Client。
+            - 使用新的 MinIO 客户端。
             - 将 ``ALIAS`` 替换为新部署的别名。
             - 将 zip 文件名替换为现有部署导出的文件名。
 

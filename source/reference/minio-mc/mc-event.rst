@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -22,7 +23,7 @@
 
 MinIO 会自动将触发的事件发送到已配置的通知目标。
 MinIO 支持 AMQP (RabbitMQ)、Redis、ElasticSearch、NATS 和 PostgreSQL 等通知目标。
-有关更多信息，请参阅 :ref:`MinIO Bucket Notifications <minio-bucket-notifications>`。
+有关更多信息，请参阅 :ref:`MinIO 存储桶通知 <minio-bucket-notifications>`。
 
 
 子命令

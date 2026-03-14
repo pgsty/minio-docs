@@ -5,6 +5,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -14,7 +15,7 @@
 .. important:: 
 
    ``mc license register`` 需要 :ref:`MinIO Client <minio-client>` ``RELEASE.2023-11-20T16-30-59Z`` 或更高版本。
-   虽非强制要求，但最佳实践是保持 :ref:`MinIO Client 版本 <mc-client-versioning>` 与 MinIO Server 版本一致。
+   虽非强制要求，但最佳实践是保持 :ref:`MinIO 客户端版本 <mc-client-versioning>` 与 MinIO 服务端版本一致。
 
 
 描述
@@ -155,8 +156,8 @@
 
 .. versionchanged:: mc RELEASE.2022-07-29T19-17-16Z
 
-   airgap 注册流程适用于 ``RELEASE.2022-07-29T19-17-16Z`` 或更高版本的 MinIO Client。
-   早期版本的 MinIO Client 无法注册 airgapped 部署。
+   airgap 注册流程适用于 ``RELEASE.2022-07-29T19-17-16Z`` 或更高版本的 MinIO 客户端。
+   早期版本的 MinIO 客户端 无法注册 airgapped 部署。
 
 .. code-block:: shell
    :class: copyable

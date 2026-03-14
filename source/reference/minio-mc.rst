@@ -7,12 +7,13 @@ MinIO 客户端
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
 .. container:: extlinks-video
 
-   - `MinIO Client (MC) 命令简介 <https://www.youtube.com/watch?v=pukQgDdXfqA>`__
+   - `MinIO 客户端 (MC) 命令简介 <https://www.youtube.com/watch?v=pukQgDdXfqA>`__
    - `在 Linux 上安装和运行 MinIO <https://www.youtube.com/watch?v=74usXkZpNt8&list=PLFOIsHSSYIK1BnzVY66pCL-iJ30Ht9t1o>`__
 
 .. mc:: mc
@@ -34,16 +35,16 @@ MinIO Client :mc-cmd:`mc` 命令行工具为 ``ls``、``cat``、``cp``、``mirro
 
 .. _mc-client-versioning:
 
-与 MinIO Server 的版本对齐
+与 MinIO 服务端的版本对齐
 --------------------------
 
-MinIO Client 与 MinIO Server 独立发布。
+MinIO 客户端与 MinIO 服务端独立发布。
 
-为获得最佳功能与兼容性，建议使用与 MinIO Server 版本发布时间接近的 MinIO Client 版本。
-例如，使用与 MinIO Server 同一天发布或晚于 MinIO Server 版本发布的 MinIO Client。
+为获得最佳功能与兼容性，建议使用与 MinIO 服务端版本发布时间接近的 MinIO 客户端版本。
+例如，使用与 MinIO 服务端同一天发布或晚于 MinIO 服务端版本发布的 MinIO 客户端。
 
-可以安装比 MinIO Server 更新的 MinIO Client 版本。
-但如果 MinIO Client 与 MinIO Server 的版本偏差过大，可能因差异导致更多告警或错误。
+可以安装比 MinIO 服务端 更新的 MinIO 客户端版本。
+但如果 MinIO 客户端与 MinIO 服务端的版本偏差过大，可能因差异导致更多告警或错误。
 例如，虽然复制相关的核心 S3 API（:mc:`mc cp`）可能保持不变，但某些功能或 flag 仅在客户端与服务端版本对齐时才可用或稳定。
 
 .. _mc-install:
@@ -93,7 +94,7 @@ MinIO Client 与 MinIO Server 独立发布。
 
 .. tab-set::
 
-   .. tab-item:: MinIO Server
+   .. tab-item:: MinIO 服务端
 
       .. code-block:: shell
          :class: copyable
@@ -147,7 +148,7 @@ MinIO Client 与 MinIO Server 独立发布。
 
 .. note::
 
-   MinIO Client 还包含用于管理 MinIO 部署的管理扩展。
+   MinIO 客户端还包含用于管理 MinIO 部署的管理扩展。
    更完整文档参见 :mc:`mc admin`。
 
    下表不包含这些命令。
@@ -468,7 +469,7 @@ MinIO Client 与 MinIO Server 独立发布。
 证书
 ----
 
-MinIO Client 将部署使用的证书和 CA 存储在以下路径：
+MinIO 客户端将部署使用的证书和 CA 存储在以下路径：
 
 Linux、macOS 和其他类 Unix 系统：
 

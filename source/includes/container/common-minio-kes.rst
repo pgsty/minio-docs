@@ -4,7 +4,7 @@
 
 - 一个 Podman :podman-docs:`Pod <markdown/podman-pod.1.html>`，用于简化容器间通信。
 - 一个配置为使用所选受支持 |KMS| 方案的 KES Server 容器。
-- 一个以 :ref:`Single-Node Single-Drive Mode <minio-snsd>` 运行的 MinIO Server 容器。
+- 一个以 :ref:`单机单盘 Mode <minio-snsd>` 运行的 MinIO Server 容器。
 
 .. code-block:: shell
    :class: copyable

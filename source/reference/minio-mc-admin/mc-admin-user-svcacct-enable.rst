@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -14,9 +15,9 @@
 
 .. important::
 
-   此命令已被替代，并将在未来的 MinIO Client 发布版本中弃用。
+   此命令已被替代，并将在未来的 MinIO 客户端 发布版本中弃用。
 
-   从 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，使用 :mc:`mc admin accesskey enable` 命令为内置 MinIO IDP 用户启用访问密钥。
+   从 MinIO客户端版本RELEASE.2024-10-08T09-37-26Z 起，使用 :mc:`mc admin accesskey enable` 命令为内置 MinIO IDP 用户启用访问密钥。
 
    如需为 AD/LDAP 用户启用访问密钥，请使用 :mc:`mc idp ldap accesskey enable` 命令。
 

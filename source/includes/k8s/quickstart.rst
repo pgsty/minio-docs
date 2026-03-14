@@ -2,7 +2,7 @@
 
 .. |OS| replace:: Kubernetes
 
-本流程会在 |OS| 上部署一个 Single-Node Single-Drive MinIO Server，
+本流程会在 |OS| 上部署一个 单机单盘 MinIO Server，
 用于 MinIO 对象存储及其 S3 兼容 API 层的早期开发与评估。
 
 如需在 Kubernetes 上部署和管理可用于生产的 MinIO 租户，
@@ -127,7 +127,7 @@
       或类似的网络控制组件，以便将流量路由到该 pod。
       Ingress 配置超出本文档范围。
 
-#. **将浏览器连接到 MinIO Server**
+#. **将浏览器连接到 MinIO 服务端**
 
    在本地机器上打开浏览器并访问 ``http://127.0.0.1:9001``，
    即可进入 :ref:`minio-console`。

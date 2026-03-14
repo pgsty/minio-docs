@@ -9,6 +9,7 @@
 .. |ARN| replace:: ``arn:minio:sqs::primary:redis``
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 

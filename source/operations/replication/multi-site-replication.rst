@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -164,11 +165,11 @@ MinIO 不会代理 ``LIST``、``DELETE`` 和 ``PUT`` 操作。
 所有站点都必须使用相同的 :ref:`Identity Provider <minio-authentication-and-identity-management>`。
 站点复制支持内置的 MinIO IDP、OIDC 或 LDAP。
 
-所有站点必须使用相同的 MinIO Server 版本
+所有站点必须使用相同的 MinIO 服务端版本
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-所有站点都必须使用一致且匹配的 MinIO Server 版本。
-在 MinIO Server 版本不匹配的站点之间配置复制，可能导致意外或不符合预期的复制行为。
+所有站点都必须使用一致且匹配的 MinIO 服务端版本。
+在 MinIO 服务端版本不匹配的站点之间配置复制，可能导致意外或不符合预期的复制行为。
 
 还应确保用于配置复制的 :mc:`mc` 版本尽量与服务器版本保持接近。
 

@@ -66,7 +66,7 @@
 .. code-block:: shell
    :class: copyable
 
-   wget -O - https://minio.pigsty.io/examples/LifecycleManagementAdmin.json | \
+   wget -O - https://silo.pigsty.cc/examples/LifecycleManagementAdmin.json | \
    mc admin policy create Alpha LifecycleAdminPolicy /dev/stdin
    mc admin user add Alpha alphaLifecycleAdmin LongRandomSecretKey
    mc admin policy attach Alpha LifecycleAdminPolicy --user=alphaLifecycleAdmin

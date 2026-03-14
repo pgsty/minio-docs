@@ -2,7 +2,7 @@
 
 .. |OS| replace:: MacOS
 
-本流程会在 |OS| 上部署一个 :ref:`Single-Node Single-Drive <minio-installation-comparison>` MinIO server，
+本流程会在 |OS| 上部署一个 :ref:`单机单盘 <minio-installation-comparison>` MinIO server，
 用于 MinIO 对象存储及其 S3 兼容 API 层的早期开发和评估。
 
 如需面向生产环境的部署说明，请参阅 :ref:`deploy-minio-distributed`。
@@ -29,7 +29,7 @@
       :start-after: start-run-minio-binary-desc
       :end-before: end-run-minio-binary-desc
 
-#. **将浏览器连接到 MinIO Server**
+#. **将浏览器连接到 MinIO 服务端**
 
    打开浏览器（例如 Safari），访问 ``https://127.0.0.1:9000``，
    或 :mc:`minio server` 命令输出中列出的任一 Console 地址，即可进入 :ref:`minio-console`。

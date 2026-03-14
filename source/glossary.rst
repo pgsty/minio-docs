@@ -10,7 +10,7 @@
    access keys
    访问密钥
      MinIO 部署或租户中的一种受限用户账户，通常用于 API 调用。
-     Access Keys 过去称为 "Service Accounts"。
+     访问密钥过去称为 “Service Account（服务账户）”。
 
    active-active
    双活
@@ -57,13 +57,13 @@
 
    cluster
    集群
-     由一组磁盘以及一个或多个 MinIO server 进程组成，并汇聚为单一存储资源的集合。
+     由一组磁盘以及一个或多个 ``minio server`` 进程组成，并汇聚为单一存储资源的集合。
      
      另请参见：:term:`tenant`。
 
    cluster registration
    集群注册
-     Cluster registration 会将 MinIO 部署关联到 :term:`SUBNET` `subscription <https://min.io/pricing?jmp=docs>`__。
+     集群注册会将 MinIO 部署关联到 :term:`SUBNET` `subscription <https://min.io/pricing?jmp=docs>`__。
      一个组织可以将多个 MinIO 集群注册到同一个 SUBNET 订阅。
 
    Console
@@ -74,9 +74,9 @@
    data
    数据块
      MinIO 在执行 :term:`erasure coding` 时写入的两类块之一。
-     data 块包含文件内容。
+     数据块包含对象内容。
 
-     当 data 块损坏或丢失时，:term:`parity` 块可用于重建数据。
+     当数据块损坏或丢失时，:term:`parity` 块可用于重建数据。
 
    decommission
    下线
@@ -97,11 +97,11 @@
    enclave
    隔离域
      对有状态 Key Encryption Service (KES) 服务器中隔离区域的称谓。
-     一个 KES 服务器可以有一个或多个 enclave。
-     KES 服务器中的每个 enclave 都持有独立的密钥、策略和管理身份。
-     一个 enclave 无法查看或使用服务器上的其他 enclave。
+     一个 KES 服务器可以包含一个或多个隔离域。
+     KES 服务器中的每个隔离域都持有独立的密钥、策略和管理身份。
+     任一隔离域都无法查看或使用服务器上的其他隔离域。
 
-     例如，你可以使用多个 enclave，在单个有状态 KES 服务器中为多个 MinIO 租户保存彼此完全隔离的密钥库。
+     例如，你可以使用多个隔离域，在单个有状态 KES 服务器中为多个 MinIO 租户保存彼此完全隔离的密钥库。
 
    encryption at rest
    静态加密
@@ -125,12 +125,12 @@
    erasure set
    纠删码集合
      MinIO 中支持 :term:`erasure coding` 的一组磁盘。
-     MinIO 会将部署中 server pool 的磁盘划分为若干组，每组包含 4 到 16 个磁盘，每组构成一个 *erasure set*。
-     写入对象时，:term:`data` 和 :term:`parity` 块会随机写入该 erasure set 中的各个磁盘。
+     MinIO 会将部署中服务器池的磁盘划分为若干组，每组包含 4 到 16 个磁盘，每组构成一个纠删码集合。
+     写入对象时，:term:`data` 和 :term:`parity` 块会随机写入该纠删码集合中的各个磁盘。
 
    hashing
    哈希
-     使用算法创建唯一且定长的字符串（即一个 `value`）来标识一段数据。
+     使用算法生成唯一且定长的字符串值来标识一段数据。
    
    healing
    自愈
@@ -195,17 +195,17 @@
 
    multipart upload
    分段上传
-     Multipart upload 是一种由客户端发起的 :s3-docs:`S3 function <mpuoverview.html>`，它将单个对象拆分为多个 part，以便从一个位置传输到另一个位置。
-     客户端将每个 part 独立上传到 MinIO，而 MinIO 负责将这些已接收的 part 重建为原始对象。
+     分段上传是一种由客户端发起的 :s3-docs:`S3 功能 <mpuoverview.html>`，它会将单个对象拆分为多个分片，以便从一个位置传输到另一个位置。
+     客户端将每个分片独立上传到 MinIO，而 MinIO 负责将这些已接收的分片重建为原始对象。
 
-     Multipart upload 的优势包括更高的吞吐量以及更强的网络错误恢复能力。
-     对于实际或预估大小超过 100MB 的对象，使用 multipart upload 通常能获得最佳效果。
+     分段上传的优势包括更高的吞吐量以及更强的网络错误恢复能力。
+     对于实际或预估大小超过 100MB 的对象，通常使用分段上传能获得最佳效果。
      
-     更多细节参见 :s3-docs:`Amazon AWS documentation <mpuoverview.html>`。
+     更多细节参见 :s3-docs:`AWS 文档 <mpuoverview.html>`。
 
    network encryption
    网络加密
-     一种在数据从一个位置传输到另一个位置时保护数据的方式，例如 server-server 或 client-server 之间的传输。
+     一种在数据从一个位置传输到另一个位置时保护数据的方式，例如服务端到服务端或客户端到服务端之间的传输。
      MinIO 对入站和出站流量均支持 :ref:`Transport Layer Security (TLS) <minio-tls>` 1.2 及更高版本。
 
    object
@@ -222,20 +222,20 @@
    parity
    校验块
      MinIO 为对象写入的块中，用于在数据块缺失或损坏时支持数据重建的部分。
-     parity 块的数量表示部署在仍保持读写能力的前提下，可丢失的 :term:`erasure set` 磁盘数量。
+     校验块的数量决定了部署在仍保持读写能力的前提下，可丢失的 :term:`erasure set` 磁盘数量。
 
    prefix
    前缀
-     Prefix 通过为应共享相似层级或结构的对象分配相同字符串，来组织 :term:`bucket` 中的 :term:`objects`。
+     前缀通过为应共享相似层级或结构的对象分配相同字符串，来组织 :term:`bucket` 中的 :term:`objects`。
      使用定界字符（通常为 `/`）可以增加层级。
-     虽然带有 prefix 的对象在某些文件系统中可能看起来像目录结构，但 prefix 并不是目录。
+     虽然带有前缀的对象在某些文件系统中可能看起来像目录结构，但前缀并不是目录。
 
-     MinIO 本身不会限制某个特定 prefix 可包含的对象数量。
-     但对于较大的 prefix，硬件和网络条件可能会带来性能影响。
+     MinIO 本身不会限制某个特定前缀可包含的对象数量。
+     但对于较大的前缀，硬件和网络条件可能会带来性能影响。
 
-     - 对于硬件配置一般或预算导向的部署，应将每个 prefix 约 10,000 个对象作为工作负载设计的基线。
+     - 对于硬件配置一般或预算导向的部署，应将每个前缀约 10,000 个对象作为工作负载设计的基线。
        然后根据真实工作负载的基准测试和监控结果，在硬件可有效承载的范围内逐步提高这一目标。
-     - 对于高性能或企业级 :ref:`hardware <deploy-minio-distributed-recommendations>`，通常可以处理包含数百万个甚至更多对象的 prefix。
+     - 对于高性能或企业级 :ref:`hardware <deploy-minio-distributed-recommendations>`，通常可以处理包含数百万个甚至更多对象的前缀。
 
      |SUBNET| 企业版账户可将年度架构评审纳入部署和维护策略，以确保依赖 MinIO 的项目获得长期性能与成功。
     
@@ -283,7 +283,7 @@
 
      更详细的日志信息参见 :term:`audit logs`。
 
-   server pool
+   服务器池
    pool
    服务器池
      一组 ``minio server`` 节点，它们组合各自的磁盘和资源，以支持对象存储与检索请求。
@@ -292,14 +292,14 @@
 
    service account
    服务账户
-     已更名为 :term:`access keys`。
+     该术语已更名为 :term:`access keys`。
      MinIO 部署或租户中的一种受限用户账户，通常用于 API 调用。
 
    shard
    shards
    分片
      对象经过 MinIO :term:`erasure coded <erasure coding>` 后形成的一部分。
-     每个 "shard" 都表示 data 或 parity，供 MinIO 在读请求时用于重建对象。
+     每个分片都表示数据块或校验块，供 MinIO 在读请求时用于重建对象。
 
      .. include:: /includes/common-admonitions.rst
         :start-after: start-exclusive-drive-access
@@ -346,25 +346,25 @@
      该术语此前用于指代已弃用的 :ref:`Gateway or Filesystem Mode <minio-gateway-migration>` 部署类型。
 
    SUBNET
-     `MinIO's Subscription Network <https://min.io/pricing?jmp=docs>`__ 用于跟踪支持工单，并为订阅账户提供 24 小时直连工程师支持。
+     `MinIO Subscription Network <https://min.io/pricing?jmp=docs>`__ 用于跟踪支持工单，并为订阅账户提供 24 小时直连工程师支持。
 
    tenant
    tenants
    租户
      在 :term:`distributed` 模式下，指某个具体的 MinIO 部署。
-     一个 MinIO Operator 实例可以拥有多个 tenant。
+     一个 MinIO Operator 实例可以拥有多个租户。
 
    topology
    拓扑
      部署使用的硬件配置。
-     MinIO 支持三种 topology：
+     MinIO 支持三种拓扑：
      
      - :term:`multi-node multi-drive`
      - :term:`single-node multi-drive`
      - :term:`single-node single-drive`
 
    versioning
-   版本化
+   版本控制
      在 :term:`object` 随时间变化的过程中保留其多个迭代版本。
   
    webhook
@@ -379,5 +379,5 @@
 
    WORM
    一次写入多次读取
-     Write Once Read Many (WORM) 是一种数据保留方法，作为对象锁定的一部分发挥作用。
+     Write Once Read Many (WORM) 是一种数据保留方法，也是对象锁定机制的一部分。
      许多请求都可以检索并查看启用 WORM 锁定的对象（``read many``），但任何写请求都不能更改该对象（``write once``）。

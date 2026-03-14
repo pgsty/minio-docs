@@ -54,14 +54,14 @@
       RootUser: minioadmin
       RootPass: minioadmin
 
-      Command-line: https://minio.pigsty.io/reference/minio-mc.html
+      Command-line: https://silo.pigsty.cc/reference/minio-mc.html
          $ mc alias set myminio http://192.0.2.10:9000 minioadmin minioadmin
 
-      Documentation: https://minio.pigsty.io/index.html
+      Documentation: https://silo.pigsty.cc/index.html
 
       WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables.
 
-#. **将浏览器连接到 MinIO Server**
+#. **将浏览器连接到 MinIO 服务端**
 
    在浏览器中打开 http://127.0.0.1:9000 即可访问 :ref:`MinIO Console <minio-console>`。
    你也可以使用 server 命令输出中列出的任意网络地址。

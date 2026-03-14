@@ -5,6 +5,7 @@ S3 API 兼容性
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -164,4 +165,4 @@ MinIO 针对不支持的存储桶资源的替代方案
 - 对于 ``BucketACL`` 或 ``ObjectACL`` 操作调用，请使用 :ref:`Policies <minio-policy>`。
 - 不需要 ``BucketCORS`` 操作调用，因为默认情况下所有存储桶都已为所有 HTTP 动词启用 CORS。
 - 对于 ``BucketWebsite`` 操作调用，请使用 ``caddy`` 或 ``nginx``。
-- 对于 ``BucketAnalytics``、``BucketMetrics`` 或 ``BucketLogging`` 操作调用，请使用 :ref:`Bucket Notifications <minio-bucket-notifications>`。
+- 对于 ``BucketAnalytics``、``BucketMetrics`` 或 ``BucketLogging`` 操作调用，请使用 :ref:`存储桶通知 <minio-bucket-notifications>`。

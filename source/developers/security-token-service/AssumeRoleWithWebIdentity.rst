@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -137,7 +138,7 @@ AWS :aws-docs:`AssumeRoleWithWebIdentity
 凭证：
 
 - ``AccessKeyId`` - 应用用于认证的访问密钥。
-- ``SecretKeyId`` - 应用用于认证的秘密密钥。
+- ``SecretKeyId`` - 应用用于认证的 Secret Key。
 - ``Expiration`` - 凭证过期的 :rfc:`RFC3339 <3339>` 日期和时间。
 - ``SessionToken`` - 应用用于认证的会话 token。某些
   SDK 在使用临时凭证时可能需要此字段。

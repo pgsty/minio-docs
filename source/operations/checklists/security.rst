@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -29,7 +30,7 @@
      - （仅 Kubernetes 部署）将租户配置为使用所选的第三方身份提供商
 
    * - :octicon:`circle`
-     - 在防火墙中放行到 MinIO Server S3 API 监听端口的 TCP 流量（默认：``9000``）。
+     - 在防火墙中放行到 MinIO 服务端 S3 API 监听端口的 TCP 流量（默认：``9000``）。
 
    * - :octicon:`circle`
      - 在防火墙中放行到 :ref:`MinIO Server Console 监听端口 <minio-console-port-assignment>` 的 TCP 流量（推荐默认值：``9090``）。

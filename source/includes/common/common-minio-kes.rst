@@ -20,9 +20,9 @@ KMS 必须维护并提供对 :envvar:`MINIO_KMS_KES_KEY_NAME` 的访问。
 以便通过 KES 和指定的 KMS 目标启用 |SSE|。
 
 关于新的生产部署，请参见
-:ref:`Multi-Node Multi-Drive (Distributed) <minio-mnmd>` 教程。
+:ref:`多机多盘 (Distributed) <minio-mnmd>` 教程。
 关于新的本地或评估部署，请参见
-:ref:`Single-Node Single-Drive <minio-snsd>` 教程。
+:ref:`单机单盘 <minio-snsd>` 教程。
 
 在为部署创建环境文件时，请暂停并返回本教程，
 加入支持 |SSE| 所需的环境变量。

@@ -6,7 +6,7 @@ AWS CLI 是一个用于管理 AWS 服务的统一工具。它也常用于在 AWS
 
 ## 1. 前提条件
 
-从[这里](https://minio.pigsty.io/operations/deployments/installation.html)安装 MinIO Server。
+从[这里](https://silo.pigsty.cc/operations/deployments/installation.html)安装 MinIO Server。
 
 ## 2. 安装
 

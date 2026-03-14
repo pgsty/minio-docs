@@ -7,13 +7,14 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
 概述
 ----
 
-MinIO 使用 Policy-Based Access Control (PBAC) 来定义已认证用户可访问的授权操作和资源。
+MinIO 使用 基于策略的访问控制 (PBAC) 来定义已认证用户可访问的授权操作和资源。
 每个策略描述一条或多条 :ref:`actions <minio-policy-actions>` 与 :ref:`conditions <minio-policy-conditions>`，用于说明某个 :ref:`user <minio-users>` 或 :ref:`group <minio-groups>` 中用户的权限。
 
 MinIO PBAC 在设计上兼容 AWS IAM 策略语法、结构和行为。
@@ -549,13 +550,13 @@ MinIO 策略文档支持 IAM :iam-docs:`S3 Action keys <list_amazons3.html#amazo
 
 .. policy-action:: s3:ListenNotification
 
-   用于控制与 MinIO Bucket Notifications 相关 API 操作的 MinIO 扩展。
+   用于控制与 MinIO 存储桶通知 相关 API 操作的 MinIO 扩展。
 
    此 action **不** 用于其他兼容 S3 的服务。
 
 .. policy-action:: s3:ListenBucketNotification
 
-   用于控制与 MinIO Bucket Notifications 相关 API 操作的 MinIO 扩展。
+   用于控制与 MinIO 存储桶通知 相关 API 操作的 MinIO 扩展。
 
    此 action **不** 用于其他兼容 S3 的服务。
 

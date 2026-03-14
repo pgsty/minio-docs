@@ -17,7 +17,7 @@
 
 .. start-mc-admin-decommission-desc
 
-:mc-cmd:`mc admin decommission` 命令用于启动 MinIO :ref:`server pools <minio-intro-server-pool>`
+:mc-cmd:`mc admin decommission` 命令用于启动 MinIO :ref:`服务器池s <minio-intro-server-pool>`
 的下线流程。下线流程适用于移除较旧的服务器池，这些服务器池的硬件能力或性能已不再满足要求，
 或相较部署中的其他池表现不足。MinIO 会根据每个池可用空闲空间的比例，自动将数据从被下线
 的池迁移到部署中其余的池。

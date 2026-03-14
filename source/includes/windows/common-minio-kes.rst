@@ -93,7 +93,7 @@ MinIO 要求在使用某个 |EK| 执行 |SSE| 操作之前，
 本流程说明如何修改 MinIO 部署的启动环境变量，
 以便通过 KES 和根 KMS 启用 |SSE|。
 关于如何创建新部署，
-请参考 :ref:`Single-Node Single-Drive <minio-snsd>` 教程。
+请参考 :ref:`单机单盘 <minio-snsd>` 教程。
 
 在为部署创建环境文件时，请暂停并返回本教程，
 加入支持 |SSE| 所需的环境变量。

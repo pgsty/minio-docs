@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -27,7 +28,7 @@
 
 .. end-mc-admin-rebalance-desc
 
-当新增 server pool 时，MinIO 不会自动对对象执行再平衡。
+当新增 服务器池 时，MinIO 不会自动对对象执行再平衡。
 相反，MinIO 会将 :ref:`新对象写入 <minio-writing-files>` 相较于部署中其他可用池可用空间更多的池。
 触发手动再平衡流程会促使 MinIO 扫描整个部署，并按需移动对象，以使所有池的可用空间大致相当。
 

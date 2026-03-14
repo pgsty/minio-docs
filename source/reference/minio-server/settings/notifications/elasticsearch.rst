@@ -8,10 +8,11 @@ Elasticsearch 通知设置
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
-本文档介绍如何配置 Elasticsearch 服务作为 :ref:`Bucket Notifications <minio-bucket-notifications>` 的目标。
+本文档介绍如何配置 Elasticsearch 服务作为 :ref:`存储桶通知 <minio-bucket-notifications>` 的目标。
 有关如何使用这些设置的教程，请参阅 :ref:`minio-bucket-notifications-publish-elasticsearch`。
 
 .. include:: /includes/common-mc-admin-config.rst

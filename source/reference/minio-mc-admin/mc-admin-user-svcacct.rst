@@ -7,6 +7,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -14,9 +15,9 @@
 
 .. important::
 
-   这些命令已被替代，并将在未来的 MinIO Client 版本中弃用。
+   这些命令已被替代，并将在未来的 MinIO 客户端版本中弃用。
 
-   自 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，与内置 MinIO IDP 用户及其访问密钥或 STS 令牌相关的功能，请使用 :mc:`mc admin accesskey` 命令及其子命令。
+   自 MinIO客户端版本RELEASE.2024-10-08T09-37-26Z 起，与内置 MinIO IDP 用户及其访问密钥或 STS 令牌相关的功能，请使用 :mc:`mc admin accesskey` 命令及其子命令。
 
    对于 AD/LDAP 用户的访问密钥，请使用 :mc:`mc idp ldap accesskey` 命令及其子命令。
 
@@ -27,8 +28,8 @@
 
 :mc:`mc admin user svcacct` 命令及其子命令用于在 MinIO 部署上创建和管理 :ref:`访问密钥 <minio-idp-service-account>`。
 
-自 MinIO Client RELEASE.2024-10-08T09-37-26Z 起，这些命令已由 :mc:`mc admin accesskey` 和 :mc:`mc idp ldap accesskey` 取代。
-该命令及其子命令将在未来的 MinIO Client 版本中弃用。
+自 MinIO客户端版本RELEASE.2024-10-08T09-37-26Z 起，这些命令已由 :mc:`mc admin accesskey` 和 :mc:`mc idp ldap accesskey` 取代。
+该命令及其子命令将在未来的 MinIO 客户端版本中弃用。
 
 .. end-mc-admin-user-svcacct-desc
 

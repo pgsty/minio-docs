@@ -7,11 +7,12 @@ Metrics version 2
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 3
 
 
-MinIO 使用 :prometheus-docs:`Prometheus Data Model <concepts/data_model/>` 发布集群和节点指标。
+MinIO 使用 :prometheus-docs:`Prometheus 数据模型 <concepts/data_model/>` 发布集群和节点指标。
 你可以使用任意抓取工具从 MinIO 拉取指标数据，以执行进一步分析和配置告警。
 
 Version 2 端点

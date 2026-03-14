@@ -2,12 +2,12 @@
 
 .. |OS| replace:: Windows
 
-本流程会在 |OS| 上部署一个 :ref:`Single-Node Single-Drive <minio-installation-comparison>` MinIO server，
+本流程会在 |OS| 上部署一个 :ref:`单机单盘 <minio-installation-comparison>` MinIO server，
 用于 MinIO 对象存储及其 S3 兼容 API 层的早期开发和评估。
 
 .. note::
 
-   本文档仅涵盖 Single-Node Single-Drive 部署。
+   本文档仅涵盖 单机单盘 部署。
    由于 NTFS 的行为和限制，MinIO 不建议在 Windows 主机上进行多节点多驱动器部署。
 
    如需部署面向生产的分布式 MinIO，
@@ -67,17 +67,17 @@ MinIO 支持未达到 EOL 的 Windows 版本（Windows 10、Windows Server 2016+
       RootUser: minioadmin
       RootPass: minioadmin
 
-      Command-line: https://minio.pigsty.io/reference/minio-mc.html
+      Command-line: https://silo.pigsty.cc/reference/minio-mc.html
          $ mc alias set myminio http://192.0.2.10:9000 minioadmin minioadmin
 
-      Documentation: https://minio.pigsty.io/
+      Documentation: https://silo.pigsty.cc/
 
       WARNING: Detected default credentials 'minioadmin:minioadmin', we recommend that you change these values with 'MINIO_ROOT_USER' and 'MINIO_ROOT_PASSWORD' environment variables.
    
    该进程与当前 PowerShell 或 Command Prompt 窗口绑定。
    关闭窗口会停止 server，并终止该进程。
 
-#. 将浏览器连接到 MinIO Server
+#. 将浏览器连接到 MinIO 服务端
 
    打开浏览器（例如 Microsoft Edge），访问 ``http://127.0.0.1:9001``，
    或者访问 :mc:`minio server` 命令输出中列出的任一 Console 地址，即可进入 :ref:`minio-console`。

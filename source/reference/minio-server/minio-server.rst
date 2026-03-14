@@ -1,10 +1,11 @@
-============
-MinIO Server
-============
+==============
+MinIO 服务端
+==============
 
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -51,7 +52,7 @@ MinIO Server
    仅使用 :mc-cmd:`~minio server DIRECTORIES` 参数即可启动一个单机 :mc:`~minio server` 进程。
 
    对于分布式部署，请指定部署中每个 :mc:`minio server` 的主机名。
-   这一组 :mc:`minio server` 进程共同表示一个 :ref:`Server Pool <minio-intro-server-pool>`。
+   这一组 :mc:`minio server` 进程共同表示一个 :ref:`服务器池 <minio-intro-server-pool>`。
 
    :mc-cmd:`~minio server HOSTNAME` 支持 MinIO 扩展记法 ``{x...y}``，用于表示按顺序排列的一组主机名。
    MinIO *要求* 使用连续主机名，以识别该集合中的每个 :mc:`minio server` 进程。
@@ -63,10 +64,10 @@ MinIO Server
    - ``https://minio3.example.net``
    - ``https://minio4.example.net``
 
-   你必须在 Server Pool 中每台主机上，使用 *相同* 的 :mc-cmd:`~minio server HOSTNAME` 和 :mc-cmd:`~minio server DIRECTORIES` 组合来运行 :mc:`minio server` 命令。
+   你必须在 服务器池 中每台主机上，使用 *相同* 的 :mc-cmd:`~minio server HOSTNAME` 和 :mc-cmd:`~minio server DIRECTORIES` 组合来运行 :mc:`minio server` 命令。
 
    每增加一个 ``HOSTNAME/DIRECTORIES`` 对，就表示增加一个 Server Set，以用于 MinIO 部署的水平扩展。
-   有关 Server Pools 的更多信息，请参阅 :ref:`Server Pool <minio-intro-server-pool>`。
+   有关 服务器池s 的更多信息，请参阅 :ref:`服务器池 <minio-intro-server-pool>`。
 
 .. mc-cmd:: DIRECTORIES
    :required:
@@ -327,7 +328,7 @@ MinIO Server
 设置
 ----
 
-你可以通过定义额外的 :ref:`Configuration Values <minio-server-configuration-options>` 或 :ref:`Environment Variables <minio-server-environment-variables>`，对 MinIO Server 进程执行其他自定义配置。
+你可以通过定义额外的 :ref:`Configuration Values <minio-server-configuration-options>` 或 :ref:`Environment Variables <minio-server-environment-variables>`，对 MinIO 服务端进程执行其他自定义配置。
 
 许多配置值和环境变量定义的是同一个值。
 如果同时设置配置值及其对应环境变量，MinIO 使用环境变量中的值。

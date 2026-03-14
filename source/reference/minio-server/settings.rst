@@ -9,6 +9,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
@@ -36,7 +37,7 @@ MinIO 设置定义 MinIO :mc:`server <minio server>` 进程的运行时行为。
 - :ref:`存储类 <minio-server-envvar-storage-class>`
 - :ref:`MinIO Console <minio-server-envvar-console>`
 - :ref:`指标与日志 <minio-server-envvar-metrics-logging>`
-- 用于 :ref:`MinIO Bucket Notifications <minio-bucket-notifications>` 的 :ref:`通知目标 <minio-server-envvar-notifications>`
+- 用于 :ref:`MinIO 存储桶通知 <minio-bucket-notifications>` 的 :ref:`通知目标 <minio-server-envvar-notifications>`
 - :ref:`身份与访问管理方案 <minio-server-envvar-iam>`
 - :ref:`Key Encryption Service (KES) <minio-server-envvar-kes>`
 - :ref:`Object Lambda 函数 <minio-server-envvar-object-lambda-webhook>`

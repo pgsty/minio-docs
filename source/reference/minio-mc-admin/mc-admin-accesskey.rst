@@ -7,12 +7,13 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 2
 
 .. mc:: mc admin accesskey
 
-.. versionadded:: MinIO Client RELEASE.2024-10-08T09-37-26Z
+.. versionadded:: MinIO客户端版本RELEASE.2024-10-08T09-37-26Z
 
 这些命令用于替代 :mc:`mc admin user svcacct` 命令及其子命令中的 MinIO IDP 功能。
 

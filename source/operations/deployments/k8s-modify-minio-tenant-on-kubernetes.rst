@@ -8,6 +8,7 @@
 .. default-domain:: minio
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -66,10 +67,10 @@
 
 .. Following link is intended for K8s only
 
-退役租户 Server Pool
+退役租户 服务器池
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-MinIO Operator 4.4.13 及更高版本支持退役租户中的 server pool。
+MinIO Operator 4.4.13 及更高版本支持退役租户中的 服务器池。
 具体而言，你可以遵循 :minio-docs:`Decommission a Server pool <minio/linux/operations/install-deploy-manage/decommission-server-pool.html>` 步骤先从租户中移除该 pool，然后编辑租户 YAML，将该 pool 从 StatefulSet 中移除。
 移除租户 pool 时，请确保所有剩余 pool 的 ``spec.pools.[n].name`` 字段都具有明确取值。
 

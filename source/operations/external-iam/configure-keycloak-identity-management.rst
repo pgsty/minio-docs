@@ -8,6 +8,7 @@
 
 
 .. contents:: 目录
+   :name: table-of-contents
    :local:
    :depth: 1
 
@@ -16,7 +17,7 @@
 
 本流程将 MinIO 配置为通过 OpenID Connect (OIDC) 协议，使用 `Keycloak <https://www.keycloak.org/>`__ 作为外部 Identity Provider (IDP) 来认证用户。
 
-本页提供了在 Kubernetes 和 Baremetal 基础设施上的 MinIO 部署中配置 OIDC 的流程。
+本页提供了在 Kubernetes 和裸金属 基础设施上的 MinIO 部署中配置 OIDC 的流程。
 
 请选择与你基础设施对应的标签页，在不同说明集之间切换。
 
@@ -34,7 +35,7 @@
       - 使用 SSO 和 Keycloak 托管身份登录 MinIO Tenant Console
       - 使用 ``AssumeRoleWithWebIdentity`` Security Token Service (STS) API 生成临时 S3 访问凭证
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       对于部署在裸金属基础设施上的 MinIO，本流程包括：
@@ -67,7 +68,7 @@ Keycloak 部署与 Realm 配置
       对于位于 Kubernetes 集群外部的 Keycloak 部署，本流程假定已经存在用于管理 MinIO Tenant 入站和出站访问的 Ingress、Load Balancer 或类似 Kubernetes 网络控制组件。
 
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       MinIO 部署必须与目标 OIDC 服务保持双向访问。
@@ -87,7 +88,7 @@ Keycloak 部署与 Realm 配置
       你必须能够访问 MinIO Operator Console Web UI。
       你可以使用自己偏好的 Kubernetes 路由组件暴露 MinIO Operator Console Service，也可以通过临时端口转发，在本地机器上暴露 Console Service 端口。
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       本流程使用 :mc:`mc` 对 MinIO 集群执行操作。
@@ -108,7 +109,7 @@ Keycloak 部署与 Realm 配置
 
       .. include:: /includes/k8s/steps-configure-keycloak-identity-management.rst
 
-   .. tab-item:: Baremetal
+   .. tab-item:: 裸金属
       :sync: baremetal
 
       .. include:: /includes/baremetal/steps-configure-keycloak-identity-management.rst
