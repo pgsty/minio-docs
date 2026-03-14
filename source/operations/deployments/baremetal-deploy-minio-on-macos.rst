@@ -258,10 +258,10 @@ The command output resembles the following:
       RootUser: minioadmin 
       RootPass: minioadmin 
 
-   CLI: https://minio.pigsty.io/reference/minio-mc.html#quickstart
+   CLI: https://silo.pigsty.io/reference/minio-mc.html#quickstart
       $ mc alias set 'myminio' 'https://minio-1.example.net:9000' 'minioadmin' 'minioadmin'
 
-   Docs: https://minio.pigsty.io/index.html
+   Docs: https://silo.pigsty.io/index.html
    Status:         1 Online, 0 Offline. 
 
 The ``API`` block lists the network interfaces and port on which clients can access the MinIO S3 API.

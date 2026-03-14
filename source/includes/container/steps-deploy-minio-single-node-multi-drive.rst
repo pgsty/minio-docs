@@ -142,10 +142,10 @@ The following table describes each line of the command and provides additional c
    RootUser: myminioadmin 
    RootPass: minio-secret-key-change-me 
 
-   Command-line: https://minio.pigsty.io/reference/minio-mc.html
+   Command-line: https://silo.pigsty.io/reference/minio-mc.html
       $ mc alias set myminio http://10.0.2.100:9000 myminioadmin minio-secret-key-change-me
 
-   Documentation: https://minio.pigsty.io/operations/deployments/baremetal-deploy-minio-as-a-container.html
+   Documentation: https://silo.pigsty.io/operations/deployments/baremetal-deploy-minio-as-a-container.html
 
 .. admonition:: Container Networks May Not Be Accessible Outside of the Host
 

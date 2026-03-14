@@ -1,4 +1,11 @@
-# MinIO Documentation
+# Silo (MinIO) Documentation
+
+[![Website: silo.pigsty.io](https://img.shields.io/badge/website-silo.pigsty.io-slategray?style=flat&logo=cilium&logoColor=white)](https://silo.pigsty.io)
+[![CN: silo.pigsty.cc](https://img.shields.io/badge/网站-silo.pigsty.cc-slategray?style=flat&logo=cilium&logoColor=white)](https://silo.pigsty.cc)
+[![github: pgsty/minio](https://img.shields.io/badge/Repo-pgsty/minio-slategray?style=flat&logo=github&logoColor=white)](https://github.com/pgsty/minio)
+[![github: pgsty/mc](https://img.shields.io/badge/Repo-pgsty/mc-slategray?style=flat&logo=github&logoColor=white)](https://github.com/pgsty/mc)
+[![github: pgsty/minio-docs](https://img.shields.io/badge/Repo-pgsty/minio--docs-slategray?style=flat&logo=github&logoColor=white)](https://github.com/pgsty/minio-docs)
+[![Docker Image](https://img.shields.io/badge/Docker-pgsty/minio-%232496ED?style=flat&logo=docker&logoColor=white)](https://hub.docker.com/r/pgsty/minio)
 
 > [!IMPORTANT]
 > **This is a community-maintained fork of [minio/docs](https://github.com/minio/docs), maintained by [Pigsty](https://pigsty.io).**
@@ -6,10 +13,10 @@
 > "MinIO" is a trademark of MinIO, Inc., used here solely to identify the upstream project.
 >
 > Changes from upstream are minimal:
-> - Restored the removed [Console](https://minio.pigsty.io/administration/minio-console.html) documentation
+> - Restored the removed [Console](https://silo.pigsty.io/administration/minio-console.html) documentation
 > - Fixed dead links pointing to the decommissioned `docs.min.io`
 >
-> Hosted at [minio.pigsty.io](https://minio.pigsty.io). Distributed under the original [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) license.
+> Hosted at [silo.pigsty.io](https://silo.pigsty.io). Distributed under the original [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) license.
 
 ## Build Instructions
 
