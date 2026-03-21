@@ -11,7 +11,6 @@
    - `MinIO 纠删码概览 <https://www.youtube.com/watch?v=QniHMNNmbfI>`__
 
 .. contents:: 目录
-   :name: table-of-contents
    :local:
    :depth: 2
 

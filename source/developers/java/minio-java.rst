@@ -5,7 +5,6 @@ Java 快速入门指南
 ====================
 
 .. contents:: 目录
-   :name: table-of-contents
    :local:
    :depth: 2
 

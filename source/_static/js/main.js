@@ -1,5 +1,8 @@
 window.addEventListener("DOMContentLoaded", (event) => {
-  const tocMenuEl = document.querySelector("#table-of-contents > ul.simple");
+  const tocPreferredEl =
+    document.getElementById("table-of-contents") ||
+    document.querySelector(".content__body nav.contents.local");
+  const tocMenuEl = tocPreferredEl ? tocPreferredEl.querySelector("ul.simple") : null;
   const root = document.documentElement;
   var readModeLs = localStorage.getItem("read-mode");
 
@@ -142,15 +145,19 @@ window.addEventListener("DOMContentLoaded", (event) => {
   (function () {
     // Move the TOC, External Links, etc. to the right side of the page
     const extVideoLinks = document.querySelector(".extlinks-video")
-
-    const tocPreferredEl = document.getElementById("table-of-contents");
     const tocLegacyEl = document.getElementById("content-toc");
 
     // This is the target element for the "aside" or right nav bar
     const tocAsideEl = document.querySelector(".content__toc");
 
+    if (tocPreferredEl && tocPreferredEl.id !== "table-of-contents") {
+      tocPreferredEl.id = "table-of-contents";
+    }
+
     // Don't need this element so remove it
-    tocLegacyEl.remove();
+    if (tocLegacyEl) {
+      tocLegacyEl.remove();
+    }
 
     // Build an array of elements to add, in order
     // Then iterate the array and append it, one by one, to the aside
@@ -191,8 +198,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
     }
     
     // Treat the TOC as a dropdown in mobile
-    const tocToggleEl = document.querySelector(".topic-title");
-    if(tocToggleEl) {
+    const tocToggleEl = tocPreferredEl ? tocPreferredEl.querySelector(".topic-title") : null;
+    if(tocToggleEl && tocMenuEl) {
       tocToggleEl.addEventListener("click", (event) => {
         event.preventDefault();
         tocMenuEl.closest(".content__toc").classList.toggle("active");

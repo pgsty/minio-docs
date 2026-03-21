@@ -15,7 +15,6 @@ MinIO 高性能对象存储
       - `如何使用 JavaScript 连接到 MinIO <https://www.youtube.com/watch?v=yUR4Fvx0D3E&list=PLFOIsHSSYIK3Dd3Y_x7itJT1NUKT5SxDh&index=5>`__
 
 .. contents:: 目录
-   :name: table-of-contents
    :local:
    :depth: 2
 

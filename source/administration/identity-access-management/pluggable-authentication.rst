@@ -8,7 +8,6 @@ MinIO External Identity Management Plugin
 
 
 .. contents:: 目录
-   :name: table-of-contents
    :local:
    :depth: 1
 

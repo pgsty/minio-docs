@@ -11,7 +11,6 @@
    - `使用 FTP 和 SFTP 与 MinIO 进行文件传输 <https://www.youtube.com/watch?v=lNZyL8wD-lI>`__
 
 .. contents:: 目录
-   :name: table-of-contents
    :local:
    :depth: 2
 

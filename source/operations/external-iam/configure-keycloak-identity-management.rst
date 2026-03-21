@@ -8,7 +8,6 @@
 
 
 .. contents:: 目录
-   :name: table-of-contents
    :local:
    :depth: 1
 
