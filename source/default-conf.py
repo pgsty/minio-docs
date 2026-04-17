@@ -145,7 +145,7 @@ autoyaml_level = 5
 #
 html_theme = 'alabaster'
 
-html_favicon = '_static/favicon.png'
+html_favicon = '_static/favicon.ico'
 
 html_sidebars = {
     '**' : [
