@@ -13,7 +13,18 @@ RELEASE.2026-04-17T00-00-00Z
 
 2026-04-17: `https://github.com/pgsty/minio/releases/tag/RELEASE.2026-04-17T00-00-00Z <https://github.com/pgsty/minio/releases/tag/RELEASE.2026-04-17T00-00-00Z>`__
 
-本次版本以安全加固为核心，集中修复了 OIDC、LDAP STS、S3 Select、对象复制元数据、unsigned-trailer、Snowball 上传链路及依赖与 Go 工具链相关的多项安全问题，同时完成了依赖治理、LDAP TLS 回归修复，以及社区分叉文档与安全说明的统一整理。
+本次版本聚焦安全加固与兼容性收敛，集中修复了 OIDC、LDAP STS、S3 Select、对象复制元数据、unsigned-trailer、Snowball 上传链路，以及依赖与 Go 工具链相关的多项安全问题，并同步完成 LDAP TLS 回归修复与社区分叉文档整理。
+
+主要变更
+^^^^^^^^
+
+- 身份认证链路收紧：OIDC / WebIdentity 现在只接受来自 IdP ``JWKS`` 的非对称签名 ``ID Token``，``HS256`` 等对称签名 token 不再被接受；LDAP STS 统一隐藏“未知用户”和“密码错误”的区别，降低用户名枚举风险。
+- LDAP STS 限流行为更新：限流现在同时按源 IP 与归一化用户名生效，成功请求不再错误消耗额度；默认仅使用 socket peer address 作为源地址，不再信任 ``X-Forwarded-For``、``X-Real-IP``、``Forwarded``，如需按真实客户端 IP 限流，需显式配置 ``MINIO_IDENTITY_LDAP_STS_TRUSTED_PROXIES``。
+- 上传与写入路径更严格：presigned query 参数不能再与 ``unsigned-trailer`` 的 ``PUT`` / multipart 上传组合使用；Snowball auto-extract 在 ``unsigned-trailer`` 路径下也会执行完整签名校验，匿名或伪造签名请求将被拒绝。
+- 复制元数据不再可伪造：普通 ``PUT`` / ``COPY`` 请求夹带的 ``X-Minio-Replication-*`` 内部复制头现在会被拒绝或忽略，只有可信复制链路才能写入相关内部元数据。
+- S3 Select 错误语义更明确：CSV 和 line-delimited JSON 遇到超大记录时会直接返回 ``OverMaxRecordSize``，不再笼统返回 ``InternalError``；依赖旧错误码的客户端或告警规则需要同步调整。
+- 运行时与依赖基线升级：修复 ``ldaps://`` 未正确应用 TLS 配置的回归问题，替换 ``minio/pkg/v3`` 为 ``pgsty/minio-pkg/v3``，并锁定若干易引入 breaking changes 的关键依赖；同时升级 ``go-jose``、``go.opentelemetry.io`` 与 Go ``1.26.2``，统一构建与发布基线。
+- 文档与安全说明同步更新：刷新 ``SECURITY.md``、``VULNERABILITY_REPORT.md``、``docs/sts/ldap.md`` 等文档，新增安全通告索引，并将安全说明中的上游 ``minio/minio`` 引用统一切换为 ``pgsty/minio``。
 
 修复的 CVE
 ^^^^^^^^^^
@@ -27,18 +38,6 @@ RELEASE.2026-04-17T00-00-00Z
 - `GHSA-hv4r-mvr4-25vw <https://github.com/advisories/GHSA-hv4r-mvr4-25vw>`__：封堵 unsigned-trailer query auth 绕过。
 - `GHSA-9c4q-hq6p-c237 <https://github.com/advisories/GHSA-9c4q-hq6p-c237>`__：加固 Snowball auto-extract 场景中的 unsigned-trailer 认证与签名校验。
 - `CVE-2026-32280 <https://pkg.go.dev/vuln/GO-2026-4947>`__、`CVE-2026-32281 <https://pkg.go.dev/vuln/GO-2026-4946>`__、`CVE-2026-32283 <https://pkg.go.dev/vuln/GO-2026-4870>`__：升级 Go 到 ``1.26.2``，吸收上游工具链与标准库安全修复。
-
-主要变更
-^^^^^^^^
-
-- 修复 LDAP TLS 回归并收敛依赖风险：替换 ``minio/pkg/v3`` 为 ``pgsty/minio-pkg/v3``，修复 ``ldaps://`` 连接未正确传递 TLS 配置的问题，并固定若干存在 breaking changes 风险的关键依赖版本。
-- 完成关键依赖安全升级：升级 ``go-jose`` 到 ``v4.1.4``，升级 ``go.opentelemetry.io`` 相关组件，并保留相应上游合并链路。
-- 加固 OIDC 身份校验链路：恢复严格的 JWKS-only JWT 验证路径，确保仅接受现有 JWKS 流程支持的非对称签名算法。
-- 系统性强化 LDAP STS：统一未知用户与错误密码的外部返回，补充源 IP 与归一化用户名双维度限流，修正成功请求记账与可伪造转发头带来的源地址判定问题，并补齐 trusted-proxy 与回归测试。
-- 封堵对象写入与复制链路风险：拒绝不可信复制元数据写入，阻断 unsigned-trailer query auth 绕过，并加固 Snowball auto-extract 上传路径的鉴权逻辑。
-- 提升 S3 Select 健壮性与错误可观测性：在 CSV 与 line-delimited JSON 分割阶段直接拒绝超大记录，返回明确的 ``OverMaxRecordSize`` 语义错误。
-- 升级 Go 运行时与构建基线：统一切换到 Go ``1.26.2``，同步刷新相关构建镜像版本。
-- 同步安全文档与 fork 归属信息：刷新 ``SECURITY.md``、``VULNERABILITY_REPORT.md``、``docs/sts/ldap.md`` 等文档，并将仍指向上游 ``minio/minio`` 的安全说明统一切换为 ``pgsty/minio``。
 
 关联提交
 ^^^^^^^^
