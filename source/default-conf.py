@@ -184,7 +184,7 @@ project = 'SILO (MinIO Object Storage) Documentation'
 copyright = '2020-Present, MinIO, Inc. '
 author = 'MinIO Documentation Team'
 html_title = 'SILO (MinIO Object Storage)'
-html_short_title = 'SILO (MinIO Object Storage)'
+html_short_title = 'SILO (MinIO 对象存储)'
 
 html_permalinks_icon = ''
 
