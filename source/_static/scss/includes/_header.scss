@@ -27,6 +27,20 @@
 
 .header__logo {
 	display: flex;
+	align-items: center;
+
+	& > img,
+	& > svg {
+		display: block;
+	}
+
+	& > img {
+		height: 1.4rem;
+		width: auto;
+		max-width: min(8.8rem, 34vw);
+		transform: scaleY(0.82);
+		transform-origin: left center;
+	}
 
 	& > svg {
 		width: 6.25rem;
@@ -216,10 +230,13 @@
 		}
 
 		.header__logo {
+			& > img {
+				height: 1.2rem;
+			}
+
 			& > svg {
 				width: 5rem;
 			}
 		}
 	}
 }
-

@@ -4,6 +4,12 @@ MinIO High Performance Object Storage
 
 .. default-domain:: minio
 
+.. important::
+
+   **This is a community-maintained fork of** `minio/docs <https://github.com/minio/docs>`__ **, maintained by** `Pigsty <https://pigsty.io>`__ **at** `pgsty/minio-docs <https://github.com/pgsty/minio-docs>`__ **.**
+   This project is **not** affiliated with, endorsed by, or sponsored by MinIO, Inc.
+   "MinIO" is a trademark of MinIO, Inc., used here solely to identify the upstream project.
+
 .. cond:: mindocs
 
    .. container:: extlinks-video
@@ -24,15 +30,6 @@ MinIO is designed to support modern application workload patterns where high per
 This site documents Operations, Administration, and Development of MinIO Community Object Storage deployments on supported platforms.
 
 `English <https://silo.pigsty.io>`__ | `中文文档 <https://silo.pigsty.cc>`__ | `GitHub Repo <https://github.com/pgsty/minio>`__ | `Docker Image <https://hub.docker.com/r/pgsty/minio>`__ | `Ansible Deploy <https://pigsty.io/docs/minio>`__
-
-.. important::
-
-   **This is a community-maintained fork of** `minio/docs <https://github.com/minio/docs>`__ **, maintained by** `Pigsty <https://pigsty.io>`__ **at** `pgsty/minio-docs <https://github.com/pgsty/minio-docs>`__ **.**
-   This project is **not** affiliated with, endorsed by, or sponsored by MinIO, Inc.
-   "MinIO" is a trademark of MinIO, Inc., used here solely to identify the upstream project.
-
-   Changes from upstream (`#1203 <https://github.com/minio/docs/commit/571f188>`__) are minimal: restored the removed :ref:`Console <minio-console>` documentation and fixed dead links.
-   Distributed under the original `Creative Commons Attribution 4.0 International License <https://creativecommons.org/licenses/by/4.0/legalcode>`__.
 
 
 

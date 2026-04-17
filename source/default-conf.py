@@ -180,11 +180,11 @@ html_baseurl = 'https://silo.pigsty.io/'
 # -- Project information -----------------------------------------------------
 
 
-project = 'Documentation for MinIO Object Storage' 
+project = 'SILO (MinIO Object Storage) Documentation'
 copyright = '2020-Present, MinIO, Inc. '
 author = 'MinIO Documentation Team'
-html_title = 'MinIO Object Storage (AGPLv3)'
-html_short_title = 'MinIO Object Storage'
+html_title = 'SILO (MinIO Object Storage)'
+html_short_title = 'SILO (MinIO Object Storage)'
 
 html_permalinks_icon = ''
 
