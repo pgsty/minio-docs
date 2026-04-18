@@ -132,3 +132,4 @@ Quickstart
    /reference/s3-api-compatibility
    /glossary
    /integrations/integrations
+   /reference/release-note
