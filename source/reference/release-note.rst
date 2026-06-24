@@ -1,12 +1,52 @@
 版本发布注记
 ============
 
-这里汇总了 `pgsty/minio <https://github.com/pgsty/minio/releases>`__ 发布页面中已经发布的所有版本，并补充即将发布的 2026-04-17 版本草案。
+这里汇总了 `pgsty/minio <https://github.com/pgsty/minio/releases>`__ 发布页面中已经发布的所有版本。
 下文按时间倒序整理每个 Release 的发布时间、核心改动、安全修复与关联提交，便于快速审计社区维护分支的演进。
 
 .. contents:: 目录
    :local:
    :depth: 1
+
+RELEASE.2026-06-18T00-00-00Z
+----------------------------
+
+2026-06-18: `https://github.com/pgsty/minio/releases/tag/RELEASE.2026-06-18T00-00-00Z <https://github.com/pgsty/minio/releases/tag/RELEASE.2026-06-18T00-00-00Z>`__
+
+这是 ``pgsty/minio`` 社区分支的一次例行安全与依赖维护更新。该版本加固 LDAP STS 限流，补齐 S3 Select 超大记录限制，移除废弃的 ``ReadMultiple`` 节点间 storage-REST API，将 Go 构建基线升级到 ``1.26.4``，并刷新 Go 模块依赖以吸收第三方安全修复。
+
+主要变更
+^^^^^^^^
+
+- 移除废弃的 ``ReadMultiple`` storage-REST API：旧的节点间 ``/rmpl`` 端点不再保留兼容路径，而是连同 route、handler、client wrapper、storage interface、xlStorage 方法、生成数据类型和相关 metric 一并移除。上游 multipart 处理迁移到 ``ReadParts`` 之后不应再有生产调用者，但滚动升级时仍应让集群运行一致版本。
+- 补齐 S3 Select 超大记录限制：JSON Lines 输入现在走有界 reader 路径，因此在支持 SIMD 的 CPU 上也会一致拒绝超大记录，不再绕过限制。S3 Select stream error 现在会保留预期错误码，并将 JSON parser 错误包装为 ``JSONParsingError``。
+- 加固 LDAP STS 限流源地址分桶：限流现在仅按源 IP 分桶，避免按用户名共享的 bucket 被单一客户端耗尽并锁定合法用户。受信代理处理现在从右到左解析 ``X-Forwarded-For``，拒绝全网段 trusted-proxy CIDR，忽略 RFC 7239 ``Forwarded``，并明确记录 ``X-Real-IP`` 的部署约定。
+- 刷新 Go 运行时与模块基线：release、hotfix、goreleaser 与 old-CPU Docker 构建现在都使用 ``golang:1.26.4-alpine``；``go.mod`` 更新到 Go ``1.26.4``；依赖刷新覆盖 NATS、Prometheus、Azure SDK、Apache Thrift、gRPC、OpenTelemetry、Google API/auth、Go ``x/*`` 以及相关间接依赖。
+
+直接安全修复
+^^^^^^^^^^^^
+
+- `CVE-2026-42600 <https://github.com/advisories/GHSA-xh8f-g2qw-gcm7>`__：移除废弃的 ``ReadMultiple`` storage-REST API，关闭 ``/rmpl`` 暴露的旧节点间文件读取路径。
+- `CVE-2026-39414 <https://github.com/advisories?query=CVE-2026-39414>`__：补齐 JSON Lines 输入的 S3 Select 超大记录限制，并保留正确的 S3 Select 错误语义。
+- `CVE-2026-33419 <https://github.com/advisories?query=CVE-2026-33419>`__：进一步强化 LDAP STS 限流记账与 trusted-proxy 源 IP 处理。
+
+依赖安全更新
+^^^^^^^^^^^^
+
+- 将 ``github.com/Azure/go-ntlmssp`` 从 ``v0.1.0`` 升级到 ``v0.1.1``，修复 `CVE-2026-32952 <https://github.com/advisories/GHSA-pjcq-xvwq-hhpj>`__，避免畸形 NTLM challenge 触发 Go 进程 panic。
+- 将 ``github.com/apache/thrift`` 从 ``v0.22.0`` 升级到 ``v0.23.0``，修复 Go ``TFramedTransport`` 实现中的 `CVE-2026-41602 <https://github.com/advisories/GHSA-wf45-q9ch-q8gh>`__。
+- 将 ``github.com/nats-io/nats-server/v2`` 从 ``v2.11.1`` 升级到 ``v2.11.15``，吸收 NATS 2.11.x 安全补丁线。重点覆盖 pre-auth WebSocket 与 leafnode 拒绝服务、MQTT 授权、JetStream 管理 API 授权、凭据暴露和请求身份伪造等问题，包括 `CVE-2026-27889 <https://github.com/advisories/GHSA-pq2q-rcw4-3hr6>`__、`CVE-2026-29785 <https://github.com/advisories/GHSA-52jh-2xxh-pwh6>`__、`CVE-2026-33217 <https://github.com/advisories/GHSA-jxxm-27vp-c3m5>`__、`CVE-2026-33218 <https://github.com/advisories/GHSA-vprv-35vv-q339>`__、`CVE-2026-33222 <https://github.com/advisories/GHSA-9983-vrx2-fg9c>`__ 与 `CVE-2026-33247 <https://github.com/advisories/GHSA-x6g4-f6q3-fqvv>`__。
+- 将 ``github.com/prometheus/prometheus`` 从 ``v0.310.0`` 升级到 ``v0.311.3``，吸收 Prometheus 关于 remote-read 拒绝服务、Web UI 存储型 XSS、remote-write 配置 secret 暴露等安全修复，包括 `CVE-2026-42154 <https://github.com/advisories/GHSA-8rm2-7qqf-34qm>`__、`CVE-2026-44903 <https://github.com/advisories/GHSA-fw8g-cg8f-9j28>`__、`CVE-2026-42151 <https://github.com/advisories/GHSA-wg65-39gg-5wfj>`__ 与 `CVE-2026-40179 <https://github.com/advisories/GHSA-vffh-x6r8-xx99>`__。
+- 将发布构建基线升级到 Go ``1.26.4``，并刷新 ``golang.org/x/crypto``、``golang.org/x/net``、``golang.org/x/sys``、``golang.org/x/text``、``google.golang.org/grpc`` 与 OpenTelemetry 等模块族。即便此前锁定版本已经越过特定公开 advisory 的修复范围，这些更新仍让社区分支继续贴近上游已修复依赖基线。
+
+关联提交
+^^^^^^^^
+
+- `5e40665 <https://github.com/pgsty/minio/commit/5e40665acdc88f2508ab5a9033a8193daf62cfce>`__：fix: harden LDAP STS rate-limit source bucketing
+- `fd69c89 <https://github.com/pgsty/minio/commit/fd69c89d05d3205fb237c9603c638668f83c857a>`__：fix: complete CVE-2026-39414 S3 Select record limit enforcement
+- `73ac524 <https://github.com/pgsty/minio/commit/73ac52472444e222c4cb345030d21ecabff876a8>`__：fix: CVE-2026-42600 remove ReadMultiple storage-REST API
+- `df627ff <https://github.com/pgsty/minio/commit/df627ff8966f4c04ccd0e437341c9ce7168a749a>`__：fix: bump Go toolchain to 1.26.4
+- `3e61b1d <https://github.com/pgsty/minio/commit/3e61b1d3a55c67340214ed6dc4612a7e2abc877d>`__：chore: update Go module dependencies
 
 RELEASE.2026-04-17T00-00-00Z
 ----------------------------
