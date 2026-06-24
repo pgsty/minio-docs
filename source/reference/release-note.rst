@@ -1,12 +1,52 @@
 Release Note
 ============
 
-This page collects all published versions from the `pgsty/minio releases page <https://github.com/pgsty/minio/releases>`__ and also includes the draft notes for the upcoming 2026-04-17 release.
+This page collects all published versions from the `pgsty/minio releases page <https://github.com/pgsty/minio/releases>`__.
 The entries below are ordered from newest to oldest and summarize each release's publication date, major changes, security fixes, and related commits.
 
 .. contents:: Contents
    :local:
    :depth: 1
+
+RELEASE.2026-06-18T00-00-00Z
+----------------------------
+
+2026-06-18: `https://github.com/pgsty/minio/releases/tag/RELEASE.2026-06-18T00-00-00Z <https://github.com/pgsty/minio/releases/tag/RELEASE.2026-06-18T00-00-00Z>`__
+
+This release is a security and dependency-maintenance update for the ``pgsty/minio`` fork. It hardens LDAP STS throttling, completes S3 Select oversized-record enforcement, removes the obsolete ``ReadMultiple`` internode storage-REST API, upgrades the Go build baseline to ``1.26.4``, and refreshes Go module dependencies to pick up additional third-party security fixes.
+
+Major Changes
+^^^^^^^^^^^^^
+
+- Remove the obsolete ``ReadMultiple`` storage-REST API: the legacy ``/rmpl`` internode endpoint is removed rather than patched in place, including its route, handler, client wrapper, storage interfaces, xlStorage methods, generated datatypes, and related metric. No production caller is expected after upstream multipart handling moved to ``ReadParts``, but clusters should still run a consistent release during rolling upgrades.
+- Complete S3 Select oversized-record enforcement: JSON Lines input now uses the bounded reader path, so oversized records are rejected consistently instead of bypassing limits on SIMD-capable CPUs. S3 Select stream errors now preserve the intended error code and wrap JSON parser failures as ``JSONParsingError``.
+- Harden LDAP STS rate-limit source bucketing: throttling is now keyed only by source IP, avoiding username-shared buckets that could be drained by one client to lock out a legitimate user. Trusted-proxy handling now resolves ``X-Forwarded-For`` from right to left, rejects catch-all trusted-proxy CIDRs, ignores RFC 7239 ``Forwarded``, and documents the ``X-Real-IP`` deployment contract.
+- Refresh the Go runtime and module baseline: release, hotfix, goreleaser, and old-CPU Docker builds now use ``golang:1.26.4-alpine``; ``go.mod`` is updated to Go ``1.26.4``; and dependencies are refreshed across NATS, Prometheus, Azure SDK, Apache Thrift, gRPC, OpenTelemetry, Google API/auth, Go ``x/*``, and related transitive libraries.
+
+Direct Security Fixes
+^^^^^^^^^^^^^^^^^^^^^
+
+- `CVE-2026-42600 <https://github.com/advisories/GHSA-xh8f-g2qw-gcm7>`__: remove the obsolete ``ReadMultiple`` storage-REST API to close the legacy internode file-read path exposed through ``/rmpl``.
+- `CVE-2026-39414 <https://github.com/advisories?query=CVE-2026-39414>`__: complete oversized S3 Select record enforcement for JSON Lines inputs and preserve correct S3 Select error semantics.
+- `CVE-2026-33419 <https://github.com/advisories?query=CVE-2026-33419>`__: further harden LDAP STS rate-limit accounting and trusted-proxy source-IP handling.
+
+Dependency Security Updates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Update ``github.com/Azure/go-ntlmssp`` from ``v0.1.0`` to ``v0.1.1``, fixing `CVE-2026-32952 <https://github.com/advisories/GHSA-pjcq-xvwq-hhpj>`__, where malformed NTLM challenges could panic a Go process.
+- Update ``github.com/apache/thrift`` from ``v0.22.0`` to ``v0.23.0``, fixing `CVE-2026-41602 <https://github.com/advisories/GHSA-wf45-q9ch-q8gh>`__ in the Go ``TFramedTransport`` implementation.
+- Update ``github.com/nats-io/nats-server/v2`` from ``v2.11.1`` to ``v2.11.15``, absorbing the NATS 2.11.x security patch line. Notable fixes include pre-auth WebSocket and leafnode denial-of-service issues, MQTT authorization issues, JetStream management API authorization hardening, credential exposure fixes, and request identity-spoofing fixes, including `CVE-2026-27889 <https://github.com/advisories/GHSA-pq2q-rcw4-3hr6>`__, `CVE-2026-29785 <https://github.com/advisories/GHSA-52jh-2xxh-pwh6>`__, `CVE-2026-33217 <https://github.com/advisories/GHSA-jxxm-27vp-c3m5>`__, `CVE-2026-33218 <https://github.com/advisories/GHSA-vprv-35vv-q339>`__, `CVE-2026-33222 <https://github.com/advisories/GHSA-9983-vrx2-fg9c>`__, and `CVE-2026-33247 <https://github.com/advisories/GHSA-x6g4-f6q3-fqvv>`__.
+- Update ``github.com/prometheus/prometheus`` from ``v0.310.0`` to ``v0.311.3``, absorbing Prometheus security fixes for remote-read denial of service, stored XSS in UI surfaces, and remote-write configuration secret exposure, including `CVE-2026-42154 <https://github.com/advisories/GHSA-8rm2-7qqf-34qm>`__, `CVE-2026-44903 <https://github.com/advisories/GHSA-fw8g-cg8f-9j28>`__, `CVE-2026-42151 <https://github.com/advisories/GHSA-wg65-39gg-5wfj>`__, and `CVE-2026-40179 <https://github.com/advisories/GHSA-vffh-x6r8-xx99>`__.
+- Upgrade the release build baseline through Go ``1.26.4`` and refresh supporting Go module families, including ``golang.org/x/crypto``, ``golang.org/x/net``, ``golang.org/x/sys``, ``golang.org/x/text``, ``google.golang.org/grpc``, and OpenTelemetry. These updates keep the fork aligned with patched upstream dependency baselines even where the previously pinned version was already past the specific public advisory range.
+
+Related Commits
+^^^^^^^^^^^^^^^
+
+- `5e40665 <https://github.com/pgsty/minio/commit/5e40665acdc88f2508ab5a9033a8193daf62cfce>`__: fix: harden LDAP STS rate-limit source bucketing
+- `fd69c89 <https://github.com/pgsty/minio/commit/fd69c89d05d3205fb237c9603c638668f83c857a>`__: fix: complete CVE-2026-39414 S3 Select record limit enforcement
+- `73ac524 <https://github.com/pgsty/minio/commit/73ac52472444e222c4cb345030d21ecabff876a8>`__: fix: CVE-2026-42600 remove ReadMultiple storage-REST API
+- `df627ff <https://github.com/pgsty/minio/commit/df627ff8966f4c04ccd0e437341c9ce7168a749a>`__: fix: bump Go toolchain to 1.26.4
+- `3e61b1d <https://github.com/pgsty/minio/commit/3e61b1d3a55c67340214ed6dc4612a7e2abc877d>`__: chore: update Go module dependencies
 
 RELEASE.2026-04-17T00-00-00Z
 ----------------------------
