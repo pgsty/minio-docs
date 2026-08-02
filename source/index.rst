@@ -4,6 +4,11 @@ MinIO High Performance Object Storage
 
 .. default-domain:: minio
 
+.. warning::
+
+   **This site is archived.** This legacy documentation is no longer maintained.
+   Visit the `current Silo documentation <https://silo.pgsty.com/>`__.
+
 .. important::
 
    **This is a community-maintained fork of** `minio/docs <https://github.com/minio/docs>`__ **, maintained by** `Pigsty <https://pigsty.io>`__ **at** `pgsty/minio-docs <https://github.com/pgsty/minio-docs>`__ **.**

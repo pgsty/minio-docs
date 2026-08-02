@@ -1,10 +1,24 @@
+<div class="archive-notice" role="status">
+   <div class="archive-notice__inner">
+      <strong>Archived:</strong> This legacy site is no longer maintained.
+      <a href="https://silo.pgsty.com/">Visit the current Silo documentation.</a>
+   </div>
+</div>
+
 <header class="header inactive">
    <div class="container">
       <div class="header__inner">
-         <a href="{{ pathto(master_doc)|e }}" class="header__logo" aria-label="Silo documentation home">
+         <a href="{{ pathto(master_doc)|e }}" class="header__logo silo-brand" aria-label="Silo documentation home">
             <img
+               class="silo-brand__mark"
                src="{{ pathto('_static/img/silo.svg', 1)|e }}"
-               alt="Silo"
+               alt=""
+               aria-hidden="true"
+            />
+            <img
+               class="silo-brand__wordmark"
+               src="{{ pathto('_static/img/silo-word.svg', 1)|e }}"
+               alt="SILO"
             />
          </a>
          

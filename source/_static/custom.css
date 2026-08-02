@@ -1,0 +1,57 @@
+/* Minimal archive notice for the retired documentation site. */
+.archive-notice {
+  background: #fff4db;
+  border-bottom: 1px solid #dfb76c;
+  color: #604719;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.archive-notice__inner {
+  margin: 0 auto;
+  max-width: 1300px;
+  padding: 0.45rem var(--content-padding);
+  text-align: center;
+}
+
+.archive-notice a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.archive-notice a:hover {
+  color: var(--link-color);
+}
+
+.header__logo.silo-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.45rem;
+}
+
+:root .header__logo.silo-brand > img {
+  flex: 0 0 auto;
+  max-width: none;
+  transform: none;
+  width: auto;
+}
+
+:root .header__logo.silo-brand > .silo-brand__mark {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
+:root .header__logo.silo-brand > .silo-brand__wordmark {
+  height: 1.35rem;
+}
+
+:root.read-mode .header__logo.silo-brand > .silo-brand__mark {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+:root.read-mode .header__logo.silo-brand > .silo-brand__wordmark {
+  height: 1.15rem;
+}
