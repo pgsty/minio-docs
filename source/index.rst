@@ -4,6 +4,12 @@ SILO：社区维护的 MinIO 高性能对象存储
 
 .. default-domain:: minio
 
+.. admonition:: 重要提示
+   :class: warning
+
+   **当前网站已归档。** 此旧文档站已停止维护，
+   请访问 `新的 Silo 文档站 <https://silo.pgsty.com/zh/>`__。
+
 .. important::
 
    **这是** `minio/docs <https://github.com/minio/docs>`__ **的社区维护分支，由** `Pigsty <https://pigsty.io>`__ **在** `pgsty/minio-docs <https://github.com/pgsty/minio-docs>`__ **中维护。**
