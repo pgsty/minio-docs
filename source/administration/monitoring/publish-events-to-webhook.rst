@@ -103,11 +103,9 @@ variables *or* by setting runtime configuration settings.
 
    .. tab-item:: Configuration Settings
 
-      MinIO supports adding or updating Webhook endpoints on a running 
-      :mc:`minio server` process using the :mc-cmd:`mc admin config set` command 
-      and the :mc-conf:`notify_webhook` configuration key. You must restart the 
-      :mc:`minio server` process to apply any new or updated configuration
-      settings.
+      Use the :mc-cmd:`mc admin config set` command and the
+      :mc-conf:`notify_webhook` configuration key to add or update Webhook
+      endpoints on a running :mc:`minio server` process.
 
       The following example code sets *all*  settings related to configuring an
       Webhook service endpoint. The minimum *required* setting is 
@@ -143,11 +141,14 @@ variables *or* by setting runtime configuration settings.
       <minio-server-config-bucket-notification-webhook>` for complete 
       documentation on each setting.
 
-1) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1) Apply the Settings and Find the ARN
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+On SILO releases with live Webhook reload, configuration settings apply
+immediately without a restart. Earlier releases require a restart.
+Environment variable changes always require a restart, and environment values
+override stored settings. For the environment variable path, use the
+:mc-cmd:`mc admin service restart` command:
 
 .. code-block:: shell
    :class: copyable
@@ -155,7 +156,8 @@ Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
    mc admin service restart ALIAS
 
 Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
+restart. After a live configuration change, the new ARN is immediately
+available for ``mc event add``; check it using ``mc admin info --json ALIAS``.
 
 The :mc:`minio server` process prints a line on startup for each configured
 Webhook target similar to the following:
@@ -284,26 +286,28 @@ configuration settings are *optional*. See
 :ref:`minio-server-config-bucket-notification-webhook` for a complete list of
 Webhook configuration settings.
 
-3) Restart the MinIO Deployment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3) Apply the Changes
+~~~~~~~~~~~~~~~~~~~~
 
-You must restart the MinIO deployment to apply the configuration changes. 
-Use the :mc-cmd:`mc admin service restart` command to restart the deployment.
+On SILO releases with live Webhook reload,
+``mc admin config set ALIAS/ notify_webhook:IDENTIFIER ...`` applies changes
+locally, then reloads peers from the saved configuration. Use ``enable=off`` to
+disable a target or ``mc admin config reset ALIAS/ notify_webhook:IDENTIFIER``
+to remove it. Invalid settings are rejected before saving and the running
+target keeps working. Earlier releases require a restart.
 
-.. code-block:: shell
-   :class: copyable
+Updates to ``endpoint``, ``auth_token``, ``client_cert``, ``client_key``, or
+``queue_limit`` retain the target ID and disk queue. In-flight requests finish
+with the old settings; later deliveries and queued-event replays use the new
+settings. Lowering ``queue_limit`` does not discard queued events. To change an
+active target's ``queue_dir``, first drain the queue and disable or remove the
+target, then set the new directory.
 
-   mc admin service restart ALIAS
-
-Replace ``ALIAS`` with the :ref:`alias <alias>` of the deployment to 
-restart.
-
-The :mc:`minio server` process prints a line on startup for each configured Webhook
-target similar to the following:
-
-.. code-block:: shell
-
-   SQS ARNs: arn:minio:sqs::primary:webhook
+Peer reload failures are logged on the node handling the admin request; offline
+nodes load the saved configuration at startup. Environment variable changes and
+changes to other notification backends still require a restart. Check the
+target ARN with ``mc admin info --json ALIAS`` before using it with
+``mc event add``.
 
 4) Validate the Changes
 ~~~~~~~~~~~~~~~~~~~~~~~
