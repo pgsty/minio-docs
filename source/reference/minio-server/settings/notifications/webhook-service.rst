@@ -15,6 +15,8 @@ Webhook Service Notification Settings
 This page documents settings for configuring an Webhook service as a target for :ref:`Bucket Notifications <minio-bucket-notifications>`. 
 See :ref:`minio-bucket-notifications-publish-webhook` for a tutorial on using these settings.
 
+On SILO releases with live Webhook reload, changes made with configuration settings apply without a restart. Environment variable changes and changes to other notification backends still require a restart. Earlier releases require a restart for Webhook configuration changes.
+
 .. include:: /includes/common-mc-admin-config.rst
    :start-after: start-minio-settings-defined
    :end-before: end-minio-settings-defined
@@ -210,6 +212,8 @@ Queue Directory
 Specify the directory path to enable MinIO's persistent event store for undelivered messages, such as ``/opt/minio/events``.
 
 MinIO stores undelivered events in the specified store while the webhook service is offline and replays the stored events when connectivity resumes.
+
+Changing ``queue_dir`` on an active Webhook target is rejected before saving. To move a queue, let it drain, disable the target with ``enable=off`` or remove it with ``mc admin config reset``, then set the new ``queue_dir``.
 
 Queue Limit
 ~~~~~~~~~~~
